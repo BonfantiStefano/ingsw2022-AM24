@@ -5,22 +5,36 @@ import java.util.Collections;
 
 public class StudentContainer {
     private ArrayList<Student> students;
-    private static StudentContainer instance=null;
+    private ArrayList<Student> initial;
 
     private StudentContainer() {
-        students = new ArrayList<>(130);
+        students = new ArrayList<>(120);
         for(ColorS c: ColorS.values())
-            for(int i=0;i<26;i++)
+            for(int i=0;i<24;i++)
                 students.add(new Student(c));
+
+        for(ColorS c: ColorS.values())
+            for(int i=0;i<2;i++)
+                initial.add(new Student(c));
+
         Collections.shuffle(students);
+        Collections.shuffle(initial);
     }
 
-    public StudentContainer getInstance(){
-        if (instance == null)
-            instance = new StudentContainer();
-        return instance;
+    /**
+     * Is used to populate the islands when the game is initialized
+     * @return s a Student chosen from a pool smaller than the total number of Students
+     */
+    public Student initialDraw(){
+        Student s=initial.get(0);
+        initial.remove(0);
+        return s;
     }
 
+    /**
+     * Returns a random Student
+     * @return s a random Student chosen from all Students that aren't on the board yet
+     */
     public Student draw(){
         Student s=students.get(0);
         students.remove(0);

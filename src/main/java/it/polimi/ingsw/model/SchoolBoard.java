@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SchoolBoard implements AcceptStudent, AcceptTower{
+public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTower{
     private ArrayList<Student> entrance;
     private ArrayList<Prof> profs;
     private ArrayList<Tower> towers;

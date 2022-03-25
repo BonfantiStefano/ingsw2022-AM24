@@ -3,7 +3,7 @@ package it.polimi.ingsw.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Island implements AcceptStudent, AcceptTower{
+public class Island implements CanAcceptStudent, AcceptTower{
     private ArrayList<Student> students;
     private Tower tower;
     private HashMap<ColorS,Integer> influence;
@@ -17,9 +17,6 @@ public class Island implements AcceptStudent, AcceptTower{
     }
     public void add(Student s) {
         students.add(s);
-    }
-    public void remove(Student s) {
-        students.remove(s);
     }
 
     public void add(Tower t){

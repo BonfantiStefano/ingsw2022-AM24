@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 import java.util.ArrayList;
 
-public class Cloud implements AcceptStudent{
+public class Cloud implements CanAcceptStudent, CanRemoveStudent{
     private ArrayList<Student> students;
 
     public void add(Student s){

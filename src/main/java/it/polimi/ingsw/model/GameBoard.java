@@ -26,7 +26,7 @@ public class GameBoard {
         this.activePlayer = activePlayer;
     }
     //implementare varie move
-    public void move(Student s, AcceptStudent from, AcceptStudent to){
+    public void move(Student s, CanRemoveStudent from, CanAcceptStudent to){
         from.remove(s);
         to.add(s);
     }

@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model;
 
+/**
+ * Defines the properties of every Character: cost in coins and a description that summarises its power
+ */
 public abstract class Character {
     private int cost;
     private String description;
@@ -17,6 +20,9 @@ public abstract class Character {
         return description;
     }
 
+    /**
+     * Subclassess will override this method to apply their effect
+     */
     public abstract void play();
 
 }
