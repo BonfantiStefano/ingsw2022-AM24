@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class GameBoard {
     private ArrayList<Player> players;
     //private ArrayList<SchoolBoard> schoolBoards;
-    private ArrayList<Cloud> clouds;
+    private World world;
     private ArrayList<ArrayList<Island>> islands;
     private Player activePlayer;
     private StudentContainer bag;

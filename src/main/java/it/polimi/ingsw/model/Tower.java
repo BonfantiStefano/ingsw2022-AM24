@@ -4,4 +4,10 @@ public class Tower extends GenericColored<ColorT>{
     public Tower(ColorT c){
         super(c);
     }
+
+    @Override
+    public ColorT getColor() {
+        return super.getColor();
+    }
+
 }

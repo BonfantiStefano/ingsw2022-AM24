@@ -5,9 +5,13 @@ public class Cloud implements CanAcceptStudent, CanRemoveStudent{
     private ArrayList<Student> students;
 
     public void add(Student s){
+
         students.add(s);
     }
+
+
     public void remove(Student s){
+
         students.remove(s);
     }
 }

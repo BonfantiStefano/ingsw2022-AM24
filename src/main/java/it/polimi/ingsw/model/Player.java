@@ -29,4 +29,15 @@ public class Player {
 
     public void playCard(){}
 
+    public SchoolBoard getSchoolBoard() {
+        return myboard;
+    }
+
+    public ColorT getColorTower() {
+        return color;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
+    }
 }
