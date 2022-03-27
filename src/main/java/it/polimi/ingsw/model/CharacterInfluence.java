@@ -5,9 +5,9 @@ package it.polimi.ingsw.model;
  */
 public class CharacterInfluence extends Character{
     private InfluenceStrategy strategy;
-    private World observer;
+    private HasStrategy<InfluenceStrategy> observer;
 
-    public CharacterInfluence(int cost, String description,  InfluenceStrategy strategy, World observer) {
+    public CharacterInfluence(int cost, String description,  InfluenceStrategy strategy, HasStrategy observer) {
         super(cost, description);
         this.strategy=strategy;
         this.observer=observer;
