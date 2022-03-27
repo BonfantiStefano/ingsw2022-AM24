@@ -5,9 +5,9 @@ package it.polimi.ingsw.model;
  */
 public class CharacterProf extends Character {
     private ProfStrategy strategy;
-    private GameBoard observer;
+    private HasStrategy<ProfStrategy> observer;
 
-    public CharacterProf(int cost, String description,  ProfStrategy strategy, GameBoard observer) {
+    public CharacterProf(int cost, String description,  ProfStrategy strategy, HasStrategy observer) {
         super(cost, description);
         this.strategy=strategy;
         this.observer=observer;

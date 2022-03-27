@@ -2,13 +2,14 @@ package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
 
-public class GameBoard {
+public class GameBoard implements HasStrategy<ProfStrategy>{
     private ArrayList<Player> players;
     //private ArrayList<SchoolBoard> schoolBoards;
     private World world;
     private ArrayList<ArrayList<Island>> islands;
     private Player activePlayer;
     private StudentContainer bag;
+    private ProfStrategy strategy;
 
     public GameBoard(){
 
@@ -34,6 +35,14 @@ public class GameBoard {
         return null;
     }
 
+    public void setStrategy(ProfStrategy strategy){
+        this.strategy=strategy;
+    }
+
+    @Override
+    public void resetStrategy() {
+        strategy=new StandardProf();
+    }
 
 
 }
