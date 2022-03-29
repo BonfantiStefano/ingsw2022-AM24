@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.model.world.Island;
+
 public class MotherNature{
     private Island location;
 

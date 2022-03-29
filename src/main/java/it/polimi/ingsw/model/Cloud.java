@@ -1,4 +1,6 @@
 package it.polimi.ingsw.model;
+import it.polimi.ingsw.model.pawn.Student;
+
 import java.util.ArrayList;
 
 public class Cloud implements CanAcceptStudent, CanRemoveStudent{
