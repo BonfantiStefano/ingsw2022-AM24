@@ -6,20 +6,37 @@ import java.util.Map;
 
 public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTower{
     private ArrayList<Student> entrance;
-    private ArrayList<Prof> profs;
     private ArrayList<Tower> towers;
     private Map<ColorS,Integer> hall;
+    private StudentContainer container = new StudentContainer();
 
-    public SchoolBoard(){
+    public SchoolBoard(ColorT color, int numStudents, int numTowers){
         entrance=new ArrayList<Student>();
-        profs=new ArrayList<Prof>();
-        towers=new ArrayList<Tower>();
+        for(int i = 0; i < numStudents; i++){
+            Student s = container.draw();
+            entrance.add(s);
+        }
+        towers= new ArrayList<>();
+        for(int i = 0; i < numTowers; i ++){
+            towers.add(new Tower(color));
+        }
         hall=new HashMap<ColorS, Integer>();
         for(ColorS c:ColorS.values()){
             hall.put(c,0);
         }
     }
 
+    public boolean entranceToHall(Student s){
+        int temp = hall.get(s.getColor()) + 1;
+        hall.put(s.getColor(),temp);
+        entrance.remove(s);
+        return (temp%3 == 0);
+    }
+
+    public void removeHall(Student s){
+        int temp = hall.get(s.getColor())-1;
+        hall.put(s.getColor(),temp);
+    }
 
     public void add(Student s){
         entrance.add(s);
@@ -30,12 +47,12 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     public void add(Tower t){towers.add(t);}
     public void remove(Tower t){towers.remove(t);}
 
-    public void entranceToHall(Student s){
-        entrance.remove(s);
-        hall.put(s.getColor(),hall.getOrDefault(s.getColor(),0)+1);
+
+    public ArrayList<Student> getEntrance() {
+        return entrance;
     }
 
-    public void PrintEntrance(){
-        entrance.forEach(s->System.out.println(s.getColor()));
+    public Map<ColorS,Integer> getHall(){
+        return hall;
     }
 }

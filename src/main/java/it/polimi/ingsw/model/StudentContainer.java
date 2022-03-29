@@ -7,7 +7,7 @@ public class StudentContainer {
     private ArrayList<Student> students;
     private ArrayList<Student> initial;
 
-    private StudentContainer() {
+    public StudentContainer() {
         students = new ArrayList<>(120);
         for(ColorS c: ColorS.values())
             for(int i=0;i<24;i++)

@@ -5,30 +5,45 @@ import java.util.ArrayList;
 public class Player implements HasStrategy<MNStrategy>{
     private String nickname;
     private SchoolBoard myboard;
-    private ArrayList<Assistant> hand;
+    private Hand myCards;
     private ColorT color;
-    private int points;
     private boolean isPlaying;
     private Assistant lastAssist;
     private MNStrategy strategy;
+    private int coins;
 
-    public Player(String nickname, ColorT color){
+    public Player(String nickname, ColorT color, Mage mage, int numStudents, int numTowers){
         this.nickname=nickname;
         this.color=color;
-        this.myboard=new SchoolBoard();
-        this.points=0;
+        this.myboard=new SchoolBoard(color,numStudents,numTowers);
         this.lastAssist=null;
         this.isPlaying=false;
-        this.hand=new ArrayList<Assistant>();
+        this.myCards = new Hand(mage);
+    }
+
+    public Player(String nickname, ColorT color, Mage mage, int numStudents, int numTowers, int coins){
+        this.nickname=nickname;
+        this.color=color;
+        this.myboard=new SchoolBoard(color, numStudents, numTowers);
+        this.lastAssist=null;
+        this.isPlaying=false;
+        this.myCards=new Hand(mage);
+        this.coins=coins;
     }
 
     public void chooseAssist(){}
 
-    public ArrayList<Prof> getMyProfs(){ return null;}
+    public void playCard(int index){
+        Assistant card = myCards.getCard(index);
+        lastAssist = card;
+    }
+    public Assistant getLastAssistant(){
+        return lastAssist;
+    }
 
-    public ArrayList<Assistant> getHand(){ return null;}
-
-    public void playCard(){}
+    public Hand getMyCards(){
+        return myCards;
+    }
 
     public ColorT getColorTower() {
         return color;
@@ -46,5 +61,17 @@ public class Player implements HasStrategy<MNStrategy>{
     @Override
     public void resetStrategy() {
         strategy=new MNStandard();
+    }
+
+    public int getCoins(){
+        return coins;
+    }
+
+    public void setCoins(int amount){
+        coins = coins + amount;
+    }
+
+    public SchoolBoard getSchoolBoard(){
+        return myboard;
     }
 }
