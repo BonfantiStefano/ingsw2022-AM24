@@ -9,7 +9,9 @@ public class CharacterWithNoEntry extends Character{
     }
 
     @Override
-    public void play() {}
+    public void play() {
+        super.play();
+    }
 
 
 }

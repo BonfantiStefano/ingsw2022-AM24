@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 public class StandardProf implements ProfStrategy{
 
@@ -12,7 +11,16 @@ public class StandardProf implements ProfStrategy{
      * @return a Map that contains the Prof's color and the corresponding Player in control of that Prof
      */
     @Override
-    public Map<ColorS, Player> checkProfs(ArrayList<Player> players) {
-        return null; //placeholder
+    public Map<ColorS, Player> checkProfs(ArrayList<Player> players, Map<ColorS, Player> profs) {
+        Map<ColorS, Player> result=profs;
+        //for every ColorS put the Player with the highest number of Students of that color in the map
+        for(ColorS c: ColorS.values()){
+            int max=profs.get(c).getSchoolBoard().getHall().get(c); //number of students of the Prof's owner
+            for(Player p: players){
+                if(p.getSchoolBoard().getHall().get(c)>max)
+                    result.put(c,p);
+            }
+        }
+        return result;
     }
 }

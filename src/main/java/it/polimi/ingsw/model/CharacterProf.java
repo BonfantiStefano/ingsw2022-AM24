@@ -15,6 +15,7 @@ public class CharacterProf extends Character {
 
     @Override
     public void play() {
+        super.play();
         observer.setStrategy(strategy);
     }
 }

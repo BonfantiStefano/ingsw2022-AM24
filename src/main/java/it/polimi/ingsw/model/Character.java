@@ -6,6 +6,7 @@ package it.polimi.ingsw.model;
 public abstract class Character {
     private int cost;
     private String description;
+    private boolean alreadyPlayed;
 
     public Character(int cost, String description){
         this.cost=cost;
@@ -23,6 +24,11 @@ public abstract class Character {
     /**
      * Subclassess will override this method to apply their effect
      */
-    public abstract void play();
+    public void play(){
+        if(!alreadyPlayed) {
+            cost++;
+            alreadyPlayed=true;
+        }
+    }
 
 }

@@ -16,7 +16,9 @@ public class CharacterWithStudent extends Character implements CanAcceptStudent,
     }
 
     @Override
-    public void play(){}
+    public void play(){
+        super.play();
+    }
 
     public void add(Student s){
         students.add(s);

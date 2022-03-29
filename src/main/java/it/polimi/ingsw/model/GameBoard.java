@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class GameBoard implements HasStrategy<ProfStrategy>{
     private ArrayList<Player> players;
@@ -10,6 +11,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     private Player activePlayer;
     private StudentContainer bag;
     private ProfStrategy strategy;
+    private Map<ColorS, Player> profs;
 
     public GameBoard(){
 

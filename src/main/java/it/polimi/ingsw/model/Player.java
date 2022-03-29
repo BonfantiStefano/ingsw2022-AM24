@@ -53,6 +53,9 @@ public class Player implements HasStrategy<MNStrategy>{
         return isPlaying;
     }
 
+    public SchoolBoard getMyboard(){
+        return myboard;
+    }
     @Override
     public void setStrategy(MNStrategy strategy) {
         this.strategy=strategy;

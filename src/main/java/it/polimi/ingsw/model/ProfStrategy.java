@@ -10,5 +10,5 @@ import java.util.Map;
  * @return a Map that contains the Prof's color and the corresponding Player in control of that Prof
  */
 public interface ProfStrategy {
-    Map<ColorS, Player> checkProfs(ArrayList<Player> players);
+    Map<ColorS, Player> checkProfs(ArrayList<Player> players, Map<ColorS, Player> profs);
 }
