@@ -1,9 +1,10 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.mnstrategy.MNStandard;
 import it.polimi.ingsw.model.mnstrategy.MNStrategy;
-
+import it.polimi.ingsw.exceptions.InvalidIndexException;
 public class Player implements HasStrategy<MNStrategy> {
     private String nickname;
     private SchoolBoard myboard;
@@ -35,10 +36,20 @@ public class Player implements HasStrategy<MNStrategy> {
 
     public void chooseAssist(){}
 
+    //public void playCard(int index){
+    //    Assistant card = myCards.getCard(index);
+    //    lastAssist = card;
+    //}
+
     public void playCard(int index){
-        Assistant card = myCards.getCard(index);
-        lastAssist = card;
+        try{
+            Assistant card = myCards.getCard(index);
+            lastAssist = card;
+        }catch (InvalidIndexException e){
+            System.out.println(e.getMessage());
+        }
     }
+
     public Assistant getLastAssistant(){
         return lastAssist;
     }
