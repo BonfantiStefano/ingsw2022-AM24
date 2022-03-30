@@ -26,7 +26,7 @@ class HandTest {
     @Test
     public void testSameValues() throws InvalidIndexException {
         for(int i = 1; i <=10; i++ ){
-            assertEquals((hand1.getCard(i).getTurn()-hand1.getCard(i).getTurn()),0 );
+            assertEquals((hand1.getCard(i).getTurn()-hand2.getCard(i).getTurn()),0 );
             assertEquals((hand1.getCard(i).getMNsteps()-hand2.getCard(i).getMNsteps()),0);
         }
     }
