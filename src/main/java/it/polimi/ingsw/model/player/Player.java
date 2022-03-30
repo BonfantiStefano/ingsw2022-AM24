@@ -61,7 +61,7 @@ public class Player implements HasStrategy<MNStrategy> {
         return isPlaying;
     }
 
-    public SchoolBoard getMyboard(){
+    public SchoolBoard getMyBoard(){
         return myboard;
     }
     @Override
@@ -84,5 +84,9 @@ public class Player implements HasStrategy<MNStrategy> {
 
     public SchoolBoard getSchoolBoard(){
         return myboard;
+    }
+
+    public String getNickname(){
+        return nickname;
     }
 }
