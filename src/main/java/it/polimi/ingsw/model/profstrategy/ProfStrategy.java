@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.player.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -13,5 +14,5 @@ import java.util.Map;
  * @return a Map that contains the Prof's color and the corresponding Player in control of that Prof
  */
 public interface ProfStrategy {
-    Map<ColorS, Player> checkProfs(ArrayList<Player> players, Map<ColorS, Player> profs);
+    HashMap<ColorS, Player> checkProfs(ArrayList<Player> players, HashMap<ColorS, Player> profs);
 }

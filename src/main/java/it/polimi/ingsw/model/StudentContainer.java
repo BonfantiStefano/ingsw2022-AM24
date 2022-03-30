@@ -14,7 +14,7 @@ public class StudentContainer {
         for(ColorS c: ColorS.values())
             for(int i=0;i<24;i++)
                 students.add(new Student(c));
-
+        initial=new ArrayList<>();
         for(ColorS c: ColorS.values())
             for(int i=0;i<2;i++)
                 initial.add(new Student(c));

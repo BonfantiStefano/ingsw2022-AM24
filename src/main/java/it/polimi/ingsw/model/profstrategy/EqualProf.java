@@ -1,10 +1,12 @@
 package it.polimi.ingsw.model.profstrategy;
 
 import it.polimi.ingsw.model.ColorS;
+import it.polimi.ingsw.model.HasStrategy;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.profstrategy.ProfStrategy;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class EqualProf implements ProfStrategy {
@@ -15,15 +17,15 @@ public class EqualProf implements ProfStrategy {
      * @return a Map that contains the Prof's color and the corresponding Player in control of that Prof
      */
     @Override
-    public Map<ColorS, Player> checkProfs(ArrayList<Player> players, Map<ColorS, Player> profs) {
-        Map<ColorS, Player> result=profs;
+    public HashMap<ColorS, Player> checkProfs(ArrayList<Player> players, HashMap<ColorS, Player> profs) {
+        HashMap<ColorS, Player> result=profs;
 
         for(ColorS c: ColorS.values()){
-            int max=profs.get(c).getSchoolBoard().getHall().get(c); //number of students of the Prof's owner
+            int max=((profs.get(c)==null? 0 : profs.get(c).getMyBoard().getHall().get(c))); //number of students of the Prof's owner
             for(Player p: players){
-                if(p.getSchoolBoard().getHall().get(c)>max)
+                if(p.getMyBoard().getHall().get(c)>max)
                     result.put(c,p);
-                else if(p.isPlaying()&&p.getSchoolBoard().getHall().get(c)>=max)
+                else if(p.isPlaying()&&p.getMyBoard().getHall().get(c)>=max)
                     result.put(c,p);
             }
         }

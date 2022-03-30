@@ -4,6 +4,8 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.mnstrategy.MNStandard;
 import it.polimi.ingsw.model.mnstrategy.MNStrategy;
 
+import java.util.Objects;
+
 public class Player implements HasStrategy<MNStrategy> {
     private String nickname;
     private SchoolBoard myboard;
@@ -55,7 +57,7 @@ public class Player implements HasStrategy<MNStrategy> {
         return isPlaying;
     }
 
-    public SchoolBoard getMyboard(){
+    public SchoolBoard getMyBoard(){
         return myboard;
     }
     @Override
@@ -76,7 +78,7 @@ public class Player implements HasStrategy<MNStrategy> {
         coins = coins + amount;
     }
 
-    public SchoolBoard getSchoolBoard(){
-        return myboard;
+    public String getNickname(){
+        return nickname;
     }
 }
