@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.player;
 
 import java.util.ArrayList;
+import it.polimi.ingsw.exceptions.InvalidIndexException;
 
 public class Hand{
     public final static int [] MNSTEPS ={1, 1, 2, 2, 3, 3, 4, 4, 5, 5};
@@ -16,7 +17,14 @@ public class Hand{
             cards.add(new Assistant(MNSTEPS[i], TURN[i], mage));
         }
     }
-    public Assistant getCard(int index){
-        return cards.get(index);
+
+    public Assistant getCard(int index) throws InvalidIndexException{
+        if (index >= 1 && index <= 10){
+            return cards.get(index-1);
+        }
+        else throw new InvalidIndexException();
     }
+
+
 }
+
