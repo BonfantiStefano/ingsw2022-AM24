@@ -34,14 +34,9 @@ public class Player implements HasStrategy<MNStrategy> {
         this.coins=coins;
     }
 
-    public void chooseAssist(){}
+    public void playCard(){}
 
-    //public void playCard(int index){
-    //    Assistant card = myCards.getCard(index);
-    //    lastAssist = card;
-    //}
-
-    public void playCard(int index){
+    public void chooseAssistant(int index){
         try{
             Assistant card = myCards.getCard(index);
             lastAssist = card;

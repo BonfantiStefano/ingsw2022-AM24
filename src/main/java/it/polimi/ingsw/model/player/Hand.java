@@ -17,7 +17,6 @@ public class Hand{
             cards.add(new Assistant(MNSTEPS[i], TURN[i], mage));
         }
     }
-    //public Assistant getCard(int index){return cards.get(index-1);}
 
     public Assistant getCard(int index) throws InvalidIndexException{
         if (index >= 1 && index <= 10){
