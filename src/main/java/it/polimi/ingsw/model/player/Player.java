@@ -57,6 +57,14 @@ public class Player implements HasStrategy<MNStrategy> {
         return color;
     }
 
+    public String getNickname(){
+        return nickname;
+    }
+
+    public void setPlaying(boolean playing) {
+        isPlaying = playing;
+    }
+
     public boolean isPlaying() {
         return isPlaying;
     }
@@ -86,7 +94,4 @@ public class Player implements HasStrategy<MNStrategy> {
         return myboard;
     }
 
-    public String getNickname(){
-        return nickname;
-    }
 }
