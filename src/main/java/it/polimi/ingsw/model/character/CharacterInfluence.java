@@ -11,7 +11,7 @@ public class CharacterInfluence extends Character {
     private InfluenceStrategy strategy;
     private HasStrategy<InfluenceStrategy> observer;
 
-    public CharacterInfluence(int cost, String description,  InfluenceStrategy strategy, HasStrategy observer) {
+    public CharacterInfluence(int cost, String description,  InfluenceStrategy strategy, HasStrategy<InfluenceStrategy> observer) {
         super(cost, description);
         this.strategy=strategy;
         this.observer=observer;

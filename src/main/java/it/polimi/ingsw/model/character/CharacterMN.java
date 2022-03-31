@@ -11,9 +11,10 @@ public class CharacterMN extends Character {
     private HasStrategy<MNStrategy> observer;
     private MNStrategy strategy;
 
-    public CharacterMN(int cost, String description) {
+    public CharacterMN(int cost, String description, HasStrategy<MNStrategy> observer) {
         super(cost, description);
         strategy=new MNTwoSteps();
+        this.observer=observer;
     }
 
     @Override

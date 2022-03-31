@@ -10,11 +10,12 @@ public class CharacterProf extends Character {
     private ProfStrategy strategy;
     private HasStrategy<ProfStrategy> observer;
 
-    public CharacterProf(int cost, String description,  ProfStrategy strategy, HasStrategy observer) {
+    public CharacterProf(int cost, String description,  ProfStrategy strategy, HasStrategy<ProfStrategy> observer) {
         super(cost, description);
         this.strategy=strategy;
         this.observer=observer;
     }
+
 
     @Override
     public void play() {

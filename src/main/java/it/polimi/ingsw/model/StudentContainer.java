@@ -28,6 +28,7 @@ public class StudentContainer {
      * @return s a Student chosen from a pool smaller than the total number of Students
      */
     public Student initialDraw(){
+        //no exception needed because the initial draw won't be called after the game initialization
         Student s=initial.get(0);
         initial.remove(0);
         return s;
@@ -38,6 +39,7 @@ public class StudentContainer {
      * @return s a random Student chosen from all Students that aren't on the board yet
      */
     public Student draw(){
+        //add exception to signal that all Students have been drawn
         Student s=students.get(0);
         students.remove(0);
         return s;
