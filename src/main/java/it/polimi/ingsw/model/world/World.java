@@ -20,21 +20,6 @@ public class World implements HasStrategy<InfluenceStrategy> {
     private ArrayList<Island> islands;
     private InfluenceStrategy influenceStrategy;
 
-    /**
-     * Method getInfluenceStrategy returns the strategy currently used to calculate the influence of an Island.
-     * @return InfluenceStrategy.
-     */
-    public InfluenceStrategy getInfluenceStrategy() {
-        return influenceStrategy;
-    }
-
-    /**
-     * Method setInfluenceStrategy changes the algorithm used to be used to calculate the influence.
-     * @param influenceStrategy InfluenceStrategy
-     */
-    public void setInfluenceStrategy(InfluenceStrategy influenceStrategy) {
-        this.influenceStrategy = influenceStrategy;
-    }
 
     /**
      * Method getInfluenceIsland calculate the influence for every single player using the method getInfluence and put
@@ -107,8 +92,8 @@ public class World implements HasStrategy<InfluenceStrategy> {
     }
 
     /**
-     * Method to set the strategy used by CharacterInfluence
-     * @param strategy the strategy that needs to be activated when the Character is played
+     * Method setStrategy changes the algorithm used to be used to calculate the influence.
+     * @param strategy InfluenceStrategy
      */
     @Override
     public void setStrategy(InfluenceStrategy strategy) {
@@ -121,5 +106,14 @@ public class World implements HasStrategy<InfluenceStrategy> {
     @Override
     public void resetStrategy() {
         this.influenceStrategy=new StandardInfluence();
+    }
+
+    /**
+     * Method getStrategy returns the strategy currently used to calculate the influence of an Island.
+     * @return InfluenceStrategy
+     */
+    @Override
+    public InfluenceStrategy getStrategy() {
+        return influenceStrategy;
     }
 }

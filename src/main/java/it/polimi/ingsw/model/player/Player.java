@@ -82,6 +82,11 @@ public class Player implements HasStrategy<MNStrategy> {
         strategy=new MNStandard();
     }
 
+    @Override
+    public MNStrategy getStrategy() {
+        return strategy;
+    }
+
     public int getCoins(){
         return coins;
     }

@@ -7,4 +7,5 @@ package it.polimi.ingsw.model;
 public interface HasStrategy<T> {
     public void setStrategy(T strategy);
     public void resetStrategy();
+    public T getStrategy();
 }

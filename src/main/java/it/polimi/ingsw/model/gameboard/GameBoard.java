@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.profstrategy.StandardProf;
 import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.model.world.World;
 
+import java.lang.management.PlatformLoggingMXBean;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -53,6 +54,11 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     @Override
     public void resetStrategy() {
         strategy=new StandardProf();
+    }
+
+    @Override
+    public ProfStrategy getStrategy() {
+        return strategy;
     }
 
 
