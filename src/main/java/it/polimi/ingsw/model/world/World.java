@@ -1,8 +1,10 @@
 package it.polimi.ingsw.model.world;
 
 import it.polimi.ingsw.model.ColorS;
+import it.polimi.ingsw.model.HasStrategy;
 import it.polimi.ingsw.model.world.influence.InfluenceStrategy;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.world.influence.StandardInfluence;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +16,7 @@ import java.util.Optional;
  *
  * @author Bonfanti Stefano
  */
-public class World {
+public class World implements HasStrategy<InfluenceStrategy> {
     private ArrayList<Island> islands;
     private InfluenceStrategy influenceStrategy;
 
@@ -102,5 +104,22 @@ public class World {
      */
     public int getSize() {
         return islands.size();
+    }
+
+    /**
+     * Method to set the strategy used by CharacterInfluence
+     * @param strategy the strategy that needs to be activated when the Character is played
+     */
+    @Override
+    public void setStrategy(InfluenceStrategy strategy) {
+        this.influenceStrategy=strategy;
+    }
+
+    /**
+     * Resets the strategy so the class will have the standard behaviour
+     */
+    @Override
+    public void resetStrategy() {
+        this.influenceStrategy=new StandardInfluence();
     }
 }
