@@ -33,7 +33,7 @@ class HandTest {
 
     @Test
     public void testValues() throws InvalidIndexException {
-        for(int i = 1; i <=10; i++ ){
+        for(int i = 1; i <=10; i++){
             int mnsteps = i%2 == 0? i/2 : (Math.round(i/2) + 1);
             assertEquals(hand1.getCard(i).getTurn(), i);
             assertEquals(hand1.getCard(i).getMNsteps(), mnsteps);

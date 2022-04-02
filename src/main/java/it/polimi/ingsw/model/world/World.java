@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.world;
 
 import it.polimi.ingsw.model.ColorS;
+import it.polimi.ingsw.model.StudentContainer;
 import it.polimi.ingsw.model.world.influence.InfluenceStrategy;
 import it.polimi.ingsw.model.player.Player;
 
@@ -17,6 +18,16 @@ import java.util.Optional;
 public class World {
     private ArrayList<Island> islands;
     private InfluenceStrategy influenceStrategy;
+    private StudentContainer sc = new StudentContainer();
+
+    public World(int posMN, int posNoStud){
+        islands = new ArrayList<>();
+        for(int i = 0; i < 12 && i != posMN && i != posNoStud; i++){
+            Island island = new Island();
+            island.add(sc.initialDraw());
+            islands.add(island);
+        }
+    }
 
     /**
      * Method getInfluenceStrategy returns the strategy currently used to calculate the influence of an Island.
@@ -102,5 +113,10 @@ public class World {
      */
     public int getSize() {
         return islands.size();
+    }
+
+
+    public Island getIsland(int indexIsland){
+        return islands.get(indexIsland);
     }
 }
