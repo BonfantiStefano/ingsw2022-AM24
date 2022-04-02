@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.gameboard;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.pawn.Student;
 import it.polimi.ingsw.model.player.Assistant;
+import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.profstrategy.ProfStrategy;
 import it.polimi.ingsw.model.profstrategy.StandardProf;
@@ -25,14 +26,11 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     private ProfStrategy strategy;
     private Map<ColorS, Player> profs;
 
-    private Random random = new Random();
-
     public GameBoard(){
-        mn = new MotherNature();
-        int randomPos = random.nextInt(12);
-        mn.setLocation(world.getIsland(randomPos));
 
-        //World world = new World(randomPos);
+        players = new ArrayList<>();
+        bag = new StudentContainer();
+
 
         profs=new HashMap<ColorS, Player>();
         for(ColorS c:ColorS.values()){
@@ -84,16 +82,23 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     public void nthPlayer(int n){
         int index = n-1;
         Player p = null;
-        List<Player> orderedPlayers = new ArrayList<>();
-        Collections.copy(orderedPlayers,players);
-        Collections.sort(orderedPlayers, (p1, p2) -> {
-            if (p1.getLastAssistant().getTurn() < p2.getLastAssistant().getTurn()) return 1;
-            else if (p1.getLastAssistant().getTurn() > p2.getLastAssistant().getTurn()) return -1;
+        Collections.sort(players, (p1, p2) -> {
+            if (p1.getLastAssistant().getTurn() < p2.getLastAssistant().getTurn()) return -1;
+            else if (p1.getLastAssistant().getTurn() > p2.getLastAssistant().getTurn()) return 1;
             else return 0;
         });
-        p = orderedPlayers.get(index);
+        p = players.get(index);
         setActivePlayer(p);
     }
+
+    /**
+     * Method addPlayer adds a new player
+     * @param player of type Player
+     */
+    public void addPlayer(Player player) {
+        players.add(player);
+    }
+
 
     public void checkIsland(Island i){}
 
