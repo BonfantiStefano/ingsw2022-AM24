@@ -42,6 +42,15 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
         hall.put(s.getColor(),temp);
     }
 
+    public void hallToEntrance(Student s){
+        hall.put(s.getColor(), hall.get(s.getColor())-1);
+    }
+
+    public boolean addToHall(Student s){
+        hall.put(s.getColor(), hall.get(s.getColor())+1);
+        return hall.get(s.getColor())%3==0;
+    }
+
     public void add(Student s){
         entrance.add(s);
     }
