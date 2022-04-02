@@ -40,8 +40,8 @@ public class GameBoardTest {
     }
 
     @Test
-    public void thirdFirstPlayer(){
+    public void thirdPlayer(){
         gb.nthPlayer(3);
-        assertEquals(gb.getActivePlayer().getNickname(),"Alice" );
+        assertEquals(gb.getActivePlayer().getNickname(),"Alice");
     }
 }
