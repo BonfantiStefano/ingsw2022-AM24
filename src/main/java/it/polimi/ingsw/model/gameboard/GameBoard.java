@@ -32,7 +32,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         int randomPos = random.nextInt(12);
         mn.setLocation(world.getIsland(randomPos));
 
-        World world = new World(randomPos, randomPos+6);
+        //World world = new World(randomPos);
 
         profs=new HashMap<ColorS, Player>();
         for(ColorS c:ColorS.values()){
@@ -124,6 +124,11 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     @Override
     public void resetStrategy() {
         strategy=new StandardProf();
+    }
+
+    @Override
+    public ProfStrategy getStrategy() {
+        return strategy;
     }
 
 
