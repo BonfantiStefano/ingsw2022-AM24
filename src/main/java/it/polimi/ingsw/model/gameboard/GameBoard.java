@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model.gameboard;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.mnstrategy.MNStrategy;
 import it.polimi.ingsw.model.pawn.Student;
+import it.polimi.ingsw.model.pawn.Tower;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.profstrategy.ProfStrategy;
@@ -15,10 +17,9 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     private final static String ERROR_CARD = "Attention: This card has been chosen by another player! Choose another card";
     private final static String MESSAGE = "choose an Assistant card";
 
-    private MotherNature mn;
-    private List<Player> players;
-    private List<Cloud> clouds;
-    private List<Assistant> lastAssistants;
+    private ArrayList<Player> players;
+    private ArrayList<Cloud> clouds;
+    private ArrayList<Assistant> lastAssistants;
     private World world;
     private Player activePlayer;
     private StudentContainer bag;
@@ -28,12 +29,8 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     private Random random = new Random();
 
     public GameBoard(){
-        mn = new MotherNature();
-        int randomPos = random.nextInt(12);
-        mn.setLocation(world.getIsland(randomPos));
-
-        //World world = new World(randomPos);
-
+        bag=new StudentContainer();
+        world = new World(bag.initialDraw());
         profs=new HashMap<ColorS, Player>();
         for(ColorS c:ColorS.values()){
             profs.put(c,null);
@@ -112,8 +109,17 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         to.add(s);
     }
 
+    public void move(Tower t, AcceptTower from, AcceptTower to){
+        from.remove(t);
+        to.add(t);
+    }
+
     public ArrayList<Assistant> getLastAssistants() {
         return null;
+    }
+
+    public ArrayList<Player> getPlayers(){
+        return players;
     }
 
     @Override

@@ -2,6 +2,8 @@ package it.polimi.ingsw.model.gameboard;
 
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.gameboard.GameBoard;
+import it.polimi.ingsw.model.pawn.Student;
+import it.polimi.ingsw.model.player.Player;
 
 import java.util.ArrayList;
 
@@ -33,5 +35,20 @@ public class ExpertGameBoard extends GameBoard {
     public void setAvailableCoins(int coins) {
         this.coins = coins;
     }
+
+    public void hallToEntrance(Student s){
+        getActivePlayer().getMyBoard().hallToEntrance(s);
+    }
+
+    public void addToHall(Student s){
+        if(getActivePlayer().getMyBoard().addToHall(s))
+            getActivePlayer().setCoins(1);
+    }
+
+    public void removeHall(Student s, Player p){
+        p.getMyBoard().removeHall(s);
+    }
+
+
 
 }
