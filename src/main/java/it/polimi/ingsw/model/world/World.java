@@ -1,9 +1,10 @@
 package it.polimi.ingsw.model.world;
 
 import it.polimi.ingsw.model.ColorS;
-import it.polimi.ingsw.model.StudentContainer;
+import it.polimi.ingsw.model.HasStrategy;
 import it.polimi.ingsw.model.world.influence.InfluenceStrategy;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.world.influence.StandardInfluence;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,35 +16,10 @@ import java.util.Optional;
  *
  * @author Bonfanti Stefano
  */
-public class World {
+public class World implements HasStrategy<InfluenceStrategy> {
     private ArrayList<Island> islands;
     private InfluenceStrategy influenceStrategy;
-    private StudentContainer sc = new StudentContainer();
 
-    public World(int posMN, int posNoStud){
-        islands = new ArrayList<>();
-        for(int i = 0; i < 12 && i != posMN && i != posNoStud; i++){
-            Island island = new Island();
-            island.add(sc.initialDraw());
-            islands.add(island);
-        }
-    }
-
-    /**
-     * Method getInfluenceStrategy returns the strategy currently used to calculate the influence of an Island.
-     * @return InfluenceStrategy.
-     */
-    public InfluenceStrategy getInfluenceStrategy() {
-        return influenceStrategy;
-    }
-
-    /**
-     * Method setInfluenceStrategy changes the algorithm used to be used to calculate the influence.
-     * @param influenceStrategy InfluenceStrategy
-     */
-    public void setInfluenceStrategy(InfluenceStrategy influenceStrategy) {
-        this.influenceStrategy = influenceStrategy;
-    }
 
     /**
      * Method getInfluenceIsland calculate the influence for every single player using the method getInfluence and put
@@ -115,8 +91,29 @@ public class World {
         return islands.size();
     }
 
+    /**
+     * Method setStrategy changes the algorithm used to be used to calculate the influence.
+     * @param strategy InfluenceStrategy
+     */
+    @Override
+    public void setStrategy(InfluenceStrategy strategy) {
+        this.influenceStrategy=strategy;
+    }
 
-    public Island getIsland(int indexIsland){
-        return islands.get(indexIsland);
+    /**
+     * Resets the strategy so the class will have the standard behaviour
+     */
+    @Override
+    public void resetStrategy() {
+        this.influenceStrategy=new StandardInfluence();
+    }
+
+    /**
+     * Method getStrategy returns the strategy currently used to calculate the influence of an Island.
+     * @return InfluenceStrategy
+     */
+    @Override
+    public InfluenceStrategy getStrategy() {
+        return influenceStrategy;
     }
 }

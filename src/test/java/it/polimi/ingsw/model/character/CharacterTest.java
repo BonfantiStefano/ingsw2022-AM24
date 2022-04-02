@@ -11,19 +11,19 @@ class CharacterTest {
 
     @Test
     void getCost() {
-        Character c=new CharacterWithStudent(1, "I am a character");
+        Character c=new CharacterWithStudent(1, "I am a character",1);
         assertEquals(1, c.getCost());
     }
 
     @Test
     void getDescription() {
-        Character c=new CharacterWithStudent(1, "I am a character");
+        Character c=new CharacterWithStudent(1, "I am a character",1);
         assertEquals("I am a character", c.getDescription());
     }
 
     @Test
     void play() {
-        Character c=new CharacterWithStudent(1, "I am a character");
+        Character c=new CharacterWithStudent(1, "I am a character",1);
         c.play();
         assertEquals(2, c.getCost());
     }
