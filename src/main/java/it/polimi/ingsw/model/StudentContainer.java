@@ -27,11 +27,9 @@ public class StudentContainer {
      * Is used to populate the islands when the game is initialized
      * @return s a Student chosen from a pool smaller than the total number of Students
      */
-    public Student initialDraw(){
+    public ArrayList<Student> initialDraw(){
         //no exception needed because the initial draw won't be called after the game initialization
-        Student s=initial.get(0);
-        initial.remove(0);
-        return s;
+        return initial;
     }
 
     /**
@@ -40,8 +38,6 @@ public class StudentContainer {
      */
     public Student draw(){
         //add exception to signal that all Students have been drawn
-        Student s=students.get(0);
-        students.remove(0);
-        return s;
+        return students.remove(0);
     }
 }

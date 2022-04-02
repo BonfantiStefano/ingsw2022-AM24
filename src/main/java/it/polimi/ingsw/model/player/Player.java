@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.mnstrategy.MNStandard;
 import it.polimi.ingsw.model.mnstrategy.MNStrategy;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
-public class Player implements HasStrategy<MNStrategy> {
+public class Player implements PlayerInterface {
     private String nickname;
     private SchoolBoard myboard;
     private Hand myCards;
