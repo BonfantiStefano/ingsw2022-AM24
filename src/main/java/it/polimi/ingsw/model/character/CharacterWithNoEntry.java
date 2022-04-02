@@ -10,10 +10,8 @@ public class CharacterWithNoEntry extends Character {
         numNoEntry=4;
     }
 
-    @Override
-    public void play() {
-        super.play();
+    public int getNumNoEntry(){
+        return numNoEntry;
     }
-
 
 }
