@@ -19,6 +19,7 @@ public class Assistant {
         return turn;
     }
 
+    /*
     public int compare(Assistant a){
         if(this.turn<a.getTurn())
             return 1;
@@ -26,6 +27,7 @@ public class Assistant {
             return 0;
         else
             return -1;
-    }
+    } */
+
 
 }

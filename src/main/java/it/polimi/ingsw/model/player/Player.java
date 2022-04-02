@@ -53,6 +53,10 @@ public class Player implements HasStrategy<MNStrategy> {
         return myCards;
     }
 
+    public int getNumCards(){
+        return myCards.numCards();
+    }
+
     public ColorT getColorTower() {
         return color;
     }
