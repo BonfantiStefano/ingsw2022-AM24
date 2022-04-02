@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.world;
 
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.HasStrategy;
+import it.polimi.ingsw.model.pawn.Student;
 import it.polimi.ingsw.model.world.influence.InfluenceStrategy;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.world.influence.StandardInfluence;
@@ -9,10 +10,11 @@ import it.polimi.ingsw.model.world.influence.StandardInfluence;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * World class contains the list of the Islands that represents the world of the game. It also contains an attribute
- * InfluenceStrategy that allowed to change dynamically the algorithm used to calculate the Influence of an Island.
+ * InfluenceStrategy that allowed changing dynamically the algorithm used to calculate the Influence of an Island.
  *
  * @author Bonfanti Stefano
  */
@@ -20,6 +22,45 @@ public class World implements HasStrategy<InfluenceStrategy> {
     private ArrayList<Island> islands;
     private InfluenceStrategy influenceStrategy;
 
+    /**Constructor World creates a new World instance with already the students allocated.*/
+    public World(ArrayList<Student> initialStudent, Island mnLocation) {
+        this.islands = new ArrayList<>();
+        this.influenceStrategy = new StandardInfluence();
+        Random random = new Random();
+        int posMN = random.nextInt(12);
+        int oppositePosMN;
+        // int randomPos;
+        if (posMN >= 6) {
+            oppositePosMN = posMN-6;
+        } else {
+            oppositePosMN = posMN+6;
+        }
+        for(int counter = 0; counter < 12; counter++) {
+            if(counter != posMN) {
+                Island island = new Island();
+                islands.add(island);
+                if(counter != oppositePosMN) {
+                    //se gli studenti sono già stati inseriti casualmente faccio:
+                    island.add(initialStudent.get(0));
+                    initialStudent.remove(0);
+                    //se gli studenti devono essere estratti in maniera casuale faccio:
+                     /*
+                    randomPos = random.nextInt(initialStudent.size());
+                    i.add(initialStudent.get(randomPos));
+                    initialStudent.remove(randomPos);
+                     */
+                }
+            } else {
+                islands.add(mnLocation);
+            }
+        }
+    }
+
+    /**Constructor World creates a new empty world instance.*/
+    public World() {
+        this.islands = new ArrayList<>();
+        this.influenceStrategy = new StandardInfluence();
+    }
 
     /**
      * Method getInfluenceIsland calculate the influence for every single player using the method getInfluence and put
@@ -101,7 +142,7 @@ public class World implements HasStrategy<InfluenceStrategy> {
     }
 
     /**
-     * Resets the strategy so the class will have the standard behaviour
+     * Resets the strategy so the class will have the standard behaviour.
      */
     @Override
     public void resetStrategy() {
@@ -115,5 +156,10 @@ public class World implements HasStrategy<InfluenceStrategy> {
     @Override
     public InfluenceStrategy getStrategy() {
         return influenceStrategy;
+    }
+
+    //metodo usato per fare i testing
+    public Island getIslandByIndex(int index) {
+        return islands.get(index);
     }
 }
