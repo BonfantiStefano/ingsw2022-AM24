@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.character;
 /**
  * Defines the properties of every Character: cost in coins and a description that summarises its power
  */
-public abstract class Character {
+public class Character {
     private int cost;
     private String description;
     private boolean alreadyPlayed;
@@ -22,7 +22,7 @@ public abstract class Character {
     }
 
     /**
-     * Subclassess will override this method to apply their effect
+     * Subclasses will override this method to apply their effect
      */
     public void play(){
         if(!alreadyPlayed) {
