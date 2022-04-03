@@ -20,7 +20,8 @@ public class StandardProf implements ProfStrategy {
         result=profs;
         //for every ColorS put the Player with the highest number of Students of that color in the map
         for(ColorS c: ColorS.values()){
-            int max=((profs.get(c)==null? 0 : profs.get(c).getMyBoard().getHall().get(c))); //number of students of the Prof's owner
+            //number of students held by the Prof's owner, if there's no owner the default value is 0
+            int max=((profs.get(c)==null? 0 : profs.get(c).getMyBoard().getHall(c)));
             for(Player p: players){
                 if(p.getMyBoard().getHall().get(c)>max)
                     result.put(c,p);

@@ -14,7 +14,7 @@ import java.util.Random;
 
 /**
  * World class contains the list of the Islands that represents the world of the game. It also contains an attribute
- * InfluenceStrategy that allowed changing dynamically the algorithm used to calculate the Influence of an Island.
+ * InfluenceStrategy that allowed changing dynamically the algorithm used to calculate the Influence of an Island (pattern Strategy).
  *
  * @author Bonfanti Stefano
  */
@@ -26,40 +26,37 @@ public class World implements HasStrategy<InfluenceStrategy> {
     public World(ArrayList<Student> initialStudent, Island mnLocation) {
         this.islands = new ArrayList<>();
         this.influenceStrategy = new StandardInfluence();
-        Random random = new Random();
-        int posMN = random.nextInt(12);
-        int oppositePosMN;
-        // int randomPos;
-        if (posMN >= 6) {
-            oppositePosMN = posMN-6;
-        } else {
-            oppositePosMN = posMN+6;
-        }
-        for(int counter = 0; counter < 12; counter++) {
-            if(counter != posMN) {
-                Island island = new Island();
-                islands.add(island);
-                if(counter != oppositePosMN) {
-                    //se gli studenti sono già stati inseriti casualmente faccio:
-                    island.add(initialStudent.get(0));
-                    initialStudent.remove(0);
-                    //se gli studenti devono essere estratti in maniera casuale faccio:
-                     /*
-                    randomPos = random.nextInt(initialStudent.size());
-                    i.add(initialStudent.get(randomPos));
-                    initialStudent.remove(randomPos);
-                     */
-                }
-            } else {
-                islands.add(mnLocation);
-            }
-        }
+        init(initialStudent);
     }
 
     /**Constructor World creates a new empty world instance.*/
     public World() {
         this.islands = new ArrayList<>();
         this.influenceStrategy = new StandardInfluence();
+    }
+
+    /**
+     * Private method init is used from the World constructor and gives Mother nature a random position and places
+     * Student according to the rule.
+     * @param initialStudent ArrayList<Student> - a list of 10 Student, 2 of each color.
+     */
+    private void init(ArrayList<Student> initialStudent){
+        Random random = new Random();
+        int posMN = random.nextInt(12);
+        int oppositePosMN;
+        if (posMN >= 6) {
+            oppositePosMN = posMN-6;
+        } else {
+            oppositePosMN = posMN+6;
+        }
+        for(int counter = 0; counter < 12; counter++) {
+            Island island = new Island();
+            islands.add(island);
+            if(counter != oppositePosMN && counter != posMN) {
+                island.add(initialStudent.get(0));
+                initialStudent.remove(0);
+            }
+        }
     }
 
     /**
@@ -101,23 +98,23 @@ public class World implements HasStrategy<InfluenceStrategy> {
     public void checkJoin(Island i) {
         int indexIsland = islands.indexOf(i);
         if(islands.size() > indexIsland+1) {
-            if(islands.get(indexIsland+1).getTowerColor().equals(i.getTowerColor())) {
+            if(Optional.ofNullable(islands.get(indexIsland+1).getTowerColor()).equals(Optional.ofNullable(i.getTowerColor()))) {
                 Island newIsland = join(i, islands.get(indexIsland+1));
                 checkJoin(newIsland);
             }
         } else {
-             if(islands.get(0).getTowerColor().equals(i.getTowerColor())) {
+             if(Optional.ofNullable(islands.get(0).getTowerColor()).equals(Optional.ofNullable(i.getTowerColor()))) {
                  Island newIsland = join(islands.get(0), i);
                  checkJoin(newIsland);
              }
         }
         if(indexIsland == 0) {
-            if(islands.get(islands.size()-1).getTowerColor().equals(i.getTowerColor())) {
+            if(Optional.ofNullable(islands.get(islands.size()-1).getTowerColor()).equals(Optional.ofNullable(i.getTowerColor()))) {
                 Island newIsland = join(i, islands.get(islands.size()-1));
                 checkJoin(newIsland);
             }
         } else {
-            if(islands.get(indexIsland-1).getTowerColor().equals(i.getTowerColor())) {
+            if(Optional.ofNullable(islands.get(indexIsland-1).getTowerColor()).equals(Optional.ofNullable(i.getTowerColor()))) {
                 Island newIsland = join(islands.get(indexIsland-1), i);
                 checkJoin(newIsland);
             }
@@ -158,7 +155,7 @@ public class World implements HasStrategy<InfluenceStrategy> {
         return influenceStrategy;
     }
 
-    //metodo usato per fare i testing
+    //method used only for testing
     public Island getIslandByIndex(int index) {
         return islands.get(index);
     }
