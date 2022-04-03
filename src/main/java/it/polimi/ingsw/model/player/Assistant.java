@@ -19,15 +19,15 @@ public class Assistant {
         return turn;
     }
 
-    /*
-    public int compare(Assistant a){
-        if(this.turn<a.getTurn())
+
+    public int compareTo(Assistant a){
+        if(this.turn>a.getTurn())
             return 1;
         else if(this.turn==a.getTurn())
             return 0;
         else
             return -1;
-    } */
+    }
 
 
 }
