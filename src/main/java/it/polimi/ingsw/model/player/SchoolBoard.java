@@ -30,37 +30,78 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
         }
     }
 
+    /**
+     * Moves a Student form Entrance to Hall
+     * @param s the Student being moved
+     * @return true if the Player gains a coin
+     */
     public boolean entranceToHall(Student s){
         int temp = hall.get(s.getColor()) + 1;
         hall.put(s.getColor(),temp);
         entrance.remove(s);
-        return (temp%3 == 0);
+        return (temp%3 == 0) && temp!=0;
     }
 
+    /**
+     * Removes a Student directly from the Hall
+     * @param s the Student being removed
+     */
     public void removeHall(Student s){
         int temp = hall.get(s.getColor())-1;
         hall.put(s.getColor(),temp);
     }
 
+    /**
+     * Moves a Student from the Hall to the Entrance
+     * @param s the Student being moved
+     */
     public void hallToEntrance(Student s){
         hall.put(s.getColor(), hall.get(s.getColor())-1);
     }
 
+    /**
+     * Adds a student directly to the Hall
+     * @param s the Student being added
+     * @return true if the Player gains a coin
+     */
     public boolean addToHall(Student s){
-        hall.put(s.getColor(), hall.get(s.getColor())+1);
-        return hall.get(s.getColor())%3==0;
+        int temp = hall.get(s.getColor()) + 1;
+        hall.put(s.getColor(), temp);
+        return temp%3==0 && temp!=0;
     }
 
+    /**
+     * Adds a Student to the Entrance
+     * @param s the Student being added
+     */
     public void add(Student s){
         entrance.add(s);
     }
+
+    /**
+     * Removes a Student from the Entrance
+     * @param s the Student being removed
+     */
     public void remove(Student s){
         entrance.remove(s);
     }
+
+    /**
+     * Adds a Tower to the Player's Board
+     * @param t the Tower being added
+     */
     public void add(Tower t){towers.add(t);}
+
+    /**
+     * Removes a Tower from the Player's Board
+     * @param t the Tower being Removed
+     */
     public void remove(Tower t){towers.remove(t);}
 
-
+    /**
+     * Get the Entrance to access the Students it contains
+     * @return the Board's Entrance
+     */
     public ArrayList<Student> getEntrance() {
         return entrance;
     }
