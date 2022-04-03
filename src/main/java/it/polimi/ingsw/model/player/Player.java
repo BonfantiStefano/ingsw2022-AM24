@@ -36,6 +36,14 @@ public class Player implements PlayerInterface {
 
     public void playCard(){}
 
+    /**
+     * According to the active MNStrategy checks the steps value in lastAssist
+     * @return the number of steps MN can make
+     */
+    public int getMNSteps(){
+        return  strategy.mnSteps(lastAssist);
+    }
+
     public void chooseAssistant(int index){
         try{
             Assistant card = myCards.getCard(index);
