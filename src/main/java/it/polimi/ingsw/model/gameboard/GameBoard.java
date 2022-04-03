@@ -13,9 +13,8 @@ import it.polimi.ingsw.model.world.World;
 import java.util.*;
 
 public class GameBoard implements HasStrategy<ProfStrategy> {
-    private final static String ERROR_CARD = "Attention: This card has been chosen by another player! Choose another card";
-    private final static String MESSAGE = "choose an Assistant card";
 
+    private final static String ERROR_MESS = " has to choose another card!";
     private MotherNature mn;
     private List<Player> players;
     private List<Cloud> clouds;
@@ -27,7 +26,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     private Map<ColorS, Player> profs;
 
     public GameBoard(){
-
+        lastAssistants = new ArrayList<>();
         players = new ArrayList<>();
         activePlayer = null;
         bag = new StudentContainer();
@@ -44,34 +43,51 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         }
     }
 
+    /**
+     * Method setChoosenAssistant allows the player to change his last Assistant card
+     *
+     * @param player of type Player - the player that will change his Assistant card.
+     * @param index of type int - the index of the card that will replace the previous one
+     */
     public void setChoosenAssistant(Player player, int index){
-        player.chooseAssistant(index);
-    }
-
-    public Assistant getChoosenAssistant(Player player){
-        return player.getLastAssistant();
+        player.chooseAssistant(index-1);
     }
 
     /**
-     * Method playAssistans allows each player to choose an Assistant card
-     * and makes sure that no one plays the same card someone else has played in the round
+     * Method setLastAssistants gets a player and adds his Assistant card in the list of all the cards of this round
+     *
+     * @param player of type Player - the player which Assistant card will be added to the list with other
+     * players' cards
      */
-    public void playAssistants() {
-        for (Player p : players) {
-            boolean finish = false;
-            do {
-                System.out.println(p.getNickname() + ", " + MESSAGE);
-                Assistant assistant = getChoosenAssistant(p);
-
-                for (Assistant a : lastAssistants) {
-                    if ((!a.equals(assistant)) || p.getMyCards().numCards() == 1) {
-                        finish = false;
-                        System.out.println(ERROR_CARD);
-                        break;
-                    }
-                }
-            } while (!finish);
+    public void setLastAssistants(Player player){
+        Assistant assistant = player.getLastAssistant();
+        if(lastAssistants.isEmpty()){
+            lastAssistants.add(assistant);
         }
+        else{
+            boolean result = false;
+            for (Assistant a : lastAssistants) {
+                if (!(a.getTurn()==assistant.getTurn())|| (player.getMyCards().numCards() == 1))
+                    result = true;
+            }
+            if(result) lastAssistants.add(assistant);
+        }
+    }
+
+    /**
+     * Method getPlayerByNickname searches the player by his nickname in the list which contains all
+     * the players
+     *
+     * @param nickname of type String - the nickname of the player.
+     * @return Player - the player, null if there's no player with that nickname.
+     */
+    public Player getPlayerByNickname(String nickname) {
+        for (Player p : players) {
+            if (p.getNickname().equalsIgnoreCase(nickname)) {
+                return p;
+            }
+        }
+        return null;
     }
 
     /**
@@ -103,13 +119,31 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
 
     public void checkIsland(Island i){}
 
-
+    /**
+     * Method getActivePlayer returns the active player in this round
+     *
+     * @return activePlayer of type Player
+     */
     public Player getActivePlayer() {
         return activePlayer;
     }
 
+    /**
+     * Method setCard adds a card chosen by the challenger to the deck.
+     *
+     * @param activePlayer of type Player - the next active player.
+     */
     public void setActivePlayer(Player activePlayer) {
         this.activePlayer = activePlayer;
+    }
+
+    /**
+     * Method getSizeList returs the size of lastAssisnts' list
+     *
+     * @return  int - the size of the list which contains the last Assistant cards
+     */
+    public int getSizeList(){
+        return lastAssistants.size();
     }
 
     //implementare varie move

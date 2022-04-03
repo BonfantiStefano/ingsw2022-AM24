@@ -4,7 +4,7 @@ import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.mnstrategy.MNStandard;
 import it.polimi.ingsw.model.mnstrategy.MNStrategy;
-import it.polimi.ingsw.exceptions.InvalidIndexException;
+
 public class Player implements PlayerInterface {
     private String nickname;
     private SchoolBoard myboard;
@@ -14,10 +14,12 @@ public class Player implements PlayerInterface {
     private Assistant lastAssist;
     private MNStrategy strategy;
     private int coins;
+    private Mage mage;
 
     public Player(String nickname, ColorT color, Mage mage, int numStudents, int numTowers){
         this.nickname=nickname;
         this.color=color;
+        this.mage = mage;
         this.myboard=new SchoolBoard(color,numStudents,numTowers);
         this.lastAssist=null;
         this.isPlaying=false;
@@ -27,6 +29,7 @@ public class Player implements PlayerInterface {
     public Player(String nickname, ColorT color, Mage mage, int numStudents, int numTowers, int coins){
         this.nickname=nickname;
         this.color=color;
+        this.mage = mage;
         this.myboard=new SchoolBoard(color, numStudents, numTowers);
         this.lastAssist=null;
         this.isPlaying=false;
@@ -34,12 +37,11 @@ public class Player implements PlayerInterface {
         this.coins=coins;
     }
 
-    public void playCard(){}
-
     public void chooseAssistant(int index){
         try{
             Assistant card = myCards.getCard(index);
             lastAssist = card;
+            myCards.removeCard(card);
         }catch (InvalidIndexException e){
             System.out.println(e.getMessage());
         }
@@ -55,6 +57,10 @@ public class Player implements PlayerInterface {
 
     public int getNumCards(){
         return myCards.numCards();
+    }
+
+    public Mage getMage(){
+        return this.mage;
     }
 
     public ColorT getColorTower() {

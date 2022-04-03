@@ -26,6 +26,10 @@ public class Hand{
         else throw new InvalidIndexException();
     }
 
+    public void removeCard(Assistant a){
+        cards.remove(a);
+    }
+
     public int numCards(){
         return cards.size();
     }

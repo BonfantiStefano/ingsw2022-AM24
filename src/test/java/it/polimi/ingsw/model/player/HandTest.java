@@ -14,7 +14,6 @@ class HandTest {
     public void initialization(){
         hand1 = new Hand(Mage.MAGE1);
         hand2 = new Hand(Mage.MAGE2);
-
     }
 
     @Test
