@@ -65,6 +65,14 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
         return entrance;
     }
 
+    /**
+     * Get the number of Students by ColorS
+     * @param c ColorS
+     * @return the number of ColoS Students in the player's Hall
+     */
+    public int getHall(ColorS c){
+        return hall.get(c);
+    }
     public Map<ColorS,Integer> getHall(){
         return hall;
     }
