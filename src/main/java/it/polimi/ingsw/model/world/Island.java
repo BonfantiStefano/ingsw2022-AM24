@@ -50,7 +50,7 @@ public class Island implements CanAcceptStudent, AcceptTower {
     }
 
     /**
-     * Method remove deletes a tower in the List of the Towers.
+     * Method remove deletes a tower from the List of the Towers.
      * @param t Tower
      */
     @Override
