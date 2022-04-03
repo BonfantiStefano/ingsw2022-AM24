@@ -18,7 +18,8 @@ public class GameBoardTest {
         Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9, 6 );
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9,6);
         Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9,6);
-        lisa.chooseAssistant(1);
+
+        lisa.chooseAssistant(4);
         bob.chooseAssistant(4);
         alice.chooseAssistant(8);
         gb.addPlayer(lisa);
@@ -28,20 +29,16 @@ public class GameBoardTest {
     }
 
     @Test
-    public void firstPlayer(){
-        gb.nthPlayer(1);
-        assertEquals(gb.getActivePlayer().getNickname(),"Lisa" );
+    public void SortedPlayer(){
+        gb.sortPlayers();
+        gb.nextPlayer();
+        assertEquals(gb.getActivePlayer().getNickname(), "Lisa");
+        gb.nextPlayer();
+        assertEquals(gb.getActivePlayer().getNickname(), "Bob");
+        gb.nextPlayer();
+        assertEquals(gb.getActivePlayer().getNickname(), "Alice");
+
     }
 
-    @Test
-    public void secondPlayer(){
-        gb.nthPlayer(2);
-        assertEquals(gb.getActivePlayer().getNickname(),"Bob" );
-    }
 
-    @Test
-    public void thirdPlayer(){
-        gb.nthPlayer(3);
-        assertEquals(gb.getActivePlayer().getNickname(),"Alice");
-    }
 }

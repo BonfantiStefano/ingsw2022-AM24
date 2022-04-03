@@ -29,6 +29,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     public GameBoard(){
 
         players = new ArrayList<>();
+        activePlayer = null;
         bag = new StudentContainer();
 
 
@@ -75,20 +76,20 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
 
     /**
      * Method nthPlayer is used for sorting palyers by their card value that determines the turn order
-     * of the next round. The player that has the lowest card value stars the round followed by other
-     * players.
-     * @param n int (n=1 the first player of the round, n=2 the second one, ecc)
+     * of the next round.
      */
-    public void nthPlayer(int n){
-        int index = n-1;
-        Player p = null;
+    public void sortPlayers(){
         Collections.sort(players, (p1, p2) -> {
-            if (p1.getLastAssistant().getTurn() < p2.getLastAssistant().getTurn()) return -1;
-            else if (p1.getLastAssistant().getTurn() > p2.getLastAssistant().getTurn()) return 1;
-            else return 0;
+            return p1.getLastAssistant().compareTo(p2.getLastAssistant());
         });
-        p = players.get(index);
-        setActivePlayer(p);
+    }
+
+    /** Method nextPlayer skips to the next player. */
+    public void nextPlayer(){
+        Player p = getActivePlayer();
+        Player nextPlayer = (p == null)? players.get(0)
+                :  players.get(players.indexOf(p) + 1);
+        setActivePlayer(nextPlayer);
     }
 
     /**

@@ -21,7 +21,7 @@ public class EqualProf implements ProfStrategy {
         HashMap<ColorS, Player> result=profs;
 
         for(ColorS c: ColorS.values()){
-            int max=((profs.get(c)==null? 0 : profs.get(c).getMyBoard().getHall().get(c))); //number of students of the Prof's owner
+            int max=((profs.get(c)==null? 0 : profs.get(c).getMyBoard().getHall(c))); //number of students of the Prof's owner
             for(Player p: players){
                 if(p.getMyBoard().getHall().get(c)>max)
                     result.put(c,p);
