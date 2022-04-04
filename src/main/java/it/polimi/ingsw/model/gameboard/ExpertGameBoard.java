@@ -21,8 +21,8 @@ public class ExpertGameBoard extends GameBoard {
     int coins;
 
     /**Constructor ExpertGameBoard creates a new empty ExpertGameBoard instance with 20 coins.*/
-    public ExpertGameBoard(){
-        super();
+    public ExpertGameBoard(int numPlayers){
+        super(numPlayers);
         this.coins = NUM_COINS;
     }
 

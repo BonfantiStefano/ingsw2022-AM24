@@ -29,8 +29,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     private Map<ColorS, Player> profs;
 
     /**Constructor GameBoard creates a new empty gameBoard instance.*/
-    public GameBoard(){
-        numPlayers = 0;
+    public GameBoard(int numPlayers){
         world = new World();
         lastAssistants = new ArrayList<>();
         players = new ArrayList<>();
@@ -44,7 +43,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         }
 
         clouds = new ArrayList<>();
-        for(int i = 0; i < 2; i++) {
+        for(int i = 0; i < numPlayers; i++) {
             clouds.add(new Cloud());
         }
     }
