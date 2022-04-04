@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.gameboard;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.pawn.Student;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
@@ -234,6 +233,14 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
             //oldOwner.ifPresent(/*move(new Tower(oldOwner.getColorTower(), island, oldOwner.getMyBoard()))*/);
             //move(new Tower(nextOwner,getColorTower()), nextOwner.getMyBoard(), island);
         }
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public Map<ColorS, Player> getProfs() {
+        return profs;
     }
 
     @Override

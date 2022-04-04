@@ -36,6 +36,9 @@ public class AdditionalInfluence implements InfluenceStrategy {
         if (Optional.of(p.getColorTower()).equals(i.getTowerColor())) {
             influence = influence + i.getNumSubIsland();
         }
+        if(p.isPlaying()) {
+            influence = influence + 2;
+        }
         return influence;
     }
 

@@ -176,9 +176,9 @@ class WorldTest {
     @DisplayName("World's moveMN test")
     void moveMN() {
         int index = world.getMNPosition();
-        world.moveMN(5);
+        Island islandMN = world.moveMN(5);
         assertEquals(index + 5 >= world.getSize() ? world.getIslandByIndex(index + 5 - world.getSize()) : world.getIslandByIndex(index + 5)
-                , world.getMNPosition());
+                , islandMN);
     }
 
     /** Method influence Strategy tests the World's influence strategy setter, getter and reset.*/
@@ -192,4 +192,65 @@ class WorldTest {
         assertTrue(world.getStrategy() instanceof StandardInfluence);
     }
 
+    /** Method checkEntry tests if an Island has noEntryTiles.*/
+    @Test
+    @DisplayName("World's checkEntry test")
+    void checkEntry() {
+        Island island = world.getIslandByIndex(world.getMNPosition());
+        island.setNumNoEntry(2);
+        assertEquals(false, world.checkEntry());
+        assertEquals(1, island.getNumNoEntry());
+        island.setNumNoEntry(-1);
+        assertEquals(true, world.checkEntry());
+        assertEquals(0, island.getNumNoEntry());
+    }
+
+    /** Method checkConquest tests if an island changes the owner.     */
+    @Test
+    @DisplayName("World's checkConquest test")
+    void checkConquest() {
+        ArrayList<Player> players = new ArrayList<>();
+        Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9, 6 );
+        Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9,6);
+        Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9,6);
+        players.add(lisa);
+        players.add(bob);
+        players.add(alice);
+        Map<Player, Integer> mapInfluence = new HashMap<>();
+        Island islandMN = world.getIslandByIndex(world.getMNPosition());
+        islandMN.add(ColorT.WHITE);
+        //Case when there is an owner that has to change.
+        mapInfluence.put(lisa, 5);
+        mapInfluence.put(bob, 4);
+        mapInfluence.put(alice, 6);
+        assertEquals(Optional.of(alice), world.checkConquest(mapInfluence, players));
+        //Limit case when there is an owner that has the lowest influence and the other players have the same influence,
+        // I choose to non to modify anything.
+        mapInfluence.put(alice, 5);
+        assertEquals(Optional.empty(), world.checkConquest(mapInfluence, players));
+        //Case when there is an owner that hasn't to change, because he has the highest influence.
+        mapInfluence.put(bob, 7);
+        assertEquals(Optional.empty(), world.checkConquest(mapInfluence, players));
+        //Case when there is an owner that hasn't to change, because he has the same influence of another player.
+        mapInfluence.put(alice, 7);
+        assertEquals(Optional.empty(), world.checkConquest(mapInfluence, players));
+        //Case when there isn't an owner and one player conquest that Island.
+        islandMN.remove(ColorT.WHITE);
+        mapInfluence.put(lisa, 5);
+        mapInfluence.put(bob, 4);
+        mapInfluence.put(alice, 6);
+        assertEquals(Optional.of(alice), world.checkConquest(mapInfluence, players));
+        //Case when there isn't an owner and no one conquest that Island.
+        mapInfluence.put(bob, 6);
+        assertEquals(Optional.empty(), world.checkConquest(mapInfluence, players));
+    }
+
+    /** Method setBannedColorS tests the change of the banned ColorS */
+    @Test
+    @DisplayName("World's setBannedColorS test")
+    void setBannedColorS() {
+        assertEquals(Optional.empty(), world.getBannedColorS());
+        world.setBannedColorS(ColorS.GREEN);
+        assertEquals(Optional.of(ColorS.GREEN), world.getBannedColorS());
+    }
 }

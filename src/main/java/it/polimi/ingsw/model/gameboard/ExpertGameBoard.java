@@ -7,8 +7,10 @@ import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.pawn.Student;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.world.Island;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ExpertGameBoard extends GameBoard {
     final private static int NUM_COINS = 20;
@@ -99,6 +101,17 @@ public class ExpertGameBoard extends GameBoard {
         int cost = activeCharacter.getCost();
         coins = coins + cost;
         getActivePlayer().setCoins(-cost);
+    }
+
+    /**
+     * Method checkIsland is utilized by the character whose effect is to calculate the influence on an Island as if Mother Nature were there.
+     * @param island Island - the Island on which the influence has to be calculated.
+     */
+    public void checkIsland(Island island) {
+        if(getWorld().checkEntry()) {
+            Optional<Player> nextOwner = getWorld().checkConquest(getWorld().getInfluenceIsland(island, getProfs(), getPlayers()), getPlayers());
+            nextOwner.ifPresent(owner -> {conquest(owner, island);});
+        }
     }
 
     /**

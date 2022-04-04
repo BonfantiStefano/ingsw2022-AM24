@@ -225,4 +225,9 @@ public class World implements HasStrategy<InfluenceStrategy> {
     public int getMNPosition() {
         return posMN;
     }
+
+    //method used only for testing
+    public Optional<ColorS> getBannedColorS() {
+        return bannedColorS;
+    }
 }
