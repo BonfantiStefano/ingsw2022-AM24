@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.gameboard;
 
 import it.polimi.ingsw.exceptions.IllegalMoveException;
+import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
@@ -8,6 +9,8 @@ import it.polimi.ingsw.model.world.Island;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,11 +38,12 @@ public class GameBoardTest {
         gb.addPlayer(bob);
         gb.addPlayer(alice);
 
-        gb.setActivePlayer(bob);
-
     }
 
-    //Test In Progress
+    //Test in progress
+    /**
+     * Method moveMN tests the GameBoard's moveMN.
+     */
     @Test
     @DisplayName("GameBoard's moveMn method test")
     void moveMN() {
@@ -47,10 +51,22 @@ public class GameBoardTest {
         int numMNSteps = 5;
         gb.getPlayers().get(0).setPlaying(true);
         gb.setActivePlayer(gb.getPlayers().get(0));
-        gb.setChoosenAssistant(gb.getPlayers().get(0), 10);
+        gb.setChosenAssistant(gb.getPlayers().get(0), 10);
         gb.moveMN(numMNSteps);
         assertEquals(indexMNStart + numMNSteps >= gb.getWorld().getSize() ? indexMNStart + numMNSteps - gb.getWorld().getSize()
                         : indexMNStart + numMNSteps, gb.getWorld().getMNPosition());
+        /*
+        Island islandMN = gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition());
+        islandMN.add(ColorS.GREEN);
+        islandMN.add(ColorS.GREEN);
+        islandMN.add(ColorS.GREEN);
+        gb.getProfs().put(ColorS.GREEN, gb.getPlayers().get(0));
+        int oldMNPos = gb.getWorld().getMNPosition();
+        gb.moveMN(0);
+        assertEquals(oldMNPos, gb.getWorld().getMNPosition());
+        assertEquals(Optional.of(gb.getPlayers().get(0).getColorTower()), islandMN.getTowerColor());
+
+         */
     }
 
     @Test
@@ -66,11 +82,11 @@ public class GameBoardTest {
     }
 
     @Test
-    public void testSetChoosenAssistant(){
+    public void testSetChosenAssistant(){
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9,6);
         bob.chooseAssistant(3);
         assertEquals(bob.getLastAssistant().getTurn(), 3);
-        gb.setChoosenAssistant(bob,9);
+        gb.setChosenAssistant(bob,9);
         assertEquals(bob.getLastAssistant().getTurn(), 9);
     }
 

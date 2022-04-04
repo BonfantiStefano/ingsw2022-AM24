@@ -50,8 +50,8 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
      * Moves a Student from the Hall to the Entrance
      * @param s the Student being moved
      */
-    public void hallToEntrance(Student s){
-        hall.put(s.getColor(), hall.get(s.getColor())-1);
+    public void hallToEntrance(ColorS s){
+        hall.put(s, hall.get(s)-1);
     }
 
     /**
@@ -59,9 +59,9 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
      * @param s the Student being added
      * @return true if the Player gains a coin
      */
-    public boolean addToHall(Student s){
-        int temp = hall.get(s.getColor()) + 1;
-        hall.put(s.getColor(), temp);
+    public boolean addToHall(ColorS s){
+        int temp = hall.get(s) + 1;
+        hall.put(s, temp);
         return temp%3==0 && temp!=0;
     }
 

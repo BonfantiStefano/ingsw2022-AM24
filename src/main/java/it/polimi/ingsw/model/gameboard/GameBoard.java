@@ -39,12 +39,12 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
 
     /**Constructor GameBoard creates a new empty gameBoard instance.*/
     public GameBoard(int numPlayers){
-        world = new World();
         lastAssistants = new ArrayList<>();
         players = new ArrayList<>();
         activePlayer = null;
         container = new StudentContainer();
-        strategy = null;
+        strategy = new StandardProf();
+        world = new World(container.initialDraw());
         this.numPlayers = numPlayers;
 
         profs=new HashMap<ColorS, Player>();
@@ -64,6 +64,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     public int getNumPlayers(){
         return players.size();
     }
+
     /**
      * Method SetNumPlayers changes the number of the players taking part in the game.
      * @param nPlayers of type int
@@ -73,12 +74,12 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     }
 
     /**
-     * Method setChoosenAssistant allows the player to change his last Assistant card
+     * Method setChosenAssistant allows the player to change his last Assistant card
      *
      * @param player of type Player - the player that will change his Assistant card.
      * @param index of type int - the index of the card that will replace the previous one
      */
-    public void setChoosenAssistant(Player player, int index){
+    public void setChosenAssistant(Player player, int index){
 
         player.chooseAssistant(index-1);
     }
@@ -194,7 +195,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     }
 
     /**
-     * Method getSizeList returs the size of lastAssisnts' list
+     * Method getSizeList returns the size of lastAssistants' list
      * @return  int - the size of the list which contains the last Assistant cards
      */
     public int getSizeList(){
@@ -202,7 +203,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     }
 
     /**
-     * Method getPlayers returs the list of the players taking part in the game.
+     * Method getPlayers returms the list of the players taking part in the game.
      * @return List<Player>
      */
     public List<Player> getPlayers(){

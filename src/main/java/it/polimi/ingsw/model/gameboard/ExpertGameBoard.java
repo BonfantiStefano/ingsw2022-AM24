@@ -61,7 +61,7 @@ public class ExpertGameBoard extends GameBoard {
      * Method hallToEntrance moves a Student from the Hall to the Entrance
      * @param s the color of the Student being moved
      */
-    public void hallToEntrance(Student s){
+    public void hallToEntrance(ColorS s){
         getActivePlayer().getMyBoard().hallToEntrance(s);
     }
 
@@ -69,7 +69,7 @@ public class ExpertGameBoard extends GameBoard {
      * Method addToHall adds a student directly to the Hall
      * @param s the color of the Student being added
      */
-    public void addToHall(Student s){
+    public void addToHall(ColorS s){
         if(getActivePlayer().getMyBoard().addToHall(s)){
             getActivePlayer().setCoins(1);
             coins--;
