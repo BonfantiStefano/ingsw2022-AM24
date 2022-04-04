@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GameBoardTest {
 
-    GameBoard gb;
+    GameBoard gb, gb2;
 
     @BeforeEach
     public void initialization(){
@@ -35,7 +35,7 @@ public class GameBoardTest {
     }
 
     @Test
-    public void testSortedPlayers(){
+    public void testSortPlayers_testNextPlayer(){
         gb.sortPlayers();
         gb.nextPlayer();
         assertEquals(gb.getActivePlayer().getNickname(), "Lisa");
@@ -71,6 +71,28 @@ public class GameBoardTest {
         gb.setLastAssistants(alice);
         assertEquals(gb.getSizeList(), 2);
 
+    }
+
+    @Test
+    public void testAddPlayer(){
+        gb = new GameBoard(3);
+        gb.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
+        gb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
+        gb.addPlayer("Alice", ColorT.BLACK, Mage.MAGE3);
+        assertEquals(gb.getPlayers().get(0).getMyBoard().getTowers().size(), 6);
+        assertEquals(gb.getPlayers().get(0).getMyBoard().getEntrance().size(), 9);
+
+        gb2 = new GameBoard(2);
+        gb2.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
+        gb2.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
+        assertEquals(gb2.getPlayers().get(1).getMyBoard().getTowers().size(),8);
+        assertEquals(gb2.getPlayers().get(1).getMyBoard().getEntrance().size(),7);
+    }
+
+    @Test
+    public void testGetPlayerByNickname(){
+        Player p = gb.getPlayerByNickname("BOB");
+        assertEquals(p.getNickname(), "Bob");
     }
 
 

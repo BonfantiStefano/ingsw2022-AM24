@@ -119,4 +119,12 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     public Map<ColorS,Integer> getHall(){
         return hall;
     }
+
+    /**
+     * Method getTowers returns the list which contains the player's towers
+     * @return towers of type ArrayList<ColorT>
+     */
+    public ArrayList<ColorT> getTowers(){
+        return towers;
+    }
 }

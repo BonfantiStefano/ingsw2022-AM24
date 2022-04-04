@@ -28,9 +28,9 @@ public class PlayerTest {
         assertEquals(bob.getMage(), Mage.MAGE1);
         assertTrue(bob.getNumCards()==10);
         assertEquals(bob.getColorTower(), ColorT.BLACK);
-        assertEquals(bob.getCoins(),0);
+        assertEquals(bob.getCoins(),6);
         bob.setCoins(5);
-        assertEquals(bob.getCoins(),5);
+        assertEquals(bob.getCoins(),11);
         bob.setPlaying(true);
         assertEquals(bob.isPlaying(), true);
 
