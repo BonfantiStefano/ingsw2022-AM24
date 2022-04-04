@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.character;
 
+/**
+ * Values for cost and description of all Characters
+ */
 public enum CharacterDescription {
     //TODO add all descriptions
     CHAR1(1, "Take one Student from this card"),

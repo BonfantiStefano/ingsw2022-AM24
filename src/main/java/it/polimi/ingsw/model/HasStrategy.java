@@ -5,7 +5,20 @@ package it.polimi.ingsw.model;
  * @param <T> every implementation contains a different Strategy Type
  */
 public interface HasStrategy<T> {
-    public void setStrategy(T strategy);
-    public void resetStrategy();
-    public T getStrategy();
+    /**
+     * Sets the active Strategy
+     * @param strategy the Strategy that will be activated
+     */
+    void setStrategy(T strategy);
+
+    /**
+     * Will set the current Strategy to the default one
+     */
+    void resetStrategy();
+
+    /**
+     * Gets the active Strategy
+     * @return the active Strategy
+     */
+    T getStrategy();
 }
