@@ -37,9 +37,9 @@ class NoTowerInfluenceTest {
         profs.put(ColorS.BLUE, bob);
         profs.put(ColorS.RED, alice);
         lisa.setPlaying(true);
-        island.add(new Student(ColorS.GREEN));
-        island.add(new Student(ColorS.BLUE));
-        island.add(new Tower(ColorT.BLACK));
+        island.add(ColorS.GREEN);
+        island.add(ColorS.BLUE);
+        island.add(ColorT.BLACK);
         assertEquals(1, noTowerInfluence.getInfluence(island, lisa, Optional.empty(), profs));
     }
 }

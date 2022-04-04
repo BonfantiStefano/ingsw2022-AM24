@@ -38,11 +38,11 @@ class NoColorInfluenceTest {
         profs.put(ColorS.BLUE, bob);
         profs.put(ColorS.RED, alice);
         lisa.setPlaying(true);
-        island.add(new Student(ColorS.GREEN));
-        island.add(new Student(ColorS.GREEN));
-        island.add(new Student(ColorS.PINK));
-        island.add(new Student(ColorS.BLUE));
-        island.add(new Tower(ColorT.BLACK));
+        island.add(ColorS.GREEN);
+        island.add(ColorS.GREEN);
+        island.add(ColorS.PINK);
+        island.add(ColorS.BLUE);
+        island.add(ColorT.BLACK);
         assertEquals(2, noColorInfluence.getInfluence(island, lisa, Optional.of(ColorS.GREEN), profs));
     }
 }
