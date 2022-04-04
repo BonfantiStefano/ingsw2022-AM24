@@ -21,7 +21,7 @@ class CharacterFactoryTest {
     @Test
     void createCharacter() {
         StudentContainer bag = new StudentContainer();
-        GameBoard g = new GameBoard();
+        GameBoard g = new GameBoard(3);
         World w = new World();
         Player p = new Player("1", ColorT.WHITE, Mage.MAGE2, 1,2);
         p.setPlaying(true);

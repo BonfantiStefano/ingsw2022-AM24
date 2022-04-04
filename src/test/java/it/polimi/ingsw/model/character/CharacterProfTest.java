@@ -14,7 +14,7 @@ class CharacterProfTest {
 
     @Test
     void play() {
-        GameBoard g = new GameBoard();
+        GameBoard g = new GameBoard(3);
         ProfStrategy p= new EqualProf();
         CharacterProf c= new CharacterProf(1, "test", p, g);
         c.play();
