@@ -31,6 +31,7 @@ public class Player implements PlayerInterface {
         this.lastAssist=null;
         this.isPlaying=false;
         this.myCards = new Hand(mage);
+        this.strategy = new MNStandard();
     }
 
     /**
@@ -50,6 +51,7 @@ public class Player implements PlayerInterface {
         this.isPlaying=false;
         this.myCards=new Hand(mage);
         this.coins=coins;
+        this.strategy = new MNStandard();
     }
 
     public ColorT getColorTower() {

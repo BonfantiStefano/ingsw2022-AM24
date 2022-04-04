@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.gameboard;
 
+import it.polimi.ingsw.exceptions.IllegalMoveException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
@@ -11,6 +12,15 @@ import it.polimi.ingsw.model.world.World;
 
 import java.util.*;
 
+/**
+ * GameBoard class contains the main logic of Eriantys game, which is divided in areas. The
+ * first area is the Player section, which contains information about the single player and
+ * his SchoolBoard, Hand and Assistant . The second area is the World section,
+ * which contains The Islands.  The third section is the Character section,
+ * which contains several classes to manage every effect of the Characters.
+ *
+ * @author Baratto Marco, Bonfanti Stefano, Chyzheuskaya Hanna.
+ */
 public class GameBoard implements HasStrategy<ProfStrategy> {
 
     final private static int NUM_TOWERS = 8;
@@ -69,6 +79,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
      * @param index of type int - the index of the card that will replace the previous one
      */
     public void setChoosenAssistant(Player player, int index){
+
         player.chooseAssistant(index-1);
     }
 
@@ -162,8 +173,6 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         }
     }
 
-    public void checkIsland(Island i){}
-
     /**
      * Method getActivePlayer returns the active player in this round
      * @return activePlayer of type Player
@@ -173,11 +182,15 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     }
 
     /**
-     * Method setCard adds a card chosen by the challenger to the deck.
-     * @param activePlayer of type Player - the next active player.
+     * Method setActivePlayer changes the active player.
+     * @param nextActivePlayer of type Player - the next active player.
      */
-    public void setActivePlayer(Player activePlayer) {
-        this.activePlayer = activePlayer;
+    public void setActivePlayer(Player nextActivePlayer) {
+        if(activePlayer != null) {
+            this.activePlayer.setPlaying(false);
+        }
+        this.activePlayer = nextActivePlayer;
+        nextActivePlayer.setPlaying(true);
     }
 
     /**
@@ -207,9 +220,9 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
      * it calculates the influence on that island and in necessary change the owner of the island.
      * @param numMNSteps int - number of steps that Mother Nature want to do.
      */
-    public void moveMN(int numMNSteps) {
+    public void moveMN(int numMNSteps) /*throws IllegalMoveException*/{
         if(numMNSteps > activePlayer.getMNSteps()) {
-            //throw exception;
+            //throw new IllegalMoveException();
         }
         Island island =world.moveMN(numMNSteps);
         if(world.checkEntry()) {

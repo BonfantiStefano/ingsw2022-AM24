@@ -1,9 +1,12 @@
 package it.polimi.ingsw.model.gameboard;
 
+import it.polimi.ingsw.exceptions.IllegalMoveException;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.world.Island;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,6 +35,22 @@ public class GameBoardTest {
         gb.addPlayer(bob);
         gb.addPlayer(alice);
 
+        gb.setActivePlayer(bob);
+
+    }
+
+    //Test In Progress
+    @Test
+    @DisplayName("GameBoard's moveMn method test")
+    void moveMN() {
+        int indexMNStart = gb.getWorld().getMNPosition();
+        int numMNSteps = 5;
+        gb.getPlayers().get(0).setPlaying(true);
+        gb.setActivePlayer(gb.getPlayers().get(0));
+        gb.setChoosenAssistant(gb.getPlayers().get(0), 10);
+        gb.moveMN(numMNSteps);
+        assertEquals(indexMNStart + numMNSteps >= gb.getWorld().getSize() ? indexMNStart + numMNSteps - gb.getWorld().getSize()
+                        : indexMNStart + numMNSteps, gb.getWorld().getMNPosition());
     }
 
     @Test

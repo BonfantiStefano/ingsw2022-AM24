@@ -22,7 +22,7 @@ public class World implements HasStrategy<InfluenceStrategy> {
     private Optional<ColorS> bannedColorS;
 
     /**Constructor World creates a new World instance with already the students allocated.*/
-    public World(ArrayList<ColorS> initialStudent, Island mnLocation) {
+    public World(ArrayList<ColorS> initialStudent) {
         this.islands = new ArrayList<>();
         this.influenceStrategy = new StandardInfluence();
         this.bannedColorS = Optional.empty();

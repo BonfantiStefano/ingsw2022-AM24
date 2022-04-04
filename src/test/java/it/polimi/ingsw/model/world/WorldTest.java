@@ -54,7 +54,7 @@ class WorldTest {
         students.add(student9);
         ColorS student10 = ColorS.BLUE;
         students.add(student10);
-        world = new World(students, mnLocation);
+        world = new World(students);
     }
 
     /** Method getInfluenceIsland tests the calculation of the Influence for every single Player on a single Island.*/
