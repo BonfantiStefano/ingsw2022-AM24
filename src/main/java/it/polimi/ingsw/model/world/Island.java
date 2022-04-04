@@ -1,22 +1,19 @@
 package it.polimi.ingsw.model.world;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.pawn.Student;
-import it.polimi.ingsw.model.pawn.Tower;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Optional;
 
 /**
  * Island class contains the attributes and the method to manage the Island of the Game, are considered Island both
- * single Island and group of Island joined togheter.
+ * single Island and group of Island joined together.
  *
  * @author Bonfanti Stefano
  */
 public class Island implements CanAcceptStudent, AcceptTower {
-    private ArrayList<Student> students;
-    private ArrayList<Tower> towers;
+    private ArrayList<ColorS> students;
+    private ArrayList<ColorT> towers;
     private int numSubIsland;
     private int numNoEntry;
 
@@ -29,37 +26,37 @@ public class Island implements CanAcceptStudent, AcceptTower {
     }
 
     /**
-     * Method add(Student) inserts a student in the List of the Students.
-     * @param s Student
+     * Method add inserts a student in the List of the Students.
+     * @param student ColorS - The student that has to be added to the list.
      */
     @Override
-    public void add(Student s) {
-        students.add(s);
+    public void add(ColorS student) {
+        students.add(student);
     }
 
     /**
      * Method add inserts a tower in the List of the Towers.
-     * @param t Tower
+     * @param tower ColorT - The tower that has to be added to the list.
      */
     @Override
-    public void add(Tower t){
-        if(towers.size() > 0 && t.getColor() != towers.get(0).getColor()) {
+    public void add(ColorT tower){
+        if(towers.size() > 0 && !(tower.equals(towers.get(0)))) {
             //throw WrongColorException;
         }
-        towers.add(t);
+        towers.add(tower);
     }
 
     /**
      * Method remove deletes a tower from the List of the Towers.
-     * @param t Tower
+     * @param tower ColorT - The tower that has to be removed to the list.
      */
     @Override
-    public void remove(Tower t) /*throws WrongColorException, EmptyListException*/{
+    public void remove(ColorT tower) /*throws WrongColorException, EmptyListException*/{
         if(towers.size() > 0) {
-            if(t.getColor() != towers.get(0).getColor()) {
+            if(!(tower.equals(towers.get(0)))) {
                 //throw WrongColorException;
             }
-            towers.remove(t);
+            towers.remove(tower);
         }
         //throw EmptyListException;
     }
@@ -70,7 +67,7 @@ public class Island implements CanAcceptStudent, AcceptTower {
      */
     public Optional<ColorT> getTowerColor(){
         if(towers.size() > 0) {
-            return Optional.of(towers.get(0).getColor());
+            return Optional.of(towers.get(0));
         }
         return null;
         // oppure basta return Optional.ofNullable(towers.get(0).getColor());
@@ -120,8 +117,8 @@ public class Island implements CanAcceptStudent, AcceptTower {
      */
     public int getNumStudentByColor(ColorS c) {
         int numStudent = 0;
-        for(Student s : students) {
-            if(s.getColor().equals(c)) {
+        for(ColorS student : students) {
+            if(student.equals(c)) {
                 numStudent++;
             }
         }

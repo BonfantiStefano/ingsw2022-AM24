@@ -27,18 +27,18 @@ class IslandTest {
         island = new Island();
     }
 
-    /** Method addStudent checks the addition of a single Student on the Island.*/
+    /** Method addStudent checks the addition of a single student on the Island.*/
     @Test
     @DisplayName("Add Student test")
     void addStudent() {
-        Student s1 = new Student(ColorS.GREEN);
+        ColorS s1 = ColorS.GREEN;
         island.add(s1);
         assertTrue(island.getNumStudentByColor(ColorS.GREEN) == 1 &&
                 island.getNumStudentByColor(ColorS.RED) == 0 &&
                 island.getNumStudentByColor(ColorS.PINK) == 0 &&
                 island.getNumStudentByColor(ColorS.BLUE) == 0 &&
                 island.getNumStudentByColor(ColorS.YELLOW) == 0);
-        Student s2 = new Student(ColorS.YELLOW);
+        ColorS s2 = ColorS.YELLOW;
         island.add(s2);
         assertTrue(island.getNumStudentByColor(ColorS.GREEN) == 1 &&
                 island.getNumStudentByColor(ColorS.RED) == 0 &&
@@ -51,7 +51,7 @@ class IslandTest {
     @Test
     @DisplayName("Add Tower test")
     void addTower() {
-        Tower t1 = new Tower(ColorT.WHITE);
+        ColorT t1 = ColorT.WHITE;
         island.add(t1);
         assertEquals(1, island.getNumSubIsland());
         assertEquals(Optional.of(ColorT.WHITE), island.getTowerColor());
@@ -61,8 +61,8 @@ class IslandTest {
     @Test
     @DisplayName("Remove Tower test")
     void removeTower() {
-        Tower t1 = new Tower(ColorT.WHITE);
-        Tower t2 = new Tower(ColorT.WHITE);
+        ColorT t1 = ColorT.WHITE;
+        ColorT t2 = ColorT.WHITE;
         island.add(t1);
         island.add(t2);
         island.remove(t1);
@@ -79,15 +79,15 @@ class IslandTest {
     @DisplayName("Tower's color getter test")
     void getTowerColor() {
         assertEquals(null, island.getTowerColor());
-        Tower t1 = new Tower(ColorT.BLACK);
+        ColorT t1 = ColorT.BLACK;
         island.add(t1);
         assertEquals(Optional.of(ColorT.BLACK), island.getTowerColor());
         island.remove(t1);
-        Tower t2 = new Tower(ColorT.GREY);
+        ColorT t2 = ColorT.GREY;
         island.add(t2);
         assertEquals(Optional.of(ColorT.GREY), island.getTowerColor());
         island.remove(t2);
-        Tower t3 = new Tower(ColorT.WHITE);
+        ColorT t3 = ColorT.WHITE;
         island.add(t3);
         assertEquals(Optional.of(ColorT.WHITE), island.getTowerColor());
     }
@@ -121,19 +121,19 @@ class IslandTest {
     @Test
     @DisplayName("Stundent's number by color getter test")
     void getNumStudentByColor() {
-        Student s1 = new Student(ColorS.GREEN);
+        ColorS s1 = ColorS.GREEN;
         island.add(s1);
-        Student s2 = new Student(ColorS.GREEN);
+        ColorS s2 = ColorS.GREEN;
         island.add(s2);
-        Student s3 = new Student(ColorS.RED);
+        ColorS s3 = ColorS.RED;
         island.add(s3);
-        Student s4 = new Student(ColorS.PINK);
+        ColorS s4 = ColorS.PINK;
         island.add(s4);
-        Student s5 = new Student(ColorS.BLUE);
+        ColorS s5 = ColorS.BLUE;
         island.add(s5);
-        Student s6 = new Student(ColorS.YELLOW);
+        ColorS s6 = ColorS.YELLOW;
         island.add(s6);
-        Student s7 = new Student(ColorS.YELLOW);
+        ColorS s7 = ColorS.YELLOW;
         island.add(s7);
         assertEquals(2, island.getNumStudentByColor(ColorS.GREEN));
         assertEquals(1, island.getNumStudentByColor(ColorS.RED));

@@ -54,6 +54,18 @@ public class Player implements PlayerInterface {
         this.coins=coins;
     }
 
+    public ColorT getColorTower() {
+        return color;
+    }
+
+    /**
+     * According to the active MNStrategy checks the steps value in lastAssist
+     * @return the number of steps MN can make
+     */
+    public int getMNSteps(){
+        return  strategy.mnSteps(lastAssist);
+    }
+
     /**
      * Method chooseAssistant replace lastAssistant with the selected card and removes it from the
      * player's cards

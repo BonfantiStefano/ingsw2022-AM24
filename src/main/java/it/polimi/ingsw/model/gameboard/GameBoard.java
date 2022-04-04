@@ -192,6 +192,40 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         to.add(s);
     }
 
+    /**
+     * method moveMN checks if the move is legal, then if there isn't noEntryTiles on the arrival Island
+     * it calculates the influence on that island and in necessary change the owner of the island.
+     * @param numMNSteps int - number of steps that Mother Nature want to do.
+     */
+    public void moveMN(int numMNSteps) {
+        if(numMNSteps > activePlayer.getMNSteps()) {
+            //throw exception;
+        }
+        Island island =world.moveMN(numMNSteps);
+        if(world.checkEntry()) {
+            Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players);
+            nextOwner.ifPresent(owner -> {conquest(owner, island);});
+        }
+    }
+
+    /**
+     * Method conquest removes the towers of the old owner, if presents, and adds the towers of the new owner.
+     * @param nextOwner Player - The next owner of the Island.
+     * @param island Island - The island to conquest.
+     */
+    void conquest(Player nextOwner, Island island) {
+        Optional<Player> oldOwner = Optional.empty();
+        for(Player p : players) {
+            if(Optional.of(p.getColorTower()).equals(island.getTowerColor())) {
+                oldOwner = Optional.of(p);
+            }
+        }
+        for(int counter = 0; counter < island.getNumSubIsland(); counter++) {
+            //oldOwner.ifPresent(/*move(new Tower(oldOwner.getColorTower(), island, oldOwner.getMyBoard()))*/);
+            //move(new Tower(nextOwner,getColorTower()), nextOwner.getMyBoard(), island);
+        }
+    }
+
     @Override
     public void setStrategy(ProfStrategy strategy){
         this.strategy=strategy;

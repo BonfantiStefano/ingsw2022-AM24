@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,27 +32,27 @@ class WorldTest {
     /** Method setup creates a world that will be used by every test.*/
     @BeforeEach
     void setup() {
-        ArrayList<Student> students = new ArrayList<>();
+        ArrayList<ColorS> students = new ArrayList<>();
         Island mnLocation = new Island();
-        Student student1 = new Student(ColorS.GREEN);
+        ColorS student1 = ColorS.GREEN;
         students.add(student1);
-        Student student2 = new Student(ColorS.RED);
+        ColorS student2 = ColorS.RED;
         students.add(student2);
-        Student student3 = new Student(ColorS.GREEN);
+        ColorS student3 = ColorS.GREEN;
         students.add(student3);
-        Student student4 = new Student(ColorS.YELLOW);
+        ColorS student4 = ColorS.YELLOW;
         students.add(student4);
-        Student student5 = new Student(ColorS.YELLOW);
+        ColorS student5 = ColorS.YELLOW;
         students.add(student5);
-        Student student6 = new Student(ColorS.PINK);
+        ColorS student6 = ColorS.PINK;
         students.add(student6);
-        Student student7 = new Student(ColorS.BLUE);
+        ColorS student7 = ColorS.BLUE;
         students.add(student7);
-        Student student8 = new Student(ColorS.PINK);
+        ColorS student8 = ColorS.PINK;
         students.add(student8);
-        Student student9 = new Student(ColorS.RED);
+        ColorS student9 = ColorS.RED;
         students.add(student9);
-        Student student10 = new Student(ColorS.BLUE);
+        ColorS student10 = ColorS.BLUE;
         students.add(student10);
         world = new World(students, mnLocation);
     }
@@ -70,21 +71,21 @@ class WorldTest {
         players.add(lisa);
         players.add(bob);
         players.add(alice);
-        HashMap<ColorS, Player> profs = new HashMap<>();
+        Map<ColorS, Player> profs = new HashMap<>();
         profs.put(ColorS.GREEN, lisa);
         profs.put(ColorS.BLUE, bob);
         profs.put(ColorS.YELLOW, alice);
         for(counter = 0; counter < 3; counter++) {
-            island.add(new Student(ColorS.GREEN));
+            island.add(ColorS.GREEN);
         }
         for(counter = 0; counter < 4; counter++) {
-            island.add(new Student(ColorS.YELLOW));
+            island.add(ColorS.YELLOW);
         }
-        island.add(new Student(ColorS.BLUE));
-        island.add(new Student(ColorS.BLUE));
-        island.add(new Student(ColorS.RED));
-        island.add(new Tower(ColorT.BLACK));
-        HashMap<Player, Integer> mapInfluence = world.getInfluenceIsland(island, profs, players, Optional.empty());
+        island.add(ColorS.BLUE);
+        island.add(ColorS.BLUE);
+        island.add(ColorS.RED);
+        island.add(ColorT.BLACK);
+        Map<Player, Integer> mapInfluence = world.getInfluenceIsland(island, profs, players);
         assertEquals(4, mapInfluence.get(lisa));
         assertEquals(4, mapInfluence.get(alice));
         assertEquals(2, mapInfluence.get(bob));
@@ -97,20 +98,20 @@ class WorldTest {
         Island i1 = world.getIslandByIndex(1);
         Island i2 = world.getIslandByIndex(2);
         for(int counter = 0; counter < 3; counter++) {
-            Student s1 = new Student(ColorS.GREEN);
+            ColorS s1 = ColorS.GREEN;
             i1.add(s1);
-            Student s2 = new Student(ColorS.RED);
+            ColorS s2 = ColorS.RED;
             i1.add(s2);
-            Student s3 = new Student(ColorS.GREEN);
+            ColorS s3 = ColorS.GREEN;
             i2.add(s3);
         }
-        Student s4 = new Student(ColorS.YELLOW);
+        ColorS s4 = ColorS.YELLOW;
         i1.add(s4);
-        Student s5 = new Student(ColorS.RED);
+        ColorS s5 = ColorS.RED;
         i2.add(s5);
-        Tower t1 = new Tower(ColorT.WHITE);
+        ColorT t1 = ColorT.WHITE;
         i1.add(t1);
-        Tower t2 = new Tower(ColorT.WHITE);
+        ColorT t2 = ColorT.WHITE;
         i2.add(t2);
         i2.setNumNoEntry(1);
         i1.setNumNoEntry(1);
@@ -132,32 +133,32 @@ class WorldTest {
         //merge the first and the last Island.
         Island island1 = world.getIslandByIndex(0);
         Island island2 = world.getIslandByIndex(11);
-        island1.add(new Tower(ColorT.WHITE));
-        island2.add(new Tower(ColorT.WHITE));
+        island1.add(ColorT.WHITE);
+        island2.add(ColorT.WHITE);
         world.checkJoin(island1);
         assertEquals(11, world.getSize());
         //nothing needs to be merged.
         Island island3 = world.getIslandByIndex(5);
-        island3.add(new Tower(ColorT.WHITE));
+        island3.add(ColorT.WHITE);
         world.checkJoin(island3);
         assertEquals(11, world.getSize());
         //merge of consecutive island.
         Island island4 = world.getIslandByIndex(6);
-        island4.add(new Tower(ColorT.WHITE));
+        island4.add(ColorT.WHITE);
         world.checkJoin(island4);
         assertEquals(10, world.getSize());
         //consecutive island with different Tower color, nothing to do.
         Island island5 = world.getIslandByIndex(4);
-        island5.add(new Tower(ColorT.BLACK));
+        island5.add(ColorT.BLACK);
         world.checkJoin(island5);
         assertEquals(10, world.getSize());
         //three consecutive island need to bo merged.
         Island island6 = world.getIslandByIndex(7);
-        island6.add(new Tower(ColorT.GREY));
+        island6.add(ColorT.GREY);
         Island island7 = world.getIslandByIndex(8);
-        island7.add(new Tower(ColorT.GREY));
+        island7.add(ColorT.GREY);
         Island island8 = world.getIslandByIndex(9);
-        island8.add(new Tower(ColorT.GREY));
+        island8.add(ColorT.GREY);
         world.checkJoin(island7);
         assertEquals(8, world.getSize());
     }
@@ -168,6 +169,16 @@ class WorldTest {
     void getSize() {
         assertEquals(12, world.getSize());
         //other tests are inside checkJoin().
+    }
+
+    /** Method moveMN tests the move of Mother Nature.*/
+    @Test
+    @DisplayName("World's moveMN test")
+    void moveMN() {
+        int index = world.getMNPosition();
+        world.moveMN(5);
+        assertEquals(index + 5 >= world.getSize() ? world.getIslandByIndex(index + 5 - world.getSize()) : world.getIslandByIndex(index + 5)
+                , world.getMNPosition());
     }
 
     /** Method influence Strategy tests the World's influence strategy setter, getter and reset.*/

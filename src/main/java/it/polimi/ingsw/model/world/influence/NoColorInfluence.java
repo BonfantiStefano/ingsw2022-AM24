@@ -4,7 +4,7 @@ import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.world.Island;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -21,11 +21,11 @@ public class NoColorInfluence implements InfluenceStrategy {
      * @param i Island - the Island on which the influence has to be calculated.
      * @param p Player - the player for whom the influence is calculated.
      * @param color Optional<ColorS> - the banned color that has to be ignored.
-     * @param profs HashMap<ColorS, Player> - the Map contains the prof (memorized as a ColorS) and the owner.
+     * @param profs Map<ColorS, Player> - the Map contains the prof (memorized as a ColorS) and the owner.
      * @return the value of the influence.
      */
     @Override
-    public int getInfluence(Island i, Player p, Optional<ColorS> color, HashMap<ColorS, Player> profs) {
+    public int getInfluence(Island i, Player p, Optional<ColorS> color, Map<ColorS, Player> profs) {
         int influence = 0;
         for(ColorS c : ColorS.values()) {
             if (Optional.ofNullable(profs.get(c)).equals(Optional.of(p)) && !(Optional.of(c).equals(color))) {
