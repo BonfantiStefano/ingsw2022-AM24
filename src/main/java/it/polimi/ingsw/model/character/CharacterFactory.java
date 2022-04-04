@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.character;
 
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.StudentContainer;
-import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PlayerInterface;
 import it.polimi.ingsw.model.profstrategy.EqualProf;
 import it.polimi.ingsw.model.profstrategy.ProfStrategy;

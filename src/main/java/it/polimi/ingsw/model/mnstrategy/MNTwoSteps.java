@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.mnstrategy;
 
-import it.polimi.ingsw.model.mnstrategy.MNStrategy;
 import it.polimi.ingsw.model.player.Assistant;
 
 public class MNTwoSteps implements MNStrategy {

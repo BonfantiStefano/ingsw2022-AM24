@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.profstrategy;
 
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.profstrategy.ProfStrategy;
 
 import java.util.*;
 
