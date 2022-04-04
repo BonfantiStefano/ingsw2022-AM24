@@ -11,7 +11,9 @@ public class Character {
     public Character(int cost, String description){
         this.cost=cost;
         this.description=description;
+        this.alreadyPlayed = false;
     }
+
 
     public int getCost(){
         return cost;
@@ -26,8 +28,8 @@ public class Character {
      */
     public void play(){
         if(!alreadyPlayed) {
-            cost++;
-            alreadyPlayed=true;
+            this.cost++;
+            this.alreadyPlayed=true;
         }
     }
 

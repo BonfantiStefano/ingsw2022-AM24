@@ -14,8 +14,11 @@ import java.util.*;
 
 public class GameBoard implements HasStrategy<ProfStrategy> {
 
-    private final static String ERROR_MESS = " has to choose another card!";
-    private MotherNature mn;
+    final private static int NUM_TOWERS = 8;
+    final private static int NUM_STUDENTS = 7;
+    final private static int NT = 6;
+    final private static int NS = 9;
+    private int numPlayers;
     private List<Player> players;
     private List<Cloud> clouds;
     private List<Assistant> lastAssistants;
@@ -25,12 +28,15 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     private ProfStrategy strategy;
     private Map<ColorS, Player> profs;
 
+    /**Constructor GameBoard creates a new empty gameBoard instance.*/
     public GameBoard(){
+        numPlayers = 0;
+        world = new World();
         lastAssistants = new ArrayList<>();
         players = new ArrayList<>();
         activePlayer = null;
         bag = new StudentContainer();
-
+        strategy = null;
 
         profs=new HashMap<ColorS, Player>();
         for(ColorS c:ColorS.values()){
@@ -41,6 +47,19 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         for(int i = 0; i < 2; i++) {
             clouds.add(new Cloud());
         }
+    }
+    /**
+     * Method getNumPlayers returns the number of the players taking part in the game.
+     */
+    public int getNumPlayers(){
+        return players.size();
+    }
+    /**
+     * Method SetNumPlayers changes the number of the players taking part in the game.
+     * @param nPlayers of type int
+     */
+    public void setNumPlayers(int nPlayers){
+      this.numPlayers = nPlayers;
     }
 
     /**
@@ -116,12 +135,27 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         players.add(player);
     }
 
+    /**
+     * Method addPlayer creates and adds a new player.
+     * The new player is created considering the fact that the number of pounds such as students and towers
+     * in his schoolBoard depends on the number of the players taking part in the game.
+     * @param nickname of type String
+     * @param color of type ColorT
+     * @param mage of type Mage
+     */
+    public void addPlayer(String nickname, ColorT color, Mage mage){
+        if(numPlayers==2){
+            players.add(new Player(nickname, color, mage, NUM_STUDENTS, NUM_TOWERS));
+        }
+        else{
+            players.add(new Player(nickname, color, mage, NS, NT));
+        }
+    }
 
     public void checkIsland(Island i){}
 
     /**
      * Method getActivePlayer returns the active player in this round
-     *
      * @return activePlayer of type Player
      */
     public Player getActivePlayer() {
@@ -130,7 +164,6 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
 
     /**
      * Method setCard adds a card chosen by the challenger to the deck.
-     *
      * @param activePlayer of type Player - the next active player.
      */
     public void setActivePlayer(Player activePlayer) {
@@ -139,21 +172,24 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
 
     /**
      * Method getSizeList returs the size of lastAssisnts' list
-     *
      * @return  int - the size of the list which contains the last Assistant cards
      */
     public int getSizeList(){
         return lastAssistants.size();
     }
 
-    //implementare varie move
-    public void move(Student s, CanRemoveStudent from, CanAcceptStudent to){
-        from.remove(s);
-        to.add(s);
+    /**
+     * Method getPlayers returs the list of the players taking part in the game.
+     * @return List<Player>
+     */
+    public List<Player> getPlayers(){
+        return players;
     }
 
-    public ArrayList<Assistant> getLastAssistants() {
-        return null;
+    //implementare varie move
+    public void move(ColorS s, CanRemoveStudent from, CanAcceptStudent to){
+        from.remove(s);
+        to.add(s);
     }
 
     @Override

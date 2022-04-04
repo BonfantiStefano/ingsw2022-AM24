@@ -1,54 +1,138 @@
 package it.polimi.ingsw.model.gameboard;
 
+import it.polimi.ingsw.model.ColorS;
+import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.pawn.Student;
+import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 
 import java.util.ArrayList;
 
 public class ExpertGameBoard extends GameBoard {
+    final private static int NUM_COINS = 20;
+    final private static int NUM_TOWERS = 8;
+    final private static int NUM_STUDENTS = 7;
+    final private static int NT = 6;
+    final private static int NS = 9;
     private Character activeCharacter;
     private ArrayList<Character> characters;
-    private int coins;
+    int coins;
 
-    public void playActiveCharacter(){
-        activeCharacter.play();
+    /**Constructor ExpertGameBoard creates a new empty ExpertGameBoard instance with 20 coins.*/
+    public ExpertGameBoard(){
+        super();
+        this.coins = NUM_COINS;
     }
 
-    public ArrayList<Character> getCharacters() {
-        return characters;
+    /**
+     * Method addPlayer creates and adds a new player.
+     * The new player is created considering the fact that the number of pounds such as students and towers
+     * in his schoolBoard depends on the number of the players taking part in the game.
+     * @param nickname of type String
+     * @param color of type ColorT
+     * @param mage of type Mage
+     */
+    public void addPlayer(String nickname, ColorT color, Mage mage){
+        if(getNumPlayers()==2){
+            getPlayers().add(new Player(nickname, color, mage, NUM_STUDENTS, NUM_TOWERS, 0));
+        }
+        else{
+            getPlayers().add(new Player(nickname, color, mage, NS, NT, 0));
+        }
     }
 
-    public Character getActiveCharacter() {
-        return activeCharacter;
+    /**
+     * Method entranceToHall moves a Student form Entrance to Hall in the active player's School Board
+     * @param s the color of the Student being moved
+     */
+    public void entranceToHall(ColorS s){
+        boolean result = getActivePlayer().getMyBoard().entranceToHall(s);
+        if (result){
+            getActivePlayer().setCoins(1);
+            coins--;
+        }
     }
 
-    public void setActiveCharacter(Character activeCharacter) {
-        this.activeCharacter = activeCharacter;
-    }
-
-    public int getAvailableCoins() {
-        return coins;
-    }
-
-    public void setAvailableCoins(int coins) {
-        this.coins = coins;
-    }
-
+    /**
+     * Method hallToEntrance moves a Student from the Hall to the Entrance
+     * @param s the color of the Student being moved
+     */
     public void hallToEntrance(Student s){
         getActivePlayer().getMyBoard().hallToEntrance(s);
     }
 
+    /**
+     * Method addToHall adds a student directly to the Hall
+     * @param s the color of the Student being added
+     */
     public void addToHall(Student s){
-        if(getActivePlayer().getMyBoard().addToHall(s))
+        if(getActivePlayer().getMyBoard().addToHall(s)){
             getActivePlayer().setCoins(1);
+            coins--;
+        }
     }
 
-    public void removeHall(Student s, Player p){
-        p.getMyBoard().removeHall(s);
+    /**
+     * Method add adds a Student to the Entrance of the player's SchoolBoard
+     * @param s the color of the Student being added
+     */
+    public void add(ColorS s){
+        getActivePlayer().getMyBoard().add(s);
     }
 
+    /**
+     * Method removeHall removes a Student directly from the player's Hall in his SchoolBoard
+     * @param s the Student being removed
+     */
+    public void removeHall(ColorS s){
+        getActivePlayer().getMyBoard().removeHall(s);
+    }
+
+    /**
+     * Method playActiveCharacter updates the amount of coins that belongs to active player
+     * and the ones that are in the expert GameBoard
+     */
+    public void playActiveCharacter(){
+        activeCharacter.play();
+        int cost = activeCharacter.getCost();
+        coins = coins + cost;
+        getActivePlayer().setCoins(-cost);
+    }
+
+    /**
+     * Method getCharacters returns the Character cards.
+     * @return characters of type ArrayList<Character>
+     */
+    public ArrayList<Character> getCharacters() {
+        return characters;
+    }
+
+    /**
+     * Method getActiveCharacter returns the Character card chosen in this round
+     * by the active Player
+     * @return activeCharacter of type Character
+     */
+    public Character getActiveCharacter() {
+        return activeCharacter;
+    }
+
+    /**
+     * Method setActiveCharacter replace the last Character card with a new one.
+     * @param activeCharacter of type Character
+     */
+    public void setActiveCharacter(Character activeCharacter) {
+        this.activeCharacter = activeCharacter;
+    }
+
+    /**
+     * Method getAvailableCoins returns the available amount of coins in the game.
+     * @return coins of type int
+     */
+    public int getAvailableCoins() {
+        return coins;
+    }
 
 
 }

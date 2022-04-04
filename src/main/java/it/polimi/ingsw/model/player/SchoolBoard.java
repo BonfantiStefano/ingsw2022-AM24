@@ -9,20 +9,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTower {
-    private ArrayList<Student> entrance;
-    private ArrayList<Tower> towers;
+    private ArrayList<ColorS> entrance;
+    private ArrayList<ColorT> towers;
     private Map<ColorS,Integer> hall;
     private StudentContainer container = new StudentContainer();
 
     public SchoolBoard(ColorT color, int numStudents, int numTowers){
-        entrance=new ArrayList<Student>();
+        entrance=new ArrayList<ColorS>();
         for(int i = 0; i < numStudents; i++){
-            Student s = container.draw();
+            ColorS s = container.draw();
             entrance.add(s);
         }
         towers= new ArrayList<>();
         for(int i = 0; i < numTowers; i ++){
-            towers.add(new Tower(color));
+            towers.add(color);
         }
         hall=new HashMap<ColorS, Integer>();
         for(ColorS c:ColorS.values()){
@@ -32,12 +32,12 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
 
     /**
      * Moves a Student form Entrance to Hall
-     * @param s the Student being moved
+     * @param s the color of the Student being moved
      * @return true if the Player gains a coin
      */
-    public boolean entranceToHall(Student s){
-        int temp = hall.get(s.getColor()) + 1;
-        hall.put(s.getColor(),temp);
+    public boolean entranceToHall(ColorS s){
+        int temp = hall.get(s) + 1;
+        hall.put(s,temp);
         entrance.remove(s);
         return (temp%3 == 0) && temp!=0;
     }
@@ -46,9 +46,9 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
      * Removes a Student directly from the Hall
      * @param s the Student being removed
      */
-    public void removeHall(Student s){
-        int temp = hall.get(s.getColor())-1;
-        hall.put(s.getColor(),temp);
+    public void removeHall(ColorS s){
+        int temp = hall.get(s)-1;
+        hall.put(s,temp);
     }
 
     /**
@@ -72,37 +72,39 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
 
     /**
      * Adds a Student to the Entrance
-     * @param s the Student being added
+     * @param s the color of the Student being added
      */
-    public void add(Student s){
+    public void add(ColorS s){
         entrance.add(s);
     }
 
     /**
      * Removes a Student from the Entrance
-     * @param s the Student being removed
+     * @param s the color of the Student being removed
      */
-    public void remove(Student s){
+    public void remove(ColorS s){
         entrance.remove(s);
     }
 
     /**
      * Adds a Tower to the Player's Board
-     * @param t the Tower being added
+     * @param t the color of the Tower being added
      */
-    public void add(Tower t){towers.add(t);}
+    public void add(ColorT t){
+        towers.add(t);
+    }
 
     /**
      * Removes a Tower from the Player's Board
-     * @param t the Tower being Removed
+     * @param t the color of the Tower being removed
      */
-    public void remove(Tower t){towers.remove(t);}
+    public void remove(ColorT t){towers.remove(t);}
 
     /**
      * Get the Entrance to access the Students it contains
      * @return the Board's Entrance
      */
-    public ArrayList<Student> getEntrance() {
+    public ArrayList<ColorS> getEntrance() {
         return entrance;
     }
 
@@ -114,6 +116,11 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     public int getHall(ColorS c){
         return hall.get(c);
     }
+
+    /**
+     * Method getHall gives the access to the player's hall
+     * @return the Board's Hall
+     */
     public Map<ColorS,Integer> getHall(){
         return hall;
     }

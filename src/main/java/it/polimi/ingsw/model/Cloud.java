@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * @author Bonfanti Stefano
  */
 public class Cloud implements CanAcceptStudent, CanRemoveStudent{
-    private ArrayList<Student> students;
+    private ArrayList<ColorS> students;
 
     /**Constructor Cloud creates a new empty cloud instance.*/
     public Cloud() {
@@ -22,8 +22,7 @@ public class Cloud implements CanAcceptStudent, CanRemoveStudent{
      * @param s Student
      */
     @Override
-    public void add(Student s){
-
+    public void add(ColorS s){
         students.add(s);
     }
 
@@ -32,8 +31,7 @@ public class Cloud implements CanAcceptStudent, CanRemoveStudent{
      * @param s Student
      */
     @Override
-    public void remove(Student s){
-
+    public void remove(ColorS s){
         students.remove(s);
     }
 
@@ -41,7 +39,7 @@ public class Cloud implements CanAcceptStudent, CanRemoveStudent{
      * Method getStudents returns the list of the students presents on the Cloud.
      * @return the list of the Student.
      */
-    public ArrayList<Student> getStudents() {
+    public ArrayList<ColorS> getStudents() {
         return students;
     }
 }
