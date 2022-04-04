@@ -36,6 +36,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         activePlayer = null;
         container = new StudentContainer();
         strategy = null;
+        this.numPlayers = numPlayers;
 
         profs=new HashMap<ColorS, Player>();
         for(ColorS c:ColorS.values()){
