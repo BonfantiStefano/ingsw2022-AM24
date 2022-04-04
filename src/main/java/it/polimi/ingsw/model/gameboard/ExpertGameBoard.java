@@ -35,11 +35,11 @@ public class ExpertGameBoard extends GameBoard {
      * @param mage of type Mage
      */
     public void addPlayer(String nickname, ColorT color, Mage mage){
-        if(getNumPlayers()==2){
-            getPlayers().add(new Player(nickname, color, mage, NUM_STUDENTS, NUM_TOWERS, 0));
+        if(getNumPlayers()==3){
+            getPlayers().add(new Player(nickname, color, mage, NT, 0));
         }
         else{
-            getPlayers().add(new Player(nickname, color, mage, NS, NT, 0));
+            getPlayers().add(new Player(nickname, color, mage, NUM_TOWERS, 0));
         }
     }
 

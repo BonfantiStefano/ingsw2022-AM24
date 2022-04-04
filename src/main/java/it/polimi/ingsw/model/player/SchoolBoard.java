@@ -12,14 +12,9 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     private ArrayList<ColorS> entrance;
     private ArrayList<ColorT> towers;
     private Map<ColorS,Integer> hall;
-    private StudentContainer container = new StudentContainer();
 
-    public SchoolBoard(ColorT color, int numStudents, int numTowers){
-        entrance=new ArrayList<ColorS>();
-        for(int i = 0; i < numStudents; i++){
-            ColorS s = container.draw();
-            entrance.add(s);
-        }
+    public SchoolBoard(ColorT color, int numTowers){
+        entrance = new ArrayList<>();
         towers= new ArrayList<>();
         for(int i = 0; i < numTowers; i ++){
             towers.add(color);

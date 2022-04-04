@@ -21,14 +21,13 @@ public class Player implements PlayerInterface {
      *
      * @param nickname of type String - the nickname of the player
      * @param color of type ColorT - the color of pawns Tower in player's SchoolBoard
-     * @param numStudents of type ColorS - the color of pawns Tower in player's SchoolBoard
      * @param numTowers of type ColorT - the color of pawns Student in player's SchoolBoard
      */
-    public Player(String nickname, ColorT color, Mage mage, int numStudents, int numTowers){
+    public Player(String nickname, ColorT color, Mage mage, int numTowers){
         this.nickname=nickname;
         this.color=color;
         this.mage = mage;
-        this.myboard=new SchoolBoard(color,numStudents,numTowers);
+        this.myboard=new SchoolBoard(color, numTowers);
         this.lastAssist=null;
         this.isPlaying=false;
         this.myCards = new Hand(mage);
@@ -39,15 +38,14 @@ public class Player implements PlayerInterface {
      *
      * @param nickname of type String - the nickname of the player
      * @param color of type ColorT - the color of pawns Tower in player's SchoolBoard
-     * @param numStudents of type ColorS - the color of pawns Tower in player's SchoolBoard
      * @param numTowers of type ColorT - the color of pawns Student in player's SchoolBoard
      * @param coins of type int - the coins gained by the player
      */
-    public Player(String nickname, ColorT color, Mage mage, int numStudents, int numTowers, int coins){
+    public Player(String nickname, ColorT color, Mage mage, int numTowers, int coins){
         this.nickname=nickname;
         this.color=color;
         this.mage = mage;
-        this.myboard=new SchoolBoard(color, numStudents, numTowers);
+        this.myboard=new SchoolBoard(color, numTowers);
         this.lastAssist=null;
         this.isPlaying=false;
         this.myCards=new Hand(mage);

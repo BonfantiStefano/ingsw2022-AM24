@@ -24,7 +24,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     private List<Assistant> lastAssistants;
     private World world;
     private Player activePlayer;
-    private StudentContainer bag;
+    private StudentContainer container;
     private ProfStrategy strategy;
     private Map<ColorS, Player> profs;
 
@@ -34,7 +34,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         lastAssistants = new ArrayList<>();
         players = new ArrayList<>();
         activePlayer = null;
-        bag = new StudentContainer();
+        container = new StudentContainer();
         strategy = null;
 
         profs=new HashMap<ColorS, Player>();
@@ -47,6 +47,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
             clouds.add(new Cloud());
         }
     }
+
     /**
      * Method getNumPlayers returns the number of the players taking part in the game.
      */
@@ -143,11 +144,21 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
      * @param mage of type Mage
      */
     public void addPlayer(String nickname, ColorT color, Mage mage){
-        if(numPlayers==2){
-            players.add(new Player(nickname, color, mage, NUM_STUDENTS, NUM_TOWERS));
+        if(numPlayers==3){
+            Player p = new Player(nickname, color, mage, NT);
+            for (int i = 0; i < NS; i++) {
+                ColorS s = container.draw();
+                p.getMyBoard().getEntrance().add(s);
+            }
+            players.add(p);
         }
         else{
-            players.add(new Player(nickname, color, mage, NS, NT));
+            Player p = new Player(nickname, color, mage, NUM_TOWERS);
+            for (int i = 0; i < NUM_STUDENTS; i++) {
+                ColorS s = container.draw();
+                p.getMyBoard().getEntrance().add(s);
+            }
+            players.add(p);
         }
     }
 
