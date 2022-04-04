@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.character;
 
 import it.polimi.ingsw.model.CanAcceptStudent;
 import it.polimi.ingsw.model.CanRemoveStudent;
+import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.pawn.Student;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
  *  NOT FINAL
  */
 public class CharacterWithStudent extends Character implements CanAcceptStudent, CanRemoveStudent {
-    private ArrayList<Student> students;
+    private ArrayList<ColorS> students;
     private int maxStudents;
 
     public CharacterWithStudent(int cost, String description, int maxStudents) {
@@ -22,10 +23,10 @@ public class CharacterWithStudent extends Character implements CanAcceptStudent,
         this.maxStudents=maxStudents;
     }
 
-    public void add(Student s){
+    public void add(ColorS s){
         students.add(s);
     }
-    public void remove(Student s){
+    public void remove(ColorS s){
         students.remove(s);
     }
 }
