@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.gameboard;
 
-import it.polimi.ingsw.exceptions.IllegalMoveException;
+//import it.polimi.ingsw.exceptions.IllegalMoveException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
@@ -39,11 +39,11 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
 
     /**Constructor GameBoard creates a new empty gameBoard instance.*/
     public GameBoard(int numPlayers){
-        world = new World();
+        container = new StudentContainer();
+        world = new World(container.initialDraw());
         lastAssistants = new ArrayList<>();
         players = new ArrayList<>();
         activePlayer = null;
-        container = new StudentContainer();
         strategy = null;
         this.numPlayers = numPlayers;
 
@@ -199,6 +199,17 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
      */
     public int getSizeList(){
         return lastAssistants.size();
+    }
+
+    /**
+     * Method moveTower moves the towers from player's School Board to an island and the other way
+     * @param t of type ColorT - the tower that will be moved
+     * @param from of type AcceptTower - the place from whitch the tower is moved
+     * @param to of type AcceptTower - where the tower is mowed
+     */
+    public void moveTower(ColorT t, AcceptTower from, AcceptTower to){
+        from.remove(t);
+        to.add(t);
     }
 
     /**

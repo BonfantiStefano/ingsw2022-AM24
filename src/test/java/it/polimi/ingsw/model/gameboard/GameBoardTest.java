@@ -1,13 +1,18 @@
 package it.polimi.ingsw.model.gameboard;
 
-import it.polimi.ingsw.exceptions.IllegalMoveException;
+//import it.polimi.ingsw.exceptions.IllegalMoveException;
+import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
+import it.polimi.ingsw.model.StudentContainer;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.world.Island;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -112,6 +117,34 @@ public class GameBoardTest {
     public void testGetPlayerByNickname(){
         Player p = gb.getPlayerByNickname("BOB");
         assertEquals(p.getNickname(), "Bob");
+    }
+
+
+    @Test
+    public void TestActivePlayer(){
+        gb = new GameBoard(2);
+        gb.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
+        gb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
+        gb.setActivePlayer(gb.getPlayerByNickname("Bob"));
+        assertEquals(gb.getActivePlayer().getNickname(), "Bob");
+
+    }
+
+    @Test
+    public void moveTower(){
+        gb = new GameBoard(2);
+
+        Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 8);
+        Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 8);
+        gb.addPlayer(lisa);
+        gb.addPlayer(bob);
+        gb.moveTower(lisa.getColorTower(), lisa.getMyBoard(), gb.getWorld().getIslandByIndex(5));
+        assertTrue(gb.getWorld().getIslandByIndex(5).getTowerColor().equals(Optional.of(lisa.getColorTower())));
+        int towers = bob.getMyBoard().getTowers().size();
+        gb.moveTower(bob.getColorTower(), gb.getWorld().getIslandByIndex(6), bob.getMyBoard());
+        assertEquals(bob.getMyBoard().getTowers().size(), towers + 1);
+
+
     }
 
 
