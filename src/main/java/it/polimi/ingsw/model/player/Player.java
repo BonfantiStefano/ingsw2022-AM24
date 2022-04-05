@@ -16,6 +16,7 @@ public class Player implements PlayerInterface {
     private int coins;
     private Mage mage;
 
+
     /**
      * Constructor Player creates a new Player instance.
      *
@@ -30,27 +31,8 @@ public class Player implements PlayerInterface {
         this.myboard=new SchoolBoard(color, numTowers);
         this.lastAssist=null;
         this.isPlaying=false;
-        this.myCards = new Hand(mage);
-        this.strategy = new MNStandard();
-    }
-
-    /**
-     * Constructor Player creates a new Player instance which represents the expert version of Player.
-     *
-     * @param nickname of type String - the nickname of the player
-     * @param color of type ColorT - the color of pawns Tower in player's SchoolBoard
-     * @param numTowers of type ColorT - the color of pawns Student in player's SchoolBoard
-     * @param coins of type int - the coins gained by the player
-     */
-    public Player(String nickname, ColorT color, Mage mage, int numTowers, int coins){
-        this.nickname=nickname;
-        this.color=color;
-        this.mage = mage;
-        this.myboard=new SchoolBoard(color, numTowers);
-        this.lastAssist=null;
-        this.isPlaying=false;
         this.myCards=new Hand(mage);
-        this.coins=coins;
+        this.coins=0;
         this.strategy = new MNStandard();
     }
 
