@@ -185,6 +185,14 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     }
 
     /**
+     * Method Studentcontainer returns the container with pawns student
+     * @return container of type StudentContainer
+     */
+    public StudentContainer getContainer(){
+        return container;
+    }
+
+    /**
      * Method getActivePlayer returns the active player in this round
      * @return activePlayer of type Player
      */

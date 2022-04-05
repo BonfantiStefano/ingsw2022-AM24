@@ -38,10 +38,20 @@ public class ExpertGameBoard extends GameBoard {
      */
     public void addPlayer(String nickname, ColorT color, Mage mage){
         if(getNumPlayers()==3){
-            getPlayers().add(new Player(nickname, color, mage, NT, 1));
+            Player p = new Player(nickname, color, mage, NT,1);
+            for (int i = 0; i < NS; i++) {
+                ColorS s = getContainer().draw();
+                p.getMyBoard().getEntrance().add(s);
+            }
+            getPlayers().add(p);
         }
         else{
-            getPlayers().add(new Player(nickname, color, mage, NUM_TOWERS, 1));
+            Player p = new Player(nickname, color, mage, NUM_TOWERS,1);
+            for (int i = 0; i < NUM_STUDENTS; i++) {
+                ColorS s = getContainer().draw();
+                p.getMyBoard().getEntrance().add(s);
+            }
+            getPlayers().add(p);
         }
     }
 
