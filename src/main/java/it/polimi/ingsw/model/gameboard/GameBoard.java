@@ -239,7 +239,6 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         return players;
     }
 
-    //implementare varie move
     public void move(ColorS s, CanRemoveStudent from, CanAcceptStudent to){
         from.remove(s);
         to.add(s);
@@ -286,7 +285,6 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     public Map<ColorS, Player> getProfs() {
         return profs;
     }
-
     @Override
     public void setStrategy(ProfStrategy strategy){
         this.strategy=strategy;

@@ -2,15 +2,19 @@ package it.polimi.ingsw.model.gameboard;
 
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
+import it.polimi.ingsw.model.HasStrategy;
 import it.polimi.ingsw.model.character.Character;
+import it.polimi.ingsw.model.character.CharacterFactory;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.pawn.Student;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.PlayerInterface;
 import it.polimi.ingsw.model.world.Island;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ExpertGameBoard extends GameBoard {
     final private static int NUM_COINS = 20;
@@ -20,12 +24,18 @@ public class ExpertGameBoard extends GameBoard {
     final private static int NS = 9;
     private Character activeCharacter;
     private ArrayList<Character> characters;
+    private CharacterFactory factory;
     int coins;
 
     /**Constructor ExpertGameBoard creates a new empty ExpertGameBoard instance with 20 coins.*/
     public ExpertGameBoard(int numPlayers){
         super(numPlayers);
         this.coins = NUM_COINS;
+        factory=createFactory();
+        characters=new ArrayList<>();
+        for(int i=0;i<3;i++){
+            characters.add(factory.createCharacter());
+        }
     }
 
     /**
@@ -87,14 +97,6 @@ public class ExpertGameBoard extends GameBoard {
     }
 
     /**
-     * Method add adds a Student to the Entrance of the player's SchoolBoard
-     * @param s the color of the Student being added
-     */
-    public void add(ColorS s){
-        getActivePlayer().getMyBoard().add(s);
-    }
-
-    /**
      * Method removeHall removes a Student directly from the player's Hall in his SchoolBoard
      * @param s the Student being removed
      */
@@ -106,13 +108,21 @@ public class ExpertGameBoard extends GameBoard {
      * Method playActiveCharacter updates the amount of coins that belongs to active player
      * and the ones that are in the expert GameBoard
      */
-    public void playActiveCharacter(){
-        activeCharacter.play();
-        int cost = activeCharacter.getCost();
-        coins = coins + cost;
-        getActivePlayer().setCoins(-cost);
+    public void playCharacter(Character c){
+        if(getActivePlayer().getCoins()>=c.getCost()) {
+            getActivePlayer().setCoins(-c.getCost());
+            setActiveCharacter(findChar(c));
+        }
     }
 
+    /**
+     * Method findChar returns the Character in the list of Characters in game matching the parameter's description
+     * @param c the Character to search
+     * @return Character found in the characters list
+     */
+    private Character findChar(Character c){
+        return characters.stream().filter(character -> character.getDescription().equals(c.getDescription())).findFirst().get();
+    }
     /**
      * Method checkIsland is utilized by the character whose effect is to calculate the influence on an Island as if Mother Nature were there.
      * @param island Island - the Island on which the influence has to be calculated.
@@ -147,6 +157,7 @@ public class ExpertGameBoard extends GameBoard {
      */
     public void setActiveCharacter(Character activeCharacter) {
         this.activeCharacter = activeCharacter;
+        activeCharacter.play();
     }
 
     /**
@@ -155,6 +166,12 @@ public class ExpertGameBoard extends GameBoard {
      */
     public int getAvailableCoins() {
         return coins;
+    }
+
+    private CharacterFactory createFactory(){
+        ArrayList<PlayerInterface> players= getPlayers().stream().map(p -> (PlayerInterface) p).collect(Collectors.toCollection(ArrayList::new));
+        factory = new CharacterFactory(getWorld(), this, getContainer(), players);
+        return factory;
     }
 
 

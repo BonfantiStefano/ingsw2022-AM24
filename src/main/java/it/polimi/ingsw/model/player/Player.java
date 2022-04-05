@@ -176,5 +176,18 @@ public class Player implements PlayerInterface {
         coins = coins + amount;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Player)) return false;
 
+        Player player = (Player) o;
+
+        return getNickname().equals(player.getNickname());
+    }
+
+    @Override
+    public int hashCode() {
+        return getNickname().hashCode();
+    }
 }
