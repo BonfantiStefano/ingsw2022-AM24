@@ -13,7 +13,7 @@ public class PlayerTest {
 
     @Test
     public void testChooseAssistant_testNumCards(){
-        Player bob = new Player("Bob", ColorT.BLACK, Mage.MAGE1, 9, 6 );
+        Player bob = new Player("Bob", ColorT.BLACK, Mage.MAGE1, 9);
         int numCards = bob.getNumCards();
         bob.chooseAssistant(7);
         assertEquals(bob.getLastAssistant().getTurn(), 7);
@@ -23,14 +23,11 @@ public class PlayerTest {
 
     @Test
     public void testPlayerInfo(){
-        Player bob = new Player("Bob", ColorT.BLACK, Mage.MAGE1, 9, 6 );
+        Player bob = new Player("Bob", ColorT.BLACK, Mage.MAGE1, 9 );
         assertEquals(bob.getNickname(), "Bob");
         assertEquals(bob.getMage(), Mage.MAGE1);
         assertTrue(bob.getNumCards()==10);
         assertEquals(bob.getColorTower(), ColorT.BLACK);
-        assertEquals(bob.getCoins(),6);
-        bob.setCoins(5);
-        assertEquals(bob.getCoins(),11);
         bob.setPlaying(true);
         assertEquals(bob.isPlaying(), true);
 
