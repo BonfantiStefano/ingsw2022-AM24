@@ -11,12 +11,18 @@ public class CharacterInfluence extends Character {
     private InfluenceStrategy strategy;
     private HasStrategy<InfluenceStrategy> observer;
 
+    /**
+     * Creates a new CharacterInfluence that contains a determined Strategy and the World observer
+     */
     public CharacterInfluence(int cost, String description,  InfluenceStrategy strategy, HasStrategy<InfluenceStrategy> observer) {
         super(cost, description);
         this.strategy=strategy;
         this.observer=observer;
     }
 
+    /**
+     * Calls the superclass method and sets the observer's strategy
+     */
     @Override
     public void play() {
         super.play();

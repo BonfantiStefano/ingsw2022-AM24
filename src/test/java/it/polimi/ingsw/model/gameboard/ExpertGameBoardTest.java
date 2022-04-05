@@ -29,10 +29,17 @@ class ExpertGameBoardTest {
 
     @Test
     void hallToEntrance() {
+        gb.entranceToHall(ColorS.BLUE);
+        gb.hallToEntrance(ColorS.BLUE);
+        assertEquals(gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE), 0);
     }
 
     @Test
     void addToHall() {
+        int before=gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE);
+        gb.addToHall(ColorS.BLUE);
+        int after=gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE);
+        assertEquals(before +1, after);
     }
 
 

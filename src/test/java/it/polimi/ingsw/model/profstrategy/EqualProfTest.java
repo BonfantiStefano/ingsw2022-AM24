@@ -86,6 +86,7 @@ class EqualProfTest {
             testSubject.getMyBoard().getHall().put(c,10);
         }
 
+
         testSubject.setPlaying(false);
         ProfStrategy strategy=new EqualProf();
         HashMap<ColorS, Player> result=strategy.checkProfs(players, profs);

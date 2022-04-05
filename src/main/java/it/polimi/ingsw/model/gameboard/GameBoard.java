@@ -166,22 +166,14 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
      * @param mage of type Mage
      */
     public void addPlayer(String nickname, ColorT color, Mage mage){
-        if(numPlayers==3){
-            Player p = new Player(nickname, color, mage, NT);
-            for (int i = 0; i < NS; i++) {
-                ColorS s = container.draw();
-                p.getMyBoard().getEntrance().add(s);
-            }
-            players.add(p);
+        int numS = getNumPlayers()==3? NS : NUM_STUDENTS;
+        int numT = getNumPlayers()==3? NT : NUM_TOWERS;
+        Player p = new Player(nickname, color, mage, numT);
+        for (int i = 0; i < numS; i++) {
+            ColorS s = container.draw();
+            p.getMyBoard().getEntrance().add(s);
         }
-        else{
-            Player p = new Player(nickname, color, mage, NUM_TOWERS);
-            for (int i = 0; i < NUM_STUDENTS; i++) {
-                ColorS s = container.draw();
-                p.getMyBoard().getEntrance().add(s);
-            }
-            players.add(p);
-        }
+        players.add(p);
     }
 
     /**
