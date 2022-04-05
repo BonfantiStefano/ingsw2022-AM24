@@ -38,10 +38,10 @@ public class ExpertGameBoard extends GameBoard {
      */
     public void addPlayer(String nickname, ColorT color, Mage mage){
         if(getNumPlayers()==3){
-            getPlayers().add(new Player(nickname, color, mage, NT, 0));
+            getPlayers().add(new Player(nickname, color, mage, NT, 1));
         }
         else{
-            getPlayers().add(new Player(nickname, color, mage, NUM_TOWERS, 0));
+            getPlayers().add(new Player(nickname, color, mage, NUM_TOWERS, 1));
         }
     }
 
