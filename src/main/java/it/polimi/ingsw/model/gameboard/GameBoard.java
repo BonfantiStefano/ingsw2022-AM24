@@ -166,8 +166,8 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
      * @param mage of type Mage
      */
     public void addPlayer(String nickname, ColorT color, Mage mage){
-        int numS = getNumPlayers()==3? NS : NUM_STUDENTS;
-        int numT = getNumPlayers()==3? NT : NUM_TOWERS;
+        int numS = numPlayers==3? NS : NUM_STUDENTS;
+        int numT = numPlayers==3? NT : NUM_TOWERS;
         Player p = new Player(nickname, color, mage, numT);
         for (int i = 0; i < numS; i++) {
             ColorS s = container.draw();

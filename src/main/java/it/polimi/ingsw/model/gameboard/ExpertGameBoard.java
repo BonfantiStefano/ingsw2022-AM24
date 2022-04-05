@@ -49,6 +49,7 @@ public class ExpertGameBoard extends GameBoard {
     public void addPlayer(String nickname, ColorT color, Mage mage){
         super.addPlayer(nickname, color, mage);
         getPlayerByNickname(nickname).setCoins(1);
+        coins--;
     }
 
     /**
@@ -87,7 +88,12 @@ public class ExpertGameBoard extends GameBoard {
      * @param s the Student being removed
      */
     public void removeHall(ColorS s){
-        getActivePlayer().getMyBoard().removeHall(s);
+        int num;
+        for(Player p : getPlayers()){
+            num = p.getMyBoard().getHall().get(s);
+            num = num >=3 ? num-3 : 0;
+            p.getMyBoard().getHall().put(s, num);
+        }
     }
 
     /**
@@ -98,7 +104,9 @@ public class ExpertGameBoard extends GameBoard {
         if(getActivePlayer().getCoins()>=c.getCost()) {
             getActivePlayer().setCoins(-c.getCost());
             setActiveCharacter(findChar(c));
+            coins+=findChar(c).getCost();
         }
+
     }
 
     /**

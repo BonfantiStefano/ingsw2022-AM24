@@ -127,8 +127,8 @@ public class GameBoardTest {
         gb.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
         gb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
         gb.addPlayer("Alice", ColorT.BLACK, Mage.MAGE3);
-        assertEquals(gb.getPlayers().get(0).getMyBoard().getTowers().size(), 6);
-        assertEquals(gb.getPlayers().get(0).getMyBoard().getEntrance().size(), 9);
+        assertEquals(6, gb.getPlayers().get(0).getMyBoard().getTowers().size());
+        assertEquals(9, gb.getPlayers().get(0).getMyBoard().getEntrance().size());
 
         gb2 = new GameBoard(2);
         gb2.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
