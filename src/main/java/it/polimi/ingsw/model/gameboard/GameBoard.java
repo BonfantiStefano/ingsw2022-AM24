@@ -122,7 +122,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     }
 
     /**
-     * Method nthPlayer is used for sorting palyers by their card value that determines the turn order
+     * Method sortPlayers is used for sorting players by their card value that determines the turn order
      * of the next round.
      */
     public void sortPlayers(){

@@ -11,6 +11,7 @@ public class Hand{
 
     private List<Assistant> cards;
 
+    /**Constructor Hand creates a new empty hand of cards instance.*/
     public Hand(Mage mage){
         this.mage = mage;
         cards = new ArrayList<Assistant>();
@@ -19,6 +20,11 @@ public class Hand{
         }
     }
 
+    /**
+     * Method getCard obtains the card that is at the specified location in the hand
+     * @param  index of type int - index poisition of the card
+     * @return  Assistant card
+     */
     public Assistant getCard(int index) throws InvalidIndexException{
         if (index >= 1 && index <= 10){
             return cards.get(index-1);
@@ -26,14 +32,26 @@ public class Hand{
         else throw new InvalidIndexException();
     }
 
+    /**
+     * Method removeCard removes the specified card from the current hand.
+     * @param a of type Assistant - the card to be removed
+     */
     public void removeCard(Assistant a){
         cards.remove(a);
     }
 
+    /**
+     * Method numCards returns the number of cards held in the hand.
+     * @return int - the size of the hand of cards
+     */
     public int numCards(){
         return cards.size();
     }
 
+    /**
+     * Method getMage returns the type of Mage in the hand.
+     * @return mage - the back image of this hand of card.
+     */
     public Mage getMage(){
         return mage;
     }
