@@ -50,14 +50,15 @@ public class GameBoardTest {
     @DisplayName("GameBoard's moveMn method test")
     void moveMN() {
         int indexMNStart = gb.getWorld().getMNPosition();
-        int numMNSteps = 5;
+        int numMNSteps = 6;
         gb.getPlayers().get(0).setPlaying(true);
         gb.setActivePlayer(gb.getPlayers().get(0));
         gb.setChosenAssistant(gb.getPlayers().get(0), 10);
+        //spostamento di Mother Nature senza dover cambiare niente
         gb.moveMN(numMNSteps);
         assertEquals(indexMNStart + numMNSteps >= gb.getWorld().getSize() ? indexMNStart + numMNSteps - gb.getWorld().getSize()
                         : indexMNStart + numMNSteps, gb.getWorld().getMNPosition());
-        /*
+        //spostamento di madre natura in cui cambia l'owner dell'isola(e quindi le torri su di essa)
         Island islandMN = gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition());
         islandMN.add(ColorS.GREEN);
         islandMN.add(ColorS.GREEN);
@@ -67,8 +68,22 @@ public class GameBoardTest {
         gb.moveMN(0);
         assertEquals(oldMNPos, gb.getWorld().getMNPosition());
         assertEquals(Optional.of(gb.getPlayers().get(0).getColorTower()), islandMN.getTowerColor());
-
-         */
+        assertEquals(1, islandMN.getNumSubIsland());
+        //spostamento in isola in cui vi è una tessera divieto
+        islandMN.setNumNoEntry(1);
+        gb.moveMN(0);
+        assertEquals(oldMNPos, gb.getWorld().getMNPosition());
+        assertEquals(0, gb.getWorld().getIslandByIndex(oldMNPos).getNumNoEntry());
+        //spostamento in cui si uniscono le isole
+        int nextMNPos = oldMNPos+1 < gb.getWorld().getSize() ? oldMNPos+1 : 0;
+        Island nextMNIsland = gb.getWorld().getIslandByIndex(nextMNPos);
+        nextMNIsland.add(ColorS.GREEN);
+        nextMNIsland.add(ColorS.GREEN);
+        nextMNIsland.add(ColorS.GREEN);
+        gb.moveMN(1);
+        assertEquals(oldMNPos < nextMNPos ?oldMNPos : nextMNPos, gb.getWorld().getMNPosition());
+        assertEquals(Optional.of(gb.getPlayers().get(0).getColorTower()), islandMN.getTowerColor());
+        assertEquals(2, gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition()).getNumSubIsland());
     }
 
     @Test

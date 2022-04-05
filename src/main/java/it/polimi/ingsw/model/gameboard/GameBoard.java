@@ -205,7 +205,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     /**
      * Method moveTower moves the towers from player's School Board to an island and the other way
      * @param t of type ColorT - the tower that will be moved
-     * @param from of type AcceptTower - the place from whitch the tower is moved
+     * @param from of type AcceptTower - the place from which the tower is moved
      * @param to of type AcceptTower - where the tower is mowed
      */
     public void moveTower(ColorT t, AcceptTower from, AcceptTower to){
@@ -229,17 +229,18 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
 
     /**
      * method moveMN checks if the move is legal, then if there isn't noEntryTiles on the arrival Island
-     * it calculates the influence on that island and in necessary change the owner of the island.
+     * it calculates the influence on that island and in necessary change the owner of the island and join the Island.
      * @param numMNSteps int - number of steps that Mother Nature want to do.
      */
     public void moveMN(int numMNSteps) /*throws IllegalMoveException*/{
         if(numMNSteps > activePlayer.getMNSteps()) {
             //throw new IllegalMoveException();
         }
-        Island island =world.moveMN(numMNSteps);
+        Island island = world.moveMN(numMNSteps);
         if(world.checkEntry()) {
             Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players);
             nextOwner.ifPresent(owner -> {conquest(owner, island);});
+            world.checkJoin(world.getIslandByIndex(world.getMNPosition()));
         }
     }
 
@@ -256,8 +257,8 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
             }
         }
         for(int counter = 0; counter < island.getNumSubIsland(); counter++) {
-            //oldOwner.ifPresent(/*move(new Tower(oldOwner.getColorTower(), island, oldOwner.getMyBoard()))*/);
-            //move(new Tower(nextOwner,getColorTower()), nextOwner.getMyBoard(), island);
+            oldOwner.ifPresent(owner -> {moveTower(owner.getColorTower(), island, owner.getMyBoard()); });
+            moveTower((nextOwner.getColorTower()), nextOwner.getMyBoard(), island);
         }
     }
 

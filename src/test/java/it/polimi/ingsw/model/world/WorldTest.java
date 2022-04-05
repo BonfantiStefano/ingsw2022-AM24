@@ -124,6 +124,7 @@ class WorldTest {
         assertEquals(2, i3.getNumNoEntry());
         assertEquals(Optional.of(ColorT.WHITE), i3.getTowerColor());
         assertEquals(11, world.getSize());
+        assertEquals(1, world.getMNPosition());
     }
 
     /** Method checkJoin tests if two Island have to be merged, in this case the Islands are merged and iterate.*/

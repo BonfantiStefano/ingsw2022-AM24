@@ -141,6 +141,7 @@ public class World implements HasStrategy<InfluenceStrategy> {
         islands.remove(i1);
         islands.remove(i2);
         islands.add(indexIsland, newIsland);
+        posMN = indexIsland;
         return newIsland;
     }
 
@@ -151,23 +152,27 @@ public class World implements HasStrategy<InfluenceStrategy> {
     public void checkJoin(Island i) {
         int indexIsland = islands.indexOf(i);
         if(islands.size() > indexIsland+1) {
-            if(Optional.ofNullable(islands.get(indexIsland+1).getTowerColor()).equals(Optional.ofNullable(i.getTowerColor()))) {
+            if(!Optional.ofNullable(islands.get(indexIsland+1).getTowerColor()).equals(Optional.empty()) &&
+                    !Optional.ofNullable(i.getTowerColor()).equals(Optional.empty()) && islands.get(indexIsland+1).getTowerColor().equals(i.getTowerColor())) {
                 Island newIsland = join(i, islands.get(indexIsland+1));
                 checkJoin(newIsland);
             }
         } else {
-            if(Optional.ofNullable(islands.get(0).getTowerColor()).equals(Optional.ofNullable(i.getTowerColor()))) {
+            if(!Optional.ofNullable(islands.get(0).getTowerColor()).equals(Optional.empty()) &&
+                    !Optional.ofNullable(i.getTowerColor()).equals(Optional.empty()) && islands.get(0).getTowerColor().equals(i.getTowerColor())) {
                 Island newIsland = join(islands.get(0), i);
                 checkJoin(newIsland);
             }
         }
         if(indexIsland == 0) {
-            if(Optional.ofNullable(islands.get(islands.size()-1).getTowerColor()).equals(Optional.ofNullable(i.getTowerColor()))) {
+            if(!Optional.ofNullable(islands.get(islands.size()-1).getTowerColor()).equals(Optional.empty()) &&
+                    !Optional.ofNullable(i.getTowerColor()).equals(Optional.empty()) && islands.get(islands.size()-1).getTowerColor().equals(i.getTowerColor())) {
                 Island newIsland = join(i, islands.get(islands.size()-1));
                 checkJoin(newIsland);
             }
         } else {
-            if(Optional.ofNullable(islands.get(indexIsland-1).getTowerColor()).equals(Optional.ofNullable(i.getTowerColor()))) {
+            if(!Optional.ofNullable(islands.get(indexIsland-1).getTowerColor()).equals(Optional.empty()) &&
+                    !Optional.ofNullable(i.getTowerColor()).equals(Optional.empty()) && islands.get(indexIsland-1).getTowerColor().equals(i.getTowerColor())) {
                 Island newIsland = join(islands.get(indexIsland-1), i);
                 checkJoin(newIsland);
             }
