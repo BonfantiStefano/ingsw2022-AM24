@@ -122,20 +122,30 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     }
 
     /**
-     * Method sortPlayers is used for sorting players by their card value that determines the turn order
-     * of the next round.
+     * Method getFirstPlayer is used for sorting players by their card value that determines the turn order
+     * and returns the first player of the next round
+     * @return first of type int - the first player of the next round
      */
-    public void sortPlayers(){
-        Collections.sort(players, (p1, p2) -> {
+    public int getFirstPlayer(){
+        int first = -1;
+        ArrayList<Player> sortedPlayers = new ArrayList<>();
+        for(Player p : players) sortedPlayers.add(p);
+
+        Collections.sort(sortedPlayers, (p1, p2) -> {
             return p1.getLastAssistant().compareTo(p2.getLastAssistant());
         });
+        first = players.indexOf(sortedPlayers.get(0));
+        return first;
     }
 
     /** Method nextPlayer skips to the next player. */
     public void nextPlayer(){
-        Player p = getActivePlayer();
-        Player nextPlayer = (p == null)? players.get(0)
-                :  players.get(players.indexOf(p) + 1);
+        Player nextPlayer = null;
+        Player activePlayer = getActivePlayer();
+        if (activePlayer == null) nextPlayer = players.get(getFirstPlayer());
+        else if (players.indexOf(activePlayer) == players.size()-1) nextPlayer = players.get(0);
+        else nextPlayer = players.get(players.indexOf(activePlayer) + 1);
+
         setActivePlayer(nextPlayer);
     }
 
@@ -156,22 +166,22 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
      * @param mage of type Mage
      */
     public void addPlayer(String nickname, ColorT color, Mage mage){
-        if(numPlayers==3){
-            Player p = new Player(nickname, color, mage, NT);
-            for (int i = 0; i < NS; i++) {
-                ColorS s = container.draw();
-                p.getMyBoard().getEntrance().add(s);
-            }
-            players.add(p);
+        int numS = getNumPlayers()==3? NS : NUM_STUDENTS;
+        int numT = getNumPlayers()==3? NT : NUM_TOWERS;
+        Player p = new Player(nickname, color, mage, numT);
+        for (int i = 0; i < numS; i++) {
+            ColorS s = container.draw();
+            p.getMyBoard().getEntrance().add(s);
         }
-        else{
-            Player p = new Player(nickname, color, mage, NUM_TOWERS);
-            for (int i = 0; i < NUM_STUDENTS; i++) {
-                ColorS s = container.draw();
-                p.getMyBoard().getEntrance().add(s);
-            }
-            players.add(p);
-        }
+        players.add(p);
+    }
+
+    /**
+     * Method Studentcontainer returns the container with pawns student
+     * @return container of type StudentContainer
+     */
+    public StudentContainer getContainer(){
+        return container;
     }
 
     /**
@@ -221,7 +231,6 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         return players;
     }
 
-    //implementare varie move
     public void move(ColorS s, CanRemoveStudent from, CanAcceptStudent to){
         from.remove(s);
         to.add(s);
@@ -269,7 +278,6 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     public Map<ColorS, Player> getProfs() {
         return profs;
     }
-
     @Override
     public void setStrategy(ProfStrategy strategy){
         this.strategy=strategy;

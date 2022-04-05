@@ -65,9 +65,9 @@ class WorldTest {
         world.setStrategy(new StandardInfluence());
         Island island = new Island();
         ArrayList<Player> players = new ArrayList<>();
-        Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9, 6 );
-        Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9,6);
-        Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9,6);
+        Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9);
+        Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
+        Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9);
         players.add(lisa);
         players.add(bob);
         players.add(alice);
@@ -211,9 +211,9 @@ class WorldTest {
     @DisplayName("World's checkConquest test")
     void checkConquest() {
         ArrayList<Player> players = new ArrayList<>();
-        Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9, 6 );
-        Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9,6);
-        Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9,6);
+        Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9);
+        Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
+        Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9);
         players.add(lisa);
         players.add(bob);
         players.add(alice);

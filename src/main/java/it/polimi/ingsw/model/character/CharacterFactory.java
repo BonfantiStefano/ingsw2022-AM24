@@ -24,6 +24,9 @@ public class CharacterFactory {
     private List<Integer> random;
     private ArrayList<PlayerInterface> players;
 
+    /**
+     * Constructor creates a new CharacterFactory with a list of numbers in random order to generate random Characters
+     */
     public CharacterFactory(HasStrategy<InfluenceStrategy> world, HasStrategy<ProfStrategy> gameBoard, StudentContainer bag, ArrayList<PlayerInterface> players) {
         this.world = world;
         this.gameBoard = gameBoard;
@@ -39,7 +42,7 @@ public class CharacterFactory {
      * Invokes gerRandom to obtain a random Integer and generates the corresponding Character
      * @return Character a random Character chosen from the ones not yet created
      */
-    Character createCharacter(){
+    public Character createCharacter(){
         int i=getRandom();
         int cost=CharacterDescription.values()[i-1].getCost();
         String desc = CharacterDescription.values()[i-1].getDesc();

@@ -20,7 +20,7 @@ class CharacterMNTest {
 
     @Test
     void play() {
-        Player p=new Player("1", ColorT.WHITE, Mage.MAGE2, 1,1);
+        Player p=new Player("1", ColorT.WHITE, Mage.MAGE2, 1);
         ArrayList<PlayerInterface> players = new ArrayList<>();
         p.setPlaying(true);
         players.add(p);
