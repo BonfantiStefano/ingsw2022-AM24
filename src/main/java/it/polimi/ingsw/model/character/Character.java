@@ -8,17 +8,27 @@ public class Character {
     private String description;
     private boolean alreadyPlayed;
 
+    /**
+     * Creates a Character with given cost and Description
+     */
     public Character(int cost, String description){
         this.cost=cost;
         this.description=description;
         this.alreadyPlayed = false;
     }
 
-
+    /**
+     * Getter for the cost attribute
+     * @return cost the Character's cost
+     */
     public int getCost(){
         return cost;
     }
 
+    /**
+     * Getter for the description attribute
+     * @return description the Character's description
+     */
     public String getDescription(){
         return description;
     }
