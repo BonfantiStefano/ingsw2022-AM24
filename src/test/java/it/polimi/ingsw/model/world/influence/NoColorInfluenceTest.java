@@ -29,9 +29,9 @@ class NoColorInfluenceTest {
     void getInfluence() {
         InfluenceStrategy noColorInfluence  = new NoColorInfluence();
         Island island = new Island();
-        Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9, 6 );
-        Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9,6);
-        Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9,6);
+        Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9);
+        Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
+        Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9);
         HashMap<ColorS, Player> profs = new HashMap<>();
         profs.put(ColorS.GREEN, lisa);
         profs.put(ColorS.PINK, lisa);

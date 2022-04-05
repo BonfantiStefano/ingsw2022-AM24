@@ -23,7 +23,7 @@ class CharacterFactoryTest {
         StudentContainer bag = new StudentContainer();
         GameBoard g = new GameBoard(3);
         World w = new World();
-        Player p = new Player("1", ColorT.WHITE, Mage.MAGE2, 1,2);
+        Player p = new Player("1", ColorT.WHITE, Mage.MAGE2, 1);
         p.setPlaying(true);
         ArrayList<PlayerInterface> players = new ArrayList<>();
         players.add(p);

@@ -19,8 +19,8 @@ class StandardProfTest {
     @Test
     void OnePlayer(){
         ArrayList<Player> players = new ArrayList<>();
-        Player p1 = new Player("1", ColorT.WHITE, Mage.MAGE1, 7, 8);
-        Player p2 = new Player("2", ColorT.WHITE, Mage.MAGE1, 7, 8);
+        Player p1 = new Player("1", ColorT.WHITE, Mage.MAGE1, 7);
+        Player p2 = new Player("2", ColorT.WHITE, Mage.MAGE1, 7);
         for(ColorS c: ColorS.values()) {
             p1.getMyBoard().getHall().put(c, 10);
             p2.getMyBoard().getHall().put(c, 9);
@@ -44,10 +44,10 @@ class StandardProfTest {
     @Test
     void NormalSituation() {
         ArrayList<Player> players = new ArrayList<>();
-        players.add(new Player("1", ColorT.WHITE, Mage.MAGE1, 7, 8));
-        players.add(new Player("2", ColorT.BLACK, Mage.MAGE2, 7, 8));
-        players.add(new Player("3", ColorT.GREY, Mage.MAGE3, 7, 8));
-        players.add(new Player("4", ColorT.BLACK, Mage.MAGE4, 7, 8));
+        players.add(new Player("1", ColorT.WHITE, Mage.MAGE1, 7));
+        players.add(new Player("2", ColorT.BLACK, Mage.MAGE2, 7));
+        players.add(new Player("3", ColorT.GREY, Mage.MAGE3, 7));
+        players.add(new Player("4", ColorT.BLACK, Mage.MAGE4, 7));
 
         int i=1;
         for(Player p : players){

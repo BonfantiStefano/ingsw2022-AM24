@@ -19,10 +19,10 @@ class EqualProfTest {
     @Test
     void NormalSituation() {
         ArrayList<Player> players = new ArrayList<>();
-        players.add(new Player("1", ColorT.WHITE, Mage.MAGE1, 7, 8));
-        players.add(new Player("2", ColorT.BLACK, Mage.MAGE2, 7, 8));
-        players.add(new Player("3", ColorT.GREY, Mage.MAGE3, 7, 8));
-        players.add(new Player("4", ColorT.BLACK, Mage.MAGE4, 7, 8));
+        players.add(new Player("1", ColorT.WHITE, Mage.MAGE1, 7));
+        players.add(new Player("2", ColorT.BLACK, Mage.MAGE2, 7));
+        players.add(new Player("3", ColorT.GREY, Mage.MAGE3, 7));
+        players.add(new Player("4", ColorT.BLACK, Mage.MAGE4, 7));
 
         int i=1;
         for(Player p : players){
@@ -49,10 +49,10 @@ class EqualProfTest {
     @Test
     void SameNumberAndActive(){
         ArrayList<Player> players = new ArrayList<>();
-        Player testSubject = new Player("1", ColorT.WHITE, Mage.MAGE1, 7, 8);
+        Player testSubject = new Player("1", ColorT.WHITE, Mage.MAGE1, 7);
         players.add(testSubject);
 
-        Player profOwner = new Player("ProfOwner", ColorT.WHITE, Mage.MAGE2, 7, 8);
+        Player profOwner = new Player("ProfOwner", ColorT.WHITE, Mage.MAGE2, 7);
         HashMap<ColorS, Player> profs=new HashMap<>();
         for(ColorS c: ColorS.values()){
             profOwner.getMyBoard().getHall().put(c, 10);
@@ -75,10 +75,10 @@ class EqualProfTest {
     @Test
     void SameNumberAndNOTActive(){
         ArrayList<Player> players = new ArrayList<>();
-        Player testSubject = new Player("1", ColorT.WHITE, Mage.MAGE1, 7, 8);
+        Player testSubject = new Player("1", ColorT.WHITE, Mage.MAGE1, 7);
         players.add(testSubject);
 
-        Player profOwner = new Player("ProfOwner", ColorT.WHITE, Mage.MAGE2, 7, 8);
+        Player profOwner = new Player("ProfOwner", ColorT.WHITE, Mage.MAGE2, 7);
         HashMap<ColorS, Player> profs=new HashMap<>();
         for(ColorS c: ColorS.values()){
             profOwner.getMyBoard().getHall().put(c, 10);
