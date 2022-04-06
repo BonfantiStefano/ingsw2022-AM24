@@ -80,7 +80,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
      * @param index of type int - the index of the card that will replace the previous one
      */
     public void setChosenAssistant(Player player, int index){
-        player.chooseAssistant(index-1);
+        player.chooseAssistant(index);
     }
 
     /**
