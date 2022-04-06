@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.player.PlayerInterface;
 import it.polimi.ingsw.model.world.World;
 import it.polimi.ingsw.model.world.influence.InfluenceStrategy;
 import it.polimi.ingsw.model.world.influence.NoColorInfluence;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -17,15 +18,28 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CharacterMNTest {
+    Player p;
+    ArrayList<PlayerInterface> players;
+    CharacterMN c;
 
+    @BeforeEach
+    void init(){
+        p = new Player("1", ColorT.WHITE, Mage.MAGE2, 1);
+        players = new ArrayList<>();
+        c=new CharacterMN(1, "test", players);
+    }
     @Test
-    void play() {
-        Player p=new Player("1", ColorT.WHITE, Mage.MAGE2, 1);
-        ArrayList<PlayerInterface> players = new ArrayList<>();
+    void playNormal() {
         p.setPlaying(true);
         players.add(p);
-        CharacterMN c=new CharacterMN(1, "test", players);
         c.play();
         assertTrue(p.getStrategy() instanceof MNTwoSteps);
+    }
+
+    @Test
+    void playNoOneIsActive() {
+        players.add(p);
+        c.play();
+        assertTrue(p.getStrategy() instanceof MNStandard);
     }
 }

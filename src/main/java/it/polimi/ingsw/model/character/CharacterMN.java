@@ -23,6 +23,7 @@ public class CharacterMN extends Character {
     @Override
     public void play() {
         super.play();
-        players.stream().filter(PlayerInterface::isPlaying).findFirst().get().setStrategy(strategy);
+        players.stream().filter(PlayerInterface::isPlaying).findFirst().ifPresent(p -> p.setStrategy(strategy));
+
     }
 }
