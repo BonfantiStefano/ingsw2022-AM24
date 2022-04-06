@@ -91,6 +91,7 @@ class SchoolBoardTest {
      */
     @Test
     void addRemoveTower() {
+        assertEquals(8, schoolBoard.getTowers().size());
         schoolBoard.remove(ColorT.WHITE);
         assertEquals(7, schoolBoard.getTowers().size());
         schoolBoard.add(ColorT.WHITE);

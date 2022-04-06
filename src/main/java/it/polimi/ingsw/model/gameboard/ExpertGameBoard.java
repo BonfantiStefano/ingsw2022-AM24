@@ -124,6 +124,8 @@ public class ExpertGameBoard extends GameBoard {
         if(getWorld().checkEntry()) {
             Optional<Player> nextOwner = getWorld().checkConquest(getWorld().getInfluenceIsland(island, getProfs(), getPlayers()), getPlayers());
             nextOwner.ifPresent(owner -> {conquest(owner, island);});
+            getWorld().checkJoin(getWorld().getIslandByIndex(getWorld().getMNPosition()));
+
         }
     }
 

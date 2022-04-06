@@ -238,7 +238,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         return players;
     }
 
-    public void move(ColorS s, CanRemoveStudent from, CanAcceptStudent to){
+    public void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to){
         from.remove(s);
         to.add(s);
     }
@@ -274,7 +274,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
         }
         for(int counter = 0; counter < island.getNumSubIsland(); counter++) {
             oldOwner.ifPresent(owner -> {moveTower(owner.getColorTower(), island, owner.getMyBoard()); });
-            moveTower((nextOwner.getColorTower()), nextOwner.getMyBoard(), island);
+            moveTower(nextOwner.getColorTower(), nextOwner.getMyBoard(), island);
         }
     }
 
