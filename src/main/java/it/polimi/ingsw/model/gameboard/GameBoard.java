@@ -80,29 +80,36 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
      * @param index of type int - the index of the card that will replace the previous one
      */
     public void setChosenAssistant(Player player, int index){
-
         player.chooseAssistant(index-1);
     }
 
     /**
-     * Method setLastAssistants gets a player and adds his Assistant card in the list of all the cards of this round
+     * Method setLastAssistants gets a player and adds his Assistant card in the list of all the Assistant cards
+     * of this round
      *
-     * @param player of type Player - the player which Assistant card will be added to the list with other
-     * players' cards
+     * @param player of type Player - the player which Assistant card will be added to the list with other players' cards
+     * @return result of type boolean - true if the last Assistant card chosen by the player is correctly added to the list
+     *                                   false if the player has to choose another Assistant card
      */
-    public void setLastAssistants(Player player){
+    public boolean setLastAssistants(Player player){
+        boolean result = false;
         Assistant assistant = player.getLastAssistant();
         if(lastAssistants.isEmpty()){
             lastAssistants.add(assistant);
+            player.removeLastAssistant();
+            result = true;
         }
         else{
-            boolean result = false;
             for (Assistant a : lastAssistants) {
-                if (!(a.getTurn()==assistant.getTurn())|| (player.getMyCards().numCards() == 1))
+                if (a.compareTo(assistant) != 0 || (player.getMyCards().numCards() == 1))
                     result = true;
             }
-            if(result) lastAssistants.add(assistant);
+            if(result){
+                lastAssistants.add(assistant);
+                player.removeLastAssistant();
+            }
         }
+        return result;
     }
 
     /**

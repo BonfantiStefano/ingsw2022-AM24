@@ -58,7 +58,7 @@ public class Player implements PlayerInterface {
         try{
             Assistant card = myCards.getCard(index);
             lastAssist = card;
-            myCards.removeCard(card);
+            //myCards.removeCard(card);
         }catch (InvalidIndexException e){
             System.out.println(e.getMessage());
         }
@@ -157,6 +157,14 @@ public class Player implements PlayerInterface {
     public void setCoins(int amount){
         coins = coins + amount;
     }
+
+    /**
+     * Method removeLastAssistant removes the last Assistant card played by the player from his Hand
+     */
+    public void removeLastAssistant(){
+        myCards.removeCard(lastAssist);
+    }
+
 
     @Override
     public boolean equals(Object o) {

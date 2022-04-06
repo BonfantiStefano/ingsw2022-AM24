@@ -13,12 +13,10 @@ public class PlayerTest {
 
     @Test
     public void testChooseAssistant_testNumCards(){
-        Player bob = new Player("Bob", ColorT.BLACK, Mage.MAGE1, 9);
-        int numCards = bob.getNumCards();
-        bob.chooseAssistant(7);
-        assertEquals(bob.getLastAssistant().getTurn(), 7);
-        assertTrue(bob.getMyCards().numCards()==numCards-1);
-
+        Player player = new Player("Bob", ColorT.BLACK, Mage.MAGE1, 9);
+        int numCards = player.getNumCards();
+        player.chooseAssistant(7);
+        assertEquals(player.getLastAssistant().getTurn(), 7);
     }
 
     @Test

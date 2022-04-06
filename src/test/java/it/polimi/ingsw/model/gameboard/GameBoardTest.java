@@ -110,15 +110,19 @@ public class GameBoardTest {
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
         Player alice = new Player("Alice", ColorT.WHITE, Mage.MAGE2, 9);
 
-        lisa.chooseAssistant(4);
-        bob.chooseAssistant(4);
-        gb.setLastAssistants(lisa);
-        gb.setLastAssistants(bob);
-        assertEquals(gb.getSizeList(), 1);
-        alice.chooseAssistant(5);
-        gb.setLastAssistants(alice);
-        assertEquals(gb.getSizeList(), 2);
+        int cardslisa = lisa.getNumCards();
+        int cardsbob = bob.getNumCards();
 
+        lisa.chooseAssistant(4);
+        assertTrue(gb.setLastAssistants(lisa));
+        assertEquals(lisa.getNumCards(), cardslisa -1);
+
+        bob.chooseAssistant(4);
+        assertTrue(!gb.setLastAssistants(bob));
+        assertEquals(bob.getNumCards(), cardsbob);
+        gb.setChosenAssistant(bob, 6);
+        assertTrue(gb.setLastAssistants(bob));
+        assertEquals(bob.getNumCards(), cardsbob-1);
     }
 
     @Test
