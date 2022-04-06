@@ -1,8 +1,6 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.pawn.Student;
-import it.polimi.ingsw.model.pawn.Tower;
 
 import java.util.ArrayList;
 import java.util.HashMap;

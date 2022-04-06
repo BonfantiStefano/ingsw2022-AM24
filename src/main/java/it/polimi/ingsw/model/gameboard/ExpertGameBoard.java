@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.HasStrategy;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.character.CharacterFactory;
 import it.polimi.ingsw.model.gameboard.GameBoard;
-import it.polimi.ingsw.model.pawn.Student;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PlayerInterface;

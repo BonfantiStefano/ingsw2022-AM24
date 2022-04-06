@@ -2,8 +2,6 @@ package it.polimi.ingsw.model.world;
 
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
-import it.polimi.ingsw.model.pawn.Student;
-import it.polimi.ingsw.model.pawn.Tower;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.world.influence.AdditionalInfluence;

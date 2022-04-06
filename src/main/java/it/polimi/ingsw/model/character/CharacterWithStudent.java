@@ -3,7 +3,6 @@ package it.polimi.ingsw.model.character;
 import it.polimi.ingsw.model.CanAcceptStudent;
 import it.polimi.ingsw.model.CanRemoveStudent;
 import it.polimi.ingsw.model.ColorS;
-import it.polimi.ingsw.model.pawn.Student;
 
 import java.util.ArrayList;
 

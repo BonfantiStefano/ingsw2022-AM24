@@ -2,8 +2,6 @@ package it.polimi.ingsw.model.world;
 
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
-import it.polimi.ingsw.model.pawn.Student;
-import it.polimi.ingsw.model.pawn.Tower;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,7 +68,7 @@ class IslandTest {
         assertEquals(Optional.of(ColorT.WHITE), island.getTowerColor());
         island.remove(t2);
         assertEquals(1, island.getNumSubIsland());
-        assertEquals(null, island.getTowerColor());
+        assertEquals(Optional.empty(), island.getTowerColor());
 
     }
 
@@ -78,7 +76,7 @@ class IslandTest {
     @Test
     @DisplayName("Tower's color getter test")
     void getTowerColor() {
-        assertEquals(null, island.getTowerColor());
+        assertEquals(Optional.empty(), island.getTowerColor());
         ColorT t1 = ColorT.BLACK;
         island.add(t1);
         assertEquals(Optional.of(ColorT.BLACK), island.getTowerColor());

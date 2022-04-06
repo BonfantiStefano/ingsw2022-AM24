@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.pawn.Student;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
