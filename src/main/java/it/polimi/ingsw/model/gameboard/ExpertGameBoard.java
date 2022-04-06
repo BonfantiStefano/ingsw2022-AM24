@@ -100,7 +100,7 @@ public class ExpertGameBoard extends GameBoard {
      * and the ones that are in the expert GameBoard
      */
     public void playCharacter(Character c){
-        if(getActivePlayer().getCoins()>=c.getCost()) {
+        if(getActivePlayer().getCoins()>=c.getCost()&&findChar(c)!=null) {
             getActivePlayer().setCoins(-c.getCost());
             setActiveCharacter(findChar(c));
             coins+=findChar(c).getCost();
@@ -114,7 +114,7 @@ public class ExpertGameBoard extends GameBoard {
      * @return Character found in the characters list
      */
     private Character findChar(Character c){
-        return characters.stream().filter(character -> character.getDescription().equals(c.getDescription())).findFirst().get();
+        return characters.stream().filter(character -> character.getDescription().equals(c.getDescription())).findFirst().orElse(null);
     }
     /**
      * Method checkIsland is utilized by the character whose effect is to calculate the influence on an Island as if Mother Nature were there.
