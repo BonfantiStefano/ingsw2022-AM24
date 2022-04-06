@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.character;
 
 import it.polimi.ingsw.model.ColorS;
-import it.polimi.ingsw.model.pawn.Student;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -69,8 +69,7 @@ public class Island implements CanAcceptStudent, AcceptTower {
         if(towers.size() > 0) {
             return Optional.of(towers.get(0));
         }
-        return null;
-        // oppure basta return Optional.ofNullable(towers.get(0).getColor());
+        return Optional.empty();
     }
 
     /**

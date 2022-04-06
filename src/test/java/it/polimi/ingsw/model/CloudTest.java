@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.model.pawn.Student;
-import it.polimi.ingsw.model.pawn.Tower;
 import it.polimi.ingsw.model.world.World;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

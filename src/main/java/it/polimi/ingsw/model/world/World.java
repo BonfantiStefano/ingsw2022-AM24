@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.world;
 
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.HasStrategy;
-import it.polimi.ingsw.model.pawn.Student;
 import it.polimi.ingsw.model.world.influence.InfluenceStrategy;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.world.influence.StandardInfluence;
@@ -152,27 +151,27 @@ public class World implements HasStrategy<InfluenceStrategy> {
     public void checkJoin(Island i) {
         int indexIsland = islands.indexOf(i);
         if(islands.size() > indexIsland+1) {
-            if(!Optional.ofNullable(islands.get(indexIsland+1).getTowerColor()).equals(Optional.empty()) &&
-                    !Optional.ofNullable(i.getTowerColor()).equals(Optional.empty()) && islands.get(indexIsland+1).getTowerColor().equals(i.getTowerColor())) {
+            if(!islands.get(indexIsland+1).getTowerColor().equals(Optional.empty()) &&
+                    !i.getTowerColor().equals(Optional.empty()) && islands.get(indexIsland+1).getTowerColor().equals(i.getTowerColor())) {
                 Island newIsland = join(i, islands.get(indexIsland+1));
                 checkJoin(newIsland);
             }
         } else {
-            if(!Optional.ofNullable(islands.get(0).getTowerColor()).equals(Optional.empty()) &&
-                    !Optional.ofNullable(i.getTowerColor()).equals(Optional.empty()) && islands.get(0).getTowerColor().equals(i.getTowerColor())) {
+            if(!islands.get(0).getTowerColor().equals(Optional.empty()) &&
+                    !i.getTowerColor().equals(Optional.empty()) && islands.get(0).getTowerColor().equals(i.getTowerColor())) {
                 Island newIsland = join(islands.get(0), i);
                 checkJoin(newIsland);
             }
         }
         if(indexIsland == 0) {
-            if(!Optional.ofNullable(islands.get(islands.size()-1).getTowerColor()).equals(Optional.empty()) &&
-                    !Optional.ofNullable(i.getTowerColor()).equals(Optional.empty()) && islands.get(islands.size()-1).getTowerColor().equals(i.getTowerColor())) {
+            if(!islands.get(islands.size()-1).getTowerColor().equals(Optional.empty()) &&
+                    !i.getTowerColor().equals(Optional.empty()) && islands.get(islands.size()-1).getTowerColor().equals(i.getTowerColor())) {
                 Island newIsland = join(i, islands.get(islands.size()-1));
                 checkJoin(newIsland);
             }
         } else {
-            if(!Optional.ofNullable(islands.get(indexIsland-1).getTowerColor()).equals(Optional.empty()) &&
-                    !Optional.ofNullable(i.getTowerColor()).equals(Optional.empty()) && islands.get(indexIsland-1).getTowerColor().equals(i.getTowerColor())) {
+            if(!islands.get(indexIsland-1).getTowerColor().equals(Optional.empty()) &&
+                    !i.getTowerColor().equals(Optional.empty()) && islands.get(indexIsland-1).getTowerColor().equals(i.getTowerColor())) {
                 Island newIsland = join(islands.get(indexIsland-1), i);
                 checkJoin(newIsland);
             }
@@ -221,12 +220,19 @@ public class World implements HasStrategy<InfluenceStrategy> {
         return influenceStrategy;
     }
 
-    //method used only for testing
+    /**
+     * Method getIslandByIndex takes an index and returns the relative Island of the World.
+     * @param index int - The index of the Island.
+     * @return the Island with the index given by parameter.
+     */
     public Island getIslandByIndex(int index) {
         return islands.get(index);
     }
 
-    //method used only for testing
+    /**
+     * Method getMNPosition returns the index of the Island where Mother Nature is.
+     * @return an index of an Island.
+     */
     public int getMNPosition() {
         return posMN;
     }
