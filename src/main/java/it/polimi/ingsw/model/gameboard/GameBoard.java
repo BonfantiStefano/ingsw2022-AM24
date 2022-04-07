@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.gameboard;
 
 //import it.polimi.ingsw.exceptions.IllegalMoveException;
+import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
@@ -80,34 +81,34 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
      * @param index of type int - the index of the card that will replace the previous one
      */
     public void setChosenAssistant(Player player, int index){
-        player.chooseAssistant(index);
+        Assistant card = player.chooseAssistant(index-1);
+        player.setLastAssist(card);
     }
 
     /**
-     * Method setLastAssistants gets a player and adds his Assistant card in the list of all the Assistant cards
-     * of this round
+     * Method setLastAssistants gets a player and the index of the card he would like to play in this round
+     * in order to eventually add this card in the list of all the Assistant cards
      *
      * @param player of type Player - the player which Assistant card will be added to the list with other players' cards
-     * @return result of type boolean - true if the last Assistant card chosen by the player is correctly added to the list
+     * @return result of type boolean - true if the Assistant card chosen by the player is correctly added to the list
      *                                   false if the player has to choose another Assistant card
      */
-    public boolean setLastAssistants(Player player){
+    public boolean chooseAssistants(Player player, int index) throws InvalidIndexException {
         boolean result = false;
-        Assistant assistant = player.getLastAssistant();
+        Assistant assistant = player.chooseAssistant(index);
         if(lastAssistants.isEmpty()){
-            lastAssistants.add(assistant);
-            player.removeLastAssistant();
             result = true;
         }
         else{
-            for (Assistant a : lastAssistants) {
-                if (a.compareTo(assistant) != 0 || (player.getMyCards().numCards() == 1))
+            for (Assistant a : lastAssistants){
+                if ( a.compareTo(assistant) != 0 || (player.getMyCards().numCards() == 1))
                     result = true;
             }
-            if(result){
-                lastAssistants.add(assistant);
-                player.removeLastAssistant();
-            }
+        }
+        if(result){
+            lastAssistants.add(assistant);
+            player.setLastAssist(assistant);
+            player.getMyCards().removeCard(assistant);
         }
         return result;
     }

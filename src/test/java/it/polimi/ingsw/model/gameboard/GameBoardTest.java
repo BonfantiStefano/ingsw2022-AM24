@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model.gameboard;
 
 //import it.polimi.ingsw.exceptions.IllegalMoveException;
+import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.StudentContainer;
+import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.world.Island;
@@ -22,19 +24,21 @@ public class GameBoardTest {
     GameBoard gb, gb2;
 
     @BeforeEach
-    public void initialization(){
+    public void initialization() throws InvalidIndexException {
         gb = new GameBoard(3);
         Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9);
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
         Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9);
 
-        lisa.chooseAssistant(8);
-        bob.chooseAssistant(7);
-        alice.chooseAssistant(4);
+        boolean r = gb.chooseAssistants(lisa, 8);
+        boolean s = gb.chooseAssistants(bob, 7);
+        boolean t = gb.chooseAssistants(alice, 4);
 
-        gb.addPlayer(lisa);
-        gb.addPlayer(bob);
-        gb.addPlayer(alice);
+        if (r && s && t){
+            gb.addPlayer(lisa);
+            gb.addPlayer(bob);
+            gb.addPlayer(alice);
+        }
 
     }
 
@@ -95,35 +99,24 @@ public class GameBoardTest {
     }
 
     @Test
-    public void testSetChosenAssistant(){
-        Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
-        bob.chooseAssistant(3);
-        assertEquals(bob.getLastAssistant().getTurn(), 3);
-        gb.setChosenAssistant(bob,9);
-        assertEquals(bob.getLastAssistant().getTurn(), 9);
-    }
-
-    @Test
-    public void setLastAssistants(){
+    public void chooseAssistants() throws InvalidIndexException {
         gb = new GameBoard(3);
         Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9);
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
-        Player alice = new Player("Alice", ColorT.WHITE, Mage.MAGE2, 9);
+        Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9);
+        int bobCards = bob.getNumCards();
+        assertTrue(gb.chooseAssistants(bob,5));
+        assertEquals(bob.getNumCards(), bobCards-1);
+        assertEquals(bob.getLastAssistant().getTurn(), 5);
+        int lisaCards = lisa.getNumCards();
+        assertTrue(!gb.chooseAssistants(lisa,5));
+        assertEquals(lisa.getNumCards(), lisaCards);
+        assertTrue(gb.chooseAssistants(lisa,1));
+        assertEquals(lisa.getNumCards(),lisaCards-1);
 
-        int cardslisa = lisa.getNumCards();
-        int cardsbob = bob.getNumCards();
 
-        lisa.chooseAssistant(4);
-        assertTrue(gb.setLastAssistants(lisa));
-        assertEquals(lisa.getNumCards(), cardslisa -1);
-
-        bob.chooseAssistant(4);
-        assertTrue(!gb.setLastAssistants(bob));
-        assertEquals(bob.getNumCards(), cardsbob);
-        gb.setChosenAssistant(bob, 6);
-        assertTrue(gb.setLastAssistants(bob));
-        assertEquals(bob.getNumCards(), cardsbob-1);
     }
+
 
     @Test
     public void testAddPlayer(){

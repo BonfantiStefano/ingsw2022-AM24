@@ -15,7 +15,8 @@ public class PlayerTest {
     public void testChooseAssistant_testNumCards(){
         Player player = new Player("Bob", ColorT.BLACK, Mage.MAGE1, 9);
         int numCards = player.getNumCards();
-        player.chooseAssistant(7);
+        Assistant a = player.chooseAssistant(7);
+        player.setLastAssist(a);
         assertEquals(player.getLastAssistant().getTurn(), 7);
     }
 
