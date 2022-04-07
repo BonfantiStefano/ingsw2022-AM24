@@ -197,10 +197,10 @@ class WorldTest {
     void checkEntry() {
         Island island = world.getIslandByIndex(world.getMNPosition());
         island.setNumNoEntry(2);
-        assertEquals(false, world.checkEntry());
+        assertEquals(false, world.checkEntry(island));
         assertEquals(1, island.getNumNoEntry());
         island.setNumNoEntry(-1);
-        assertEquals(true, world.checkEntry());
+        assertEquals(true, world.checkEntry(island));
         assertEquals(0, island.getNumNoEntry());
     }
 

@@ -77,9 +77,9 @@ public class World implements HasStrategy<InfluenceStrategy> {
      * returns true.
      * @return a boolean, true when the influence can be calculated, otherwise is false
      */
-    public boolean checkEntry() {
-        if (islands.get(posMN).getNumNoEntry() > 0) {
-            islands.get(posMN).setNumNoEntry(-1);
+    public boolean checkEntry(Island island) {
+        if (island.getNumNoEntry() > 0) {
+            island.setNumNoEntry(-1);
             return false;
         } else {
             return true;

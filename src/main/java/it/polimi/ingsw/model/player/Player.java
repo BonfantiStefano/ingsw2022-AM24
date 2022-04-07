@@ -36,6 +36,10 @@ public class Player implements PlayerInterface {
         this.strategy = new MNStandard();
     }
 
+    /**
+     * Method getColorTower returns the color of the Towers assigned to the player.
+     * @return the ColorT.
+     */
     public ColorT getColorTower() {
         return color;
     }
@@ -63,6 +67,7 @@ public class Player implements PlayerInterface {
             System.out.println(e.getMessage());
         }
     }
+
     /**
      * Method getLastAssistant returns the last Assistant card chosen by the player.
      * @return lastAssistant of type Assistant

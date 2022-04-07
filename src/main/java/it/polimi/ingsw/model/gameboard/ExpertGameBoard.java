@@ -121,11 +121,10 @@ public class ExpertGameBoard extends GameBoard {
      * @param island Island - the Island on which the influence has to be calculated.
      */
     public void checkIsland(Island island) {
-        if(getWorld().checkEntry()) {
+        if(getWorld().checkEntry(island)) {
             Optional<Player> nextOwner = getWorld().checkConquest(getWorld().getInfluenceIsland(island, getProfs(), getPlayers()), getPlayers());
             nextOwner.ifPresent(owner -> {conquest(owner, island);});
             getWorld().checkJoin(getWorld().getIslandByIndex(getWorld().getMNPosition()));
-
         }
     }
 
@@ -162,6 +161,7 @@ public class ExpertGameBoard extends GameBoard {
     public int getAvailableCoins() {
         return coins;
     }
+
 
     private CharacterFactory createFactory(){
         ArrayList<PlayerInterface> players= getPlayers().stream().map(p -> (PlayerInterface) p).collect(Collectors.toCollection(ArrayList::new));

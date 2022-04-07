@@ -253,7 +253,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
             //throw new IllegalMoveException();
         }
         Island island = world.moveMN(numMNSteps);
-        if(world.checkEntry()) {
+        if(world.checkEntry(island)) {
             Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players);
             nextOwner.ifPresent(owner -> {conquest(owner, island);});
             world.checkJoin(world.getIslandByIndex(world.getMNPosition()));

@@ -164,7 +164,6 @@ public class GameBoardTest {
     @Test
     public void moveTower(){
         gb = new GameBoard(2);
-
         Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 8);
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 8);
         gb.addPlayer(lisa);
