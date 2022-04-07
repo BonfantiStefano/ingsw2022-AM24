@@ -5,7 +5,8 @@ package it.polimi.ingsw.model.character;
  */
 public enum CharacterDescription {
     //TODO add all descriptions
-    CHAR1(1, "Take one Student from this card"),
+    CHAR1(1, "Take one Student from this card and place it on an Island of your choice. Then draw a new Student" +
+            "from the bag and place it on this card"),
     CHAR2(2, "2"),
     CHAR3(3,"3"),
     CHAR4(1,"4"),

@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CharacterFactoryTest {
     /**
-     * Creates all Characters and adds them to a list
+     * Creates all Characters and adds them to a list, checks if all have been created
      */
     @Test
     void createCharacter() {
