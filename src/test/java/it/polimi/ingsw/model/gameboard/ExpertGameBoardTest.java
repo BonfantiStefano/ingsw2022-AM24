@@ -5,10 +5,15 @@ import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.world.Island;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -85,8 +90,46 @@ class ExpertGameBoardTest {
         assertEquals(gb.getActiveCharacter(), c.get(0));
     }
 
+    /**
+     * Method checkIslandWithNoEntry tests the effect of the Character that calculate the influence on an Island with a noEntryTiles.
+     */
     @Test
-    void checkIsland() {
+    @DisplayName("NoEntryTiles on the selected Island test")
+    void checkIslandWithNoEntry() {
+        Island island = gb.getWorld().getIslandByIndex(1);
+        island.add(ColorS.GREEN);
+        island.add(ColorS.GREEN);
+        gb.getProfs().put(ColorS.GREEN, gb.getPlayers().get(0));
+        island.setNumNoEntry(1);
+        gb.checkIsland(island);
+        assertEquals(0, island.getNumNoEntry());
+        assertEquals(Optional.empty(), island.getTowerColor());
+    }
+
+
+    /**
+     *
+     */
+    @Test
+    @DisplayName("checkIsland on the selected Island that has noEntryTiles")
+    void checkIslandWithoutNoEntry() {
+        gb.addPlayer("2", ColorT.BLACK, Mage.MAGE3);
+        gb.getPlayers().get(0).chooseAssistant(9);
+        gb.getPlayers().get(1).chooseAssistant(10);
+        Island island = gb.getWorld().getIslandByIndex(1);
+        island.add(ColorS.GREEN);
+        island.add(ColorS.GREEN);
+        gb.getProfs().put(ColorS.GREEN, gb.getPlayers().get(0));
+        gb.conquest(gb.getPlayers().get(0), island);
+        island.add(ColorS.BLUE);
+        island.add(ColorS.BLUE);
+        island.add(ColorS.BLUE);
+        island.add(ColorS.YELLOW);
+        gb.getProfs().put(ColorS.BLUE, gb.getPlayers().get(1));
+        gb.getProfs().put(ColorS.YELLOW, gb.getPlayers().get(1));
+        gb.checkIsland(island);
+        assertEquals(0, island.getNumNoEntry());
+        assertEquals(Optional.of(gb.getPlayers().get(1).getColorTower()), island.getTowerColor());
     }
 
     /**

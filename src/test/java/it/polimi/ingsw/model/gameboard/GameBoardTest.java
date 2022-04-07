@@ -8,6 +8,8 @@ import it.polimi.ingsw.model.StudentContainer;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.profstrategy.EqualProf;
+import it.polimi.ingsw.model.profstrategy.StandardProf;
 import it.polimi.ingsw.model.world.Island;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -155,7 +157,6 @@ public class GameBoardTest {
     @Test
     public void moveTower(){
         gb = new GameBoard(2);
-
         Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 8);
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 8);
         gb.addPlayer(lisa);
@@ -165,9 +166,55 @@ public class GameBoardTest {
         int towers = bob.getMyBoard().getTowers().size();
         gb.moveTower(bob.getColorTower(), gb.getWorld().getIslandByIndex(6), bob.getMyBoard());
         assertEquals(bob.getMyBoard().getTowers().size(), towers + 1);
-
-
     }
 
+    /**
+     * Method strategyProf tests the setting, resetting and getting of the strategy.
+     */
+    @Test
+    @DisplayName("GameBoard's prof strategy tests")
+    void strategyProf() {
+        assertTrue(gb.getStrategy() instanceof StandardProf);
+        gb.setStrategy(new EqualProf());
+        assertTrue(gb.getStrategy() instanceof EqualProf);
+        gb.resetStrategy();
+        assertTrue(gb.getStrategy() instanceof StandardProf);
+    }
 
+    /**
+     * Method conquest tests the conquest of an Island.
+     */
+    @Test
+    @DisplayName("GameBoard's conquest test")
+    void conquest() {
+        Island island =gb.getWorld().getIslandByIndex((gb.getWorld().getMNPosition() + 6) % gb.getWorld().getSize());
+        Player lisa = gb.getPlayers().get(0);
+        //Caso conquista senza vecchio proprietario
+        gb.conquest(lisa, island);
+        assertEquals(1, island.getNumSubIsland());
+        assertEquals(Optional.of(lisa.getColorTower()), island.getTowerColor());
+        assertEquals(8, lisa.getMyBoard().getTowers().size());
+        //Caso conquista con vecchio proprietario
+        Player bob = gb.getPlayers().get(1);
+        gb.conquest(bob, island);
+        assertEquals(1, island.getNumSubIsland());
+        assertEquals(Optional.of(bob.getColorTower()), island.getTowerColor());
+        assertEquals(8, bob.getMyBoard().getTowers().size());
+        assertEquals(9, lisa.getMyBoard().getTowers().size());
+    }
+
+    /**
+     * Method moveStudent tests the move of a Student.
+     */
+    @Test
+    @DisplayName("GameBoard's move test")
+    void moveStudent() {
+        Player lisa = gb.getPlayers().get(0);
+        lisa.getMyBoard().add(ColorS.GREEN);
+        int initialSIze = lisa.getMyBoard().getEntrance().size();
+        Island island = gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition());
+        gb.moveStudent(ColorS.GREEN, lisa.getMyBoard(), island);
+        assertEquals(0, lisa.getMyBoard().getEntrance().size());
+        assertEquals(1, island.getNumStudentByColor(ColorS.GREEN));
+    }
 }

@@ -49,6 +49,10 @@ class HandTest {
 
     }
 
+    @Test
+    public void testGetMage(){
+        assertEquals(Mage.MAGE1, hand1.getMage());
+    }
 
 
 }

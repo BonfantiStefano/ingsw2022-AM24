@@ -40,9 +40,6 @@ public class Island implements CanAcceptStudent, AcceptTower {
      */
     @Override
     public void add(ColorT tower){
-        if(towers.size() > 0 && !(tower.equals(towers.get(0)))) {
-            //throw WrongColorException;
-        }
         towers.add(tower);
     }
 
@@ -51,14 +48,10 @@ public class Island implements CanAcceptStudent, AcceptTower {
      * @param tower ColorT - The tower that has to be removed to the list.
      */
     @Override
-    public void remove(ColorT tower) /*throws WrongColorException, EmptyListException*/{
+    public void remove(ColorT tower) {
         if(towers.size() > 0) {
-            if(!(tower.equals(towers.get(0)))) {
-                //throw WrongColorException;
-            }
             towers.remove(tower);
         }
-        //throw EmptyListException;
     }
 
     /**

@@ -36,6 +36,10 @@ public class Player implements PlayerInterface {
         this.strategy = new MNStandard();
     }
 
+    /**
+     * Method getColorTower returns the color of the Towers assigned to the player.
+     * @return the ColorT.
+     */
     public ColorT getColorTower() {
         return color;
     }
@@ -49,28 +53,19 @@ public class Player implements PlayerInterface {
     }
 
     /**
-     * Method chooseAssistant returns the Assistant card chosen by the player
+     * Method chooseAssistant replace lastAssistant with the selected card and removes it from the
+     * player's cards
      *
-     * @param index of type int - the index of the card
-     * @return card of type Assistant - the card selected by the player
+     * @param index of type int - the card selected by the player.
      */
-    public Assistant chooseAssistant(int index){
-        Assistant card = null;
+    public void chooseAssistant(int index){
         try{
-            card = myCards.getCard(index);
+            Assistant card = myCards.getCard(index);
+            lastAssist = card;
+            //myCards.removeCard(card);
         }catch (InvalidIndexException e){
             System.out.println(e.getMessage());
         }
-        return card;
-    }
-
-    /**
-     * Method setLastAssistant sets the last Assistant card chosen by the player
-     *
-     * @param card of type Assistant - the chosen card.
-     */
-    public void setLastAssist(Assistant card){
-        lastAssist = card;
     }
 
     /**
