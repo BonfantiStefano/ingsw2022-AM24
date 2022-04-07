@@ -38,6 +38,7 @@ public class GameBoard implements HasStrategy<ProfStrategy> {
     private ProfStrategy strategy;
     private Map<ColorS, Player> profs;
 
+
     /**Constructor GameBoard creates a new empty gameBoard instance.*/
     public GameBoard(int numPlayers){
         lastAssistants = new ArrayList<>();

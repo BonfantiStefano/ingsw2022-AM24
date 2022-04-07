@@ -53,19 +53,28 @@ public class Player implements PlayerInterface {
     }
 
     /**
-     * Method chooseAssistant replace lastAssistant with the selected card and removes it from the
-     * player's cards
+     * Method chooseAssistant returns the Assistant card chosen by the player
      *
-     * @param index of type int - the card selected by the player.
+     * @param index of type int - the index of the card
+     * @return card of type Assistant - the card selected by the player
      */
-    public void chooseAssistant(int index){
+    public Assistant chooseAssistant(int index){
+        Assistant card = null;
         try{
-            Assistant card = myCards.getCard(index);
-            lastAssist = card;
-            //myCards.removeCard(card);
+            card = myCards.getCard(index);
         }catch (InvalidIndexException e){
             System.out.println(e.getMessage());
         }
+        return card;
+    }
+
+    /**
+     * Method setLastAssistant sets the last Assistant card chosen by the player
+     *
+     * @param card of type Assistant - the chosen card.
+     */
+    public void setLastAssist(Assistant card){
+        lastAssist = card;
     }
 
     /**
