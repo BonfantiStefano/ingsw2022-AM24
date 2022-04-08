@@ -10,13 +10,18 @@ public class CharacterProf extends Character {
     private ProfStrategy strategy;
     private HasStrategy<ProfStrategy> observer;
 
+    /**
+     * Creates a new CharacterProf object
+     */
     public CharacterProf(int cost, String description,  ProfStrategy strategy, HasStrategy<ProfStrategy> observer) {
         super(cost, description);
         this.strategy=strategy;
         this.observer=observer;
     }
 
-
+    /**
+     * Calls the superclass method and sets the observer's strategy
+     */
     @Override
     public void play() {
         super.play();

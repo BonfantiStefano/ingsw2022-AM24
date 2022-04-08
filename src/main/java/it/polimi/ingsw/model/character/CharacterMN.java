@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.character;
 
-import it.polimi.ingsw.model.HasStrategy;
 import it.polimi.ingsw.model.mnstrategy.MNStrategy;
 import it.polimi.ingsw.model.mnstrategy.MNTwoSteps;
 import it.polimi.ingsw.model.player.PlayerInterface;
@@ -14,12 +13,18 @@ public class CharacterMN extends Character {
     private ArrayList<PlayerInterface> players;
     private MNStrategy strategy;
 
+    /**
+     * Creates a new CharacterMN object
+     */
     public CharacterMN(int cost, String description, ArrayList<PlayerInterface> players) {
         super(cost, description);
         strategy=new MNTwoSteps();
         this.players=players;
     }
 
+    /**
+     * Calls the superclass method and sets the observer's strategy
+     */
     @Override
     public void play() {
         super.play();

@@ -23,15 +23,28 @@ public enum CharacterDescription {
     private int cost;
     private String desc;
 
+    /**
+     * Creates a new Character
+     * @param cost Character's cost
+     * @param desc Character's description
+     */
     CharacterDescription(int cost, String desc) {
         this.cost=cost;
         this.desc=desc;
     }
 
+    /**
+     * Gets the Character's cost
+     * @return the Character's cost
+     */
     public int getCost() {
         return cost;
     }
 
+    /**
+     * Gets the Character's description
+     * @return the Character's description
+     */
     public String getDesc() {
         return desc;
     }

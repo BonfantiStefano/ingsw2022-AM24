@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.player.Player;
 
 import java.util.*;
 
+/**
+ * Standard behaviour for checkProfs method
+ */
 public class StandardProf implements ProfStrategy {
 
     /**

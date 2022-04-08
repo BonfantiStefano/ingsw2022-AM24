@@ -3,7 +3,7 @@ package it.polimi.ingsw.model.mnstrategy;
 import it.polimi.ingsw.model.player.Assistant;
 
 /**
- * Normal Behaviour for the mnSteps method
+ * Normal Behaviour for mnSteps method
  */
 public class MNStandard implements MNStrategy {
     /**
