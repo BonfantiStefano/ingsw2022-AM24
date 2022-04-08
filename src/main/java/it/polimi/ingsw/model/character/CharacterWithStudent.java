@@ -16,15 +16,27 @@ public class CharacterWithStudent extends Character implements CanAcceptStudent,
     private ArrayList<ColorS> students;
     private int maxStudents;
 
+    /**
+     * Creates a new CharacterWithStudent object
+     */
     public CharacterWithStudent(int cost, String description, int maxStudents) {
         super(cost, description);
         students=new ArrayList<>();
         this.maxStudents=maxStudents;
     }
 
+    /**
+     * Adds a Student
+     * @param s the Color of the Student being added
+     */
     public void add(ColorS s){
         students.add(s);
     }
+
+    /**
+     * Remove a Student
+     * @param s the Color of the Student being removed
+     */
     public void remove(ColorS s){
         students.remove(s);
     }

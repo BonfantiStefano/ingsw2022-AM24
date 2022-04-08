@@ -1,15 +1,23 @@
 package it.polimi.ingsw.model.character;
 
-import it.polimi.ingsw.model.character.Character;
-
+/**
+ * Class CharacterWithNoEntry models the Character that can limit MN's action on Islands
+ */
 public class CharacterWithNoEntry extends Character {
     private int numNoEntry;
 
+    /**
+     * Creates a new CharacterWithNoEntry object
+     */
     public CharacterWithNoEntry(int cost, String description) {
         super(cost, description);
         numNoEntry=4;
     }
 
+    /**
+     * Gets the number of remaining noEntry tiles
+     * @return the number of noEntry tiles
+     */
     public int getNumNoEntry(){
         return numNoEntry;
     }

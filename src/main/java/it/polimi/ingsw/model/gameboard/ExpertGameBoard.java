@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Class ExpertGameBoard offers methods to handle a game with expert rules
+ */
 public class ExpertGameBoard extends GameBoard {
     final private static int NUM_COINS = 20;
     final private static int NUM_TOWERS = 8;
@@ -160,7 +163,10 @@ public class ExpertGameBoard extends GameBoard {
         return coins;
     }
 
-
+    /**
+     * Creates a new CharacterFactory with the required parameters
+     * @return factory a new CharacterFactory
+     */
     private CharacterFactory createFactory(){
         ArrayList<PlayerInterface> players= this.players.stream().map(p -> (PlayerInterface) p).collect(Collectors.toCollection(ArrayList::new));
         factory = new CharacterFactory(world, this, container, players);

@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Alternate behaviour for checkProfs method
+ */
 public class EqualProf implements ProfStrategy {
     /**
      *  A different implementation of the CheckProf algorithm (for every ColorS the

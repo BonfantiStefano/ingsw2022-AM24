@@ -2,6 +2,9 @@ package it.polimi.ingsw.model.mnstrategy;
 
 import it.polimi.ingsw.model.player.Assistant;
 
+/**
+ * Alternate behaviour for mnSteps method
+ */
 public class MNTwoSteps implements MNStrategy {
 
     /**

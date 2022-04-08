@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.profstrategy.StandardProf;
 import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.model.world.World;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -22,7 +23,7 @@ import java.util.*;
  *
  * @author Baratto Marco, Bonfanti Stefano, Chyzheuskaya Hanna.
  */
-public class GameBoard implements HasStrategy<ProfStrategy> {
+public class GameBoard implements HasStrategy<ProfStrategy>{
 
     final protected static int NUM_TOWERS = 8;
     final protected static int NUM_STUDENTS = 7;
