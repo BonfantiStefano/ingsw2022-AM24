@@ -5,6 +5,9 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.mnstrategy.MNStandard;
 import it.polimi.ingsw.model.mnstrategy.MNStrategy;
 
+/**
+ * Player class represents the Player and contains its Board and Hand
+ */
 public class Player implements PlayerInterface {
     private String nickname;
     private SchoolBoard myboard;
@@ -14,7 +17,7 @@ public class Player implements PlayerInterface {
     private Assistant lastAssist;
     private MNStrategy strategy;
     private int coins;
-    private Mage mage;
+    private Mage mage; //can be removed
 
 
     /**

@@ -125,6 +125,7 @@ class ExpertGameBoardTest {
         island.add(ColorS.BLUE);
         island.add(ColorS.BLUE);
         island.add(ColorS.YELLOW);
+        island.add(ColorS.YELLOW);
         gb.getProfs().put(ColorS.BLUE, gb.getPlayers().get(1));
         gb.getProfs().put(ColorS.YELLOW, gb.getPlayers().get(1));
         gb.checkIsland(island);

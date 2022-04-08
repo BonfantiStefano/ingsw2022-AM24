@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 
+/**
+ * Class Hand contains all the Player's available Assistant cards
+ */
 public class Hand{
     public final static int [] MNSTEPS ={1, 1, 2, 2, 3, 3, 4, 4, 5, 5};
     public final static int [] TURN = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
@@ -22,7 +25,7 @@ public class Hand{
 
     /**
      * Method getCard obtains the card that is at the specified location in the hand
-     * @param  index of type int - index poisition of the card
+     * @param  index of type int - index position of the card
      * @return  Assistant card
      */
     public Assistant getCard(int index) throws InvalidIndexException{
