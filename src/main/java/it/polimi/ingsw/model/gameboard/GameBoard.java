@@ -38,7 +38,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     protected StudentContainer container;
     protected ProfStrategy strategy;
     protected Map<ColorS, Player> profs;
-
+    
 
     /**Constructor GameBoard creates a new empty gameBoard instance.*/
     public GameBoard(int numPlayers){
@@ -281,6 +281,11 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
         }
     }
 
+    /**
+     * Method getWorld returns World object with twelve islands in it.
+     *
+     * @return world of type World
+     */
     public World getWorld() {
         return world;
     }
