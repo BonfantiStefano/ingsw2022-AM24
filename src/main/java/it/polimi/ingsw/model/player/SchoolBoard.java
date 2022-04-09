@@ -19,7 +19,8 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
 
     /**
      * Constructor SchoolBoard creates a new SchoolBoard instance subdivided into three areas, two for the students
-     * (one of which is used to calculate the influence of the professors) and one for the towers.
+     * (one of which is used to check if the player has the majority for any of the colors for the control of professors)
+     * and one for the towers.
      */
     public SchoolBoard(ColorT color, int numTowers){
         entrance = new ArrayList<>();
