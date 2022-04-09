@@ -6,7 +6,9 @@ import it.polimi.ingsw.model.mnstrategy.MNStandard;
 import it.polimi.ingsw.model.mnstrategy.MNStrategy;
 
 /**
- * Player class represents the Player and contains its Board and Hand
+ * Player class represents the Player and contains all the information about him:
+ * his nickname, the magical school board he received in the beginning of the game, the color he picked for the towers
+ * that he will build, his Assistants cards and in particular the last one he played, the amount of coins he owns etc.
  */
 public class Player implements PlayerInterface {
     private String nickname;
@@ -138,22 +140,33 @@ public class Player implements PlayerInterface {
 
     /**
      * Method getSchoolBoard returns the School Board of the player
-     * @return myboard of type SchoolBoard
+     * @return myboard of type SchoolBoard - the school board that the player owns
      */
     public SchoolBoard getMyBoard(){
         return myboard;
     }
 
+    /**
+     * Method setStrategy allows to set the strategy which is related to Mother Nature pawn
+     * @param strategy of type ProfStrategy - the strategy determined by che chosen Character card
+     */
     @Override
     public void setStrategy(MNStrategy strategy) {
         this.strategy=strategy;
     }
 
+    /**
+     * Method setStrategy allows to switch the strategy depending on the Character card chosen by the player
+     */
     @Override
     public void resetStrategy() {
         strategy=new MNStandard();
     }
 
+    /**
+     * Method getStrategy gets the strategy that determines the number of the steps of Mother Nature pawn
+     * @return strategy of type MNStrategy  - the strategy determined by che chosen Character card
+     */
     @Override
     public MNStrategy getStrategy() {
         return strategy;
@@ -168,7 +181,7 @@ public class Player implements PlayerInterface {
     }
 
     /**
-     * Method setCoins changes the amount of palyer's coins
+     * Method setCoins changes the amount of player's coins
      * @param amount of type int - coins added (or subtracted) to the previous ones
      */
     public void setCoins(int amount){
@@ -183,6 +196,11 @@ public class Player implements PlayerInterface {
     }
 
 
+    /**
+     * Method equals is overridden in order to compare two objects Player
+     * @param o of type Object
+     * @return boolean - true if they are the same, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -193,6 +211,10 @@ public class Player implements PlayerInterface {
         return getNickname().equals(player.getNickname());
     }
 
+    /**
+     * Method hashCode is overridden in order to calculate the hash value of the Player
+     * @return int - the hash value of the Player
+     */
     @Override
     public int hashCode() {
         return getNickname().hashCode();

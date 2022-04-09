@@ -40,7 +40,9 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     protected Map<ColorS, Player> profs;
     
 
-    /**Constructor GameBoard creates a new empty gameBoard instance.*/
+    /**Constructor GameBoard creates a new empty gameBoard instance.
+     * @param numPlayers of type int - the number of the players in the game
+     */
     public GameBoard(int numPlayers){
         lastAssistants = new ArrayList<>();
         players = new ArrayList<>();
