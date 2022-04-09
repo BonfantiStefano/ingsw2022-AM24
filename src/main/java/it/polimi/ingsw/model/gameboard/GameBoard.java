@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.gameboard;
 
-//import it.polimi.ingsw.exceptions.IllegalMoveException;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
+import it.polimi.ingsw.exceptions.InvalidMNStepsException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
@@ -25,19 +25,19 @@ import java.util.*;
  */
 public class GameBoard implements HasStrategy<ProfStrategy>{
 
-    final private static int NUM_TOWERS = 8;
-    final private static int NUM_STUDENTS = 7;
-    final private static int NT = 6;
-    final private static int NS = 9;
-    private int numPlayers;
-    private List<Player> players;
-    private List<Cloud> clouds;
-    private List<Assistant> lastAssistants;
-    private World world;
-    private Player activePlayer;
-    private StudentContainer container;
-    private ProfStrategy strategy;
-    private Map<ColorS, Player> profs;
+    final protected static int NUM_TOWERS = 8;
+    final protected static int NUM_STUDENTS = 7;
+    final protected static int NT = 6;
+    final protected static int NS = 9;
+    protected int numPlayers;
+    protected List<Player> players;
+    protected List<Cloud> clouds;
+    protected List<Assistant> lastAssistants;
+    protected World world;
+    protected Player activePlayer;
+    protected StudentContainer container;
+    protected ProfStrategy strategy;
+    protected Map<ColorS, Player> profs;
 
 
     /**Constructor GameBoard creates a new empty gameBoard instance.*/
@@ -251,9 +251,9 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * it calculates the influence on that island and in necessary change the owner of the island and join the Island.
      * @param numMNSteps int - number of steps that Mother Nature want to do.
      */
-    public void moveMN(int numMNSteps) /*throws IllegalMoveException*/{
+    public void moveMN(int numMNSteps) throws InvalidMNStepsException {
         if(numMNSteps > activePlayer.getMNSteps()) {
-            //throw new IllegalMoveException();
+            throw new InvalidMNStepsException();
         }
         Island island = world.moveMN(numMNSteps);
         if(world.checkEntry(island)) {

@@ -1,10 +1,11 @@
 package it.polimi.ingsw.model.gameboard;
 
-//import it.polimi.ingsw.exceptions.IllegalMoveException;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
+import it.polimi.ingsw.exceptions.InvalidMNStepsException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.StudentContainer;
+import it.polimi.ingsw.model.mnstrategy.MNTwoSteps;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
@@ -17,8 +18,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameBoardTest {
 
@@ -49,12 +49,12 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("GameBoard's moveMn method test")
-    void moveMN() {
+    void moveMN() throws InvalidMNStepsException, InvalidIndexException{
         int indexMNStart = gb.getWorld().getMNPosition();
-        int numMNSteps = 6;
+        int numMNSteps = 4;
         gb.getPlayers().get(0).setPlaying(true);
         gb.setActivePlayer(gb.getPlayers().get(0));
-        gb.setChosenAssistant(gb.getPlayers().get(0), 10);
+        gb.chooseAssistants(gb.getPlayers().get(0), 9);
         //spostamento di Mother Nature senza dover cambiare niente
         gb.moveMN(numMNSteps);
         assertEquals(indexMNStart + numMNSteps >= gb.getWorld().getSize() ? indexMNStart + numMNSteps - gb.getWorld().getSize()
@@ -87,6 +87,23 @@ public class GameBoardTest {
         assertEquals(2, gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition()).getNumSubIsland());
     }
 
+
+    @Test
+    void moveMNException() throws InvalidIndexException{
+        gb.setActivePlayer(gb.getPlayers().get(0));
+        gb.chooseAssistants(gb.getPlayers().get(0), 8);
+        assertThrows(InvalidMNStepsException.class, () -> {gb.moveMN(6);});
+        gb.getPlayers().get(0).setStrategy(new MNTwoSteps());
+        assertThrows(InvalidMNStepsException.class, () -> {gb.moveMN(8);});
+        int indexMNStart = gb.getWorld().getMNPosition();
+        try {
+            gb.moveMN(6);
+            assertEquals((indexMNStart + 6) % 12, gb.getWorld().getMNPosition());
+        } catch (InvalidMNStepsException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     @Test
     public void testFirstPlayer_testNextPlayer(){
         int firstPlayer = gb.getFirstPlayer();
@@ -114,8 +131,6 @@ public class GameBoardTest {
         assertEquals(lisa.getNumCards(), lisaCards);
         assertTrue(gb.chooseAssistants(lisa,1));
         assertEquals(lisa.getNumCards(),lisaCards-1);
-
-
     }
 
 

@@ -5,12 +5,11 @@ import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.SchoolBoard;
 import it.polimi.ingsw.model.world.Island;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -18,7 +17,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests ExpertGameBoard
+ * Class ExpertGameBoardTest tests ExpertGameBoard class.
+ *
+ * @see ExpertGameBoard
  */
 class ExpertGameBoardTest {
     private ExpertGameBoard gb;
@@ -108,7 +109,7 @@ class ExpertGameBoardTest {
 
 
     /**
-     *
+     * Method checkIslandWithoutNoEntry tests the effect of the Character that calculate the influence on an Island without noEntryTiles.
      */
     @Test
     @DisplayName("checkIsland on the selected Island that has noEntryTiles")

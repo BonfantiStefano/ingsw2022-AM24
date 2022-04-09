@@ -160,6 +160,14 @@ class WorldTest {
         island8.add(ColorT.GREY);
         world.checkJoin(island7);
         assertEquals(8, world.getSize());
+        //merge the last and the first Island.
+        Island island9 = world.getIslandByIndex(7);
+        Island island10 = world.getIslandByIndex(0);
+        island10.remove(ColorT.WHITE);
+        island10.remove(ColorT.WHITE);
+        island10.add(ColorT.GREY);
+        world.checkJoin(island9);
+        assertEquals(7, world.getSize());
     }
 
     /** Method getSize tests the size of the World's getter, means as number of distinct Island.*/

@@ -117,7 +117,7 @@ class IslandTest {
 
     /** Method getNumStudentByColor checks the getter of the Student's number for each Color.*/
     @Test
-    @DisplayName("Stundent's number by color getter test")
+    @DisplayName("Student's number by color getter test")
     void getNumStudentByColor() {
         ColorS s1 = ColorS.GREEN;
         island.add(s1);

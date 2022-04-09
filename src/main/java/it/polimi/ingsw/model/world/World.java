@@ -64,11 +64,7 @@ public class World implements HasStrategy<InfluenceStrategy> {
      * @param numMNSteps int - number of steps done by Mother Nature.
      */
     public Island moveMN(int numMNSteps) {
-        if (posMN + numMNSteps >= getSize()) {
-            posMN = posMN + numMNSteps - getSize();
-        } else {
-            posMN = numMNSteps + posMN;
-        }
+        posMN = (posMN + numMNSteps) % getSize();
         return islands.get(posMN);
     }
 
@@ -150,31 +146,17 @@ public class World implements HasStrategy<InfluenceStrategy> {
      */
     public void checkJoin(Island i) {
         int indexIsland = islands.indexOf(i);
-        if(islands.size() > indexIsland+1) {
-            if(!islands.get(indexIsland+1).getTowerColor().equals(Optional.empty()) &&
-                    !i.getTowerColor().equals(Optional.empty()) && islands.get(indexIsland+1).getTowerColor().equals(i.getTowerColor())) {
-                Island newIsland = join(i, islands.get(indexIsland+1));
-                checkJoin(newIsland);
-            }
-        } else {
-            if(!islands.get(0).getTowerColor().equals(Optional.empty()) &&
-                    !i.getTowerColor().equals(Optional.empty()) && islands.get(0).getTowerColor().equals(i.getTowerColor())) {
-                Island newIsland = join(islands.get(0), i);
-                checkJoin(newIsland);
-            }
+        if(!islands.get((indexIsland+1) % getSize()).getTowerColor().equals(Optional.empty()) &&
+                !i.getTowerColor().equals(Optional.empty()) && islands.get((indexIsland+1) % getSize()).getTowerColor().equals(i.getTowerColor())) {
+            Island newIsland = join(islands.get(Math.min((indexIsland+1) % getSize(), indexIsland)), islands.get(Math.max((indexIsland+1) % getSize(), indexIsland)));
+            checkJoin(newIsland);
+            indexIsland = islands.indexOf(newIsland);
         }
-        if(indexIsland == 0) {
-            if(!islands.get(islands.size()-1).getTowerColor().equals(Optional.empty()) &&
-                    !i.getTowerColor().equals(Optional.empty()) && islands.get(islands.size()-1).getTowerColor().equals(i.getTowerColor())) {
-                Island newIsland = join(i, islands.get(islands.size()-1));
-                checkJoin(newIsland);
-            }
-        } else {
-            if(!islands.get(indexIsland-1).getTowerColor().equals(Optional.empty()) &&
-                    !i.getTowerColor().equals(Optional.empty()) && islands.get(indexIsland-1).getTowerColor().equals(i.getTowerColor())) {
-                Island newIsland = join(islands.get(indexIsland-1), i);
-                checkJoin(newIsland);
-            }
+        int indexPreviousIsland = (indexIsland-1) % getSize() < 0 ? (indexIsland-1) % getSize() + getSize() : (indexIsland-1) % getSize();
+        if(!islands.get(indexPreviousIsland).getTowerColor().equals(Optional.empty()) &&
+                !i.getTowerColor().equals(Optional.empty()) && islands.get(indexPreviousIsland).getTowerColor().equals(i.getTowerColor())) {
+            Island newIsland = join(islands.get(Math.min(indexPreviousIsland, indexIsland)), islands.get(Math.max(indexPreviousIsland, indexIsland)));
+            checkJoin(newIsland);
         }
     }
 

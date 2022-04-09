@@ -59,9 +59,9 @@ public class ExpertGameBoard extends GameBoard {
      * @param s the color of the Student being moved
      */
     public void entranceToHall(ColorS s){
-        boolean result = getActivePlayer().getMyBoard().entranceToHall(s);
+        boolean result = activePlayer.getMyBoard().entranceToHall(s);
         if (result){
-            getActivePlayer().setCoins(1);
+            activePlayer.setCoins(1);
             coins--;
         }
     }
@@ -70,17 +70,15 @@ public class ExpertGameBoard extends GameBoard {
      * Method hallToEntrance moves a Student from the Hall to the Entrance
      * @param s the color of the Student being moved
      */
-    public void hallToEntrance(ColorS s){
-        getActivePlayer().getMyBoard().hallToEntrance(s);
-    }
+    public void hallToEntrance(ColorS s){activePlayer.getMyBoard().hallToEntrance(s);}
 
     /**
      * Method addToHall adds a student directly to the Hall
      * @param s the color of the Student being added
      */
     public void addToHall(ColorS s){
-        if(getActivePlayer().getMyBoard().addToHall(s)){
-            getActivePlayer().setCoins(1);
+        if(activePlayer.getMyBoard().addToHall(s)){
+            activePlayer.setCoins(1);
             coins--;
         }
     }
@@ -103,8 +101,8 @@ public class ExpertGameBoard extends GameBoard {
      * and the ones that are in the expert GameBoard
      */
     public void playCharacter(Character c){
-        if(getActivePlayer().getCoins()>=c.getCost()&&findChar(c)!=null) {
-            getActivePlayer().setCoins(-c.getCost());
+        if(activePlayer.getCoins()>=c.getCost()&&findChar(c)!=null) {
+            activePlayer.setCoins(-c.getCost());
             setActiveCharacter(findChar(c));
             coins+=findChar(c).getCost();
         }
@@ -124,10 +122,10 @@ public class ExpertGameBoard extends GameBoard {
      * @param island Island - the Island on which the influence has to be calculated.
      */
     public void checkIsland(Island island) {
-        if(getWorld().checkEntry(island)) {
-            Optional<Player> nextOwner = getWorld().checkConquest(getWorld().getInfluenceIsland(island, getProfs(), getPlayers()), getPlayers());
+        if(world.checkEntry(island)) {
+            Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players);
             nextOwner.ifPresent(owner -> {conquest(owner, island);});
-            getWorld().checkJoin(getWorld().getIslandByIndex(getWorld().getMNPosition()));
+            world.checkJoin(world.getIslandByIndex(world.getMNPosition()));
         }
     }
 
@@ -170,8 +168,8 @@ public class ExpertGameBoard extends GameBoard {
      * @return factory a new CharacterFactory
      */
     private CharacterFactory createFactory(){
-        ArrayList<PlayerInterface> players= getPlayers().stream().map(p -> (PlayerInterface) p).collect(Collectors.toCollection(ArrayList::new));
-        factory = new CharacterFactory(getWorld(), this, getContainer(), players);
+        ArrayList<PlayerInterface> players= this.players.stream().map(p -> (PlayerInterface) p).collect(Collectors.toCollection(ArrayList::new));
+        factory = new CharacterFactory(world, this, container, players);
         return factory;
     }
 
