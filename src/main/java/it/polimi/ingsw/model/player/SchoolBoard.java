@@ -6,11 +6,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * SchoolBoard represents the magical school board received by each player before the start of the game.
+ * It contains pawns of five different colors representing students and towers of the color chosen by the player.
+ * Different magical schools will compete against each other for the influence of the five professors
+ *
+ */
 public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTower {
     private ArrayList<ColorS> entrance;
     private ArrayList<ColorT> towers;
     private Map<ColorS,Integer> hall;
 
+    /**
+     * Constructor SchoolBoard creates a new SchoolBoard instance subdivided into three areas, two for the students
+     * (one of which is used to calculate the influence of the professors) and one for the towers.
+     */
     public SchoolBoard(ColorT color, int numTowers){
         entrance = new ArrayList<>();
         towers= new ArrayList<>();

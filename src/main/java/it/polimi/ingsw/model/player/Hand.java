@@ -5,7 +5,7 @@ import java.util.List;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 
 /**
- * Class Hand contains all the Player's available Assistant cards
+ * Class Hand contains a set of all the Player's available Assistant cards which have a matching back
  */
 public class Hand{
     public final static int [] MNSTEPS ={1, 1, 2, 2, 3, 3, 4, 4, 5, 5};
@@ -24,7 +24,7 @@ public class Hand{
     }
 
     /**
-     * Method getCard obtains the card that is at the specified location in the hand
+     * Method getCard gets the Assistant card at the given position in the Hand.
      * @param  index of type int - index position of the card
      * @return  Assistant card
      */
