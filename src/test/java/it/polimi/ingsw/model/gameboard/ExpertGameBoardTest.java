@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.gameboard;
 
+import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.Character;
@@ -84,7 +85,7 @@ class ExpertGameBoardTest {
      * Ensures that the ActivePlayer can afford a Character and activates it
      */
     @Test
-    void playCharacter() {
+    void playCharacter() throws NotEnoughCoinsException {
         ArrayList<Character> c = gb.getCharacters();
         gb.getActivePlayer().setCoins(15);
         gb.playCharacter(c.get(0));
@@ -138,7 +139,7 @@ class ExpertGameBoardTest {
      * Ensures that the ExpertGameBoard loses coins when they are given to players
      */
     @Test
-    void getAvailableCoins() {
+    void getAvailableCoins() throws NotEnoughCoinsException {
         //one player has been added so there are 20-1 coins available
         assertEquals(gb.getAvailableCoins(), 19);
         gb.getActivePlayer().setCoins(15);

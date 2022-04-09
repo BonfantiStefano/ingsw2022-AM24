@@ -38,7 +38,8 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     protected StudentContainer container;
     protected ProfStrategy strategy;
     protected Map<ColorS, Player> profs;
-    
+    protected boolean gameMustEnd;
+
 
     /**Constructor GameBoard creates a new empty gameBoard instance.*/
     public GameBoard(int numPlayers){
@@ -112,6 +113,13 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
             player.setLastAssist(assistant);
             player.getMyCards().removeCard(assistant);
         }
+
+        //Check if any Player has used all cards, if so the game must end after the current round
+        for(Player p: players)
+            if(p.getNumCards() == 0)
+                gameMustEnd = true;
+
+
         return result;
     }
 
@@ -282,6 +290,27 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     }
 
     /**
+     * Fills Clouds with the correct Number of Students
+     */
+    public void newClouds(){
+        int numStudents = numPlayers%2==0 ? 3 : 4; // 2 or 4 Players -> 3 Students, 3 Players -> 4 Students per Cloud
+        for(Cloud c: clouds)
+            for(int i=0;i<numStudents; i++)
+                if(container.canDraw())
+                    c.add(container.draw());
+                else
+                    gameMustEnd = true;
+    }
+
+    /**
+     * Gets the selected Cloud
+     * @param i the Cloud's index
+     * @return the selected Cloud
+     */
+    public Cloud getCloudByIndex(int i){
+        return clouds.get(i);
+    }
+    /**
      * Method getWorld returns World object with twelve islands in it.
      *
      * @return world of type World
@@ -308,5 +337,11 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
         return strategy;
     }
 
-
+    /**
+     * Checks if the game must end after this round
+     * @return true if the game is in its last round
+     */
+    public boolean checkGameMustEnd() {
+        return gameMustEnd;
+    }
 }

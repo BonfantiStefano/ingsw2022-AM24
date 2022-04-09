@@ -231,4 +231,57 @@ public class GameBoardTest {
         assertEquals(0, lisa.getMyBoard().getEntrance().size());
         assertEquals(1, island.getNumStudentByColor(ColorS.GREEN));
     }
+
+    /**
+     * Tests if Clouds are filled correctly
+     */
+    @Test
+    @DisplayName("GameBoard's newClouds test")
+    void newClouds(){
+        gb.newClouds();
+        for(int i=0; i < gb.getNumPlayers(); i++)
+            assertEquals(4, gb.getCloudByIndex(0).getStudents().size());
+    }
+
+    /**
+     * Tests if Strategies are changed correctly
+     */
+    @Test
+    @DisplayName("GameBoard's Strategy test")
+    void strategyTest(){
+        //check if the GameBoard is created with the standard strategy
+        assertTrue(gb.getStrategy() instanceof StandardProf);
+        gb.setStrategy(new EqualProf());
+        //check if the Strategy has changed
+        assertTrue(gb.getStrategy() instanceof EqualProf);
+        gb.resetStrategy();
+        //check if the Strategy has been reset
+        assertTrue(gb.getStrategy() instanceof StandardProf);
+    }
+
+    /**
+     * Tests if the GameBoard correctly evaluates the condition to end the game when all Students have been played
+     */
+    @Test
+    void gameMustEndTestStudents(){
+        StudentContainer temp = gb.getContainer();
+        //draw all Students
+        for(int i=0; i < 120; i++)
+            temp.draw();
+        gb.newClouds();
+        assertTrue(gb.checkGameMustEnd());
+    }
+
+    /**
+     * Tests if the GameBoard correctly evaluates the condition to end the game when all Assistants have been played
+     */
+    @Test
+    void gameMustEndTestAssistants() throws InvalidIndexException {
+        gb2 = new GameBoard(3);
+        gb2.addPlayer("test", ColorT.WHITE, Mage.MAGE2);
+        for(int i=1;i<=10;i++){
+            gb2.chooseAssistants(gb2.getPlayerByNickname("test"),1);
+        }
+        assertTrue(gb2.checkGameMustEnd());
+    }
 }

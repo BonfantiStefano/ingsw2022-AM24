@@ -13,10 +13,6 @@ public class StudentContainer {
             for(int i=0;i<24;i++)
                 students.add(c);
         initial=new ArrayList<>();
-        for(ColorS c: ColorS.values())
-            for(int i=0;i<2;i++)
-                initial.add(c);
-
         Collections.shuffle(students);
         Collections.shuffle(initial);
     }
@@ -27,6 +23,10 @@ public class StudentContainer {
      */
     public ArrayList<ColorS> initialDraw(){
         //no exception needed because the initial draw won't be called after the game initialization
+        for(ColorS c: ColorS.values())
+            for(int i=0;i<2;i++)
+                initial.add(c);
+
         return initial;
     }
 
@@ -37,5 +37,13 @@ public class StudentContainer {
     public ColorS draw(){
         //add exception to signal that all Students have been drawn
         return students.remove(0);
+    }
+
+    /**
+     * Checks if there are Students remaining
+     * @return true if it's possible to draw other Students
+     */
+    public boolean canDraw(){
+        return students.size()>0;
     }
 }
