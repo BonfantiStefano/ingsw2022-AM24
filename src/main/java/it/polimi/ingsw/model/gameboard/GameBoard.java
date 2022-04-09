@@ -41,7 +41,9 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     protected boolean gameMustEnd;
 
 
-    /**Constructor GameBoard creates a new empty gameBoard instance.*/
+    /**Constructor GameBoard creates a new empty gameBoard instance.
+     * @param numPlayers of type int - the number of the players in the game
+     */
     public GameBoard(int numPlayers){
         lastAssistants = new ArrayList<>();
         players = new ArrayList<>();
@@ -64,6 +66,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
 
     /**
      * Method getNumPlayers returns the number of the players taking part in the game.
+     * @return int - the number of the players in the game
      */
     public int getNumPlayers(){
         return players.size();
@@ -78,18 +81,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     }
 
     /**
-     * Method setChosenAssistant allows the player to change his last Assistant card
-     *
-     * @param player of type Player - the player that will change his Assistant card.
-     * @param index of type int - the index of the card that will replace the previous one
-     */
-    public void setChosenAssistant(Player player, int index){
-        Assistant card = player.chooseAssistant(index-1);
-        player.setLastAssist(card);
-    }
-
-    /**
-     * Method setLastAssistants gets a player and the index of the card he would like to play in this round
+     * Method chooseAssistants gets a player and the index of the card he would like to play in this round
      * in order to eventually add this card in the list of all the Assistant cards
      *
      * @param player of type Player - the player which Assistant card will be added to the list with other players' cards
@@ -156,7 +148,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
         return first;
     }
 
-    /** Method nextPlayer skips to the next player. */
+    /** Method nextPlayer skips to the next player and sets him as Active player */
     public void nextPlayer(){
         Player nextPlayer = null;
         Player activePlayer = getActivePlayer();
@@ -243,12 +235,18 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
 
     /**
      * Method getPlayers returns the list of the players taking part in the game.
-     * @return List<Player>
+     * @return List<Player> - list containing all the players
      */
     public List<Player> getPlayers(){
         return players;
     }
 
+    /**
+     * Method moveStudent allows to move the pawns student
+     * @param s of type ColorS - the student that has to be moved
+     * @param from of type CanRemoveStudent - place from which the student is relocated
+     * @param to of type CanAcceptStudent - place where the student is shifted
+     */
     public void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to){
         from.remove(s);
         to.add(s);
@@ -312,26 +310,42 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     }
     /**
      * Method getWorld returns World object with twelve islands in it.
-     *
      * @return world of type World
      */
     public World getWorld() {
         return world;
     }
 
+
+    /**
+     * Method getProfs returns the Map in which every player is paired with the professor on whom he exercises his control
+     * @return profs of type Map - the professors controlled by different players
+     */
     public Map<ColorS, Player> getProfs() {
         return profs;
     }
+
+    /**
+     * Method setStrategy allows to set the strategy that determines which player takes the control on the professors
+     * @param strategy of type ProfStrategy - the strategy determined by che chosen Character card
+     */
     @Override
     public void setStrategy(ProfStrategy strategy){
         this.strategy=strategy;
     }
 
+    /**
+     * Method setStrategy allows to switch the strategy depending on the Character card chosen by the player
+     */
     @Override
     public void resetStrategy() {
         strategy=new StandardProf();
     }
 
+    /**
+     * Method getStrategy gets the strategy that determines which player takes the control over the professors
+     * @return strategy of type ProfStrategy  - the strategy determined by che chosen Character card
+     */
     @Override
     public ProfStrategy getStrategy() {
         return strategy;

@@ -131,6 +131,11 @@ public class GameBoardTest {
         assertEquals(lisa.getNumCards(), lisaCards);
         assertTrue(gb.chooseAssistants(lisa,1));
         assertEquals(lisa.getNumCards(),lisaCards-1);
+        int aliceCards = alice.getNumCards();
+        for(int i = 0; i<10; i++){
+            assertTrue(gb.chooseAssistants(alice,1));
+        }
+        assertEquals(alice.getNumCards(),0);
     }
 
 

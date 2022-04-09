@@ -8,13 +8,17 @@ import it.polimi.ingsw.exceptions.InvalidIndexException;
  * Class Hand contains a set of all the Player's available Assistant cards which have a matching back
  */
 public class Hand{
-    public final static int [] MNSTEPS ={1, 1, 2, 2, 3, 3, 4, 4, 5, 5};
-    public final static int [] TURN = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    private final static int [] MNSTEPS ={1, 1, 2, 2, 3, 3, 4, 4, 5, 5};
+    private final static int [] TURN = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     private Mage mage;
 
     private List<Assistant> cards;
 
-    /**Constructor Hand creates a new empty hand of cards instance.*/
+    /**Constructor Hand creates a hand of playing cards instance.
+     * Each card is initialized with two values: the first one determines the turn order of the round,
+     * the second one how many steps Mother Nature pawn can be shifted
+     * @param mage of type Mage - the back of the cards (the image of the mage chosen by the player)
+     */
     public Hand(Mage mage){
         this.mage = mage;
         cards = new ArrayList<Assistant>();
@@ -44,7 +48,7 @@ public class Hand{
     }
 
     /**
-     * Method numCards returns the number of cards held in the hand.
+     * Method numCards returns how many cards are left in the hand.
      * @return int - the size of the hand of cards
      */
     public int numCards(){
