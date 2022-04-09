@@ -80,17 +80,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     }
 
     /**
-     * Method setChosenAssistant allows the player to change his last Assistant card
-     * @param player of type Player - the player that will change his Assistant card.
-     * @param index of type int - the index of the card that will replace the previous one
-     */
-    public void setChosenAssistant(Player player, int index){
-        Assistant card = player.chooseAssistant(index-1);
-        player.setLastAssist(card);
-    }
-
-    /**
-     * Method setLastAssistants gets a player and the index of the card he would like to play in this round
+     * Method chooseAssistants gets a player and the index of the card he would like to play in this round
      * in order to eventually add this card in the list of all the Assistant cards
      *
      * @param player of type Player - the player which Assistant card will be added to the list with other players' cards
