@@ -1,5 +1,11 @@
 package it.polimi.ingsw.model.player;
 
+/**
+ * Class Assistant represents a playing card.
+ * Each card has two values (the first one determines the turn order of the round,
+ * the second one how many steps Mother Nature pawn can be shifted)
+ * and presents a back image depicting one of the four mages
+ */
 public class Assistant {
     private int MNsteps;
     private int turn;
