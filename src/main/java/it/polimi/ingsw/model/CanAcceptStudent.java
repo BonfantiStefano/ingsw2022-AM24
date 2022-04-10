@@ -7,7 +7,7 @@ package it.polimi.ingsw.model;
 public interface CanAcceptStudent {
     /**
      * This method will handle how a Student is added
-     * @param s the Color of the Student being added
+     * @param s Color of the Student being added
      */
     void add(ColorS s);
 }

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.gameboard;
 
-import it.polimi.ingsw.exceptions.PlaceFullException;
+import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.HasStrategy;
@@ -60,13 +60,7 @@ public class ExpertGameBoard extends GameBoard {
      * @param s the color of the Student being moved
      */
     public void entranceToHall(ColorS s){
-        boolean result = false;
-        try{
-            result = activePlayer.getMyBoard().entranceToHall(s);
-        }
-        catch(PlaceFullException exc){
-            System.out.println(exc.getMessage());
-        }
+        boolean result = activePlayer.getMyBoard().entranceToHall(s);
         if (result){
             activePlayer.setCoins(1);
             coins--;
@@ -84,13 +78,9 @@ public class ExpertGameBoard extends GameBoard {
      * @param s the color of the Student being added
      */
     public void addToHall(ColorS s){
-        try {
-            if(activePlayer.getMyBoard().addToHall(s)){
-                activePlayer.setCoins(1);
-                coins--;
-            }
-        } catch (PlaceFullException exc) {
-            System.out.println(exc.getMessage());
+        if(activePlayer.getMyBoard().addToHall(s)){
+            activePlayer.setCoins(1);
+            coins--;
         }
     }
 
@@ -111,12 +101,14 @@ public class ExpertGameBoard extends GameBoard {
      * Method playActiveCharacter updates the amount of coins that belongs to active player
      * and the ones that are in the expert GameBoard
      */
-    public void playCharacter(Character c){
+    public void playCharacter(Character c) throws NotEnoughCoinsException {
         if(activePlayer.getCoins()>=c.getCost()&&findChar(c)!=null) {
             activePlayer.setCoins(-c.getCost());
             setActiveCharacter(findChar(c));
             coins+=findChar(c).getCost();
         }
+        else
+            throw new NotEnoughCoinsException();
 
     }
 

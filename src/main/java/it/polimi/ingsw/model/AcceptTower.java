@@ -7,13 +7,13 @@ package it.polimi.ingsw.model;
 public interface AcceptTower {
     /**
      * Method used to add a Tower
-     * @param t the Tower being added
+     * @param t Color of the Tower being added
      */
     void add(ColorT t);
 
     /**
      * Method used to remove a Tower
-     * @param t the Tower being removed
+     * @param t Color of the Tower being removed
      */
     void remove(ColorT t);
 }
