@@ -42,7 +42,6 @@ class HandTest {
                 ()->hand1.getCard(index));
     }
 
-
     /**
      * Method testInitValues tests that all the Assistant cards of the different players are initialized
      * with the same values regardless of the chosen type of mage

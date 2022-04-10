@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PlayerTest {
 
     Player player;
-
     /** Method init creates a Player that will be used by every test.*/
     @BeforeEach
     public void init(){

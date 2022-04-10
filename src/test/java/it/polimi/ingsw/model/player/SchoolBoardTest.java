@@ -125,4 +125,5 @@ class SchoolBoardTest {
         schoolBoard.add(ColorT.WHITE);
         assertEquals(8, schoolBoard.getTowers().size());
     }
+
 }

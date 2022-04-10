@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @see GameBoard
  */
+
 public class GameBoardTest {
 
     GameBoard gb, gb2;

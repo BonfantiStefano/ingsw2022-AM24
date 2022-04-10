@@ -14,7 +14,6 @@ class AssistantTest {
 
     Assistant a;
     Assistant b;
-
     /** Method init initializes values that will be used during the tests. */
     @BeforeEach
     public void init(){

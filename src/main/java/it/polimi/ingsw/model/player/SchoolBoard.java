@@ -53,7 +53,6 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
             entrance.remove(s);
             return (temp%3 == 0) && temp!=0;
         }
-
     }
 
     /**

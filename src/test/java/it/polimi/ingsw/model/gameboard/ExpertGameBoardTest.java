@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.gameboard;
 
 import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
+import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.Character;
@@ -39,7 +40,7 @@ class ExpertGameBoardTest {
      * Adds 3 Blue Students to the Player's Hall and ensures they are present
      */
     @Test
-    void entranceToHall() {
+    void entranceToHall() throws PlaceFullException {
         gb.entranceToHall(ColorS.BLUE);
         gb.entranceToHall(ColorS.BLUE);
         gb.entranceToHall(ColorS.BLUE);
@@ -50,7 +51,7 @@ class ExpertGameBoardTest {
      * Adds a Student to the Player's Hall, and ensures it has moved to the Entrance
      */
     @Test
-    void hallToEntrance() {
+    void hallToEntrance() throws PlaceFullException {
         gb.entranceToHall(ColorS.BLUE);
         gb.hallToEntrance(ColorS.BLUE);
         assertEquals(gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE), 0);
@@ -60,7 +61,7 @@ class ExpertGameBoardTest {
      * Ensures that after adding directly to the Player's Hall the number of Students is higher
      */
     @Test
-    void addToHall() {
+    void addToHall() throws PlaceFullException {
         int before=gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE);
         gb.addToHall(ColorS.BLUE);
         int after=gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE);
@@ -107,7 +108,6 @@ class ExpertGameBoardTest {
         assertEquals(0, island.getNumNoEntry());
         assertEquals(Optional.empty(), island.getTowerColor());
     }
-
 
     /**
      * Method checkIslandWithoutNoEntry tests the effect of the Character that calculate the influence on an Island without noEntryTiles.

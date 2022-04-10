@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.gameboard;
 
 import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
+import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.HasStrategy;
@@ -59,7 +60,7 @@ public class ExpertGameBoard extends GameBoard {
      * Method entranceToHall moves a Student form Entrance to Hall in the active player's School Board
      * @param s the color of the Student being moved
      */
-    public void entranceToHall(ColorS s){
+    public void entranceToHall(ColorS s) throws PlaceFullException {
         boolean result = activePlayer.getMyBoard().entranceToHall(s);
         if (result){
             activePlayer.setCoins(1);
@@ -77,7 +78,7 @@ public class ExpertGameBoard extends GameBoard {
      * Method addToHall adds a student directly to the Hall
      * @param s the color of the Student being added
      */
-    public void addToHall(ColorS s){
+    public void addToHall(ColorS s) throws PlaceFullException {
         if(activePlayer.getMyBoard().addToHall(s)){
             activePlayer.setCoins(1);
             coins--;
@@ -109,7 +110,6 @@ public class ExpertGameBoard extends GameBoard {
         }
         else
             throw new NotEnoughCoinsException();
-
     }
 
     /**
