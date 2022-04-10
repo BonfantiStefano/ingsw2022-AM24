@@ -9,23 +9,36 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Class PlayerTest tests Player class.
+ *
+ * @see Player
+ */
 public class PlayerTest {
 
     Player player;
 
+    /** Method init creates a Player that will be used by every test.*/
     @BeforeEach
     public void init(){
         player = new Player("Bob", ColorT.BLACK, Mage.MAGE1, 9);
     }
 
+    /** Method testChooseAssistant tests the choice procedure when the player selects a cars and sets it
+     * as the last card he played
+      */
     @Test
-    public void testChooseAssistant_testNumCards(){
+    public void testChooseAssistant(){
         int numCards = player.getNumCards();
+        assertEquals(numCards, 10);
         Assistant a = player.chooseAssistant(7);
         player.setLastAssist(a);
         assertEquals(player.getLastAssistant().getTurn(), 7);
     }
 
+    /**
+     * Method testPlayerInfo checks the correctness of the player information getters
+     */
     @Test
     public void testPlayerInfo(){
         assertEquals(player.getNickname(), "Bob");
@@ -37,6 +50,9 @@ public class PlayerTest {
 
     }
 
+    /**
+     * Method influenceStrategy checks the selection of a strategy representing the effect of a Character
+     */
     @Test
     @DisplayName("Set influence strategy test")
     void influenceStrategy() {

@@ -31,6 +31,7 @@ public class Hand{
      * Method getCard gets the Assistant card at the given position in the Hand.
      * @param  index of type int - index position of the card
      * @return  Assistant card
+     * @throws InvalidIndexException if the index position of the card doesn't exist in the player's hand
      */
     public Assistant getCard(int index) throws InvalidIndexException{
         if (index >= 1 && index <= 10){

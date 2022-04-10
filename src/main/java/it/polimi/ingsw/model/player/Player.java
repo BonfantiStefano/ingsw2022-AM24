@@ -8,7 +8,7 @@ import it.polimi.ingsw.model.mnstrategy.MNStrategy;
 /**
  * Player class represents the Player and contains all the information about him:
  * his nickname, the magical school board he received in the beginning of the game, the color he picked for the towers
- * that he will build, his Assistants cards and in particular the last one he played, the amount of coins he owns etc.
+ * that he will build, his Assistant cards and in particular the last one he played, the amount of coins he owns etc.
  */
 public class Player implements PlayerInterface {
     private String nickname;

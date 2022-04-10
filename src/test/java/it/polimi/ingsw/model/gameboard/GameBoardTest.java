@@ -20,12 +20,21 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Class GameBoardTest tests GameBoard.
+ *
+ * @see GameBoard
+ */
 public class GameBoardTest {
 
     GameBoard gb, gb2;
 
+    /**
+     * Method init initializes values used for the tests.
+     * @throws InvalidIndexException if the index position of the card doesn't exist
+     */
     @BeforeEach
-    public void initialization() throws InvalidIndexException {
+    public void init() throws InvalidIndexException {
         gb = new GameBoard(3);
         Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9);
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
@@ -87,7 +96,10 @@ public class GameBoardTest {
         assertEquals(2, gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition()).getNumSubIsland());
     }
 
-
+    /**
+     * Method moveMNException checks the correct throwing of the InvalidMNStepsException
+     * @throws InvalidIndexException if the index position of the card doesn't exist
+     */
     @Test
     void moveMNException() throws InvalidIndexException{
         gb.setActivePlayer(gb.getPlayers().get(0));
@@ -104,6 +116,10 @@ public class GameBoardTest {
         }
     }
 
+    /**
+     * Method testFirstPlayer_testNextPlayer checks if the first player and the following next ones are correctly
+     * selected in the list of all the players
+     */
     @Test
     public void testFirstPlayer_testNextPlayer(){
         int firstPlayer = gb.getFirstPlayer();
@@ -116,8 +132,12 @@ public class GameBoardTest {
 
     }
 
+    /**
+     * Method testChooseAssistants tests the choice procedure of an Assistant card
+     * @throws InvalidIndexException if the index position of the card doesn't exist
+     */
     @Test
-    public void chooseAssistants() throws InvalidIndexException {
+    public void testChooseAssistants() throws InvalidIndexException {
         gb = new GameBoard(3);
         Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9);
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
@@ -138,7 +158,9 @@ public class GameBoardTest {
         assertEquals(alice.getNumCards(),0);
     }
 
-
+    /** Method testAddPlayer tests the addition of different players in the game and checks the correctness of the number
+     * of pawns in their SchoolBoards
+     * */
     @Test
     public void testAddPlayer(){
         gb = new GameBoard(3);
@@ -155,13 +177,18 @@ public class GameBoardTest {
         assertEquals(gb2.getPlayers().get(1).getMyBoard().getEntrance().size(),7);
     }
 
+    /**
+     * Method testGetPlayerByNickname checks if a player is correctly selected by his nickname
+     */
     @Test
     public void testGetPlayerByNickname(){
         Player p = gb.getPlayerByNickname("BOB");
         assertEquals(p.getNickname(), "Bob");
     }
 
-
+    /**
+     *  Method testActivePlayer tests if the chosen player is correctly set as the Active player
+     */
     @Test
     public void TestActivePlayer(){
         gb = new GameBoard(2);
@@ -173,6 +200,10 @@ public class GameBoardTest {
 
     }
 
+    /**
+     * Method moveTower checks the correctness of the tower's position when it's moved from the player's SchoolBoard
+     * to an island and the other way
+     */
     @Test
     public void moveTower(){
         gb = new GameBoard(2);

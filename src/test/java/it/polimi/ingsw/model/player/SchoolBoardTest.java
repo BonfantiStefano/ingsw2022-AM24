@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.world.Island;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class SchoolBoardTest {
 
-    SchoolBoard schoolBoard;
+    SchoolBoard schoolBoard, sb;
 
     /** Method setup creates a SchoolBoard that will be used by every test.*/
     @BeforeEach
@@ -31,10 +32,26 @@ class SchoolBoardTest {
      * Method entranceToHall tests the move of a Student from the entrance to the hall.
      */
     @Test
-    void entranceToHall() {
+    void entranceToHall() throws PlaceFullException {
         schoolBoard.entranceToHall(ColorS.BLUE);
         assertEquals(1,schoolBoard.getEntrance().size());
         assertEquals(2,schoolBoard.getHall().get(ColorS.BLUE));
+    }
+
+    /** Method testExceptionEntraceToHall checks if entranceToHall method is capable of throwing PlaceFullException */
+    @Test
+    public void testExceptionEntraceToHall() throws PlaceFullException {
+        sb = new SchoolBoard(ColorT.BLACK, 8);
+        for(int i = 0; i < 3; i++){
+            sb.addToHall(ColorS.GREEN);
+        }
+        for(int i = 0; i < 7; i++){
+            sb.getEntrance().add(ColorS.GREEN);
+            sb.entranceToHall(ColorS.GREEN);
+        }
+        sb.getEntrance().add(ColorS.GREEN);
+        assertThrows(PlaceFullException.class,
+                () -> sb.entranceToHall(ColorS.GREEN));
     }
 
     /**
@@ -61,9 +78,20 @@ class SchoolBoardTest {
      * Method addToHall tests the addition of a Student to the Hall.
      */
     @Test
-    void addToHall() {
+    void addToHall() throws PlaceFullException {
         schoolBoard.addToHall(ColorS.RED);
         assertEquals(1, schoolBoard.getHall(ColorS.RED));
+    }
+
+    /** Method testExceptionToHall checks if addToHall method is capable of throwing PlaceFullException */
+    @Test
+    public void testExceptionAddToHall() throws PlaceFullException {
+        sb = new SchoolBoard(ColorT.GREY, 8);
+        for(int i = 0; i < 10; i++){
+            sb.addToHall(ColorS.RED);
+        }
+        assertThrows(PlaceFullException.class,
+                () -> sb.addToHall(ColorS.RED));
     }
 
     /**

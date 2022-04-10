@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.*;
 
 import java.util.ArrayList;
@@ -13,6 +14,8 @@ import java.util.Map;
  *
  */
 public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTower {
+    private final static int MAX_STUD = 10;
+
     private ArrayList<ColorS> entrance;
     private ArrayList<ColorT> towers;
     private Map<ColorS,Integer> hall;
@@ -38,12 +41,19 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
      * Moves a Student form Entrance to Hall
      * @param s the color of the Student being moved
      * @return true if the Player gains a coin
+     * @throws PlaceFullException if there is no more available space for the students in the hall
      */
-    public boolean entranceToHall(ColorS s){
+    public boolean entranceToHall(ColorS s) throws PlaceFullException {
         int temp = hall.get(s) + 1;
-        hall.put(s,temp);
-        entrance.remove(s);
-        return (temp%3 == 0) && temp!=0;
+        if(temp > MAX_STUD){
+            throw new PlaceFullException();
+        }
+        else{
+            hall.put(s,temp);
+            entrance.remove(s);
+            return (temp%3 == 0) && temp!=0;
+        }
+
     }
 
     /**
@@ -67,11 +77,17 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
      * Adds a student directly to the Hall
      * @param s the Student being added
      * @return true if the Player gains a coin
+     * @throws PlaceFullException if there is no more available space for the students in the hall
      */
-    public boolean addToHall(ColorS s){
+    public boolean addToHall(ColorS s) throws PlaceFullException {
         int temp = hall.get(s) + 1;
-        hall.put(s, temp);
-        return temp%3==0 && temp!=0;
+        if(temp > MAX_STUD){
+            throw new PlaceFullException();
+        }
+        else {
+            hall.put(s, temp);
+            return temp % 3 == 0 && temp != 0;
+        }
     }
 
     /**
