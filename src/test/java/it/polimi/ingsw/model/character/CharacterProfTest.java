@@ -10,13 +10,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Class CharacterProfTest tests the correct behaviour of CharacterProf
+ */
 class CharacterProfTest {
-
+    /**
+     * Ensures that the Character is created with the correct Strategy
+     */
     @Test
     void play() {
         GameBoard g = new GameBoard(3);
-        ProfStrategy p= new EqualProf();
-        CharacterProf c= new CharacterProf(1, "test", p, g);
+        ProfStrategy p = new EqualProf();
+        CharacterProf c = new CharacterProf(1, "test", p, g);
         c.play();
         assertEquals(p,g.getStrategy());
     }

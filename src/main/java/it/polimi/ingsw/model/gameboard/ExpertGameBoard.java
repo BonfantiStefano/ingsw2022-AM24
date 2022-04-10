@@ -1,17 +1,17 @@
 package it.polimi.ingsw.model.gameboard;
 
+import it.polimi.ingsw.exceptions.InvalidMNStepsException;
 import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
-import it.polimi.ingsw.model.HasStrategy;
+import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
-import it.polimi.ingsw.model.character.CharacterFactory;
-import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PlayerInterface;
 import it.polimi.ingsw.model.world.Island;
+import it.polimi.ingsw.model.world.World;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -112,7 +112,7 @@ public class ExpertGameBoard extends GameBoard {
      * and the ones that are in the expert GameBoard
      */
     public void playCharacter(Character c) throws NotEnoughCoinsException {
-        if(activePlayer.getCoins()>=c.getCost()&&findChar(c)!=null) {
+        if(activePlayer.getCoins() >= c.getCost() && findChar(c) != null) {
             activePlayer.setCoins(-c.getCost());
             setActiveCharacter(findChar(c));
             coins+=findChar(c).getCost();
@@ -183,6 +183,42 @@ public class ExpertGameBoard extends GameBoard {
         ArrayList<PlayerInterface> players= this.players.stream().map(p -> (PlayerInterface) p).collect(Collectors.toCollection(ArrayList::new));
         factory = new CharacterFactory(world, this, container, players);
         return factory;
+    }
+
+    /**
+     * method moveMN checks if the move is legal, then if there isn't noEntryTiles on the arrival Island
+     * it calculates the influence on that island and in necessary change the owner of the island and join the Island.
+     * @param numMNSteps int - number of steps that Mother Nature want to do.
+     */
+    public void moveMN(int numMNSteps) throws InvalidMNStepsException {
+        if(numMNSteps > activePlayer.getMNSteps()) {
+            throw new InvalidMNStepsException();
+        }
+        Island island = world.moveMN(numMNSteps);
+        if(world.checkEntry(island)) {
+            checkIsland(island);
+        }
+        else
+            resetNoEntryCharacter();
+    }
+
+
+    /**
+     * Adds a new Student to the Character after it's played
+     * @throws ClassCastException if the activeCharacter
+     */
+    public void resetCharacterStudent() throws ClassCastException{
+        CharacterWithStudent c = (CharacterWithStudent) activeCharacter;
+        c.add(container.draw());
+    }
+
+    /**
+     * Adds a NoEntry tile on the CharacterWithNoEntry
+     */
+    public void resetNoEntryCharacter(){
+        CharacterWithNoEntry c = (CharacterWithNoEntry) findChar(new Character(CharacterDescription.CHAR5.getCost(), CharacterDescription.CHAR5.getDesc()));
+        if(c!=null)
+            c.resetNoEntry();
     }
 
 

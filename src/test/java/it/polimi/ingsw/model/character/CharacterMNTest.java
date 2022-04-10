@@ -17,6 +17,9 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Class CharacterMNTest tests the correct behaviour of CharacterMN
+ */
 class CharacterMNTest {
     Player p;
     ArrayList<PlayerInterface> players;
@@ -28,6 +31,10 @@ class CharacterMNTest {
         players = new ArrayList<>();
         c=new CharacterMN(1, "test", players);
     }
+
+    /**
+     * Ensures that the Character is created with the correct Strategy
+     */
     @Test
     void playNormal() {
         p.setPlaying(true);
@@ -36,6 +43,9 @@ class CharacterMNTest {
         assertTrue(p.getStrategy() instanceof MNTwoSteps);
     }
 
+    /**
+     * Ensures that the Player's strategy doesn't change if he isn't playing
+     */
     @Test
     void playNoOneIsActive() {
         players.add(p);

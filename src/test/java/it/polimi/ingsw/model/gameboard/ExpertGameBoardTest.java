@@ -1,19 +1,22 @@
 package it.polimi.ingsw.model.gameboard;
 
+import it.polimi.ingsw.exceptions.InvalidIndexException;
+import it.polimi.ingsw.exceptions.InvalidMNStepsException;
 import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.Character;
+import it.polimi.ingsw.model.character.CharacterWithNoEntry;
+import it.polimi.ingsw.model.character.CharacterWithStudent;
+import it.polimi.ingsw.model.mnstrategy.MNTwoSteps;
 import it.polimi.ingsw.model.player.Mage;
-import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.player.SchoolBoard;
 import it.polimi.ingsw.model.world.Island;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,6 +39,41 @@ class ExpertGameBoardTest {
         gb.nextPlayer();
     }
 
+    /**
+     * Tests MN's movement
+     */
+    @Test
+    void moveMN() throws InvalidIndexException, InvalidMNStepsException {
+        int indexMNStart = gb.getWorld().getMNPosition();
+        int numMNSteps = 4;
+        int oldMNPos = gb.getWorld().getMNPosition();
+        gb.getPlayers().get(0).setPlaying(true);
+        gb.setActivePlayer(gb.getPlayers().get(0));
+        gb.chooseAssistants(gb.getPlayers().get(0), 9);
+        Island islandMN = gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition());
+        //MN moves on an Island with a NoEntry tile
+        islandMN.setNumNoEntry(1);
+        gb.moveMN(0);
+        assertEquals(oldMNPos, gb.getWorld().getMNPosition());
+        assertEquals(0, gb.getWorld().getIslandByIndex(oldMNPos).getNumNoEntry());
+        //normal MN movement
+        gb.moveMN(numMNSteps);
+        assertEquals(indexMNStart + numMNSteps >= gb.getWorld().getSize() ? indexMNStart + numMNSteps - gb.getWorld().getSize()
+                : indexMNStart + numMNSteps, gb.getWorld().getMNPosition());
+    }
+    /**
+     * Method moveMNException checks the correct throwing of the InvalidMNStepsException
+     * @throws InvalidIndexException if the index position of the card doesn't exist
+     */
+    @Test
+    void moveMNException() throws InvalidIndexException {
+        gb.setActivePlayer(gb.getPlayers().get(0));
+        gb.chooseAssistants(gb.getPlayers().get(0), 8);
+        assertThrows(InvalidMNStepsException.class, () -> {
+            gb.moveMN(6);
+        });
+        gb.getPlayers().get(0).setStrategy(new MNTwoSteps());
+    }
     /**
      * Adds 3 Blue Students to the Player's Hall and ensures they are present
      */
@@ -64,8 +102,12 @@ class ExpertGameBoardTest {
     void addToHall() throws PlaceFullException {
         int before=gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE);
         gb.addToHall(ColorS.BLUE);
+        gb.addToHall(ColorS.BLUE);
+        gb.addToHall(ColorS.BLUE);
         int after=gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE);
-        assertEquals(before +1, after);
+        assertEquals(before +3, after);
+        //Ensure that the Player earned a coin
+        assertEquals(2 ,gb.getActivePlayer().getCoins());
     }
 
     /**
@@ -87,10 +129,12 @@ class ExpertGameBoardTest {
      */
     @Test
     void playCharacter() throws NotEnoughCoinsException {
-        ArrayList<Character> c = gb.getCharacters();
+        Character c = gb.getCharacters().get(0);
         gb.getActivePlayer().setCoins(15);
-        gb.playCharacter(c.get(0));
-        assertEquals(gb.getActiveCharacter(), c.get(0));
+        gb.playCharacter(c);
+        assertEquals(gb.getActiveCharacter(), c);
+        gb.getActivePlayer().setCoins(-15);
+        assertThrows(NotEnoughCoinsException.class, () -> gb.playCharacter(c));
     }
 
     /**
@@ -147,4 +191,17 @@ class ExpertGameBoardTest {
         gb.playCharacter(c);
         assertEquals(19+c.getCost(), gb.getAvailableCoins());
     }
+
+    /**
+     * Tests if CharacterWithStudent gets refilled with a Student
+     */
+    @Test
+    void resetCharacterStudent(){
+        gb.setActiveCharacter(new CharacterWithNoEntry(1, "ciao"));
+        assertThrows(ClassCastException.class,() -> gb.resetCharacterStudent());
+
+        gb.setActiveCharacter(new CharacterWithStudent(1,"ciao", 4));
+        gb.resetCharacterStudent();
+    }
+
 }

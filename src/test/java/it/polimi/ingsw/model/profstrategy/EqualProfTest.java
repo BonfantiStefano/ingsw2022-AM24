@@ -11,6 +11,9 @@ import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Class EqualProfTest tests the correct behaviour of EqualProf
+ */
 class EqualProfTest {
 
     /**
@@ -59,6 +62,7 @@ class EqualProfTest {
             profs.put(c,profOwner);
             testSubject.getMyBoard().getHall().put(c,10);
         }
+        testSubject.getMyBoard().getHall().put(ColorS.BLUE, 15);
 
         testSubject.setPlaying(true);
         ProfStrategy strategy=new EqualProf();

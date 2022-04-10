@@ -82,11 +82,6 @@ public class GameBoardTest {
         assertEquals(oldMNPos, gb.getWorld().getMNPosition());
         assertEquals(Optional.of(gb.getPlayers().get(0).getColorTower()), islandMN.getTowerColor());
         assertEquals(1, islandMN.getNumSubIsland());
-        //spostamento in isola in cui vi è una tessera divieto
-        islandMN.setNumNoEntry(1);
-        gb.moveMN(0);
-        assertEquals(oldMNPos, gb.getWorld().getMNPosition());
-        assertEquals(0, gb.getWorld().getIslandByIndex(oldMNPos).getNumNoEntry());
         //spostamento in cui si uniscono le isole
         int nextMNPos = oldMNPos+1 < gb.getWorld().getSize() ? oldMNPos+1 : 0;
         Island nextMNIsland = gb.getWorld().getIslandByIndex(nextMNPos);
@@ -190,6 +185,7 @@ public class GameBoardTest {
     public void testGetPlayerByNickname(){
         Player p = gb.getPlayerByNickname("BOB");
         assertEquals(p.getNickname(), "Bob");
+        assertNull(gb.getPlayerByNickname("test"));
     }
 
     /**

@@ -14,16 +14,21 @@ import static org.junit.jupiter.api.Assertions.*;
 class CharacterInfluenceTest {
     World w;
     ArrayList<ColorS> students = new ArrayList<>();
+
     @BeforeEach
     void init(){
         for(int i=0;i<10;i++)
             students.add(ColorS.BLUE);
         w = new World(students);
     }
+
+    /**
+     * Ensures that the Character is created with the correct Strategy
+     */
     @Test
     void play() {
-        InfluenceStrategy i= new NoColorInfluence();
-        CharacterInfluence c=new CharacterInfluence(1, "test", i, w);
+        InfluenceStrategy i = new NoColorInfluence();
+        CharacterInfluence c = new CharacterInfluence(1, "test", i, w);
         c.play();
         assertEquals(i,w.getStrategy());
     }

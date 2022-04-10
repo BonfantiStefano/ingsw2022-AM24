@@ -3,7 +3,9 @@ package it.polimi.ingsw.model.character;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ *  Class CharacterDescriptionTest tests CharacterDescription class
+ */
 class CharacterDescriptionTest {
 
     /**

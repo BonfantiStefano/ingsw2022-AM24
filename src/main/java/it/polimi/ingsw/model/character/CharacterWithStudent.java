@@ -40,4 +40,12 @@ public class CharacterWithStudent extends Character implements CanAcceptStudent,
     public void remove(ColorS s){
         students.remove(s);
     }
+
+    /**
+     * Gets the Students on this Character
+     * @return list of Students on the Character
+     */
+    public ArrayList<ColorS> getStudents(){
+        return students;
+    }
 }

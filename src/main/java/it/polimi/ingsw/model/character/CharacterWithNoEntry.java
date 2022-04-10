@@ -22,4 +22,8 @@ public class CharacterWithNoEntry extends Character {
         return numNoEntry;
     }
 
+    /**
+     * Restores a NoEntry tile on the card
+     */
+    public void resetNoEntry(){ numNoEntry++; }
 }

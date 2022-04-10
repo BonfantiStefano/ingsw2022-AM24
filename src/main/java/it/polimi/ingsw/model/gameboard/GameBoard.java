@@ -11,7 +11,6 @@ import it.polimi.ingsw.model.profstrategy.StandardProf;
 import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.model.world.World;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -260,11 +259,17 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
             throw new InvalidMNStepsException();
         }
         Island island = world.moveMN(numMNSteps);
-        if(world.checkEntry(island)) {
-            Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players);
-            nextOwner.ifPresent(owner -> {conquest(owner, island);});
-            world.checkJoin(world.getIslandByIndex(world.getMNPosition()));
-        }
+        checkIsland(island);
+    }
+
+    /**
+     * Examines and Island and if necessary changes the owner
+     * @param island the Island to check
+     */
+    public void checkIsland(Island island){
+        Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players);
+        nextOwner.ifPresent(owner -> {conquest(owner, island);});
+        world.checkJoin(world.getIslandByIndex(world.getMNPosition()));
     }
 
     /**
