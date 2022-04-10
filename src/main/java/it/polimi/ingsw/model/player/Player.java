@@ -5,6 +5,8 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.mnstrategy.MNStandard;
 import it.polimi.ingsw.model.mnstrategy.MNStrategy;
 
+import java.util.List;
+
 /**
  * Player class represents the Player and contains all the information about him:
  * his nickname, the magical school board he received in the beginning of the game, the color he picked for the towers

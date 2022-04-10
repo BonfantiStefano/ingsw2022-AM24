@@ -64,5 +64,13 @@ public class Hand{
         return mage;
     }
 
+    /**
+     * Method getCards returns all the cards of the Hand
+     * @return cards of type List<Assistant>
+     */
+    public List<Assistant> getCards(){
+        return cards;
+    }
+
 }
 
