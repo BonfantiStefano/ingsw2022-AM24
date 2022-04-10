@@ -69,7 +69,7 @@ class WorldTest {
         players.add(lisa);
         players.add(bob);
         players.add(alice);
-        Map<ColorS, Player> profs = new HashMap<>();
+        HashMap<ColorS, Player> profs = new HashMap<>();
         profs.put(ColorS.GREEN, lisa);
         profs.put(ColorS.BLUE, bob);
         profs.put(ColorS.YELLOW, alice);
@@ -83,7 +83,7 @@ class WorldTest {
         island.add(ColorS.BLUE);
         island.add(ColorS.RED);
         island.add(ColorT.BLACK);
-        Map<Player, Integer> mapInfluence = world.getInfluenceIsland(island, profs, players);
+        HashMap<Player, Integer> mapInfluence = world.getInfluenceIsland(island, profs, players);
         assertEquals(4, mapInfluence.get(lisa));
         assertEquals(4, mapInfluence.get(alice));
         assertEquals(2, mapInfluence.get(bob));
@@ -223,7 +223,7 @@ class WorldTest {
         players.add(lisa);
         players.add(bob);
         players.add(alice);
-        Map<Player, Integer> mapInfluence = new HashMap<>();
+        HashMap<Player, Integer> mapInfluence = new HashMap<>();
         Island islandMN = world.getIslandByIndex(world.getMNPosition());
         islandMN.add(ColorT.WHITE);
         //Case when there is an owner that has to change.

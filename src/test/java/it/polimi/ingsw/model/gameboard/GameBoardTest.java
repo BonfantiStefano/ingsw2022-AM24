@@ -10,12 +10,14 @@ import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.profstrategy.EqualProf;
+import it.polimi.ingsw.model.profstrategy.ProfStrategy;
 import it.polimi.ingsw.model.profstrategy.StandardProf;
 import it.polimi.ingsw.model.world.Island;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -403,5 +405,26 @@ public class GameBoardTest {
         gb.getProfs().put(ColorS.RED, gb.getPlayers().get(1));
         gb.getProfs().put(ColorS.GREEN, gb.getPlayers().get(0));
         assertEquals(Optional.of(gb.getPlayers().get(1)), gb.checkWin());
+    }
+
+    /**
+     * Method checkProfs tests the changing of the profs' owner.
+     */
+    @Test
+    void checkProfs() {
+        int i=1;
+        for(Player p : gb.players){
+            for(ColorS c: ColorS.values()) {
+                p.getMyBoard().getHall().put(c, i);
+            }
+            i++;
+        }
+        for(ColorS c: ColorS.values()) {
+            gb.getProfs().put(c, gb.getPlayers().get(0));
+        }
+        gb.checkProfs();
+        for(ColorS c: ColorS.values()) {
+            assertEquals("Alice", gb.getProfs().get(c).getNickname());
+        }
     }
 }

@@ -88,7 +88,7 @@ public class World implements HasStrategy<InfluenceStrategy> {
      * @param players List<Player> - The list of the players.
      * @return the new owner, if it is different from the old onw or if there aren't multiple players with the same influence.
      */
-    public Optional<Player> checkConquest(Map<Player, Integer> mapInfluence, List<Player> players) {
+    public Optional<Player> checkConquest(HashMap<Player, Integer> mapInfluence, ArrayList<Player> players) {
         int actualInfluence = 0;
         Optional<Player> nextOwner = Optional.empty();
         for(Player player : players) {
@@ -116,8 +116,8 @@ public class World implements HasStrategy<InfluenceStrategy> {
      * @param players List<Player> - List where are contained all the players of the game.
      * @return a map with every player and his influence on the Island i.
      */
-    public Map<Player, Integer> getInfluenceIsland(Island i, Map<ColorS, Player> profs, List<Player> players) {
-        Map<Player, Integer> mapInfluence = new HashMap<>();
+    public HashMap<Player, Integer> getInfluenceIsland(Island i, HashMap<ColorS, Player> profs, ArrayList<Player> players) {
+        HashMap<Player, Integer> mapInfluence = new HashMap<>();
         for(Player p : players) {
             mapInfluence.put(p, influenceStrategy.getInfluence(i, p, bannedColorS, profs));
         }

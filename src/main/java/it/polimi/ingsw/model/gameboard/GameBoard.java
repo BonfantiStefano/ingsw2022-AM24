@@ -30,14 +30,14 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     final protected static int NT = 6;
     final protected static int NS = 9;
     protected int numPlayers;
-    protected List<Player> players;
-    protected List<Cloud> clouds;
-    protected List<Assistant> lastAssistants;
+    protected ArrayList<Player> players;
+    protected ArrayList<Cloud> clouds;
+    protected ArrayList<Assistant> lastAssistants;
     protected World world;
     protected Player activePlayer;
     protected StudentContainer container;
     protected ProfStrategy strategy;
-    protected Map<ColorS, Player> profs;
+    protected HashMap<ColorS, Player> profs;
     protected boolean gameMustEnd;
 
 
@@ -235,7 +235,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * Method getPlayers returns the list of the players taking part in the game.
      * @return List<Player> - list containing all the players
      */
-    public List<Player> getPlayers(){
+    public ArrayList<Player> getPlayers(){
         return players;
     }
 
@@ -319,7 +319,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * Method getProfs returns the Map in which every player is paired with the professor on whom he exercises his control
      * @return profs of type Map - the professors controlled by different players
      */
-    public Map<ColorS, Player> getProfs() {
+    public HashMap<ColorS, Player> getProfs() {
         return profs;
     }
 
@@ -395,5 +395,13 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
             return players.stream().filter(player -> player.getMyBoard().getTowers().size() == 0).findFirst();
         }
         return Optional.empty();
+    }
+
+    /**
+     * Method checkProfs checks if any prof has to change the owner and in case apply these changes, calling the method checkProfs
+     * of the ProfStrategy.
+     */
+    public void checkProfs() {
+        profs = strategy.checkProfs(players, profs);
     }
 }
