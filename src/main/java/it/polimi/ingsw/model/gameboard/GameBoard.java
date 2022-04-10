@@ -96,7 +96,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
         }
         else{
             for (Assistant a : lastAssistants){
-                if ( a.compareTo(assistant) != 0 || (player.getMyCards().numCards() == 1))
+                if ( a.compareTo(assistant) != 0 || lastAssistants.containsAll(player.getMyCards().getCards()))
                     result = true;
             }
         }
@@ -105,12 +105,10 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
             player.setLastAssist(assistant);
             player.getMyCards().removeCard(assistant);
         }
-
         //Check if any Player has used all cards, if so the game must end after the current round
         for(Player p: players)
             if(p.getNumCards() == 0)
                 gameMustEnd = true;
-
 
         return result;
     }
