@@ -44,7 +44,7 @@ public class ExpertGameBoard extends GameBoard {
 
     /**
      * Method addPlayer creates and adds a new player.
-     * The new player is created considering the fact that the number of pounds such as students and towers
+     * The new player is created considering the fact that the number of pawns such as students and towers
      * in his schoolBoard depends on the number of the players taking part in the game.
      * @param nickname of type String
      * @param color of type ColorT
