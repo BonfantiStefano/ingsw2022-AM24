@@ -152,11 +152,14 @@ public class GameBoardTest {
         assertEquals(lisa.getNumCards(), lisaCards);
         assertTrue(gb.chooseAssistants(lisa,1));
         assertEquals(lisa.getNumCards(),lisaCards-1);
-        int aliceCards = alice.getNumCards();
-        for(int i = 0; i<10; i++){
-            assertTrue(gb.chooseAssistants(alice,1));
+        // at this point lisa played card 1 and bob card 5
+        for (int i = 1; i <= 10 && i !=1 && i != 5; i++){
+            assertTrue(gb.chooseAssistants(alice,i));
         }
-        assertEquals(alice.getNumCards(),0);
+        //alice played all her cards except for card 1 and 5 (already player by other two players)
+        //now alice tries to play card 1 or card 5
+        assertTrue(gb.chooseAssistants(alice,1));
+        assertTrue(gb.chooseAssistants(alice,5));
     }
 
     /** Method testAddPlayer tests the addition of different players in the game and checks the correctness of the number
