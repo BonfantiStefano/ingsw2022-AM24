@@ -52,7 +52,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
         strategy = new StandardProf();
         world = new World(container.initialDraw());
         this.numPlayers = numPlayers;
-
+        this.gameMustEnd = false;
         profs=new HashMap<ColorS, Player>();
         for(ColorS c:ColorS.values()){
             profs.put(c,null);
@@ -308,6 +308,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     public Cloud getCloudByIndex(int i){
         return clouds.get(i);
     }
+
     /**
      * Method getWorld returns World object with twelve islands in it.
      * @return world of type World
@@ -315,7 +316,6 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     public World getWorld() {
         return world;
     }
-
 
     /**
      * Method getProfs returns the Map in which every player is paired with the professor on whom he exercises his control
@@ -357,5 +357,45 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      */
     public boolean checkGameMustEnd() {
         return gameMustEnd;
+    }
+
+    /**
+     * Method checkWin checks if any winning condition is verified and in case return the Winner, game can end in a draw when two players
+     * has the same towers on the World and the same number of profs.
+     * @return Optional<Player> the winner of the game, if presents.
+     */
+    //Remember that there are two different case of null return value: if the first condition is verified the game ends in a draw, otherwise
+    //there the game must continue.
+    public Optional<Player> checkWin() {
+        if(world.getSize() == 3 || gameMustEnd) {
+            Player playerWinning = players.get(0);
+            Optional<Player> winner = Optional.of(playerWinning);
+            for(Player p : players) {
+                if (p.getMyBoard().getTowers().size() < playerWinning.getMyBoard().getTowers().size()) {
+                    playerWinning = p;
+                    winner = Optional.of(p);
+                } else if(p.getMyBoard().getTowers().size() == playerWinning.getMyBoard().getTowers().size() && !p.equals(playerWinning)) {
+                    int countWinnerProfs = 0;
+                    int countPlayerProfs = 0;
+                    for(ColorS c: ColorS.values()) {
+                        if(profs.get(c) != null && profs.get(c).equals(p)) {
+                            countPlayerProfs++;
+                        } else if(profs.get(c) != null && profs.get(c).equals(playerWinning)) {
+                            countWinnerProfs++;
+                        }
+                    }
+                    if(countPlayerProfs > countWinnerProfs) {
+                        playerWinning = p;
+                        winner = Optional.of(p);
+                    } else if(countPlayerProfs == countWinnerProfs) {
+                        winner = Optional.empty();
+                    }
+                }
+            }
+            return winner;
+        } else if(players.stream().map(player -> {return player.getMyBoard().getTowers().size();}).anyMatch(num -> num == 0)) {
+            return players.stream().filter(player -> player.getMyBoard().getTowers().size() == 0).findFirst();
+        }
+        return Optional.empty();
     }
 }

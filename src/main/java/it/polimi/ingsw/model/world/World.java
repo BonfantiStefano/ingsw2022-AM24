@@ -147,14 +147,14 @@ public class World implements HasStrategy<InfluenceStrategy> {
     public void checkJoin(Island i) {
         int indexIsland = islands.indexOf(i);
         if(!islands.get((indexIsland+1) % getSize()).getTowerColor().equals(Optional.empty()) &&
-                !i.getTowerColor().equals(Optional.empty()) && islands.get((indexIsland+1) % getSize()).getTowerColor().equals(i.getTowerColor())) {
+                !i.getTowerColor().equals(Optional.empty()) && islands.get((indexIsland+1) % getSize()).getTowerColor().equals(i.getTowerColor()) && getSize()>3) {
             Island newIsland = join(islands.get(Math.min((indexIsland+1) % getSize(), indexIsland)), islands.get(Math.max((indexIsland+1) % getSize(), indexIsland)));
             checkJoin(newIsland);
             indexIsland = islands.indexOf(newIsland);
         }
         int indexPreviousIsland = (indexIsland-1) % getSize() < 0 ? (indexIsland-1) % getSize() + getSize() : (indexIsland-1) % getSize();
         if(!islands.get(indexPreviousIsland).getTowerColor().equals(Optional.empty()) &&
-                !i.getTowerColor().equals(Optional.empty()) && islands.get(indexPreviousIsland).getTowerColor().equals(i.getTowerColor())) {
+                !i.getTowerColor().equals(Optional.empty()) && islands.get(indexPreviousIsland).getTowerColor().equals(i.getTowerColor()) && getSize()>3) {
             Island newIsland = join(islands.get(Math.min(indexPreviousIsland, indexIsland)), islands.get(Math.max(indexPreviousIsland, indexIsland)));
             checkJoin(newIsland);
         }

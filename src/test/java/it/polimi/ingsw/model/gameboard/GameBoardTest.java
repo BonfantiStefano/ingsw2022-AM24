@@ -321,4 +321,84 @@ public class GameBoardTest {
         }
         assertTrue(gb2.checkGameMustEnd());
     }
+
+    /**
+     * Method checkWinIsland tests the calculation of the winner when there are 3 Island.
+     */
+    @Test
+    @DisplayName("case with 3 island remaining")
+    void checkWinIsland() {
+        for(int i = 0; i < 5; i++) {
+            gb.getWorld().getIslandByIndex(i).add(ColorT.GREY);
+            gb.getPlayers().get(2).getMyBoard().remove(ColorT.GREY);
+        }
+        for(int i = 5; i < 10; i++) {
+            gb.getWorld().getIslandByIndex(i).add(ColorT.BLACK);
+            gb.getPlayers().get(0).getMyBoard().remove(ColorT.BLACK);
+        }
+        gb.getWorld().checkJoin(gb.getWorld().getIslandByIndex(0));
+        gb.getWorld().checkJoin(gb.getWorld().getIslandByIndex(1));
+        assertEquals(Optional.empty(), gb.checkWin());
+        gb.getWorld().getIslandByIndex(2).add(ColorT.BLACK);
+        gb.getPlayers().get(0).getMyBoard().remove(ColorT.BLACK);
+        gb.getWorld().checkJoin(gb.getWorld().getIslandByIndex(1));
+        assertEquals(Optional.of(gb.getPlayers().get(0)), gb.checkWin());
+    }
+
+    /**
+     * Method checkDrawIsland tests the calculation of the winner when there are 3 Island, in particular game must end with a draw.
+     */
+    @Test
+    @DisplayName("draw with 3 island remaining")
+    void checkDrawIsland() {
+        for(int i = 0; i < 5; i++) {
+            gb.getWorld().getIslandByIndex(i).add(ColorT.GREY);
+            gb.getPlayers().get(2).getMyBoard().remove(ColorT.GREY);
+        }
+        for(int i = 5; i < 10; i++) {
+            gb.getWorld().getIslandByIndex(i).add(ColorT.BLACK);
+            gb.getPlayers().get(0).getMyBoard().remove(ColorT.BLACK);
+        }
+        gb.getWorld().checkJoin(gb.getWorld().getIslandByIndex(0));
+        gb.getWorld().checkJoin(gb.getWorld().getIslandByIndex(1));
+        assertEquals(Optional.empty(), gb.checkWin());
+        gb.getWorld().getIslandByIndex(2).add(ColorT.WHITE);
+        gb.getPlayers().get(1).getMyBoard().remove(ColorT.WHITE);
+        gb.getWorld().getIslandByIndex(3).add(ColorT.WHITE);
+        gb.getPlayers().get(1).getMyBoard().remove(ColorT.WHITE);
+        gb.getWorld().checkJoin(gb.getWorld().getIslandByIndex(2));
+        assertEquals(Optional.empty(), gb.checkWin());
+    }
+
+    /**
+     * Method checkWinTower tests the calculation of the winner when a Player finishes his towers.
+     */
+    @Test
+    @DisplayName("case with a player without tower")
+    void checkWinTower() {
+        for(int i = 0; i < 8; i++) {
+            gb.getPlayers().get(0).getMyBoard().remove(ColorT.BLACK);
+        }
+        assertEquals(Optional.empty(), gb.checkWin());
+        gb.getPlayers().get(0).getMyBoard().remove(ColorT.BLACK);
+        assertEquals(Optional.of(gb.getPlayers().get(0)), gb.checkWin());
+    }
+
+    /**
+     * Method checkWinStudentCard tests the calculation of the winner when the bag is empty or when the Assistants are finished.
+     */
+    @Test
+    @DisplayName("case when gameMustEnd is true")
+    void checkWinStudentCard() {
+        StudentContainer temp = gb.getContainer();
+        for(int i=0; i < 120; i++) {
+            temp.draw();
+        }
+        assertEquals(Optional.empty(), gb.checkWin());
+        gb.newClouds();
+        gb.getProfs().put(ColorS.BLUE, gb.getPlayers().get(1));
+        gb.getProfs().put(ColorS.RED, gb.getPlayers().get(1));
+        gb.getProfs().put(ColorS.GREEN, gb.getPlayers().get(0));
+        assertEquals(Optional.of(gb.getPlayers().get(1)), gb.checkWin());
+    }
 }
