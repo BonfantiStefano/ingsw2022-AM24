@@ -60,8 +60,13 @@ public class ExpertGameBoard extends GameBoard {
      * Method entranceToHall moves a Student form Entrance to Hall in the active player's School Board
      * @param s the color of the Student being moved
      */
-    public void entranceToHall(ColorS s) throws PlaceFullException {
-        boolean result = activePlayer.getMyBoard().entranceToHall(s);
+    public void entranceToHall(ColorS s)  {
+        boolean result = false;
+        try {
+            result = activePlayer.getMyBoard().entranceToHall(s);
+        } catch (PlaceFullException e) {
+            e.getMessage();
+        }
         if (result){
             activePlayer.setCoins(1);
             coins--;
@@ -78,10 +83,14 @@ public class ExpertGameBoard extends GameBoard {
      * Method addToHall adds a student directly to the Hall
      * @param s the color of the Student being added
      */
-    public void addToHall(ColorS s) throws PlaceFullException {
-        if(activePlayer.getMyBoard().addToHall(s)){
-            activePlayer.setCoins(1);
-            coins--;
+    public void addToHall(ColorS s) {
+        try {
+            if(activePlayer.getMyBoard().addToHall(s)){
+                activePlayer.setCoins(1);
+                coins--;
+            }
+        } catch (PlaceFullException e) {
+            e.getMessage();
         }
     }
 
