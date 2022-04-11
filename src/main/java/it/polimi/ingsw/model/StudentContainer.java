@@ -29,7 +29,6 @@ public class StudentContainer {
         for(ColorS c: ColorS.values())
             for(int i=0;i<2;i++)
                 initial.add(c);
-
         return initial;
     }
 

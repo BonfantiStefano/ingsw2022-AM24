@@ -256,6 +256,5 @@ class ExpertGameBoardTest {
 
         gb.switchStudents(ColorS.RED, ColorS.YELLOW);
         assertEquals(gb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.YELLOW), 2);
-
     }
 }

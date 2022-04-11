@@ -22,7 +22,6 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     private ArrayList<ColorT> towers;
     private Map<ColorS,Integer> hall;
 
-
     /**
      * Constructor SchoolBoard creates a new SchoolBoard instance subdivided into three areas, two for the students
      * (one of which is used to check if the player has the majority for any of the colors for the control of professors)

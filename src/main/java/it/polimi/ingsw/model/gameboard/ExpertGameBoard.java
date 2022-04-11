@@ -264,5 +264,4 @@ public class ExpertGameBoard extends GameBoard {
             c.resetNoEntry();
     }
 
-
 }
