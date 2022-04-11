@@ -59,11 +59,4 @@ public class StudentContainer {
         students.add(c);
     }
 
-    /**
-     * Method addAllStudents puts all the students back in the bag
-     * @param s of type List<ColorS> - the students put in the bag
-     */
-    public void addAllStudents(List<ColorS> s){
-        students.addAll(s);
-    }
 }

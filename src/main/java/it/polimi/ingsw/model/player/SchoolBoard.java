@@ -73,30 +73,6 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     }
 
     /**
-     * Method cleanHall removes all the sudents from the hall
-     */
-    public void cleanHall(){
-        for(ColorS color: ColorS.values()){
-            hall.put(color,0);
-        }
-    }
-
-    /**
-     * Method getListStudents returns a list with all the students in the hall
-     * @return list of type List<ColorS> - all the students placed in the hall
-     */
-    public List<ColorS> getListStudents(){
-        ArrayList<ColorS> list = new ArrayList<>();
-        for(ColorS c : ColorS.values()){
-            int num = hall.get(c);
-            for (int i = 0; i < num; i++){
-               list.add(c);
-            }
-        }
-        return list;
-    }
-
-    /**
      * Moves a Student from the Hall to the Entrance
      * @param s the Student being moved
      * @throws EmptyPlaceException if there is no students in the hall

@@ -237,8 +237,8 @@ class ExpertGameBoardTest {
         assertEquals(gb.getPlayerByNickname("Bob").getMyBoard().getHall(ColorS.BLUE), 1);
 
         assertEquals(gb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.GREEN), 0);
-        assertEquals(gb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.YELLOW), 0);
-        assertEquals(gb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.RED), 0);
+        assertEquals(gb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.YELLOW), 1);
+        assertEquals(gb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.RED), 1);
     }
 
     /**

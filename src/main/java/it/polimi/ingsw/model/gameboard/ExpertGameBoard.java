@@ -138,8 +138,10 @@ public class ExpertGameBoard extends GameBoard {
                 }
             }
             else{
-                getContainer().addAllStudents(p.getMyBoard().getListStudents());
-                p.getMyBoard().cleanHall();
+                p.getMyBoard().getHall().put(s, 0);
+                for (int i = 0; i < num; i++) {
+                    getContainer().addStudent(s);
+                }
             }
         }
     }
