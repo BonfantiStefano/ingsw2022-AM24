@@ -14,6 +14,9 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Class CharacterFactoryTest tests CharacterFactory
+ */
 class CharacterFactoryTest {
     /**
      * Creates all Characters and adds them to a list, checks if all have been created

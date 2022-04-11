@@ -21,7 +21,6 @@ public class Player implements PlayerInterface {
     private Assistant lastAssist;
     private MNStrategy strategy;
     private int coins;
-    private Mage mage; //can be removed
 
 
     /**
@@ -34,7 +33,6 @@ public class Player implements PlayerInterface {
     public Player(String nickname, ColorT color, Mage mage, int numTowers){
         this.nickname=nickname;
         this.color=color;
-        this.mage = mage;
         this.myboard=new SchoolBoard(color, numTowers);
         this.lastAssist=null;
         this.isPlaying=false;
@@ -113,7 +111,7 @@ public class Player implements PlayerInterface {
      * @return Mage
      */
     public Mage getMage(){
-        return this.mage;
+        return myCards.getMage();
     }
 
     /**
