@@ -54,7 +54,7 @@ class SchoolBoardTest {
     @Test
     void hallToEntrance() throws EmptyPlaceException {
         schoolBoard.hallToEntrance(ColorS.BLUE);
-        assertEquals(2,schoolBoard.getEntrance().size());
+        assertEquals(3,schoolBoard.getEntrance().size());
         assertEquals(0,schoolBoard.getHall().get(ColorS.BLUE));
 
     }
