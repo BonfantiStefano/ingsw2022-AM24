@@ -11,6 +11,9 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Class CharacterInfluenceTest tests CharacterInfluence
+ */
 class CharacterInfluenceTest {
     World w;
     ArrayList<ColorS> students = new ArrayList<>();
