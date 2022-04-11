@@ -230,26 +230,26 @@ class WorldTest {
         mapInfluence.put(lisa, 5);
         mapInfluence.put(bob, 4);
         mapInfluence.put(alice, 6);
-        assertEquals(Optional.of(alice), world.checkConquest(mapInfluence, players));
+        assertEquals(Optional.of(alice), world.checkConquest(mapInfluence, players, islandMN));
         //Limit case when there is an owner that has the lowest influence and the other players have the same influence,
         // I choose to non to modify anything.
         mapInfluence.put(alice, 5);
-        assertEquals(Optional.empty(), world.checkConquest(mapInfluence, players));
+        assertEquals(Optional.empty(), world.checkConquest(mapInfluence, players, world.getIslandByIndex(world.getMNPosition())));
         //Case when there is an owner that hasn't to change, because he has the highest influence.
         mapInfluence.put(bob, 7);
-        assertEquals(Optional.empty(), world.checkConquest(mapInfluence, players));
+        assertEquals(Optional.empty(), world.checkConquest(mapInfluence, players, world.getIslandByIndex(world.getMNPosition())));
         //Case when there is an owner that hasn't to change, because he has the same influence of another player.
         mapInfluence.put(alice, 7);
-        assertEquals(Optional.empty(), world.checkConquest(mapInfluence, players));
+        assertEquals(Optional.empty(), world.checkConquest(mapInfluence, players, world.getIslandByIndex(world.getMNPosition())));
         //Case when there isn't an owner and one player conquest that Island.
         islandMN.remove(ColorT.WHITE);
         mapInfluence.put(lisa, 5);
         mapInfluence.put(bob, 4);
         mapInfluence.put(alice, 6);
-        assertEquals(Optional.of(alice), world.checkConquest(mapInfluence, players));
+        assertEquals(Optional.of(alice), world.checkConquest(mapInfluence, players, world.getIslandByIndex(world.getMNPosition())));
         //Case when there isn't an owner and no one conquest that Island.
         mapInfluence.put(bob, 6);
-        assertEquals(Optional.empty(), world.checkConquest(mapInfluence, players));
+        assertEquals(Optional.empty(), world.checkConquest(mapInfluence, players, world.getIslandByIndex(world.getMNPosition())));
     }
 
     /** Method setBannedColorS tests the change of the banned ColorS */

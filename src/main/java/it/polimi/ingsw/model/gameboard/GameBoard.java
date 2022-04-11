@@ -254,6 +254,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * it calculates the influence on that island and in necessary change the owner of the island and join the Island.
      * @param numMNSteps int - number of steps that Mother Nature want to do.
      */
+    //Checks that the numMNSteps is between 1 and 10 are done by the controller.
     public void moveMN(int numMNSteps) throws InvalidMNStepsException {
         if(numMNSteps > activePlayer.getMNSteps()) {
             throw new InvalidMNStepsException();
@@ -267,7 +268,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * @param island the Island to check
      */
     public void checkIsland(Island island){
-        Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players);
+        Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players, island);
         nextOwner.ifPresent(owner -> {conquest(owner, island);});
         world.checkJoin(world.getIslandByIndex(world.getMNPosition()));
     }
@@ -286,7 +287,9 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
         }
         for(int counter = 0; counter < island.getNumSubIsland(); counter++) {
             oldOwner.ifPresent(owner -> {moveTower(owner.getColorTower(), island, owner.getMyBoard()); });
-            moveTower(nextOwner.getColorTower(), nextOwner.getMyBoard(), island);
+            if(nextOwner.getMyBoard().getTowers().size() > 0) {
+                moveTower(nextOwner.getColorTower(), nextOwner.getMyBoard(), island);
+            }
         }
     }
 

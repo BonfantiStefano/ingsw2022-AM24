@@ -253,6 +253,16 @@ public class GameBoardTest {
         assertEquals(Optional.of(bob.getColorTower()), island.getTowerColor());
         assertEquals(8, bob.getMyBoard().getTowers().size());
         assertEquals(9, lisa.getMyBoard().getTowers().size());
+        Player alice = new Player("Alice2", ColorT.GREY, Mage.MAGE3, 1);
+        gb.getPlayers().remove(2);
+        gb.getPlayers().add(alice);
+        Island island1 = gb.getWorld().getIslandByIndex(1);
+        Island island2 = gb.getWorld().getIslandByIndex(2);
+        gb.getWorld().join(island1, island2);
+        island1 = gb.getWorld().getIslandByIndex(1);
+        gb.conquest(alice, island1);
+        assertEquals(0, alice.getMyBoard().getTowers().size());
+        assertEquals(Optional.of(ColorT.GREY), island1.getTowerColor());
     }
 
     /**

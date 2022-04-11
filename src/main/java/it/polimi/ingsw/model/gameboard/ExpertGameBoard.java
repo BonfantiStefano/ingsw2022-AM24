@@ -129,15 +129,16 @@ public class ExpertGameBoard extends GameBoard {
     private Character findChar(Character c){
         return characters.stream().filter(character -> character.getDescription().equals(c.getDescription())).findFirst().orElse(null);
     }
+
     /**
      * Method checkIsland is utilized by the character whose effect is to calculate the influence on an Island as if Mother Nature were there.
      * @param island Island - the Island on which the influence has to be calculated.
      */
     public void checkIsland(Island island) {
         if(world.checkEntry(island)) {
-            Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players);
-            nextOwner.ifPresent(owner -> {conquest(owner, island);});
-            world.checkJoin(world.getIslandByIndex(world.getMNPosition()));
+            Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players, island);
+            nextOwner.ifPresent(owner -> conquest(owner, island));
+            world.checkJoin(island);
         }
     }
 
@@ -201,7 +202,6 @@ public class ExpertGameBoard extends GameBoard {
         else
             resetNoEntryCharacter();
     }
-
 
     /**
      * Adds a new Student to the Character after it's played

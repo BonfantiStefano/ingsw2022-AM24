@@ -177,6 +177,12 @@ class ExpertGameBoardTest {
         gb.checkIsland(island);
         assertEquals(0, island.getNumNoEntry());
         assertEquals(Optional.of(gb.getPlayers().get(1).getColorTower()), island.getTowerColor());
+        Island island1 = gb.getWorld().getIslandByIndex(2);
+        island1.add(ColorS.BLUE);
+        island1.add(ColorS.BLUE);
+        gb.checkIsland(island1);
+        assertEquals(11, gb.getWorld().getSize());
+        assertEquals(Optional.of(gb.getPlayers().get(1).getColorTower()), gb.getWorld().getIslandByIndex(1).getTowerColor());
     }
 
     /**

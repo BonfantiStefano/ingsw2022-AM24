@@ -86,13 +86,14 @@ public class World implements HasStrategy<InfluenceStrategy> {
      * Method checkConquest checks if the island must change the owner.
      * @param mapInfluence Map<Player, Integer> - The map of the island's influence.
      * @param players List<Player> - The list of the players.
+     * @param island Island - The island that has to be checked.
      * @return the new owner, if it is different from the old onw or if there aren't multiple players with the same influence.
      */
-    public Optional<Player> checkConquest(HashMap<Player, Integer> mapInfluence, ArrayList<Player> players) {
+    public Optional<Player> checkConquest(HashMap<Player, Integer> mapInfluence, ArrayList<Player> players, Island island) {
         int actualInfluence = 0;
         Optional<Player> nextOwner = Optional.empty();
         for(Player player : players) {
-            if(Optional.of(player.getColorTower()).equals(islands.get(posMN).getTowerColor())) {
+            if(Optional.of(player.getColorTower()).equals(island.getTowerColor())) {
                 actualInfluence = mapInfluence.get(player);
             }
         }
