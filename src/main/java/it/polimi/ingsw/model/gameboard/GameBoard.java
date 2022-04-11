@@ -1,7 +1,9 @@
 package it.polimi.ingsw.model.gameboard;
 
+import it.polimi.ingsw.exceptions.EmptyPlaceException;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.exceptions.InvalidMNStepsException;
+import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
@@ -72,14 +74,6 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     }
 
     /**
-     * Method SetNumPlayers changes the number of the players taking part in the game.
-     * @param nPlayers of type int
-     */
-    public void setNumPlayers(int nPlayers){
-      this.numPlayers = nPlayers;
-    }
-
-    /**
      * Method chooseAssistants gets a player and the index of the card he would like to play in this round
      * in order to eventually add this card in the list of all the Assistant cards
      *
@@ -88,6 +82,8 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      *                                   false if the player has to choose another Assistant card
      */
     public boolean chooseAssistants(Player player, int index) throws InvalidIndexException {
+        if(lastAssistants.size()==numPlayers)
+            lastAssistants = new ArrayList<>();
         boolean result = false;
         Assistant assistant = player.chooseAssistant(index);
         if(lastAssistants.isEmpty()){
@@ -177,7 +173,12 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
         int numT = numPlayers==3? NT : NUM_TOWERS;
         Player p = new Player(nickname, color, mage, numT);
         for (int i = 0; i < numS; i++) {
-            ColorS s = container.draw();
+            ColorS s = null;
+            try {
+                s = container.draw();
+            } catch (EmptyPlaceException e) {
+                e.getMessage();
+            }
             p.getMyBoard().getEntrance().add(s);
         }
         players.add(p);
@@ -225,8 +226,12 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * @param from of type AcceptTower - the place from which the tower is moved
      * @param to of type AcceptTower - where the tower is mowed
      */
-    public void moveTower(ColorT t, AcceptTower from, AcceptTower to){
-        from.remove(t);
+    public void moveTower(ColorT t, AcceptTower from, AcceptTower to) {
+        try {
+            from.remove(t);
+        } catch (EmptyPlaceException e) {
+            e.getMessage();
+        }
         to.add(t);
     }
 
@@ -244,7 +249,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * @param from of type CanRemoveStudent - place from which the student is relocated
      * @param to of type CanAcceptStudent - place where the student is shifted
      */
-    public void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to){
+    public void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to) throws EmptyPlaceException {
         from.remove(s);
         to.add(s);
     }
@@ -300,8 +305,13 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
         int numStudents = numPlayers%2==0 ? 3 : 4; // 2 or 4 Players -> 3 Students, 3 Players -> 4 Students per Cloud
         for(Cloud c: clouds)
             for(int i=0;i<numStudents; i++)
-                if(container.canDraw())
-                    c.add(container.draw());
+                if(container.canDraw()) {
+                    try {
+                        c.add(container.draw());
+                    } catch (EmptyPlaceException e) {
+                        e.getMessage();
+                    }
+                }
                 else
                     gameMustEnd = true;
     }

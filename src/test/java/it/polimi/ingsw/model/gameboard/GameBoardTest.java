@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.gameboard;
 
+import it.polimi.ingsw.exceptions.EmptyPlaceException;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.exceptions.InvalidMNStepsException;
 import it.polimi.ingsw.model.ColorS;
@@ -159,6 +160,26 @@ public class GameBoardTest {
         assertTrue(gb.chooseAssistants(alice,5));
     }
 
+    /**
+     * Method testChooseAssistantsNewRound checks if when a new round starts the list of Assistant cards is empty
+     * @throws InvalidIndexException if the index position of the card doesn't exist
+     */
+    @Test
+    public void testChooseAssistantsNewRound() throws InvalidIndexException {
+        gb = new GameBoard(3);
+        Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 9);
+        Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
+        Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9);
+
+        assertTrue(gb.chooseAssistants(lisa,1));
+        assertTrue(gb.chooseAssistants(bob,2));
+        assertTrue(gb.chooseAssistants(alice,3));
+        assertEquals(gb.getSizeList(), 3);
+        assertTrue(gb.chooseAssistants(lisa,4));
+        assertEquals(gb.getSizeList(), 1);
+
+    }
+
     /** Method testAddPlayer tests the addition of different players in the game and checks the correctness of the number
      * of pawns in their SchoolBoards
      * */
@@ -270,7 +291,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("GameBoard's move test")
-    void moveStudent() {
+    void moveStudent() throws  EmptyPlaceException {
         Player lisa = gb.getPlayers().get(0);
         lisa.getMyBoard().add(ColorS.GREEN);
         int initialSIze = lisa.getMyBoard().getEntrance().size();
@@ -311,11 +332,12 @@ public class GameBoardTest {
      * Tests if the GameBoard correctly evaluates the condition to end the game when all Students have been played
      */
     @Test
-    void gameMustEndTestStudents(){
+    void gameMustEndTestStudents() throws EmptyPlaceException {
         StudentContainer temp = gb.getContainer();
         //draw all Students
-        for(int i=0; i < 120; i++)
+        for(int i=0; i < 120; i++) {
             temp.draw();
+        }
         gb.newClouds();
         assertTrue(gb.checkGameMustEnd());
     }
@@ -338,7 +360,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("case with 3 island remaining")
-    void checkWinIsland() {
+    void checkWinIsland() throws EmptyPlaceException {
         for(int i = 0; i < 5; i++) {
             gb.getWorld().getIslandByIndex(i).add(ColorT.GREY);
             gb.getPlayers().get(2).getMyBoard().remove(ColorT.GREY);
@@ -361,7 +383,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("draw with 3 island remaining")
-    void checkDrawIsland() {
+    void checkDrawIsland() throws EmptyPlaceException {
         for(int i = 0; i < 5; i++) {
             gb.getWorld().getIslandByIndex(i).add(ColorT.GREY);
             gb.getPlayers().get(2).getMyBoard().remove(ColorT.GREY);
@@ -386,7 +408,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("case with a player without tower")
-    void checkWinTower() {
+    void checkWinTower() throws EmptyPlaceException {
         for(int i = 0; i < 8; i++) {
             gb.getPlayers().get(0).getMyBoard().remove(ColorT.BLACK);
         }
@@ -400,7 +422,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("case when gameMustEnd is true")
-    void checkWinStudentCard() {
+    void checkWinStudentCard() throws EmptyPlaceException {
         StudentContainer temp = gb.getContainer();
         for(int i=0; i < 120; i++) {
             temp.draw();

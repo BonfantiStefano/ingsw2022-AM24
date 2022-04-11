@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.character;
 
+import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.CanAcceptStudent;
 import it.polimi.ingsw.model.CanRemoveStudent;
 import it.polimi.ingsw.model.ColorS;
@@ -33,11 +34,13 @@ public class CharacterWithStudent extends Character implements CanAcceptStudent,
         students.add(s);
     }
 
+
     /**
      * Remove a Student
      * @param s the Color of the Student being removed
      */
-    public void remove(ColorS s){
+    @Override
+    public void remove(ColorS s) {
         students.remove(s);
     }
 
@@ -48,4 +51,6 @@ public class CharacterWithStudent extends Character implements CanAcceptStudent,
     public ArrayList<ColorS> getStudents(){
         return students;
     }
+
+
 }

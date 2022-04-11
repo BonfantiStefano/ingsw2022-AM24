@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model;
 
 
+import it.polimi.ingsw.exceptions.EmptyPlaceException;
+
 /**
  * Interface that defines methods to add and remove Towers
  */
@@ -15,5 +17,5 @@ public interface AcceptTower {
      * Method used to remove a Tower
      * @param t Color of the Tower being removed
      */
-    void remove(ColorT t);
+    void remove(ColorT t) throws EmptyPlaceException;
 }

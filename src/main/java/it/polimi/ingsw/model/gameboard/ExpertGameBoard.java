@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.gameboard;
 
+import it.polimi.ingsw.exceptions.EmptyPlaceException;
 import it.polimi.ingsw.exceptions.InvalidMNStepsException;
 import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
@@ -22,10 +23,6 @@ import java.util.stream.Collectors;
  */
 public class ExpertGameBoard extends GameBoard {
     final private static int NUM_COINS = 20;
-    final private static int NUM_TOWERS = 8;
-    final private static int NUM_STUDENTS = 7;
-    final private static int NT = 6;
-    final private static int NS = 9;
     private Character activeCharacter;
     private ArrayList<Character> characters;
     private CharacterFactory factory;
@@ -66,6 +63,8 @@ public class ExpertGameBoard extends GameBoard {
             result = activePlayer.getMyBoard().entranceToHall(s);
         } catch (PlaceFullException e) {
             e.getMessage();
+        } catch (EmptyPlaceException e) {
+            e.getMessage();
         }
         if (result){
             activePlayer.setCoins(1);
@@ -77,7 +76,13 @@ public class ExpertGameBoard extends GameBoard {
      * Method hallToEntrance moves a Student from the Hall to the Entrance
      * @param s the color of the Student being moved
      */
-    public void hallToEntrance(ColorS s){activePlayer.getMyBoard().hallToEntrance(s);}
+    public void hallToEntrance(ColorS s){
+        try {
+            activePlayer.getMyBoard().hallToEntrance(s);
+        } catch (EmptyPlaceException e) {
+            e.getMessage();
+        }
+    }
 
     /**
      * Method addToHall adds a student directly to the Hall
@@ -95,15 +100,47 @@ public class ExpertGameBoard extends GameBoard {
     }
 
     /**
-     * Method removeHall removes a Student directly from the player's Hall in his SchoolBoard
+     * Method switchStudents exchanges two students between hall and entrance
+     * @param hallS - student moved from hall to entrance
+     * @param entranceS - student moved from entrance to hall
+     */
+    public void switchStudents(ColorS hallS, ColorS entranceS) {
+        try {
+            activePlayer.getMyBoard().addToHall(entranceS);
+        } catch (PlaceFullException e) {
+            e.getMessage();
+        }
+        try {
+            activePlayer.getMyBoard().remove(entranceS);
+        } catch (EmptyPlaceException e) {
+            e.getMessage();
+        }
+        try {
+            activePlayer.getMyBoard().hallToEntrance(hallS);
+        } catch (EmptyPlaceException e) {
+            e.getMessage();
+        }
+    }
+
+    /**
+     * Method removeHall removes three students of the chosen color from the player's Hall and puts them in the bag.
+     * If any player has fewer than three students of that color, all the students he owns are put back in the bag
      * @param s the Student being removed
      */
     public void removeHall(ColorS s){
-        int num;
+        int num = 0;
         for(Player p : getPlayers()){
             num = p.getMyBoard().getHall().get(s);
-            num = num >=3 ? num-3 : 0;
-            p.getMyBoard().getHall().put(s, num);
+            if(num >=3 ){
+                p.getMyBoard().getHall().put(s, num-3);
+                for (int i = 0; i < 3; i++) {
+                    getContainer().addStudent(s);
+                }
+            }
+            else{
+                getContainer().addAllStudents(p.getMyBoard().getListStudents());
+                p.getMyBoard().cleanHall();
+            }
         }
     }
 
@@ -209,7 +246,11 @@ public class ExpertGameBoard extends GameBoard {
      */
     public void resetCharacterStudent() throws ClassCastException{
         CharacterWithStudent c = (CharacterWithStudent) activeCharacter;
-        c.add(container.draw());
+        try {
+            c.add(container.draw());
+        } catch (EmptyPlaceException e) {
+            e.getMessage();
+        }
     }
 
     /**

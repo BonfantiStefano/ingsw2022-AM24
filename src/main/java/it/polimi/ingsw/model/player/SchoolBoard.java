@@ -1,10 +1,12 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.exceptions.EmptyPlaceException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +21,7 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     private ArrayList<ColorS> entrance;
     private ArrayList<ColorT> towers;
     private Map<ColorS,Integer> hall;
+
 
     /**
      * Constructor SchoolBoard creates a new SchoolBoard instance subdivided into three areas, two for the students
@@ -42,11 +45,15 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
      * @param s the color of the Student being moved
      * @return true if the Player gains a coin
      * @throws PlaceFullException if there is no more available space for the students in the hall
+     * @throws EmptyPlaceException if there is no students in the entrance
      */
-    public boolean entranceToHall(ColorS s) throws PlaceFullException {
+    public boolean entranceToHall(ColorS s) throws PlaceFullException, EmptyPlaceException {
         int temp = hall.get(s) + 1;
         if(temp > MAX_STUD){
             throw new PlaceFullException();
+        }
+        else if(entrance.isEmpty()){
+            throw new EmptyPlaceException();
         }
         else{
             hall.put(s,temp);
@@ -59,17 +66,51 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
      * Removes a Student directly from the Hall
      * @param s the Student being removed
      */
-    public void removeHall(ColorS s){
+    public void removeHall(ColorS s) throws EmptyPlaceException {
         int temp = hall.get(s)-1;
-        hall.put(s,temp);
+        if(temp < 0) throw new EmptyPlaceException();
+        else hall.put(s,temp);
+    }
+
+    /**
+     * Method cleanHall removes all the sudents from the hall
+     */
+    public void cleanHall(){
+        for(ColorS color: ColorS.values()){
+            hall.put(color,0);
+        }
+    }
+
+    /**
+     * Method getListStudents returns a list with all the students in the hall
+     * @return list of type List<ColorS> - all the students placed in the hall
+     */
+    public List<ColorS> getListStudents(){
+        ArrayList<ColorS> list = new ArrayList<>();
+        for(ColorS c : ColorS.values()){
+            int num = hall.get(c);
+            for (int i = 0; i < num; i++){
+               list.add(c);
+            }
+        }
+        return list;
     }
 
     /**
      * Moves a Student from the Hall to the Entrance
      * @param s the Student being moved
+     * @throws EmptyPlaceException if there is no students in the hall
      */
-    public void hallToEntrance(ColorS s){
-        hall.put(s, hall.get(s)-1);
+    public void hallToEntrance(ColorS s) throws EmptyPlaceException {
+        int temp = hall.get(s);
+        if(temp == 0){
+            throw new EmptyPlaceException();
+        }
+        else{
+            temp = hall.get(s)-1;
+            hall.put(s, temp);
+            entrance.add(s);
+        }
     }
 
     /**
@@ -100,9 +141,12 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     /**
      * Removes a Student from the Entrance
      * @param s the color of the Student being removed
+     * @throws EmptyPlaceException if there is no students in the entrance
      */
-    public void remove(ColorS s){
-        entrance.remove(s);
+    public void remove(ColorS s)throws EmptyPlaceException {
+        if (!entrance.isEmpty()) entrance.remove(s);
+        else throw new EmptyPlaceException();
+
     }
 
     /**
@@ -116,8 +160,12 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     /**
      * Removes a Tower from the Player's Board
      * @param t the color of the Tower being removed
+     * @throws EmptyPlaceException if there is no towers in the SchoolBoard
      */
-    public void remove(ColorT t){towers.remove(t);}
+    public void remove(ColorT t)throws EmptyPlaceException{
+        if(!towers.isEmpty()) towers.remove(t);
+        else throw new EmptyPlaceException();
+    }
 
     /**
      * Get the Entrance to access the Students it contains

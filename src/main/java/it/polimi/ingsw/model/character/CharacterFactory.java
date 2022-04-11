@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.character;
 
+import it.polimi.ingsw.exceptions.EmptyPlaceException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.StudentContainer;
 import it.polimi.ingsw.model.player.PlayerInterface;
@@ -54,8 +55,13 @@ public class CharacterFactory {
             case 1:
             case 11:
                 temp = new CharacterWithStudent(cost, desc, 4);
-                for(int j=0;j<4;j++)
-                    temp.add(bag.draw());
+                for(int j=0;j<4;j++) {
+                    try {
+                        temp.add(bag.draw());
+                    } catch (EmptyPlaceException e) {
+                        e.getMessage();
+                    }
+                }
                 c=temp;
                 break;
             case 2:
@@ -77,8 +83,13 @@ public class CharacterFactory {
                 break;
             case 7:
                 temp = new CharacterWithStudent(cost, desc, 6);
-                for(int j=0;j<6;j++)
-                    temp.add(bag.draw());
+                for(int j=0;j<6;j++) {
+                    try {
+                        temp.add(bag.draw());
+                    } catch (EmptyPlaceException e) {
+                        e.getMessage();
+                    }
+                }
                 c=temp;
                 break;
             case 8:

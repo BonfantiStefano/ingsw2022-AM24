@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.character.CharacterWithNoEntry;
 import it.polimi.ingsw.model.character.CharacterWithStudent;
 import it.polimi.ingsw.model.mnstrategy.MNTwoSteps;
 import it.polimi.ingsw.model.player.Mage;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.world.Island;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -210,4 +211,51 @@ class ExpertGameBoardTest {
         gb.resetCharacterStudent();
     }
 
+    /**
+     * Method testRemoveHall checks the effect of the Character card that removes students from the hall
+     */
+    @Test
+    void testRemoveHall(){
+        gb = new ExpertGameBoard(2);
+        gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
+        gb.addPlayer("Bob", ColorT.WHITE, Mage.MAGE2);
+
+        gb.setActivePlayer(gb.getPlayerByNickname("Bob"));
+        gb.addToHall(ColorS.GREEN);
+        gb.addToHall(ColorS.GREEN);
+        gb.addToHall(ColorS.GREEN);
+        gb.addToHall(ColorS.BLUE);
+
+        gb.setActivePlayer(gb.getPlayerByNickname("Lisa"));
+        gb.addToHall(ColorS.GREEN);
+        gb.addToHall(ColorS.YELLOW);
+        gb.addToHall(ColorS.RED);
+
+        gb.removeHall(ColorS.GREEN);
+
+        assertEquals(gb.getPlayerByNickname("Bob").getMyBoard().getHall(ColorS.GREEN), 0);
+        assertEquals(gb.getPlayerByNickname("Bob").getMyBoard().getHall(ColorS.BLUE), 1);
+
+        assertEquals(gb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.GREEN), 0);
+        assertEquals(gb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.YELLOW), 0);
+        assertEquals(gb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.RED), 0);
+    }
+
+    /**
+     * Method testSwitchStudents tests switchStudents method
+     */
+    @Test
+    public void testSwitchStudents(){
+        gb = new ExpertGameBoard(2);
+        gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
+        gb.setActivePlayer(gb.getPlayerByNickname("Lisa"));
+        gb.addToHall(ColorS.YELLOW);
+        gb.addToHall(ColorS.RED);
+        gb.getActivePlayer().getMyBoard().add(ColorS.GREEN);
+        gb.getActivePlayer().getMyBoard().add(ColorS.YELLOW);
+
+        gb.switchStudents(ColorS.RED, ColorS.YELLOW);
+        assertEquals(gb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.YELLOW), 2);
+
+    }
 }

@@ -1,11 +1,20 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.EmptyPlaceException;
+import it.polimi.ingsw.exceptions.InvalidIndexException;
+import it.polimi.ingsw.model.player.Hand;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Class StudentContainerTest tests StudentContainer class.
+ *
+ * @see StudentContainer
+ */
 
 class StudentContainerTest {
     /**
@@ -21,11 +30,14 @@ class StudentContainerTest {
         }
     }
 
+    /**
+     * Method testDraw tests random drawing generator of students
+     */
     @Test
-    void draw() {
+    void testDraw() throws EmptyPlaceException {
         StudentContainer bag=new StudentContainer();
         HashMap<ColorS, Integer> map=new HashMap<>();
-        ColorS c;
+        ColorS c = null;
         for(int i=0; i<120; i++) {
             c=bag.draw();
             int count = map.getOrDefault(c, 0);
@@ -35,5 +47,15 @@ class StudentContainerTest {
         for(ColorS color: ColorS.values()){
             assertEquals(24, map.get(color));
         }
+    }
+    /** Method testException checks if method draw is capable of throwing EmptyPlaceException */
+    @Test
+    public void testException() throws EmptyPlaceException {
+        StudentContainer bag=new StudentContainer();
+        for (int i = 0; i < 120; i++){
+           bag.draw();
+        }
+        assertThrows(EmptyPlaceException.class,
+                () -> bag.draw());
     }
 }
