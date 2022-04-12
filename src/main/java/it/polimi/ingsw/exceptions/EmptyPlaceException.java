@@ -1,5 +1,4 @@
 package it.polimi.ingsw.exceptions;
-
 /**
  * Class PlaceEmptyException is thrown when there is no pawns in the selected place
  */

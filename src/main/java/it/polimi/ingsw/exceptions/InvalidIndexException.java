@@ -1,5 +1,4 @@
 package it.polimi.ingsw.exceptions;
-
 /**
  * Class InvalidIndexException is thrown when the index position of the card doesn't exist in the player's hand
  */
