@@ -204,7 +204,7 @@ class ExpertGameBoardTest {
      * Tests if CharacterWithStudent gets refilled with a Student
      */
     @Test
-    void resetCharacterStudent(){
+    void resetCharacterStudent() throws EmptyPlaceException {
         gb.setActiveCharacter(new CharacterWithNoEntry(1, "ciao"));
         assertThrows(ClassCastException.class,() -> gb.resetCharacterStudent());
 
@@ -246,7 +246,7 @@ class ExpertGameBoardTest {
      * Method testSwitchStudents tests switchStudents method
      */
     @Test
-    public void testSwitchStudents(){
+    public void testSwitchStudents() throws NoSuchStudentException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         gb.setActivePlayer(gb.getPlayerByNickname("Lisa"));
@@ -326,7 +326,7 @@ class ExpertGameBoardTest {
      * when remove method is used
      */
     @Test
-    public void testExceptioRemoveFromEntrance(){
+    public void testExceptionRemoveFromEntrance() throws NoSuchStudentException{
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         Player lisa = gb.getPlayerByNickname("Lisa");

@@ -4,14 +4,20 @@ import it.polimi.ingsw.exceptions.EmptyPlaceException;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
+/**
+ * Class StudentContainer models a container with a set amount of Students
+ */
 public class StudentContainer {
     private ArrayList<ColorS> students;
     private ArrayList<ColorS> initial;
+    private final int numStudents = 120;
 
+    /**
+     * Creates a new StudentContainer object filled with Students
+     */
     public StudentContainer() {
-        students = new ArrayList<>(120);
+        students = new ArrayList<>(numStudents);
         for(ColorS c: ColorS.values())
             for(int i=0;i<24;i++)
                 students.add(c);

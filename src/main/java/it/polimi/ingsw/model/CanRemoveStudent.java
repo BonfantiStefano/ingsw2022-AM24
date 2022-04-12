@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.EmptyPlaceException;
+import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 
 /**
@@ -12,6 +13,6 @@ public interface CanRemoveStudent {
      * This method will handle the removal of a Student
      * @param s Color of the Student being removed
      */
-    void remove(ColorS s) throws EmptyPlaceException;
+    void remove(ColorS s) throws EmptyPlaceException, NoSuchStudentException;
 
 }

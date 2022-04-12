@@ -1,9 +1,6 @@
 package it.polimi.ingsw.model.gameboard;
 
-import it.polimi.ingsw.exceptions.EmptyPlaceException;
-import it.polimi.ingsw.exceptions.InvalidMNStepsException;
-import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
-import it.polimi.ingsw.exceptions.PlaceFullException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.*;
@@ -125,7 +122,7 @@ public class ExpertGameBoard extends GameBoard {
      * @param s the Student being removed
      */
     public void removeHall(ColorS s){
-        int num = 0;
+        int num;
         for(Player p : getPlayers()){
             num = p.getMyBoard().getHall().get(s);
             if(num >=3 ){
@@ -243,13 +240,9 @@ public class ExpertGameBoard extends GameBoard {
      * Adds a new Student to the Character after it's played
      * @throws ClassCastException if the activeCharacter
      */
-    public void resetCharacterStudent() throws ClassCastException{
+    public void resetCharacterStudent() throws ClassCastException, EmptyPlaceException {
         CharacterWithStudent c = (CharacterWithStudent) activeCharacter;
-        try {
-            c.add(container.draw());
-        } catch (EmptyPlaceException e) {
-            e.getMessage();
-        }
+        c.add(container.draw());
     }
 
     /**
