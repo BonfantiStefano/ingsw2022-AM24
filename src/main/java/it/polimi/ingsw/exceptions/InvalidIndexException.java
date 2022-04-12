@@ -1,8 +1,13 @@
 package it.polimi.ingsw.exceptions;
 
+/**
+ * Class InvalidIndexException is thrown when the index position of the card doesn't exist in the player's hand
+ */
 public class InvalidIndexException extends Throwable {
     /**
-     * Class InvalidIndexException is thrown when the index position on the card doesn't exist in the player's hand
+     * Method getMessage returns the message of InvalidIndexException object.
+     *
+     * @return the message (type String) of InvalidIndexException object.
      */
     @Override
     public String getMessage() {
