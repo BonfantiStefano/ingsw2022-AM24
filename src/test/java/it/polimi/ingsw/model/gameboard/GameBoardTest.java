@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.gameboard;
 import it.polimi.ingsw.exceptions.EmptyPlaceException;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.exceptions.InvalidMNStepsException;
+import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.StudentContainer;
@@ -293,7 +294,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("GameBoard's move test")
-    void moveStudent() throws  EmptyPlaceException {
+    void moveStudent() throws EmptyPlaceException, NoSuchStudentException {
         Player lisa = gb.getPlayers().get(0);
         lisa.getMyBoard().add(ColorS.GREEN);
         int initialSIze = lisa.getMyBoard().getEntrance().size();

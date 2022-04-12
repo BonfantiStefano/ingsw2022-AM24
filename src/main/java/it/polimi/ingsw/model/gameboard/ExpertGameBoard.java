@@ -1,9 +1,6 @@
 package it.polimi.ingsw.model.gameboard;
 
-import it.polimi.ingsw.exceptions.EmptyPlaceException;
-import it.polimi.ingsw.exceptions.InvalidMNStepsException;
-import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
-import it.polimi.ingsw.exceptions.PlaceFullException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.*;
@@ -57,9 +54,15 @@ public class ExpertGameBoard extends GameBoard {
      * Method entranceToHall moves a Student form Entrance to Hall in the active player's School Board
      * @param s the color of the Student being moved
      */
-    public void entranceToHall(ColorS s) throws PlaceFullException, EmptyPlaceException {
+    public void entranceToHall(ColorS s)  {
         boolean result = false;
-        result = activePlayer.getMyBoard().entranceToHall(s);
+        try {
+            result = activePlayer.getMyBoard().entranceToHall(s);
+        } catch (PlaceFullException e) {
+            e.getMessage();
+        } catch (EmptyPlaceException e) {
+            e.getMessage();
+        }
         if (result){
             activePlayer.setCoins(1);
             coins--;
@@ -70,20 +73,27 @@ public class ExpertGameBoard extends GameBoard {
      * Method hallToEntrance moves a Student from the Hall to the Entrance
      * @param s the color of the Student being moved
      */
-    public void hallToEntrance(ColorS s) throws EmptyPlaceException {
-        activePlayer.getMyBoard().hallToEntrance(s);
+    public void hallToEntrance(ColorS s){
+        try {
+            activePlayer.getMyBoard().hallToEntrance(s);
+        } catch (EmptyPlaceException e) {
+            e.getMessage();
+        }
     }
 
     /**
      * Method addToHall adds a student directly to the Hall
      * @param s the color of the Student being added
      */
-    public void addToHall(ColorS s) throws PlaceFullException {
-        if(activePlayer.getMyBoard().addToHall(s)){
-            activePlayer.setCoins(1);
-            coins--;
+    public void addToHall(ColorS s) {
+        try {
+            if(activePlayer.getMyBoard().addToHall(s)){
+                activePlayer.setCoins(1);
+                coins--;
+            }
+        } catch (PlaceFullException e) {
+            e.getMessage();
         }
-
     }
 
     /**
@@ -91,9 +101,19 @@ public class ExpertGameBoard extends GameBoard {
      * @param hallS - student moved from hall to entrance
      * @param entranceS - student moved from entrance to hall
      */
-    public void switchStudents(ColorS hallS, ColorS entranceS) throws PlaceFullException, EmptyPlaceException {
-        activePlayer.getMyBoard().entranceToHall(entranceS);
-        activePlayer.getMyBoard().hallToEntrance(hallS);
+    public void switchStudents(ColorS hallS, ColorS entranceS) {
+        try {
+            activePlayer.getMyBoard().entranceToHall(entranceS);
+        } catch (PlaceFullException e) {
+            e.printStackTrace();
+        } catch (EmptyPlaceException e) {
+            e.printStackTrace();
+        }
+        try {
+            activePlayer.getMyBoard().hallToEntrance(hallS);
+        } catch (EmptyPlaceException e) {
+            e.getMessage();
+        }
     }
 
     /**
@@ -102,7 +122,7 @@ public class ExpertGameBoard extends GameBoard {
      * @param s the Student being removed
      */
     public void removeHall(ColorS s){
-        int num = 0;
+        int num;
         for(Player p : getPlayers()){
             num = p.getMyBoard().getHall().get(s);
             if(num >=3 ){
@@ -147,10 +167,10 @@ public class ExpertGameBoard extends GameBoard {
      * Method checkIsland is utilized by the character whose effect is to calculate the influence on an Island as if Mother Nature were there.
      * @param island Island - the Island on which the influence has to be calculated.
      */
-    public void checkIsland(Island island){
+    public void checkIsland(Island island) {
         if(world.checkEntry(island)) {
             Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players, island);
-            nextOwner.ifPresent(owner -> {conquest(owner, island);});
+            nextOwner.ifPresent(owner -> conquest(owner, island));
             world.checkJoin(island);
         }
     }
@@ -223,7 +243,6 @@ public class ExpertGameBoard extends GameBoard {
     public void resetCharacterStudent() throws ClassCastException, EmptyPlaceException {
         CharacterWithStudent c = (CharacterWithStudent) activeCharacter;
         c.add(container.draw());
-
     }
 
     /**

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.character;
 
+import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.CanAcceptStudent;
 import it.polimi.ingsw.model.CanRemoveStudent;
@@ -40,8 +41,10 @@ public class CharacterWithStudent extends Character implements CanAcceptStudent,
      * @param s the Color of the Student being removed
      */
     @Override
-    public void remove(ColorS s) {
-        students.remove(s);
+    public void remove(ColorS s) throws NoSuchStudentException {
+        if(students.contains(s))
+            students.remove(s);
+        else {throw new NoSuchStudentException();}
     }
 
     /**

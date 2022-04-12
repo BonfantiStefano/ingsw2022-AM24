@@ -12,6 +12,9 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Class StandardProfTest tests StandardProf Strategy
+ */
 class StandardProfTest {
     /**
      *  Checks with only one Player playing while all Profs are held by another Player with fewer Students for all ColorS

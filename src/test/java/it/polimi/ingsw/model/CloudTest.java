@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.model.world.World;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ class CloudTest {
     /** Method listStudent tests the Student's getter and setter that are in the ArrayList<Student>.*/
     @Test
     @DisplayName("Add Student test")
-    void listStudent() {
+    void listStudent() throws NoSuchStudentException {
         Cloud cloud = new Cloud();
         ColorS s1 = ColorS.BLUE;
         ColorS s2 = ColorS.YELLOW;
@@ -36,5 +37,6 @@ class CloudTest {
         cloud.remove(s1);
         students.remove(s1);
         assertEquals(students, cloud.getStudents());
+        assertThrows(NoSuchStudentException.class, ()-> cloud.remove(s1));
     }
 }

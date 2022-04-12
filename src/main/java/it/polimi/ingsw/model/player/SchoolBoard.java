@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.exceptions.EmptyPlaceException;
+import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.*;
 
@@ -118,10 +119,12 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
      * @param s the color of the Student being removed
      * @throws EmptyPlaceException if there is no students in the entrance
      */
-    public void remove(ColorS s)throws EmptyPlaceException {
-        if (!entrance.isEmpty()) entrance.remove(s);
-        else throw new EmptyPlaceException();
-
+    public void remove(ColorS s) throws EmptyPlaceException, NoSuchStudentException {
+        if (entrance.isEmpty())
+            throw new EmptyPlaceException();
+        if(!entrance.contains(s))
+            throw new NoSuchStudentException();
+        entrance.remove(s);
     }
 
     /**

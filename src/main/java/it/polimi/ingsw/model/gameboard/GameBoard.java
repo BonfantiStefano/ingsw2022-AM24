@@ -1,9 +1,6 @@
 package it.polimi.ingsw.model.gameboard;
 
-import it.polimi.ingsw.exceptions.EmptyPlaceException;
-import it.polimi.ingsw.exceptions.InvalidIndexException;
-import it.polimi.ingsw.exceptions.InvalidMNStepsException;
-import it.polimi.ingsw.exceptions.PlaceFullException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
@@ -249,7 +246,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * @param from of type CanRemoveStudent - place from which the student is relocated
      * @param to of type CanAcceptStudent - place where the student is shifted
      */
-    public void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to) throws EmptyPlaceException {
+    public void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to) throws EmptyPlaceException, NoSuchStudentException {
         from.remove(s);
         to.add(s);
     }

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.NoSuchStudentException;
+
 import java.util.ArrayList;
 
 /**
@@ -30,8 +32,11 @@ public class Cloud implements CanAcceptStudent, CanRemoveStudent{
      * @param s Student
      */
     @Override
-    public void remove(ColorS s){
-        students.remove(s);
+    public void remove(ColorS s) throws NoSuchStudentException {
+        if(students.contains(s))
+            students.remove(s);
+        else
+            throw new NoSuchStudentException();
     }
 
     /**

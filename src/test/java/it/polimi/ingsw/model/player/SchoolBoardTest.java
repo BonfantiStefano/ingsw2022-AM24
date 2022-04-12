@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.exceptions.EmptyPlaceException;
+import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
@@ -94,9 +95,10 @@ class SchoolBoardTest {
      * Method removeStudent tests the removal of a Student from the Entrance.
      */
     @Test
-    void removeStudent() throws EmptyPlaceException {
+    void removeStudent() throws EmptyPlaceException, NoSuchStudentException {
         schoolBoard.remove(ColorS.GREEN);
         assertEquals(1, schoolBoard.getEntrance().size());
+        assertThrows(NoSuchStudentException.class, () -> schoolBoard.remove(ColorS.GREEN));
     }
 
     /**
