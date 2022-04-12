@@ -56,7 +56,6 @@ public class GameBoardTest {
 
     }
 
-    //Test in progress
     /**
      * Method moveMN tests the GameBoard's moveMN.
      */

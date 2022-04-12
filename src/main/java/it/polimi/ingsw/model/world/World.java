@@ -220,7 +220,10 @@ public class World implements HasStrategy<InfluenceStrategy> {
         return posMN;
     }
 
-    //method used only for testing
+    /**
+     * Method getBannedColorS returns the color banned by the effect of a character.
+     * @return Optional<ColorS></> - The color banned.
+     */
     public Optional<ColorS> getBannedColorS() {
         return bannedColorS;
     }
