@@ -309,12 +309,6 @@ class ExpertGameBoardTest {
 
         assertThrows(PlaceFullException.class,
                 () -> lisa.getMyBoard().addToHall(ColorS.YELLOW));
-        try {
-            lisa.getMyBoard().addToHall(ColorS.YELLOW);
-        } catch (PlaceFullException e) {
-            System.out.println(e);
-        }
-
     }
 
     /**
@@ -335,11 +329,6 @@ class ExpertGameBoardTest {
 
         assertThrows(EmptyPlaceException.class,
                 ()->lisa.getMyBoard().remove(ColorS.RED) );
-        try {
-            lisa.getMyBoard().remove(ColorS.RED);
-        } catch (EmptyPlaceException e) {
-            System.out.println(e);
-        }
     }
 
 }
