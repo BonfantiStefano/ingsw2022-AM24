@@ -1,9 +1,6 @@
 package it.polimi.ingsw.model.gameboard;
 
-import it.polimi.ingsw.exceptions.EmptyPlaceException;
-import it.polimi.ingsw.exceptions.InvalidIndexException;
-import it.polimi.ingsw.exceptions.InvalidMNStepsException;
-import it.polimi.ingsw.exceptions.NoSuchStudentException;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.StudentContainer;
@@ -472,12 +469,15 @@ public class GameBoardTest {
         gb.addPlayer("Alice", ColorT.BLACK, Mage.MAGE3);
         // 120 - 9*3 = 93
         StudentContainer bag = gb.container;
-        for (int i = 0; i < 94; i++){
-            try {
+
+        for (int i = 0; i < 93; i++){
+            try{
                 bag.draw();
             } catch (EmptyPlaceException e) {
                 System.out.println(e);
             }
         }
+        assertThrows(EmptyPlaceException.class,
+                ()->bag.draw());
     }
 }
