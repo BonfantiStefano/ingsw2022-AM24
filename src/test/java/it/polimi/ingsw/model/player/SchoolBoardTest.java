@@ -105,7 +105,7 @@ class SchoolBoardTest {
      * Method addRemoveTower tests the addition and the removal of a Tower from the List of towers.
      */
     @Test
-    void addRemoveTower() throws EmptyPlaceException {
+    void addRemoveTower() {
         assertEquals(8, schoolBoard.getTowers().size());
         schoolBoard.remove(ColorT.WHITE);
         assertEquals(7, schoolBoard.getTowers().size());
