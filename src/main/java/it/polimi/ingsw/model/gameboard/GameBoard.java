@@ -224,11 +224,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * @param to of type AcceptTower - where the tower is mowed
      */
     public void moveTower(ColorT t, AcceptTower from, AcceptTower to) {
-        try {
-            from.remove(t);
-        } catch (EmptyPlaceException e) {
-            e.getMessage();
-        }
+        from.remove(t);
         to.add(t);
     }
 
@@ -298,16 +294,12 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
     /**
      * Fills Clouds with the correct Number of Students
      */
-    public void newClouds(){
+    public void newClouds() throws EmptyPlaceException {
         int numStudents = numPlayers%2==0 ? 3 : 4; // 2 or 4 Players -> 3 Students, 3 Players -> 4 Students per Cloud
         for(Cloud c: clouds)
             for(int i=0;i<numStudents; i++)
                 if(container.canDraw()) {
-                    try {
-                        c.add(container.draw());
-                    } catch (EmptyPlaceException e) {
-                        e.getMessage();
-                    }
+                    c.add(container.draw());
                 }
                 else
                     gameMustEnd = true;

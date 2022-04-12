@@ -158,7 +158,6 @@ class SchoolBoardTest {
                 () -> board.removeHall(ColorS.BLUE));
         assertThrows(EmptyPlaceException.class,
                 () -> board.hallToEntrance(ColorS.BLUE));
-
     }
 
 }

@@ -480,6 +480,4 @@ public class GameBoardTest {
             }
         }
     }
-
-
 }

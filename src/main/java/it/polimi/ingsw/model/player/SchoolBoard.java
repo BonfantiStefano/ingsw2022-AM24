@@ -175,4 +175,5 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     public ArrayList<ColorT> getTowers(){
         return towers;
     }
+
 }

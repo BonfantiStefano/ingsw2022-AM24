@@ -341,7 +341,6 @@ class ExpertGameBoardTest {
         } catch (EmptyPlaceException e) {
             System.out.println(e);
         }
-
     }
 
 }

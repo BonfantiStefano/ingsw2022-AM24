@@ -18,4 +18,5 @@ public interface AcceptTower {
      * @param t Color of the Tower being removed
      */
     void remove(ColorT t);
+
 }
