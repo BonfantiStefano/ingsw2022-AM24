@@ -4,6 +4,7 @@ package it.polimi.ingsw.exceptions;
  * for the students of one of the five colors
  */
 public class PlaceFullException extends Exception {
+
     /**
      * Method getMessage returns the message of PlaceFullException object.
      *
@@ -11,6 +12,6 @@ public class PlaceFullException extends Exception {
      */
     @Override
     public String getMessage() {
-        return ("Error: The hall is full");
+        return "Error: The hall is full";
     }
 }

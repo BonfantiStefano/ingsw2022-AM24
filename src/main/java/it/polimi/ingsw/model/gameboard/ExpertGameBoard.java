@@ -106,14 +106,11 @@ public class ExpertGameBoard extends GameBoard {
      */
     public void switchStudents(ColorS hallS, ColorS entranceS) {
         try {
-            activePlayer.getMyBoard().addToHall(entranceS);
+            activePlayer.getMyBoard().entranceToHall(entranceS);
         } catch (PlaceFullException e) {
-            e.getMessage();
-        }
-        try {
-            activePlayer.getMyBoard().remove(entranceS);
+            e.printStackTrace();
         } catch (EmptyPlaceException e) {
-            e.getMessage();
+            e.printStackTrace();
         }
         try {
             activePlayer.getMyBoard().hallToEntrance(hallS);

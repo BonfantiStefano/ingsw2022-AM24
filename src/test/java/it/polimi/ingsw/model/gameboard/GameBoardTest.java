@@ -14,9 +14,12 @@ import it.polimi.ingsw.model.profstrategy.EqualProf;
 import it.polimi.ingsw.model.profstrategy.ProfStrategy;
 import it.polimi.ingsw.model.profstrategy.StandardProf;
 import it.polimi.ingsw.model.world.Island;
+import it.polimi.ingsw.model.world.World;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -452,6 +455,47 @@ public class GameBoardTest {
         gb.checkProfs();
         for(ColorS c: ColorS.values()) {
             assertEquals("Alice", gb.getProfs().get(c).getNickname());
+        }
+    }
+
+    /**
+     * Method testDrawException checks the correct throwing of EmptyPlaceException
+     * when draw method is used
+     */
+    @Test
+    public void testDrawException(){
+        gb = new GameBoard(3);
+
+        gb.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
+        gb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
+        gb.addPlayer("Alice", ColorT.BLACK, Mage.MAGE3);
+        // 120 - 9*3 = 93
+        StudentContainer bag = gb.container;
+        for (int i = 0; i < 94; i++){
+            try {
+                bag.draw();
+            } catch (EmptyPlaceException e) {
+                System.out.println(e);
+            }
+        }
+    }
+
+    /**
+     * Method moveTowerException checks the correct throwing of EmptyPlaceException
+     * when there is no tower that can be moved
+     */
+    @Test
+    public void moveTowerException(){
+        gb = new GameBoard(3);
+        World world = gb.world;
+        gb.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
+        Player bob = gb.getPlayerByNickname("Bob");
+        for(int i = 0; i < 7; i++) {
+            try {
+                bob.getMyBoard().remove(ColorT.GREY);
+            } catch (EmptyPlaceException e) {
+                System.out.println(e);
+            }
         }
     }
 }

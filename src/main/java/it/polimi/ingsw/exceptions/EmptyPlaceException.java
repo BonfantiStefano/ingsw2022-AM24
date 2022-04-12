@@ -4,13 +4,13 @@ package it.polimi.ingsw.exceptions;
  */
 public class EmptyPlaceException extends Throwable{
     /**
-     * Method getMessage returns the message of PlaceEmptyException object.
+     * Method getMessage returns the message of EmptyPlaceException object.
      *
-     * @return the message (type String) of PlaceEmptyException object.
+     * @return the message (type String) of EmptyPlaceException object.
      */
     @Override
     public String getMessage() {
-            return ("Error: There is no pawns here");
-        }
+            return "Error: There is no pawns here";
+    }
 }
 
