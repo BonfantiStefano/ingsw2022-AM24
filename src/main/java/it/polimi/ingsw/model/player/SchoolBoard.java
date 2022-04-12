@@ -52,7 +52,7 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
         if(temp > MAX_STUD){
             throw new PlaceFullException();
         }
-        else if(entrance.isEmpty()){
+        if(entrance.isEmpty()){
             throw new EmptyPlaceException();
         }
         else{

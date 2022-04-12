@@ -80,7 +80,7 @@ class ExpertGameBoardTest {
      * Adds 3 Blue Students to the Player's Hall and ensures they are present
      */
     @Test
-    void entranceToHall() throws PlaceFullException {
+    void entranceToHall() throws PlaceFullException, EmptyPlaceException {
         gb.entranceToHall(ColorS.BLUE);
         gb.entranceToHall(ColorS.BLUE);
         gb.entranceToHall(ColorS.BLUE);
@@ -91,7 +91,7 @@ class ExpertGameBoardTest {
      * Adds a Student to the Player's Hall, and ensures it has moved to the Entrance
      */
     @Test
-    void hallToEntrance() throws PlaceFullException {
+    void hallToEntrance() throws PlaceFullException, EmptyPlaceException {
         gb.entranceToHall(ColorS.BLUE);
         gb.hallToEntrance(ColorS.BLUE);
         assertEquals(gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE), 0);
@@ -216,7 +216,7 @@ class ExpertGameBoardTest {
      * Method testRemoveHall checks the effect of the Character card that removes students from the hall
      */
     @Test
-    void testRemoveHall(){
+    void testRemoveHall() throws PlaceFullException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         gb.addPlayer("Bob", ColorT.WHITE, Mage.MAGE2);
@@ -246,7 +246,7 @@ class ExpertGameBoardTest {
      * Method testSwitchStudents tests switchStudents method
      */
     @Test
-    public void testSwitchStudents() throws NoSuchStudentException {
+    public void testSwitchStudents() throws NoSuchStudentException, PlaceFullException, EmptyPlaceException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         gb.setActivePlayer(gb.getPlayerByNickname("Lisa"));
@@ -264,7 +264,7 @@ class ExpertGameBoardTest {
      * when switchStudents method is used
      */
     @Test
-    public void testExceptionSwitch() {
+    public void testExceptionSwitch() throws PlaceFullException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         Player lisa = gb.getPlayerByNickname("Lisa");
@@ -283,19 +283,12 @@ class ExpertGameBoardTest {
         // Hall: 1 red, 1 yellow, 10 blue
         // Entrance : empty
 
-        //trying to switch a green student in the hall and a blue student in the entrance
-        try {
-            lisa.getMyBoard().entranceToHall(ColorS.BLUE);
-        } catch (PlaceFullException e) {
-            System.out.println(e);
-        } catch (EmptyPlaceException e) {
-            System.out.println(e);
-        }
-        try {
-            lisa.getMyBoard().hallToEntrance(ColorS.GREEN);
-        } catch (EmptyPlaceException e) {
-            System.out.println(e);
-        }
+        assertThrows(PlaceFullException.class,
+                () -> gb.switchStudents(ColorS.GREEN, ColorS.BLUE));
+
+        assertTrue(lisa.getMyBoard().getEntrance().isEmpty());
+        //assertThrows(EmptyPlaceException.class,
+        //        () -> gb.switchStudents(ColorS.GREEN, ColorS.BLUE));
 
         assertEquals(10, lisa.getMyBoard().getHall(ColorS.BLUE));
         assertEquals(0, lisa.getMyBoard().getEntrance().size());
@@ -306,13 +299,16 @@ class ExpertGameBoardTest {
      * when addToHall method is used
      */
     @Test
-    public void testExceptionAddToHall() {
+    public void testExceptionAddToHall() throws PlaceFullException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         Player lisa = gb.getPlayerByNickname("Lisa");
         gb.setActivePlayer(lisa);
         for (int i = 0; i < 10; i++)
             gb.addToHall(ColorS.YELLOW);
+
+        assertThrows(PlaceFullException.class,
+                () -> lisa.getMyBoard().addToHall(ColorS.YELLOW));
         try {
             lisa.getMyBoard().addToHall(ColorS.YELLOW);
         } catch (PlaceFullException e) {
@@ -336,6 +332,9 @@ class ExpertGameBoardTest {
         for (int i = 0; i < size; i++)
             entrance.add(lisa.getMyBoard().getEntrance().get(i));
         lisa.getMyBoard().getEntrance().removeAll(entrance);
+
+        assertThrows(EmptyPlaceException.class,
+                ()->lisa.getMyBoard().remove(ColorS.RED) );
         try {
             lisa.getMyBoard().remove(ColorS.RED);
         } catch (EmptyPlaceException e) {
