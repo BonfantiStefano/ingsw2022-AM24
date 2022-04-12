@@ -17,5 +17,5 @@ public interface AcceptTower {
      * Method used to remove a Tower
      * @param t Color of the Tower being removed
      */
-    void remove(ColorT t) throws EmptyPlaceException;
+    void remove(ColorT t);
 }

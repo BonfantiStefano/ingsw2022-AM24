@@ -57,15 +57,9 @@ public class ExpertGameBoard extends GameBoard {
      * Method entranceToHall moves a Student form Entrance to Hall in the active player's School Board
      * @param s the color of the Student being moved
      */
-    public void entranceToHall(ColorS s)  {
+    public void entranceToHall(ColorS s) throws PlaceFullException, EmptyPlaceException {
         boolean result = false;
-        try {
-            result = activePlayer.getMyBoard().entranceToHall(s);
-        } catch (PlaceFullException e) {
-            e.getMessage();
-        } catch (EmptyPlaceException e) {
-            e.getMessage();
-        }
+        result = activePlayer.getMyBoard().entranceToHall(s);
         if (result){
             activePlayer.setCoins(1);
             coins--;
@@ -76,27 +70,20 @@ public class ExpertGameBoard extends GameBoard {
      * Method hallToEntrance moves a Student from the Hall to the Entrance
      * @param s the color of the Student being moved
      */
-    public void hallToEntrance(ColorS s){
-        try {
-            activePlayer.getMyBoard().hallToEntrance(s);
-        } catch (EmptyPlaceException e) {
-            e.getMessage();
-        }
+    public void hallToEntrance(ColorS s) throws EmptyPlaceException {
+        activePlayer.getMyBoard().hallToEntrance(s);
     }
 
     /**
      * Method addToHall adds a student directly to the Hall
      * @param s the color of the Student being added
      */
-    public void addToHall(ColorS s) {
-        try {
-            if(activePlayer.getMyBoard().addToHall(s)){
-                activePlayer.setCoins(1);
-                coins--;
-            }
-        } catch (PlaceFullException e) {
-            e.getMessage();
+    public void addToHall(ColorS s) throws PlaceFullException {
+        if(activePlayer.getMyBoard().addToHall(s)){
+            activePlayer.setCoins(1);
+            coins--;
         }
+
     }
 
     /**
@@ -104,19 +91,9 @@ public class ExpertGameBoard extends GameBoard {
      * @param hallS - student moved from hall to entrance
      * @param entranceS - student moved from entrance to hall
      */
-    public void switchStudents(ColorS hallS, ColorS entranceS) {
-        try {
-            activePlayer.getMyBoard().entranceToHall(entranceS);
-        } catch (PlaceFullException e) {
-            e.printStackTrace();
-        } catch (EmptyPlaceException e) {
-            e.printStackTrace();
-        }
-        try {
-            activePlayer.getMyBoard().hallToEntrance(hallS);
-        } catch (EmptyPlaceException e) {
-            e.getMessage();
-        }
+    public void switchStudents(ColorS hallS, ColorS entranceS) throws PlaceFullException, EmptyPlaceException {
+        activePlayer.getMyBoard().entranceToHall(entranceS);
+        activePlayer.getMyBoard().hallToEntrance(hallS);
     }
 
     /**
@@ -170,10 +147,10 @@ public class ExpertGameBoard extends GameBoard {
      * Method checkIsland is utilized by the character whose effect is to calculate the influence on an Island as if Mother Nature were there.
      * @param island Island - the Island on which the influence has to be calculated.
      */
-    public void checkIsland(Island island) {
+    public void checkIsland(Island island){
         if(world.checkEntry(island)) {
             Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players, island);
-            nextOwner.ifPresent(owner -> conquest(owner, island));
+            nextOwner.ifPresent(owner -> {conquest(owner, island);});
             world.checkJoin(island);
         }
     }
@@ -243,13 +220,10 @@ public class ExpertGameBoard extends GameBoard {
      * Adds a new Student to the Character after it's played
      * @throws ClassCastException if the activeCharacter
      */
-    public void resetCharacterStudent() throws ClassCastException{
+    public void resetCharacterStudent() throws ClassCastException, EmptyPlaceException {
         CharacterWithStudent c = (CharacterWithStudent) activeCharacter;
-        try {
-            c.add(container.draw());
-        } catch (EmptyPlaceException e) {
-            e.getMessage();
-        }
+        c.add(container.draw());
+
     }
 
     /**

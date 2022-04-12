@@ -135,11 +135,9 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     /**
      * Removes a Tower from the Player's Board
      * @param t the color of the Tower being removed
-     * @throws EmptyPlaceException if there is no towers in the SchoolBoard
      */
-    public void remove(ColorT t)throws EmptyPlaceException{
-        if(!towers.isEmpty()) towers.remove(t);
-        else throw new EmptyPlaceException();
+    public void remove(ColorT t){
+        towers.remove(t);
     }
 
     /**

@@ -230,7 +230,7 @@ public class GameBoardTest {
      * to an island and the other way
      */
     @Test
-    public void moveTower(){
+    public void moveTower() {
         gb = new GameBoard(2);
         Player lisa = new Player("Lisa", ColorT.BLACK, Mage.MAGE1, 8);
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 8);
@@ -308,7 +308,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("GameBoard's newClouds test")
-    void newClouds(){
+    void newClouds() throws EmptyPlaceException {
         gb.newClouds();
         for(int i=0; i < gb.getNumPlayers(); i++)
             assertEquals(4, gb.getCloudByIndex(0).getStudents().size());
@@ -480,22 +480,5 @@ public class GameBoardTest {
         }
     }
 
-    /**
-     * Method moveTowerException checks the correct throwing of EmptyPlaceException
-     * when there is no tower that can be moved
-     */
-    @Test
-    public void moveTowerException(){
-        gb = new GameBoard(3);
-        World world = gb.world;
-        gb.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
-        Player bob = gb.getPlayerByNickname("Bob");
-        for(int i = 0; i < 7; i++) {
-            try {
-                bob.getMyBoard().remove(ColorT.GREY);
-            } catch (EmptyPlaceException e) {
-                System.out.println(e);
-            }
-        }
-    }
+
 }

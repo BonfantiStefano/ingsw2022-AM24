@@ -159,18 +159,4 @@ class SchoolBoardTest {
 
     }
 
-    /**
-     * Method testNoTowers checks if remove method is capable of throwing EmptyPlaceException
-     * when there is no towers in SchoolBoard
-     */
-    @Test
-    void testNoTowers() throws EmptyPlaceException {
-        SchoolBoard board = new SchoolBoard(ColorT.WHITE, 8);
-        assertEquals(board.getTowers().size(), 8);
-        for(int i = 0; i < 8; i++)
-            board.remove(ColorT.WHITE);
-        assertThrows(EmptyPlaceException.class,
-                () -> board.remove(ColorT.WHITE));
-    }
-
 }
