@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.player;
 
+import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.mnstrategy.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,7 @@ public class PlayerTest {
      * as the last card he played
       */
     @Test
-    public void testChooseAssistant(){
+    public void testChooseAssistant() throws InvalidIndexException {
         int numCards = player.getNumCards();
         assertEquals(numCards, 10);
         Assistant a = player.chooseAssistant(7);

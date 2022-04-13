@@ -34,7 +34,7 @@ public class Hand{
      * @throws InvalidIndexException if the index position of the card doesn't exist in the player's hand
      */
     public Assistant getCard(int index) throws InvalidIndexException{
-        if (index >= 1 && index <= 10){
+        if (index >= 1 && index <= cards.size()){
             return cards.get(index-1);
         }
         else throw new InvalidIndexException();

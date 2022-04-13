@@ -68,7 +68,7 @@ class ExpertGameBoardTest {
      * @throws InvalidIndexException if the index position of the card doesn't exist
      */
     @Test
-    void moveMNException() throws InvalidIndexException {
+    void moveMNException() throws InvalidIndexException{
         gb.setActivePlayer(gb.getPlayers().get(0));
         gb.chooseAssistants(gb.getPlayers().get(0), 8);
         assertThrows(InvalidMNStepsException.class, () -> {
@@ -160,7 +160,7 @@ class ExpertGameBoardTest {
      */
     @Test
     @DisplayName("checkIsland on the selected Island that has noEntryTiles")
-    void checkIslandWithoutNoEntry() throws EmptyPlaceException {
+    void checkIslandWithoutNoEntry() throws EmptyPlaceException, InvalidIndexException {
         gb.addPlayer("2", ColorT.BLACK, Mage.MAGE3);
         gb.getPlayers().get(0).chooseAssistant(9);
         gb.getPlayers().get(1).chooseAssistant(10);

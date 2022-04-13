@@ -5,21 +5,15 @@ import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.StudentContainer;
 import it.polimi.ingsw.model.mnstrategy.MNTwoSteps;
-import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.profstrategy.EqualProf;
-import it.polimi.ingsw.model.profstrategy.ProfStrategy;
 import it.polimi.ingsw.model.profstrategy.StandardProf;
 import it.polimi.ingsw.model.world.Island;
-import it.polimi.ingsw.model.world.World;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,7 +56,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("GameBoard's moveMn method test")
-    void moveMN() throws InvalidMNStepsException, InvalidIndexException{
+    void moveMN() throws InvalidMNStepsException, InvalidIndexException {
         int indexMNStart = gb.getWorld().getMNPosition();
         int numMNSteps = 4;
         gb.getPlayers().get(0).setPlaying(true);
@@ -100,7 +94,7 @@ public class GameBoardTest {
      * @throws InvalidIndexException if the index position of the card doesn't exist
      */
     @Test
-    void moveMNException() throws InvalidIndexException{
+    void moveMNException() throws InvalidIndexException {
         gb.setActivePlayer(gb.getPlayers().get(0));
         gb.chooseAssistants(gb.getPlayers().get(0), 8);
         assertThrows(InvalidMNStepsException.class, () -> {gb.moveMN(6);});
@@ -162,7 +156,6 @@ public class GameBoardTest {
 
     /**
      * Method testChooseAssistantsNewRound checks if when a new round starts the list of Assistant cards is empty
-     * @throws InvalidIndexException if the index position of the card doesn't exist
      */
     @Test
     public void testChooseAssistantsNewRound() throws InvalidIndexException {
@@ -177,7 +170,19 @@ public class GameBoardTest {
         assertEquals(gb.getSizeList(), 3);
         assertTrue(gb.chooseAssistants(lisa,4));
         assertEquals(gb.getSizeList(), 1);
+    }
 
+    @Test
+    public void testChosenCardException() throws EmptyPlaceException, InvalidIndexException {
+        gb = new GameBoard(3);
+        gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
+        Player lisa = gb.getPlayerByNickname("Lisa");
+        assertTrue(gb.chooseAssistants(lisa,3));
+        assertEquals(9, lisa.getNumCards());
+        assertThrows(InvalidIndexException.class,
+                ()->gb.chooseAssistants(lisa,18));
+        assertThrows(InvalidIndexException.class,
+                ()->gb.chooseAssistants(lisa,10));
     }
 
     /** Method testAddPlayer tests the addition of different players in the game and checks the correctness of the number

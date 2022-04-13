@@ -61,13 +61,9 @@ public class Player implements PlayerInterface {
      * @param index of type int - the index of the card
      * @return card of type Assistant - the card selected by the player
      */
-    public Assistant chooseAssistant(int index){
+    public Assistant chooseAssistant(int index) throws InvalidIndexException {
         Assistant card = null;
-        try{
-            card = myCards.getCard(index);
-        }catch (InvalidIndexException e){
-            System.out.println(e.getMessage());
-        }
+        card = myCards.getCard(index);
         return card;
     }
 
