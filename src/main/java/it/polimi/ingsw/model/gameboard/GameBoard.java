@@ -77,6 +77,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * @param player of type Player - the player which Assistant card will be added to the list with other players' cards
      * @return result of type boolean - true if the Assistant card chosen by the player is correctly added to the list
      *                                   false if the player has to choose another Assistant card
+     * @throws InvalidIndexException - if the index position of the card doesn't exist in the player's hand
      */
     public boolean chooseAssistants(Player player, int index) throws InvalidIndexException {
         if(lastAssistants.size()==numPlayers)
@@ -164,18 +165,15 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * @param nickname of type String
      * @param color of type ColorT
      * @param mage of type Mage
+     * @throws EmptyPlaceException if the bag containing students is empty
      */
-    public void addPlayer(String nickname, ColorT color, Mage mage){
+    public void addPlayer(String nickname, ColorT color, Mage mage) throws EmptyPlaceException {
         int numS = numPlayers==3? NS : NUM_STUDENTS;
         int numT = numPlayers==3? NT : NUM_TOWERS;
         Player p = new Player(nickname, color, mage, numT);
         for (int i = 0; i < numS; i++) {
             ColorS s = null;
-            try {
-                s = container.draw();
-            } catch (EmptyPlaceException e) {
-                e.getMessage();
-            }
+            s = container.draw();
             p.getMyBoard().getEntrance().add(s);
         }
         players.add(p);
@@ -241,6 +239,8 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * @param s of type ColorS - the student that has to be moved
      * @param from of type CanRemoveStudent - place from which the student is relocated
      * @param to of type CanAcceptStudent - place where the student is shifted
+     * @throws EmptyPlaceException - if there is no students to be removed
+     * @throws NoSuchStudentException - if there is no students of the selected color to be removed
      */
     public void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to) throws EmptyPlaceException, NoSuchStudentException {
         from.remove(s);
@@ -251,6 +251,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * method moveMN checks if the move is legal, then if there isn't noEntryTiles on the arrival Island
      * it calculates the influence on that island and in necessary change the owner of the island and join the Island.
      * @param numMNSteps int - number of steps that Mother Nature want to do.
+     * @throws InvalidMNStepsException - if Mother Nature can't make the indicated number of steps
      */
     //Checks that the numMNSteps is between 1 and 10 are done by the controller.
     public void moveMN(int numMNSteps) throws InvalidMNStepsException {
@@ -293,6 +294,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
 
     /**
      * Fills Clouds with the correct Number of Students
+     * @throws EmptyPlaceException if the bag containing students is empty
      */
     public void newClouds() throws EmptyPlaceException {
         int numStudents = numPlayers%2==0 ? 3 : 4; // 2 or 4 Players -> 3 Students, 3 Players -> 4 Students per Cloud

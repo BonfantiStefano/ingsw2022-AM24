@@ -184,7 +184,7 @@ public class GameBoardTest {
      * of pawns in their SchoolBoards
      * */
     @Test
-    public void testAddPlayer(){
+    public void testAddPlayer() throws EmptyPlaceException {
         gb = new GameBoard(3);
         gb.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
         gb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
@@ -213,7 +213,7 @@ public class GameBoardTest {
      *  Method testActivePlayer tests if the chosen player is correctly set as the Active player
      */
     @Test
-    public void TestActivePlayer(){
+    public void TestActivePlayer() throws EmptyPlaceException {
         gb = new GameBoard(2);
         gb.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
         gb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
@@ -346,7 +346,7 @@ public class GameBoardTest {
      * Tests if the GameBoard correctly evaluates the condition to end the game when all Assistants have been played
      */
     @Test
-    void gameMustEndTestAssistants() throws InvalidIndexException {
+    void gameMustEndTestAssistants() throws InvalidIndexException, EmptyPlaceException {
         gb2 = new GameBoard(3);
         gb2.addPlayer("test", ColorT.WHITE, Mage.MAGE2);
         for(int i=1;i<=10;i++){
@@ -461,7 +461,7 @@ public class GameBoardTest {
      * when draw method is used
      */
     @Test
-    public void testDrawException(){
+    public void testDrawException() throws EmptyPlaceException {
         gb = new GameBoard(3);
 
         gb.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);

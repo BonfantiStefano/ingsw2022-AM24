@@ -35,7 +35,7 @@ class ExpertGameBoardTest {
      * Creates a new ExpertGameBoard, adds a Player and activates it
      */
     @BeforeEach
-    void init(){
+    void init() throws EmptyPlaceException {
         gb = new ExpertGameBoard(4);
         gb.addPlayer("1", ColorT.WHITE, Mage.MAGE2);
         gb.nextPlayer();
@@ -160,7 +160,7 @@ class ExpertGameBoardTest {
      */
     @Test
     @DisplayName("checkIsland on the selected Island that has noEntryTiles")
-    void checkIslandWithoutNoEntry() {
+    void checkIslandWithoutNoEntry() throws EmptyPlaceException {
         gb.addPlayer("2", ColorT.BLACK, Mage.MAGE3);
         gb.getPlayers().get(0).chooseAssistant(9);
         gb.getPlayers().get(1).chooseAssistant(10);
@@ -216,7 +216,7 @@ class ExpertGameBoardTest {
      * Method testRemoveHall checks the effect of the Character card that removes students from the hall
      */
     @Test
-    void testRemoveHall() throws PlaceFullException {
+    void testRemoveHall() throws PlaceFullException, EmptyPlaceException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         gb.addPlayer("Bob", ColorT.WHITE, Mage.MAGE2);
@@ -264,7 +264,7 @@ class ExpertGameBoardTest {
      * when switchStudents method is used
      */
     @Test
-    public void testExceptionSwitch() throws PlaceFullException {
+    public void testExceptionSwitch() throws PlaceFullException, EmptyPlaceException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         Player lisa = gb.getPlayerByNickname("Lisa");
@@ -287,6 +287,7 @@ class ExpertGameBoardTest {
                 () -> gb.switchStudents(ColorS.GREEN, ColorS.BLUE));
 
         assertTrue(lisa.getMyBoard().getEntrance().isEmpty());
+        assertTrue(lisa.getMyBoard().getHall(ColorS.GREEN) == 0);
         //assertThrows(EmptyPlaceException.class,
         //        () -> gb.switchStudents(ColorS.GREEN, ColorS.BLUE));
 
@@ -299,7 +300,7 @@ class ExpertGameBoardTest {
      * when addToHall method is used
      */
     @Test
-    public void testExceptionAddToHall() throws PlaceFullException {
+    public void testExceptionAddToHall() throws PlaceFullException, EmptyPlaceException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         Player lisa = gb.getPlayerByNickname("Lisa");
@@ -316,7 +317,7 @@ class ExpertGameBoardTest {
      * when remove method is used
      */
     @Test
-    public void testExceptionRemoveFromEntrance() throws NoSuchStudentException{
+    public void testExceptionRemoveFromEntrance() throws NoSuchStudentException, EmptyPlaceException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         Player lisa = gb.getPlayerByNickname("Lisa");

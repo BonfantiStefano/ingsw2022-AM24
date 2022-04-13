@@ -43,8 +43,9 @@ public class ExpertGameBoard extends GameBoard {
      * @param nickname of type String
      * @param color of type ColorT
      * @param mage of type Mage
+     * @throws EmptyPlaceException - if the bag containing students is empty
      */
-    public void addPlayer(String nickname, ColorT color, Mage mage){
+    public void addPlayer(String nickname, ColorT color, Mage mage) throws EmptyPlaceException {
         super.addPlayer(nickname, color, mage);
         getPlayerByNickname(nickname).setCoins(1);
         coins--;
@@ -53,6 +54,8 @@ public class ExpertGameBoard extends GameBoard {
     /**
      * Method entranceToHall moves a Student form Entrance to Hall in the active player's School Board
      * @param s the color of the Student being moved
+     * @throws PlaceFullException - if there is no space for the students of the selected color in the hall
+     * @throws EmptyPlaceException - if the entrance is empty
      */
     public void entranceToHall(ColorS s) throws PlaceFullException, EmptyPlaceException {
         boolean result = false;
@@ -66,6 +69,7 @@ public class ExpertGameBoard extends GameBoard {
     /**
      * Method hallToEntrance moves a Student from the Hall to the Entrance
      * @param s the color of the Student being moved
+     * @throws EmptyPlaceException if there is no students of the selected color in the hall
      */
     public void hallToEntrance(ColorS s) throws EmptyPlaceException {
         activePlayer.getMyBoard().hallToEntrance(s);
@@ -74,6 +78,7 @@ public class ExpertGameBoard extends GameBoard {
     /**
      * Method addToHall adds a student directly to the Hall
      * @param s the color of the Student being added
+     * @throws PlaceFullException - if there is no space for the students of the selected color in the hall
      */
     public void addToHall(ColorS s) throws PlaceFullException {
         if(activePlayer.getMyBoard().addToHall(s)){
@@ -86,6 +91,9 @@ public class ExpertGameBoard extends GameBoard {
      * Method switchStudents exchanges two students between hall and entrance
      * @param hallS - student moved from hall to entrance
      * @param entranceS - student moved from entrance to hall
+     * @throws PlaceFullException - if there is no space for the students of the selected color in the hall
+     * @throws EmptyPlaceException if there is no students of the selected color in the hall
+     * @throws EmptyPlaceException if there is no students of the selected color in the entrance
      */
     public void switchStudents(ColorS hallS, ColorS entranceS) throws PlaceFullException, EmptyPlaceException {
             activePlayer.getMyBoard().entranceToHall(entranceS);
@@ -119,6 +127,8 @@ public class ExpertGameBoard extends GameBoard {
     /**
      * Method playActiveCharacter updates the amount of coins that belongs to active player
      * and the ones that are in the expert GameBoard
+     * @param c of type Character - the picked Charater card
+     * @throws NoSuchStudentException - if the player hasn't enough coins to play the picked Charater card
      */
     public void playCharacter(Character c) throws NotEnoughCoinsException {
         if(activePlayer.getCoins() >= c.getCost() && findChar(c) != null) {
@@ -199,6 +209,7 @@ public class ExpertGameBoard extends GameBoard {
      * method moveMN checks if the move is legal, then if there isn't noEntryTiles on the arrival Island
      * it calculates the influence on that island and in necessary change the owner of the island and join the Island.
      * @param numMNSteps int - number of steps that Mother Nature want to do.
+     * @throws InvalidIndexException - if Mother Nature can't make the indicated number of steps
      */
     public void moveMN(int numMNSteps) throws InvalidMNStepsException {
         if(numMNSteps > activePlayer.getMNSteps()) {
@@ -215,6 +226,7 @@ public class ExpertGameBoard extends GameBoard {
     /**
      * Adds a new Student to the Character after it's played
      * @throws ClassCastException if the activeCharacter
+     * @throws EmptyPlaceException if the bag containing students is empty
      */
     public void resetCharacterStudent() throws ClassCastException, EmptyPlaceException {
         CharacterWithStudent c = (CharacterWithStudent) activeCharacter;
