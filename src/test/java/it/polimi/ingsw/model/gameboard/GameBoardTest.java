@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,6 +51,20 @@ public class GameBoardTest {
             gb.addPlayer(alice);
         }
 
+    }
+
+    /**
+     * Method testSortedPlayer checks if all the players are correcty sorted
+     */
+    @Test
+    public void testSortedPlayer(){
+        ArrayList<Player> sortedPlayers = new ArrayList<>();
+        sortedPlayers = gb.getSortedPlayers();
+        assertTrue(sortedPlayers.get(0).getNickname()=="Alice");
+        assertTrue(sortedPlayers.get(1).getNickname()=="Lisa");
+        assertTrue(sortedPlayers.get(2).getNickname()=="Bob");
+
+        assertTrue(sortedPlayers.size()==gb.numPlayers);
     }
 
     /**
@@ -128,7 +143,6 @@ public class GameBoardTest {
         assertEquals(gb.getActivePlayer().getNickname(), "Lisa");
         gb.nextPlayer();
         assertEquals(gb.getActivePlayer().getNickname(), "Bob");
-
     }
 
     /**
@@ -180,7 +194,7 @@ public class GameBoardTest {
     }
 
     @Test
-    public void testChosenCardException() throws EmptyPlaceException, InvalidIndexException {
+    public void testChosenCardException() throws  InvalidIndexException {
         gb = new GameBoard(3);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         Player lisa = gb.getPlayerByNickname("Lisa");

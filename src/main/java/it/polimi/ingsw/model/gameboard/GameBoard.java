@@ -139,6 +139,21 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
         return first;
     }
 
+    /**
+     * Method getSortedPlayers returns the list containing sorted players
+     * @return sortedPlayers of type ArrayList<Player> - the sorted players
+     */
+    public ArrayList<Player> getSortedPlayers(){
+        ArrayList<Player> sortedPlayers = new ArrayList<>();
+        int indexFirst = getFirstPlayer();
+        Player firstPlayer = players.get(getFirstPlayer());
+        sortedPlayers.add(firstPlayer);
+        for(int i = 0; i < players.size() && i!= indexFirst; i++)
+            sortedPlayers.add(players.get(i));
+        return sortedPlayers;
+    }
+
+
     /** Method nextPlayer skips to the next player and sets him as Active player */
     public void nextPlayer(){
         Player nextPlayer = null;
@@ -165,9 +180,8 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      * @param nickname of type String
      * @param color of type ColorT
      * @param mage of type Mage
-     * @throws EmptyPlaceException if the bag containing students is empty
      */
-    public void addPlayer(String nickname, ColorT color, Mage mage) throws EmptyPlaceException {
+    public void addPlayer(String nickname, ColorT color, Mage mage) {
         int numS = numPlayers==3? NS : NUM_STUDENTS;
         int numT = numPlayers==3? NT : NUM_TOWERS;
         Player p = new Player(nickname, color, mage, numT);
