@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.mnstrategy.MNStrategy;
 
 /**
  * Player class represents the Player and contains all the information about him:
- * his nickname, the magical school board he received in the beginning of the game, the color he picked for the towers
+ * his nickname, the magical school board he received in the beginning of the game, the color for the towers
  * that he will build, his Assistant cards and in particular the last one he played, the amount of coins he owns etc.
  */
 public class Player implements PlayerInterface {
@@ -19,6 +19,7 @@ public class Player implements PlayerInterface {
     private Assistant lastAssist;
     private MNStrategy strategy;
     private int coins;
+    private boolean isConnected;
 
 
     /**
@@ -37,6 +38,7 @@ public class Player implements PlayerInterface {
         this.myCards=new Hand(mage);
         this.coins=0;
         this.strategy = new MNStandard();
+        this.isConnected = true;
     }
 
     /**

@@ -54,17 +54,34 @@ public class GameBoardTest {
     }
 
     /**
-     * Method testSortedPlayer checks if all the players are correcty sorted
+     * Method testSortedPlayer checks if all the players are correctly sorted
      */
     @Test
-    public void testSortedPlayer(){
-        ArrayList<Player> sortedPlayers = new ArrayList<>();
+    public void testSortedPlayer() throws InvalidIndexException{
+        ArrayList<Player> sortedPlayers;
         sortedPlayers = gb.getSortedPlayers();
-        assertTrue(sortedPlayers.get(0).getNickname()=="Alice");
-        assertTrue(sortedPlayers.get(1).getNickname()=="Lisa");
-        assertTrue(sortedPlayers.get(2).getNickname()=="Bob");
+        assertEquals("Alice", sortedPlayers.get(0).getNickname());
+        assertEquals("Lisa", sortedPlayers.get(1).getNickname());
+        assertEquals("Bob", sortedPlayers.get(2).getNickname());
+        assertEquals(gb.numPlayers, sortedPlayers.size());
 
-        assertTrue(sortedPlayers.size()==gb.numPlayers);
+        gb.chooseAssistants(gb.getPlayers().get(0), 2);
+        gb.chooseAssistants(gb.getPlayers().get(1), 1);
+        gb.chooseAssistants(gb.getPlayers().get(2), 2);
+        sortedPlayers = gb.getSortedPlayers();
+        assertEquals("Bob", sortedPlayers.get(0).getNickname());
+        assertEquals("Alice", sortedPlayers.get(1).getNickname());
+        assertEquals("Lisa", sortedPlayers.get(2).getNickname());
+        assertEquals(gb.numPlayers, sortedPlayers.size());
+
+        gb.chooseAssistants(gb.getPlayers().get(0), 1);
+        gb.chooseAssistants(gb.getPlayers().get(1), 2);
+        gb.chooseAssistants(gb.getPlayers().get(2), 1);
+        sortedPlayers = gb.getSortedPlayers();
+        assertEquals("Lisa", sortedPlayers.get(0).getNickname());
+        assertEquals("Bob", sortedPlayers.get(1).getNickname());
+        assertEquals("Alice", sortedPlayers.get(2).getNickname());
+        assertEquals(gb.numPlayers, sortedPlayers.size());
     }
 
     /**
@@ -100,7 +117,7 @@ public class GameBoardTest {
         nextMNIsland.add(ColorS.GREEN);
         nextMNIsland.add(ColorS.GREEN);
         gb.moveMN(1);
-        assertEquals(oldMNPos < nextMNPos ? oldMNPos : nextMNPos, gb.getWorld().getMNPosition());
+        assertEquals(Math.min(oldMNPos, nextMNPos), gb.getWorld().getMNPosition());
         assertEquals(Optional.of(gb.getPlayers().get(0).getColorTower()), islandMN.getTowerColor());
         assertEquals(2, gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition()).getNumSubIsland());
     }
@@ -114,13 +131,13 @@ public class GameBoardTest {
     void moveMNException() throws InvalidIndexException {
         gb.setActivePlayer(gb.getPlayers().get(0));
         gb.chooseAssistants(gb.getPlayers().get(0), 8);
-        assertThrows(InvalidMNStepsException.class, () -> {
-            gb.moveMN(6);
-        });
+        assertThrows(InvalidMNStepsException.class, () ->
+            gb.moveMN(6)
+        );
         gb.getPlayers().get(0).setStrategy(new MNTwoSteps());
-        assertThrows(InvalidMNStepsException.class, () -> {
-            gb.moveMN(8);
-        });
+        assertThrows(InvalidMNStepsException.class, () ->
+            gb.moveMN(8)
+        );
         int indexMNStart = gb.getWorld().getMNPosition();
         try {
             gb.moveMN(6);
@@ -211,7 +228,7 @@ public class GameBoardTest {
      * of pawns in their SchoolBoards
      */
     @Test
-    public void testAddPlayer() throws EmptyPlaceException {
+    public void testAddPlayer() {
         gb = new GameBoard(3);
         gb.addPlayer("Bob", ColorT.GREY, Mage.MAGE1);
         gb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
@@ -262,7 +279,7 @@ public class GameBoardTest {
         gb.addPlayer(lisa);
         gb.addPlayer(bob);
         gb.moveTower(lisa.getColorTower(), lisa.getMyBoard(), gb.getWorld().getIslandByIndex(5));
-        assertTrue(gb.getWorld().getIslandByIndex(5).getTowerColor().equals(Optional.of(lisa.getColorTower())));
+        assertEquals(gb.getWorld().getIslandByIndex(5).getTowerColor(), (Optional.of(lisa.getColorTower())));
         int towers = bob.getMyBoard().getTowers().size();
         gb.moveTower(bob.getColorTower(), gb.getWorld().getIslandByIndex(6), bob.getMyBoard());
         assertEquals(bob.getMyBoard().getTowers().size(), towers + 1);
@@ -387,7 +404,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("case with 3 island remaining")
-    void checkWinIsland() throws EmptyPlaceException {
+    void checkWinIsland() {
         for (int i = 0; i < 5; i++) {
             gb.getWorld().getIslandByIndex(i).add(ColorT.GREY);
             gb.getPlayers().get(2).getMyBoard().remove(ColorT.GREY);
@@ -410,7 +427,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("draw with 3 island remaining")
-    void checkDrawIsland() throws EmptyPlaceException {
+    void checkDrawIsland(){
         for (int i = 0; i < 5; i++) {
             gb.getWorld().getIslandByIndex(i).add(ColorT.GREY);
             gb.getPlayers().get(2).getMyBoard().remove(ColorT.GREY);
@@ -435,7 +452,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("case with a player without tower")
-    void checkWinTower() throws EmptyPlaceException {
+    void checkWinTower() {
         for (int i = 0; i < 8; i++) {
             gb.getPlayers().get(0).getMyBoard().remove(ColorT.BLACK);
         }

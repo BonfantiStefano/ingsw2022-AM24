@@ -51,7 +51,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
         world = new World(container.initialDraw());
         this.numPlayers = numPlayers;
         this.gameMustEnd = false;
-        profs=new HashMap<ColorS, Player>();
+        profs=new HashMap<>();
         for(ColorS c:ColorS.values()){
             profs.put(c,null);
         }
@@ -145,11 +145,11 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      */
     public ArrayList<Player> getSortedPlayers(){
         ArrayList<Player> sortedPlayers = new ArrayList<>();
-        int indexFirst = getFirstPlayer();
         Player firstPlayer = players.get(getFirstPlayer());
+        int indexFirstPlayer = players.indexOf(firstPlayer);
         sortedPlayers.add(firstPlayer);
-        for(int i = 0; i < players.size() && i!= indexFirst; i++)
-            sortedPlayers.add(players.get(i));
+        for(int i = 1; i < players.size(); i++)
+            sortedPlayers.add(players.get((indexFirstPlayer + i) % numPlayers));
         return sortedPlayers;
     }
 
@@ -282,7 +282,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
      */
     public void checkIsland(Island island){
         Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players, island);
-        nextOwner.ifPresent(owner -> {conquest(owner, island);});
+        nextOwner.ifPresent(owner -> conquest(owner, island));
         world.checkJoin(world.getIslandByIndex(world.getMNPosition()));
     }
 
@@ -299,7 +299,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
             }
         }
         for(int counter = 0; counter < island.getNumSubIsland(); counter++) {
-            oldOwner.ifPresent(owner -> {moveTower(owner.getColorTower(), island, owner.getMyBoard()); });
+            oldOwner.ifPresent(owner -> moveTower(owner.getColorTower(), island, owner.getMyBoard()));
             if(nextOwner.getMyBoard().getTowers().size() > 0) {
                 moveTower(nextOwner.getColorTower(), nextOwner.getMyBoard(), island);
             }
@@ -414,7 +414,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
                 }
             }
             return winner;
-        } else if(players.stream().map(player -> {return player.getMyBoard().getTowers().size();}).anyMatch(num -> num == 0)) {
+        } else if(players.stream().map(player -> player.getMyBoard().getTowers().size()).anyMatch(num -> num == 0)) {
             return players.stream().filter(player -> player.getMyBoard().getTowers().size() == 0).findFirst();
         }
         return Optional.empty();

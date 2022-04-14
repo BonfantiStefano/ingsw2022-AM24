@@ -43,9 +43,8 @@ public class ExpertGameBoard extends GameBoard {
      * @param nickname of type String
      * @param color of type ColorT
      * @param mage of type Mage
-     * @throws EmptyPlaceException - if the bag containing students is empty
      */
-    public void addPlayer(String nickname, ColorT color, Mage mage) throws EmptyPlaceException {
+    public void addPlayer(String nickname, ColorT color, Mage mage) {
         super.addPlayer(nickname, color, mage);
         getPlayerByNickname(nickname).setCoins(1);
         coins--;
