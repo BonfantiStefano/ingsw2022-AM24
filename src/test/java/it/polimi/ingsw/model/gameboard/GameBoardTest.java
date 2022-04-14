@@ -30,6 +30,7 @@ public class GameBoardTest {
 
     /**
      * Method init initializes values used for the tests.
+     *
      * @throws InvalidIndexException if the index position of the card doesn't exist
      */
     @BeforeEach
@@ -43,7 +44,7 @@ public class GameBoardTest {
         boolean s = gb.chooseAssistants(bob, 7);
         boolean t = gb.chooseAssistants(alice, 4);
 
-        if (r && s && t){
+        if (r && s && t) {
             gb.addPlayer(lisa);
             gb.addPlayer(bob);
             gb.addPlayer(alice);
@@ -65,7 +66,7 @@ public class GameBoardTest {
         //spostamento di Mother Nature senza dover cambiare niente
         gb.moveMN(numMNSteps);
         assertEquals(indexMNStart + numMNSteps >= gb.getWorld().getSize() ? indexMNStart + numMNSteps - gb.getWorld().getSize()
-                        : indexMNStart + numMNSteps, gb.getWorld().getMNPosition());
+                : indexMNStart + numMNSteps, gb.getWorld().getMNPosition());
         //spostamento di madre natura in cui cambia l'owner dell'isola(e quindi le torri su di essa)
         Island islandMN = gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition());
         islandMN.add(ColorS.GREEN);
@@ -78,28 +79,33 @@ public class GameBoardTest {
         assertEquals(Optional.of(gb.getPlayers().get(0).getColorTower()), islandMN.getTowerColor());
         assertEquals(1, islandMN.getNumSubIsland());
         //spostamento in cui si uniscono le isole
-        int nextMNPos = oldMNPos+1 < gb.getWorld().getSize() ? oldMNPos+1 : 0;
+        int nextMNPos = oldMNPos + 1 < gb.getWorld().getSize() ? oldMNPos + 1 : 0;
         Island nextMNIsland = gb.getWorld().getIslandByIndex(nextMNPos);
         nextMNIsland.add(ColorS.GREEN);
         nextMNIsland.add(ColorS.GREEN);
         nextMNIsland.add(ColorS.GREEN);
         gb.moveMN(1);
-        assertEquals(oldMNPos < nextMNPos ?oldMNPos : nextMNPos, gb.getWorld().getMNPosition());
+        assertEquals(oldMNPos < nextMNPos ? oldMNPos : nextMNPos, gb.getWorld().getMNPosition());
         assertEquals(Optional.of(gb.getPlayers().get(0).getColorTower()), islandMN.getTowerColor());
         assertEquals(2, gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition()).getNumSubIsland());
     }
 
     /**
      * Method moveMNException checks the correct throwing of the InvalidMNStepsException
+     *
      * @throws InvalidIndexException if the index position of the card doesn't exist
      */
     @Test
     void moveMNException() throws InvalidIndexException {
         gb.setActivePlayer(gb.getPlayers().get(0));
         gb.chooseAssistants(gb.getPlayers().get(0), 8);
-        assertThrows(InvalidMNStepsException.class, () -> {gb.moveMN(6);});
+        assertThrows(InvalidMNStepsException.class, () -> {
+            gb.moveMN(6);
+        });
         gb.getPlayers().get(0).setStrategy(new MNTwoSteps());
-        assertThrows(InvalidMNStepsException.class, () -> {gb.moveMN(8);});
+        assertThrows(InvalidMNStepsException.class, () -> {
+            gb.moveMN(8);
+        });
         int indexMNStart = gb.getWorld().getMNPosition();
         try {
             gb.moveMN(6);
@@ -114,7 +120,7 @@ public class GameBoardTest {
      * selected in the list of all the players
      */
     @Test
-    public void testFirstPlayer_testNextPlayer(){
+    public void testFirstPlayer_testNextPlayer() {
         int firstPlayer = gb.getFirstPlayer();
         gb.nextPlayer();
         assertEquals(gb.getActivePlayer().getNickname(), "Alice");
@@ -127,6 +133,7 @@ public class GameBoardTest {
 
     /**
      * Method testChooseAssistants tests the choice procedure of an Assistant card
+     *
      * @throws InvalidIndexException if the index position of the card doesn't exist
      */
     @Test
@@ -136,22 +143,22 @@ public class GameBoardTest {
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
         Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9);
         int bobCards = bob.getNumCards();
-        assertTrue(gb.chooseAssistants(bob,5));
-        assertEquals(bob.getNumCards(), bobCards-1);
+        assertTrue(gb.chooseAssistants(bob, 5));
+        assertEquals(bob.getNumCards(), bobCards - 1);
         assertEquals(bob.getLastAssistant().getTurn(), 5);
         int lisaCards = lisa.getNumCards();
-        assertTrue(!gb.chooseAssistants(lisa,5));
+        assertTrue(!gb.chooseAssistants(lisa, 5));
         assertEquals(lisa.getNumCards(), lisaCards);
-        assertTrue(gb.chooseAssistants(lisa,1));
-        assertEquals(lisa.getNumCards(),lisaCards-1);
+        assertTrue(gb.chooseAssistants(lisa, 1));
+        assertEquals(lisa.getNumCards(), lisaCards - 1);
         // at this point lisa played card 1 and bob card 5
-        for (int i = 1; i <= 10 && i !=1 && i != 5; i++){
-            assertTrue(gb.chooseAssistants(alice,i));
+        for (int i = 1; i <= 10 && i != 1 && i != 5; i++) {
+            assertTrue(gb.chooseAssistants(alice, i));
         }
         //alice played all her cards except for card 1 and 5 (already player by other two players)
         //now alice tries to play card 1 or card 5
-        assertTrue(gb.chooseAssistants(alice,1));
-        assertTrue(gb.chooseAssistants(alice,5));
+        assertTrue(gb.chooseAssistants(alice, 1));
+        assertTrue(gb.chooseAssistants(alice, 5));
     }
 
     /**
@@ -164,11 +171,11 @@ public class GameBoardTest {
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
         Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9);
 
-        assertTrue(gb.chooseAssistants(lisa,1));
-        assertTrue(gb.chooseAssistants(bob,2));
-        assertTrue(gb.chooseAssistants(alice,3));
+        assertTrue(gb.chooseAssistants(lisa, 1));
+        assertTrue(gb.chooseAssistants(bob, 2));
+        assertTrue(gb.chooseAssistants(alice, 3));
         assertEquals(gb.getSizeList(), 3);
-        assertTrue(gb.chooseAssistants(lisa,4));
+        assertTrue(gb.chooseAssistants(lisa, 4));
         assertEquals(gb.getSizeList(), 1);
     }
 
@@ -177,50 +184,51 @@ public class GameBoardTest {
         gb = new GameBoard(3);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         Player lisa = gb.getPlayerByNickname("Lisa");
-        assertTrue(gb.chooseAssistants(lisa,3));
+        assertTrue(gb.chooseAssistants(lisa, 3));
         assertEquals(9, lisa.getNumCards());
         assertThrows(InvalidIndexException.class,
-                ()->gb.chooseAssistants(lisa,18));
+                () -> gb.chooseAssistants(lisa, 18));
         assertThrows(InvalidIndexException.class,
-                ()->gb.chooseAssistants(lisa,10));
+                () -> gb.chooseAssistants(lisa, 10));
     }
 
-    /** Method testAddPlayer tests the addition of different players in the game and checks the correctness of the number
+    /**
+     * Method testAddPlayer tests the addition of different players in the game and checks the correctness of the number
      * of pawns in their SchoolBoards
-     * */
+     */
     @Test
     public void testAddPlayer() throws EmptyPlaceException {
         gb = new GameBoard(3);
-        gb.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
+        gb.addPlayer("Bob", ColorT.GREY, Mage.MAGE1);
         gb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
         gb.addPlayer("Alice", ColorT.BLACK, Mage.MAGE3);
         assertEquals(6, gb.getPlayers().get(0).getMyBoard().getTowers().size());
         assertEquals(9, gb.getPlayers().get(0).getMyBoard().getEntrance().size());
 
         gb2 = new GameBoard(2);
-        gb2.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
+        gb2.addPlayer("Bob", ColorT.GREY, Mage.MAGE1);
         gb2.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
-        assertEquals(gb2.getPlayers().get(1).getMyBoard().getTowers().size(),8);
-        assertEquals(gb2.getPlayers().get(1).getMyBoard().getEntrance().size(),7);
+        assertEquals(gb2.getPlayers().get(1).getMyBoard().getTowers().size(), 8);
+        assertEquals(gb2.getPlayers().get(1).getMyBoard().getEntrance().size(), 7);
     }
 
     /**
      * Method testGetPlayerByNickname checks if a player is correctly selected by his nickname
      */
     @Test
-    public void testGetPlayerByNickname(){
+    public void testGetPlayerByNickname() {
         Player p = gb.getPlayerByNickname("BOB");
         assertEquals(p.getNickname(), "Bob");
         assertNull(gb.getPlayerByNickname("test"));
     }
 
     /**
-     *  Method testActivePlayer tests if the chosen player is correctly set as the Active player
+     * Method testActivePlayer tests if the chosen player is correctly set as the Active player
      */
     @Test
     public void TestActivePlayer() throws EmptyPlaceException {
         gb = new GameBoard(2);
-        gb.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
+        gb.addPlayer("Bob", ColorT.GREY, Mage.MAGE1);
         gb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
         gb.setActivePlayer(gb.getPlayerByNickname("Bob"));
         assertEquals(gb.getActivePlayer().getNickname(), "Bob");
@@ -265,7 +273,7 @@ public class GameBoardTest {
     @Test
     @DisplayName("GameBoard's conquest test")
     void conquest() {
-        Island island =gb.getWorld().getIslandByIndex((gb.getWorld().getMNPosition() + 6) % gb.getWorld().getSize());
+        Island island = gb.getWorld().getIslandByIndex((gb.getWorld().getMNPosition() + 6) % gb.getWorld().getSize());
         Player lisa = gb.getPlayers().get(0);
         //Caso conquista senza vecchio proprietario
         gb.conquest(lisa, island);
@@ -313,7 +321,7 @@ public class GameBoardTest {
     @DisplayName("GameBoard's newClouds test")
     void newClouds() throws EmptyPlaceException {
         gb.newClouds();
-        for(int i=0; i < gb.getNumPlayers(); i++)
+        for (int i = 0; i < gb.getNumPlayers(); i++)
             assertEquals(4, gb.getCloudByIndex(0).getStudents().size());
     }
 
@@ -322,7 +330,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("GameBoard's Strategy test")
-    void strategyTest(){
+    void strategyTest() {
         //check if the GameBoard is created with the standard strategy
         assertTrue(gb.getStrategy() instanceof StandardProf);
         gb.setStrategy(new EqualProf());
@@ -340,7 +348,7 @@ public class GameBoardTest {
     void gameMustEndTestStudents() throws EmptyPlaceException {
         StudentContainer temp = gb.getContainer();
         //draw all Students
-        for(int i=0; i < 120; i++) {
+        for (int i = 0; i < 120; i++) {
             temp.draw();
         }
         gb.newClouds();
@@ -354,8 +362,8 @@ public class GameBoardTest {
     void gameMustEndTestAssistants() throws InvalidIndexException, EmptyPlaceException {
         gb2 = new GameBoard(3);
         gb2.addPlayer("test", ColorT.WHITE, Mage.MAGE2);
-        for(int i=1;i<=10;i++){
-            gb2.chooseAssistants(gb2.getPlayerByNickname("test"),1);
+        for (int i = 1; i <= 10; i++) {
+            gb2.chooseAssistants(gb2.getPlayerByNickname("test"), 1);
         }
         assertTrue(gb2.checkGameMustEnd());
     }
@@ -366,11 +374,11 @@ public class GameBoardTest {
     @Test
     @DisplayName("case with 3 island remaining")
     void checkWinIsland() throws EmptyPlaceException {
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             gb.getWorld().getIslandByIndex(i).add(ColorT.GREY);
             gb.getPlayers().get(2).getMyBoard().remove(ColorT.GREY);
         }
-        for(int i = 5; i < 10; i++) {
+        for (int i = 5; i < 10; i++) {
             gb.getWorld().getIslandByIndex(i).add(ColorT.BLACK);
             gb.getPlayers().get(0).getMyBoard().remove(ColorT.BLACK);
         }
@@ -389,11 +397,11 @@ public class GameBoardTest {
     @Test
     @DisplayName("draw with 3 island remaining")
     void checkDrawIsland() throws EmptyPlaceException {
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             gb.getWorld().getIslandByIndex(i).add(ColorT.GREY);
             gb.getPlayers().get(2).getMyBoard().remove(ColorT.GREY);
         }
-        for(int i = 5; i < 10; i++) {
+        for (int i = 5; i < 10; i++) {
             gb.getWorld().getIslandByIndex(i).add(ColorT.BLACK);
             gb.getPlayers().get(0).getMyBoard().remove(ColorT.BLACK);
         }
@@ -414,7 +422,7 @@ public class GameBoardTest {
     @Test
     @DisplayName("case with a player without tower")
     void checkWinTower() throws EmptyPlaceException {
-        for(int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {
             gb.getPlayers().get(0).getMyBoard().remove(ColorT.BLACK);
         }
         assertEquals(Optional.empty(), gb.checkWin());
@@ -429,7 +437,7 @@ public class GameBoardTest {
     @DisplayName("case when gameMustEnd is true")
     void checkWinStudentCard() throws EmptyPlaceException {
         StudentContainer temp = gb.getContainer();
-        for(int i=0; i < 120; i++) {
+        for (int i = 0; i < 120; i++) {
             temp.draw();
         }
         assertEquals(Optional.empty(), gb.checkWin());
@@ -445,44 +453,19 @@ public class GameBoardTest {
      */
     @Test
     void checkProfs() {
-        int i=1;
-        for(Player p : gb.players){
-            for(ColorS c: ColorS.values()) {
+        int i = 1;
+        for (Player p : gb.players) {
+            for (ColorS c : ColorS.values()) {
                 p.getMyBoard().getHall().put(c, i);
             }
             i++;
         }
-        for(ColorS c: ColorS.values()) {
+        for (ColorS c : ColorS.values()) {
             gb.getProfs().put(c, gb.getPlayers().get(0));
         }
         gb.checkProfs();
-        for(ColorS c: ColorS.values()) {
+        for (ColorS c : ColorS.values()) {
             assertEquals("Alice", gb.getProfs().get(c).getNickname());
         }
-    }
-
-    /**
-     * Method testDrawException checks the correct throwing of EmptyPlaceException
-     * when draw method is used
-     */
-    @Test
-    public void testDrawException() throws EmptyPlaceException {
-        gb = new GameBoard(3);
-
-        gb.addPlayer("Bob",ColorT.GREY, Mage.MAGE1);
-        gb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
-        gb.addPlayer("Alice", ColorT.BLACK, Mage.MAGE3);
-        // 120 - 9*3 = 93
-        StudentContainer bag = gb.container;
-
-        for (int i = 0; i < 93; i++){
-            try{
-                bag.draw();
-            } catch (EmptyPlaceException e) {
-                System.out.println(e);
-            }
-        }
-        assertThrows(EmptyPlaceException.class,
-                ()->bag.draw());
     }
 }

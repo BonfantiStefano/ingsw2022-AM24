@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.EmptyPlaceException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -41,10 +39,9 @@ public class StudentContainer {
     /**
      * Returns a random Student
      * @return s a random Student chosen from all Students that aren't on the board yet
-     * @throws  EmptyPlaceException if there is no more students in the bag
      */
-    public ColorS draw() throws EmptyPlaceException {
-        if(students.isEmpty()) throw new EmptyPlaceException();
+    public ColorS draw(){
+        //add exception to signal that all Students have been drawn
         return students.remove(0);
     }
 

@@ -56,11 +56,7 @@ public class CharacterFactory {
             case 11:
                 temp = new CharacterWithStudent(cost, desc, 4);
                 for(int j=0;j<4;j++) {
-                    try {
-                        temp.add(bag.draw());
-                    } catch (EmptyPlaceException e) {
-                        e.getMessage();
-                    }
+                    temp.add(bag.draw());
                 }
                 c=temp;
                 break;
@@ -84,11 +80,7 @@ public class CharacterFactory {
             case 7:
                 temp = new CharacterWithStudent(cost, desc, 6);
                 for(int j=0;j<6;j++) {
-                    try {
-                        temp.add(bag.draw());
-                    } catch (EmptyPlaceException e) {
-                        e.getMessage();
-                    }
+                    temp.add(bag.draw());
                 }
                 c=temp;
                 break;

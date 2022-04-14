@@ -18,14 +18,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class StudentContainerTest {
     /**
-     *  Ensures that only 2 students per ColorS are drawn at the start of a match
+     * Ensures that only 2 students per ColorS are drawn at the start of a match
      */
     @Test
     void initialDraw() {
-        StudentContainer bag=new StudentContainer();
-        HashMap<ColorS, Integer> map=new HashMap<>();
-        ArrayList<ColorS> students=bag.initialDraw();
-        for(ColorS c: ColorS.values()){
+        StudentContainer bag = new StudentContainer();
+        HashMap<ColorS, Integer> map = new HashMap<>();
+        ArrayList<ColorS> students = bag.initialDraw();
+        for (ColorS c : ColorS.values()) {
             assertEquals(2, students.stream().filter(s -> s.equals(c)).count());
         }
     }
@@ -35,27 +35,17 @@ class StudentContainerTest {
      */
     @Test
     void testDraw() throws EmptyPlaceException {
-        StudentContainer bag=new StudentContainer();
-        HashMap<ColorS, Integer> map=new HashMap<>();
+        StudentContainer bag = new StudentContainer();
+        HashMap<ColorS, Integer> map = new HashMap<>();
         ColorS c = null;
-        for(int i=0; i<120; i++) {
-            c=bag.draw();
+        for (int i = 0; i < 120; i++) {
+            c = bag.draw();
             int count = map.getOrDefault(c, 0);
-            map.put(c, count+1);
+            map.put(c, count + 1);
         }
 
-        for(ColorS color: ColorS.values()){
+        for (ColorS color : ColorS.values()) {
             assertEquals(24, map.get(color));
         }
-    }
-    /** Method testException checks if method draw is capable of throwing EmptyPlaceException */
-    @Test
-    public void testException() throws EmptyPlaceException {
-        StudentContainer bag=new StudentContainer();
-        for (int i = 0; i < 120; i++){
-           bag.draw();
-        }
-        assertThrows(EmptyPlaceException.class,
-                () -> bag.draw());
     }
 }
