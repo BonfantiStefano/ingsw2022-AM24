@@ -84,15 +84,25 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
             lastAssistants = new ArrayList<>();
         boolean result = false;
         Assistant assistant = player.chooseAssistant(index);
+
+        ArrayList<Integer> assistants = new ArrayList<>();
+        ArrayList<Integer> cards = new ArrayList<>();
+        for(Assistant a: lastAssistants)
+            assistants.add(a.getTurn());
+        for(Assistant c: player.getMyCards().getCards())
+            cards.add(c.getTurn());
+        if(assistants.containsAll(cards))
+            result = true;
         if(lastAssistants.isEmpty()){
             result = true;
         }
         else{
             for (Assistant a : lastAssistants){
-                if ( a.compareTo(assistant) != 0 || lastAssistants.containsAll(player.getMyCards().getCards()))
+                if ( a.compareTo(assistant) != 0)
                     result = true;
             }
         }
+
         if(result){
             lastAssistants.add(assistant);
             player.setLastAssist(assistant);
@@ -105,6 +115,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
 
         return result;
     }
+
 
     /**
      * Method getPlayerByNickname searches the player by his nickname in the list which contains all
@@ -152,7 +163,6 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
             sortedPlayers.add(players.get((indexFirstPlayer + i) % numPlayers));
         return sortedPlayers;
     }
-
 
     /** Method nextPlayer skips to the next player and sets him as Active player */
     public void nextPlayer(){

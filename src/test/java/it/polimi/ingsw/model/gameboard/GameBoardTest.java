@@ -174,22 +174,48 @@ public class GameBoardTest {
         Player bob = new Player("Bob", ColorT.WHITE, Mage.MAGE2, 9);
         Player alice = new Player("Alice", ColorT.GREY, Mage.MAGE3, 9);
         int bobCards = bob.getNumCards();
-        assertTrue(gb.chooseAssistants(bob, 5));
+        assertTrue(gb.chooseAssistants(bob, 6));
         assertEquals(bob.getNumCards(), bobCards - 1);
-        assertEquals(bob.getLastAssistant().getTurn(), 5);
+        assertEquals(bob.getLastAssistant().getTurn(), 6);
         int lisaCards = lisa.getNumCards();
-        assertTrue(!gb.chooseAssistants(lisa, 5));
+        assertTrue(!gb.chooseAssistants(lisa, 6));
         assertEquals(lisa.getNumCards(), lisaCards);
         assertTrue(gb.chooseAssistants(lisa, 1));
         assertEquals(lisa.getNumCards(), lisaCards - 1);
-        // at this point lisa played card 1 and bob card 5
-        for (int i = 1; i <= 10 && i != 1 && i != 5; i++) {
-            assertTrue(gb.chooseAssistants(alice, i));
-        }
-        //alice played all her cards except for card 1 and 5 (already player by other two players)
-        //now alice tries to play card 1 or card 5
+        assertTrue(gb.chooseAssistants(alice, 8));
+
+        assertTrue(gb.chooseAssistants(bob, 4));
+        assertTrue(gb.chooseAssistants(lisa, 1));
+        assertTrue(gb.chooseAssistants(alice, 9));
+
+        assertTrue(gb.chooseAssistants(bob, 3));
+        assertTrue(gb.chooseAssistants(lisa, 4));
+        assertTrue(gb.chooseAssistants(alice, 2));
+
+        assertTrue(gb.chooseAssistants(bob, 2));
+        assertTrue(gb.chooseAssistants(lisa, 3));
+        assertTrue(gb.chooseAssistants(alice, 2));
+
+        assertTrue(gb.chooseAssistants(bob, 1));
+        assertTrue(gb.chooseAssistants(lisa, 1));
+        assertTrue(gb.chooseAssistants(alice, 4));
+
+        assertTrue(gb.chooseAssistants(bob, 4));
+        assertTrue(gb.chooseAssistants(lisa, 2));
         assertTrue(gb.chooseAssistants(alice, 1));
-        assertTrue(gb.chooseAssistants(alice, 5));
+
+        assertTrue(gb.chooseAssistants(bob, 3));
+        assertTrue(gb.chooseAssistants(lisa, 3));
+        assertTrue(gb.chooseAssistants(alice, 3));
+
+        assertTrue(gb.chooseAssistants(bob, 2));
+        assertTrue(gb.chooseAssistants(lisa, 3));
+        assertTrue(gb.chooseAssistants(alice, 3));
+
+        assertTrue(gb.chooseAssistants(bob, 1));
+        assertTrue(gb.chooseAssistants(lisa, 1));
+        assertTrue(gb.chooseAssistants(alice, 1));
+
     }
 
     /**
