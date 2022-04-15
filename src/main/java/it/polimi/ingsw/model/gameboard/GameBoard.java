@@ -21,7 +21,7 @@ import java.util.*;
  *
  * @author Baratto Marco, Bonfanti Stefano, Chyzheuskaya Hanna.
  */
-public class GameBoard implements HasStrategy<ProfStrategy>{
+public class GameBoard implements HasStrategy<ProfStrategy>, Model{
 
     final protected static int NUM_TOWERS = 8;
     final protected static int NUM_STUDENTS = 7;
@@ -61,6 +61,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
             clouds.add(new Cloud());
         }
     }
+
 
     /**
      * Method getNumPlayers returns the number of the players taking part in the game.
@@ -318,9 +319,8 @@ public class GameBoard implements HasStrategy<ProfStrategy>{
 
     /**
      * Fills Clouds with the correct Number of Students
-     * @throws EmptyPlaceException if the bag containing students is empty
      */
-    public void newClouds() throws EmptyPlaceException {
+    public void newClouds() {
         int numStudents = numPlayers%2==0 ? 3 : 4; // 2 or 4 Players -> 3 Students, 3 Players -> 4 Students per Cloud
         for(Cloud c: clouds)
             for(int i=0;i<numStudents; i++)

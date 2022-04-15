@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.gameboard;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
+import it.polimi.ingsw.model.ExpertModel;
 import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.player.Mage;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * Class ExpertGameBoard offers methods to handle a game with expert rules
  */
-public class ExpertGameBoard extends GameBoard {
+public class ExpertGameBoard extends GameBoard implements ExpertModel {
     final private static int NUM_COINS = 20;
     private Character activeCharacter;
     private ArrayList<Character> characters;
@@ -126,8 +127,8 @@ public class ExpertGameBoard extends GameBoard {
     /**
      * Method playActiveCharacter updates the amount of coins that belongs to active player
      * and the ones that are in the expert GameBoard
-     * @param c of type Character - the picked Charater card
-     * @throws NoSuchStudentException - if the player hasn't enough coins to play the picked Charater card
+     * @param c of type Character - the picked Character card
+     * @throws NoSuchStudentException - if the player hasn't enough coins to play the picked Character card
      */
     public void playCharacter(Character c) throws NotEnoughCoinsException {
         if(activePlayer.getCoins() >= c.getCost() && findChar(c) != null) {
@@ -208,7 +209,7 @@ public class ExpertGameBoard extends GameBoard {
      * method moveMN checks if the move is legal, then if there isn't noEntryTiles on the arrival Island
      * it calculates the influence on that island and in necessary change the owner of the island and join the Island.
      * @param numMNSteps int - number of steps that Mother Nature want to do.
-     * @throws InvalidIndexException - if Mother Nature can't make the indicated number of steps
+     * @throws InvalidMNStepsException - if Mother Nature can't make the indicated number of steps
      */
     public void moveMN(int numMNSteps) throws InvalidMNStepsException {
         if(numMNSteps > activePlayer.getMNSteps()) {
@@ -224,10 +225,9 @@ public class ExpertGameBoard extends GameBoard {
 
     /**
      * Adds a new Student to the Character after it's played
-     * @throws ClassCastException if the activeCharacter
-     * @throws EmptyPlaceException if the bag containing students is empty
+     * @throws ClassCastException if the activeCharacter isn't
      */
-    public void resetCharacterStudent() throws ClassCastException, EmptyPlaceException {
+    public void resetCharacterStudent() throws ClassCastException {
         CharacterWithStudent c = (CharacterWithStudent) activeCharacter;
         c.add(container.draw());
     }
