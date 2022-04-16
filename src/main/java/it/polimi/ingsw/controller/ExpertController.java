@@ -7,11 +7,13 @@ import it.polimi.ingsw.model.ExpertModel;
 import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
+import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.server.Server;
 
-public class ExpertController extends Controller{
+public class ExpertController extends Controller {
 
     private ExpertModel expertModel;
+    private int numPlayers;
     private int numSwitchMoves;
     private int numStudMoves;
 
@@ -21,14 +23,14 @@ public class ExpertController extends Controller{
         numStudMoves = 0;
     }
 
-     public void handleMessage(Request m, String nickname) {
-        if (m instanceof GameParams msg && getPhase() == PHASE.SETUP) {
-            if (msg.getNumPlayers() > 1 && msg.getNumPlayers() <= 4) {
-                getTurnController().setGameStarted(true);
-                expertModel = new ExpertGameBoard(msg.getNumPlayers());
-                expertModel.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
-            }
-        }
+    public void createExpertModel(GameParams m){
+        numPlayers=m.getNumPlayers();
+        expertModel = new ExpertGameBoard(m.getNumPlayers());
+        expertModel.addPlayer(m.getNickname(), m.getColorT(), m.getMage());
+        expertModel.newClouds();
+    }
+
+    public void handleCharacter(Request m, String nickname){
         if (m instanceof PlayCharacter msg) {
             Character c = expertModel.getCharacters().stream().
                     filter(character -> msg.getC().equals(character.getDescription())).findAny().orElse(null);
@@ -99,7 +101,7 @@ public class ExpertController extends Controller{
                     }
                     if(msg.getC().equals(CharacterDescription.CHAR7)){
                         if(numStudMoves < 3){
-                          //first color entrance, second color card
+                            //first color entrance, second color card
                             try {
                                 expertModel.moveStudent(mess.getFirstColor(), expertModel.getSchoolBoard(), ((CharacterWithStudent) c));
                             } catch (NoSuchStudentException e) {
