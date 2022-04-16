@@ -55,9 +55,9 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * Method entranceToHall moves a Student form Entrance to Hall in the active player's School Board
      * @param s the color of the Student being moved
      * @throws PlaceFullException - if there is no space for the students of the selected color in the hall
-     * @throws EmptyPlaceException - if the entrance is empty
+     * @throws NoSuchStudentException - if the entrance is empty
      */
-    public void entranceToHall(ColorS s) throws PlaceFullException, EmptyPlaceException {
+    public void entranceToHall(ColorS s) throws PlaceFullException, NoSuchStudentException {
         boolean result = false;
         result = activePlayer.getMyBoard().entranceToHall(s);
         if (result){
@@ -69,9 +69,9 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     /**
      * Method hallToEntrance moves a Student from the Hall to the Entrance
      * @param s the color of the Student being moved
-     * @throws EmptyPlaceException if there is no students of the selected color in the hall
+     * @throws NoSuchStudentException if there is no students of the selected color in the hall
      */
-    public void hallToEntrance(ColorS s) throws EmptyPlaceException {
+    public void hallToEntrance(ColorS s) throws NoSuchStudentException {
         activePlayer.getMyBoard().hallToEntrance(s);
     }
 
@@ -92,11 +92,14 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * @param hallS - student moved from hall to entrance
      * @param entranceS - student moved from entrance to hall
      * @throws PlaceFullException - if there is no space for the students of the selected color in the hall
-     * @throws EmptyPlaceException if there is no students of the selected color in the hall
-     * @throws EmptyPlaceException if there is no students of the selected color in the entrance
+     * @throws NoSuchStudentException if there is no students of the selected color in the hall
+     * @throws NoSuchStudentException if there is no students of the selected color in the entrance
      */
-    public void switchStudents(ColorS hallS, ColorS entranceS) throws PlaceFullException, EmptyPlaceException {
-            activePlayer.getMyBoard().entranceToHall(entranceS);
+    public void switchStudents(ColorS hallS, ColorS entranceS) throws PlaceFullException, NoSuchStudentException {
+            if(activePlayer.getMyBoard().entranceToHall(entranceS)){
+                activePlayer.setCoins(1);
+                coins--;
+            }
             activePlayer.getMyBoard().hallToEntrance(hallS);
     }
 
@@ -239,5 +242,22 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         CharacterWithNoEntry c = (CharacterWithNoEntry) findChar(new Character(CharacterDescription.CHAR5.getCost(), CharacterDescription.CHAR5.getDesc()));
         if(c!=null)
             c.resetNoEntry();
+    }
+
+    /**
+     * Method getIsland returns the island of the selected index.
+     * @return island of type Island - the selected island
+     */
+    public Island getIsland(int indexIslad){
+        Island island = world.getIslandByIndex(indexIslad);
+        return island;
+    }
+
+    /**
+     * Method setBannedColor invokes setBannedColorS method of class World
+     * @param color of type ColorS - The color used in getInfluenceIsland.
+     */
+    public void setBannedColor(ColorS color){
+        world.setBannedColorS(color);
     }
 }

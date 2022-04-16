@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.character;
 
-import it.polimi.ingsw.exceptions.EmptyPlaceException;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.StudentContainer;
 import it.polimi.ingsw.model.player.PlayerInterface;

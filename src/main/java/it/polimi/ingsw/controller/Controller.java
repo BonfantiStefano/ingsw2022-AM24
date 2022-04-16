@@ -26,7 +26,7 @@ public class Controller {
 
     public void handleMessage(Request m, String nickname){
         if(m instanceof GameParams msg && phase == PHASE.SETUP){
-            if(msg.getNumPlayers()<2 || msg.getNumPlayers()>3) {
+            if(msg.getNumPlayers()>1 && msg.getNumPlayers() <= 4) {
                 turnController.setGameStarted(true);
                 model = new GameBoard(msg.getNumPlayers());
                 model.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
@@ -46,8 +46,35 @@ public class Controller {
 
     }
 
+    public Model getModel(){
+        return this.model;
+    }
+
+    public void setModel(Model model){
+        this.model = model;
+    }
+
     public void handleCharacter(Request m, String nickname){
         server.sendMessage(nickname, "You're not playing in expert mode!");
     }
 
+    public Server getServer(){
+        return this.server;
+    }
+
+    public TurnController getTurnController(){
+        return this.turnController;
+    }
+
+    public PHASE getPhase(){
+        return this.phase;
+    }
+
+    public ActionController getActionController() {
+        return actionController;
+    }
+
+    public void setActionController(ActionController actionController) {
+        this.actionController = actionController;
+    }
 }

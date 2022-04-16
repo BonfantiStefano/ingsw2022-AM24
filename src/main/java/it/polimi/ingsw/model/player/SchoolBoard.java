@@ -1,13 +1,11 @@
 package it.polimi.ingsw.model.player;
 
-import it.polimi.ingsw.exceptions.EmptyPlaceException;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,17 +43,18 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
      * @param s the color of the Student being moved
      * @return true if the Player gains a coin
      * @throws PlaceFullException if there is no more available space for the students in the hall
-     * @throws EmptyPlaceException if there is no students in the entrance
+     * @throws NoSuchStudentException if there is no students in the entrance
      */
-    public boolean entranceToHall(ColorS s) throws PlaceFullException, EmptyPlaceException {
+    public boolean entranceToHall(ColorS s) throws PlaceFullException, NoSuchStudentException {
         int temp = hall.get(s) + 1;
         if(temp > MAX_STUD){
             throw new PlaceFullException();
         }
-        if(entrance.isEmpty()){
-            throw new EmptyPlaceException();
+        if(!entrance.contains(s)){
+            throw new NoSuchStudentException();
         }
         else{
+            addToHall(s);
             hall.put(s,temp);
             entrance.remove(s);
             return (temp%3 == 0) && temp!=0;
@@ -65,22 +64,23 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     /**
      * Removes a Student directly from the Hall
      * @param s the Student being removed
+     * @throws NoSuchStudentException if there is no students of the chosen color in the hall
      */
-    public void removeHall(ColorS s) throws EmptyPlaceException {
+    public void removeHall(ColorS s) throws NoSuchStudentException {
         int temp = hall.get(s)-1;
-        if(temp < 0) throw new EmptyPlaceException();
+        if(temp < 0) throw new NoSuchStudentException();
         else hall.put(s,temp);
     }
 
     /**
      * Moves a Student from the Hall to the Entrance
      * @param s the Student being moved
-     * @throws EmptyPlaceException if there is no students in the hall
+     * @throws NoSuchStudentException if there is no students of the chosen color in the hall
      */
-    public void hallToEntrance(ColorS s) throws EmptyPlaceException {
+    public void hallToEntrance(ColorS s) throws NoSuchStudentException {
         int temp = hall.get(s);
         if(temp == 0){
-            throw new EmptyPlaceException();
+            throw new NoSuchStudentException();
         }
         else{
             temp = hall.get(s)-1;
@@ -117,11 +117,9 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     /**
      * Removes a Student from the Entrance
      * @param s the color of the Student being removed
-     * @throws EmptyPlaceException if there is no students in the entrance
+     * @throws NoSuchStudentException if there is no students in the entrance
      */
-    public void remove(ColorS s) throws EmptyPlaceException, NoSuchStudentException {
-        if (entrance.isEmpty())
-            throw new EmptyPlaceException();
+    public void remove(ColorS s) throws NoSuchStudentException {
         if(!entrance.contains(s))
             throw new NoSuchStudentException();
         entrance.remove(s);
@@ -131,8 +129,7 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
      * Adds a Tower to the Player's Board
      * @param t the color of the Tower being added
      */
-    public void add(ColorT t){
-        towers.add(t);
+    public void add(ColorT t){towers.add(t);
     }
 
     /**
@@ -175,5 +172,6 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     public ArrayList<ColorT> getTowers(){
         return towers;
     }
+
 
 }

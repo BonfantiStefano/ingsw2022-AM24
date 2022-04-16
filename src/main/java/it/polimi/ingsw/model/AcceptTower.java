@@ -1,8 +1,6 @@
 package it.polimi.ingsw.model;
 
 
-import it.polimi.ingsw.exceptions.EmptyPlaceException;
-
 /**
  * Interface that defines methods to add and remove Towers
  */

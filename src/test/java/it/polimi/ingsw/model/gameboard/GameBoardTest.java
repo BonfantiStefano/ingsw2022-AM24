@@ -283,7 +283,7 @@ public class GameBoardTest {
      * Method testActivePlayer tests if the chosen player is correctly set as the Active player
      */
     @Test
-    public void TestActivePlayer() throws EmptyPlaceException {
+    public void TestActivePlayer() {
         gb = new GameBoard(2);
         gb.addPlayer("Bob", ColorT.GREY, Mage.MAGE1);
         gb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
@@ -361,7 +361,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("GameBoard's move test")
-    void moveStudent() throws EmptyPlaceException, NoSuchStudentException {
+    void moveStudent() throws  NoSuchStudentException {
         Player lisa = gb.getPlayers().get(0);
         lisa.getMyBoard().add(ColorS.GREEN);
         int initialSIze = lisa.getMyBoard().getEntrance().size();
@@ -376,7 +376,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("GameBoard's newClouds test")
-    void newClouds() throws EmptyPlaceException {
+    void newClouds() throws NoSuchStudentException {
         gb.newClouds();
         for (int i = 0; i < gb.getNumPlayers(); i++)
             assertEquals(4, gb.getCloudByIndex(0).getStudents().size());
@@ -402,7 +402,7 @@ public class GameBoardTest {
      * Tests if the GameBoard correctly evaluates the condition to end the game when all Students have been played
      */
     @Test
-    void gameMustEndTestStudents() throws EmptyPlaceException {
+    void gameMustEndTestStudents() throws NoSuchStudentException {
         StudentContainer temp = gb.getContainer();
         //draw all Students
         for (int i = 0; i < 120; i++) {
@@ -416,7 +416,7 @@ public class GameBoardTest {
      * Tests if the GameBoard correctly evaluates the condition to end the game when all Assistants have been played
      */
     @Test
-    void gameMustEndTestAssistants() throws InvalidIndexException, EmptyPlaceException {
+    void gameMustEndTestAssistants() throws InvalidIndexException, NoSuchStudentException {
         gb2 = new GameBoard(3);
         gb2.addPlayer("test", ColorT.WHITE, Mage.MAGE2);
         for (int i = 1; i <= 10; i++) {
@@ -492,7 +492,7 @@ public class GameBoardTest {
      */
     @Test
     @DisplayName("case when gameMustEnd is true")
-    void checkWinStudentCard() throws EmptyPlaceException {
+    void checkWinStudentCard() throws NoSuchStudentException {
         StudentContainer temp = gb.getContainer();
         for (int i = 0; i < 120; i++) {
             temp.draw();

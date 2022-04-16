@@ -1,8 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.EmptyPlaceException;
-import it.polimi.ingsw.exceptions.InvalidIndexException;
-import it.polimi.ingsw.model.player.Hand;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -34,7 +31,7 @@ class StudentContainerTest {
      * Method testDraw tests random drawing generator of students
      */
     @Test
-    void testDraw() throws EmptyPlaceException {
+    void testDraw() {
         StudentContainer bag = new StudentContainer();
         HashMap<ColorS, Integer> map = new HashMap<>();
         ColorS c = null;

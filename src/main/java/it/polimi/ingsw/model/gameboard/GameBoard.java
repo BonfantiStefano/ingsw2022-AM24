@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.player.SchoolBoard;
 import it.polimi.ingsw.model.profstrategy.ProfStrategy;
 import it.polimi.ingsw.model.profstrategy.StandardProf;
 import it.polimi.ingsw.model.world.Island;
@@ -264,10 +265,9 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
      * @param s of type ColorS - the student that has to be moved
      * @param from of type CanRemoveStudent - place from which the student is relocated
      * @param to of type CanAcceptStudent - place where the student is shifted
-     * @throws EmptyPlaceException - if there is no students to be removed
      * @throws NoSuchStudentException - if there is no students of the selected color to be removed
      */
-    public void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to) throws EmptyPlaceException, NoSuchStudentException {
+    public void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to) throws NoSuchStudentException {
         from.remove(s);
         to.add(s);
     }
@@ -437,4 +437,13 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
     public void checkProfs() {
         profs = strategy.checkProfs(players, profs);
     }
+
+    /**
+     * Method getSchoolBoard returns the active player's School Board
+     * @return SchoolBoard
+     */
+    public SchoolBoard getSchoolBoard(){
+        return activePlayer.getMyBoard();
+    }
+
 }

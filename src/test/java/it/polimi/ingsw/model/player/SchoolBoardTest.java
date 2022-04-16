@@ -1,11 +1,9 @@
 package it.polimi.ingsw.model.player;
 
-import it.polimi.ingsw.exceptions.EmptyPlaceException;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
-import it.polimi.ingsw.model.world.Island;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +32,7 @@ class SchoolBoardTest {
      * Method entranceToHall tests the move of a Student from the entrance to the hall.
      */
     @Test
-    void entranceToHall() throws PlaceFullException, EmptyPlaceException {
+    void entranceToHall() throws PlaceFullException, NoSuchStudentException {
         schoolBoard.entranceToHall(ColorS.BLUE);
         assertEquals(1,schoolBoard.getEntrance().size());
         assertEquals(2,schoolBoard.getHall().get(ColorS.BLUE));
@@ -44,7 +42,7 @@ class SchoolBoardTest {
      * Method removeHall tests the removal of a Student from the Hall.
      */
     @Test
-    void removeHall() throws EmptyPlaceException {
+    void removeHall() throws NoSuchStudentException {
         schoolBoard.removeHall(ColorS.BLUE);
         assertEquals(0, schoolBoard.getHall(ColorS.BLUE));
     }
@@ -53,7 +51,7 @@ class SchoolBoardTest {
      * Method hallToEntrance tests the move of a Student from the Hall to the Entrance.
      */
     @Test
-    void hallToEntrance() throws EmptyPlaceException {
+    void hallToEntrance() throws NoSuchStudentException {
         schoolBoard.hallToEntrance(ColorS.BLUE);
         assertEquals(3,schoolBoard.getEntrance().size());
         assertEquals(0,schoolBoard.getHall().get(ColorS.BLUE));
@@ -95,7 +93,7 @@ class SchoolBoardTest {
      * Method removeStudent tests the removal of a Student from the Entrance.
      */
     @Test
-    void removeStudent() throws EmptyPlaceException, NoSuchStudentException {
+    void removeStudent() throws NoSuchStudentException {
         schoolBoard.remove(ColorS.GREEN);
         assertEquals(1, schoolBoard.getEntrance().size());
         assertThrows(NoSuchStudentException.class, () -> schoolBoard.remove(ColorS.GREEN));
@@ -117,7 +115,7 @@ class SchoolBoardTest {
      * PlaceFullException when the hall is full
      */
     @Test
-    void testFullHallException() throws PlaceFullException, EmptyPlaceException {
+    void testFullHallException() throws PlaceFullException, NoSuchStudentException {
         SchoolBoard board = new SchoolBoard(ColorT.WHITE, 8);
         for(int i = 0; i < 7; i++)
             board.add(ColorS.YELLOW);
@@ -133,30 +131,30 @@ class SchoolBoardTest {
     }
 
     /**
-     * Method testEmptyEntrance checks if entranceToHall and remove methods are capable of throwing EmptyPlaceException
+     * Method testEmptyEntrance checks if entranceToHall and remove methods are capable of throwing NoSuchStudentException
      * when the entrance is empty
      */
     @Test
     void testEmptyEntrance(){
         SchoolBoard board = new SchoolBoard(ColorT.WHITE, 8);
         assertEquals(board.getEntrance().size(), 0);
-        assertThrows(EmptyPlaceException.class,
+        assertThrows(NoSuchStudentException.class,
                 () -> board.entranceToHall(ColorS.GREEN));
-        assertThrows(EmptyPlaceException.class,
+        assertThrows(NoSuchStudentException.class,
                 () -> board.remove(ColorS.GREEN));
     }
 
     /**
-     * Method testEmptyHall checks if removeHall and hallToEntrance methods are capable of throwing EmptyPlaceException
+     * Method testEmptyHall checks if removeHall and hallToEntrance methods are capable of throwing NoSuchElement
      * when the hall is empty
      */
     @Test
     void testEmptyHall(){
         SchoolBoard board = new SchoolBoard(ColorT.WHITE, 8);
         assertEquals(board.getHall(ColorS.BLUE), 0);
-        assertThrows(EmptyPlaceException.class,
+        assertThrows(NoSuchStudentException.class,
                 () -> board.removeHall(ColorS.BLUE));
-        assertThrows(EmptyPlaceException.class,
+        assertThrows(NoSuchStudentException.class,
                 () -> board.hallToEntrance(ColorS.BLUE));
     }
 

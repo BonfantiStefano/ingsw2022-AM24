@@ -17,7 +17,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.Assert.assertThat;
@@ -35,10 +34,13 @@ class ExpertGameBoardTest {
      * Creates a new ExpertGameBoard, adds a Player and activates it
      */
     @BeforeEach
-    void init() throws EmptyPlaceException {
+    void init() throws NoSuchStudentException {
         gb = new ExpertGameBoard(4);
         gb.addPlayer("1", ColorT.WHITE, Mage.MAGE2);
         gb.nextPlayer();
+        gb.getActivePlayer().getMyBoard().add(ColorS.BLUE);
+        gb.getActivePlayer().getMyBoard().add(ColorS.BLUE);
+        gb.getActivePlayer().getMyBoard().add(ColorS.BLUE);
     }
 
     /**
@@ -77,10 +79,10 @@ class ExpertGameBoardTest {
         gb.getPlayers().get(0).setStrategy(new MNTwoSteps());
     }
     /**
-     * Adds 3 Blue Students to the Player's Hall and ensures they are present
+     * Adds three blue Student to the Player's Hall and ensures they are present
      */
     @Test
-    void entranceToHall() throws PlaceFullException, EmptyPlaceException {
+    void entranceToHall() throws PlaceFullException, NoSuchStudentException {
         gb.entranceToHall(ColorS.BLUE);
         gb.entranceToHall(ColorS.BLUE);
         gb.entranceToHall(ColorS.BLUE);
@@ -91,7 +93,7 @@ class ExpertGameBoardTest {
      * Adds a Student to the Player's Hall, and ensures it has moved to the Entrance
      */
     @Test
-    void hallToEntrance() throws PlaceFullException, EmptyPlaceException {
+    void hallToEntrance() throws PlaceFullException, NoSuchStudentException {
         gb.entranceToHall(ColorS.BLUE);
         gb.hallToEntrance(ColorS.BLUE);
         assertEquals(gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE), 0);
@@ -160,7 +162,7 @@ class ExpertGameBoardTest {
      */
     @Test
     @DisplayName("checkIsland on the selected Island that has noEntryTiles")
-    void checkIslandWithoutNoEntry() throws EmptyPlaceException, InvalidIndexException {
+    void checkIslandWithoutNoEntry() throws InvalidIndexException {
         gb.addPlayer("2", ColorT.BLACK, Mage.MAGE3);
         gb.getPlayers().get(0).chooseAssistant(9);
         gb.getPlayers().get(1).chooseAssistant(10);
@@ -204,7 +206,7 @@ class ExpertGameBoardTest {
      * Tests if CharacterWithStudent gets refilled with a Student
      */
     @Test
-    void resetCharacterStudent() throws EmptyPlaceException {
+    void resetCharacterStudent() throws NoSuchStudentException {
         gb.setActiveCharacter(new CharacterWithNoEntry(1, "ciao"));
         assertThrows(ClassCastException.class,() -> gb.resetCharacterStudent());
 
@@ -216,7 +218,7 @@ class ExpertGameBoardTest {
      * Method testRemoveHall checks the effect of the Character card that removes students from the hall
      */
     @Test
-    void testRemoveHall() throws PlaceFullException, EmptyPlaceException {
+    void testRemoveHall() throws PlaceFullException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         gb.addPlayer("Bob", ColorT.WHITE, Mage.MAGE2);
@@ -246,7 +248,7 @@ class ExpertGameBoardTest {
      * Method testSwitchStudents tests switchStudents method
      */
     @Test
-    public void testSwitchStudents() throws NoSuchStudentException, PlaceFullException, EmptyPlaceException {
+    public void testSwitchStudents() throws PlaceFullException, NoSuchStudentException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         gb.setActivePlayer(gb.getPlayerByNickname("Lisa"));
@@ -260,11 +262,11 @@ class ExpertGameBoardTest {
     }
 
     /**
-     * Method testExceptions checks the correct throwing of PlaceFullException and EmptyPlaceException
+     * Method testExceptions checks the correct throwing of PlaceFullException and NoSuchElementException
      * when switchStudents method is used
      */
     @Test
-    public void testExceptionSwitch() throws PlaceFullException, EmptyPlaceException {
+    public void testExceptionSwitch() throws PlaceFullException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         Player lisa = gb.getPlayerByNickname("Lisa");
@@ -300,7 +302,7 @@ class ExpertGameBoardTest {
      * when addToHall method is used
      */
     @Test
-    public void testExceptionAddToHall() throws PlaceFullException, EmptyPlaceException {
+    public void testExceptionAddToHall() throws PlaceFullException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         Player lisa = gb.getPlayerByNickname("Lisa");
@@ -313,11 +315,11 @@ class ExpertGameBoardTest {
     }
 
     /**
-     * Method testExceptionRemoveFromEntrance checks the correct throwing of EmptyPlaceException
+     * Method testExceptionRemoveFromEntrance checks the correct throwing of NoSuchStudentException
      * when remove method is used
      */
     @Test
-    public void testExceptionRemoveFromEntrance() throws NoSuchStudentException, EmptyPlaceException {
+    public void testExceptionRemoveFromEntrance() {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         Player lisa = gb.getPlayerByNickname("Lisa");
@@ -328,7 +330,7 @@ class ExpertGameBoardTest {
             entrance.add(lisa.getMyBoard().getEntrance().get(i));
         lisa.getMyBoard().getEntrance().removeAll(entrance);
 
-        assertThrows(EmptyPlaceException.class,
+        assertThrows(NoSuchStudentException.class,
                 ()->lisa.getMyBoard().remove(ColorS.RED) );
     }
 

@@ -1,24 +1,26 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.EmptyPlaceException;
 import it.polimi.ingsw.exceptions.InvalidMNStepsException;
+import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.world.Island;
 
+import java.util.ArrayList;
+
 public interface ExpertModel extends Model{
 
     void addPlayer(String nickname, ColorT color, Mage mage);
 
-    void entranceToHall(ColorS s) throws EmptyPlaceException, PlaceFullException;
+    void entranceToHall(ColorS s) throws NoSuchStudentException, PlaceFullException, NoSuchStudentException;
 
-    void hallToEntrance(ColorS s) throws EmptyPlaceException;
+    void hallToEntrance(ColorS s) throws NoSuchStudentException, NoSuchStudentException;
 
     void addToHall(ColorS s) throws PlaceFullException;
 
-    void switchStudents(ColorS hallS, ColorS entranceS) throws EmptyPlaceException, PlaceFullException;
+    void switchStudents(ColorS hallS, ColorS entranceS) throws PlaceFullException, NoSuchStudentException;
 
     void removeHall(ColorS s);
 
@@ -35,5 +37,11 @@ public interface ExpertModel extends Model{
     void resetCharacterStudent() throws ClassCastException;
 
     void resetNoEntryCharacter();
+
+    public ArrayList<Character> getCharacters();
+
+    Island getIsland(int indexIslad);
+
+    void setBannedColor(ColorS color);
 
 }
