@@ -32,6 +32,8 @@ public interface Model {
 
     boolean checkGameMustEnd();
 
+    Player getActivePlayer();
+
     Optional<Player> checkWin();
 
     public SchoolBoard getSchoolBoard();

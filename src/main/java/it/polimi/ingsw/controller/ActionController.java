@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.client.request.Request;
 import it.polimi.ingsw.model.Model;
 
 public class ActionController {
@@ -8,4 +9,6 @@ public class ActionController {
     public ActionController(Model model){
         this.model=model;
     }
+
+    public void handleAction(Request m){}
 }
