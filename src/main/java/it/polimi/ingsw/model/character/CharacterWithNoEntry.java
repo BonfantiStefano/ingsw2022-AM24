@@ -16,7 +16,7 @@ public class CharacterWithNoEntry extends Character {
 
     /**
      * Gets the number of remaining noEntry tiles
-     * @return the number of noEntry tiles
+     * @return the number of noEntry
      */
     public int getNumNoEntry(){
         return numNoEntry;
