@@ -27,7 +27,7 @@ public class Controller {
         this.server = server;
         phase=PHASE.SETUP;
         turnController = new TurnController();
-        actionController= new ActionController(model);
+        actionController= new ActionController(model, server, turnController);
     }
 
     public void createModel(GameParams m){
@@ -76,8 +76,8 @@ public class Controller {
             actionController.handleAction(msg);
         else if(m instanceof PlayCharacter && nickname.equals(currPlayer))
             handleCharacter(m, nickname);
-
-
+        else if(m instanceof ChooseCloud msg && nickname.equals(currPlayer) && phase.equals(PHASE.CHOOSE_CLOUD))
+            actionController.handleAction(msg);
 
         else {
             server.sendMessage(nickname, "Invalid message!");

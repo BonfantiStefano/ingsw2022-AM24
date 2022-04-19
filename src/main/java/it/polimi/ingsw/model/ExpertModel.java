@@ -14,7 +14,7 @@ public interface ExpertModel extends Model{
 
     void addPlayer(String nickname, ColorT color, Mage mage);
 
-    void entranceToHall(ColorS s) throws NoSuchStudentException, PlaceFullException, NoSuchStudentException;
+    void entranceToHall(ColorS s) throws PlaceFullException, NoSuchStudentException;
 
     void hallToEntrance(ColorS s) throws NoSuchStudentException, NoSuchStudentException;
 
@@ -39,8 +39,6 @@ public interface ExpertModel extends Model{
     void resetNoEntryCharacter();
 
     public ArrayList<Character> getCharacters();
-
-    Island getIsland(int indexIslad);
 
     void setBannedColor(ColorS color);
 

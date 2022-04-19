@@ -52,7 +52,8 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     }
 
     /**
-     * Method entranceToHall moves a Student form Entrance to Hall in the active player's School Board
+     * Method entranceToHall moves a Student from Entrance to Hall in the active player's School Board and checks if the
+     * player needs to earn a coins.
      * @param s the color of the Student being moved
      * @throws PlaceFullException - if there is no space for the students of the selected color in the hall
      * @throws NoSuchStudentException - if the entrance is empty
@@ -131,7 +132,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * Method playActiveCharacter updates the amount of coins that belongs to active player
      * and the ones that are in the expert GameBoard
      * @param c of type Character - the picked Character card
-     * @throws NoSuchStudentException - if the player hasn't enough coins to play the picked Character card
+     * @throws NotEnoughCoinsException - if the player hasn't enough coins to play the picked Character card
      */
     public void playCharacter(Character c) throws NotEnoughCoinsException {
         if(activePlayer.getCoins() >= c.getCost() && findChar(c) != null) {
@@ -242,15 +243,6 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         CharacterWithNoEntry c = (CharacterWithNoEntry) findChar(new Character(CharacterDescription.CHAR5.getCost(), CharacterDescription.CHAR5.getDesc()));
         if(c!=null)
             c.resetNoEntry();
-    }
-
-    /**
-     * Method getIsland returns the island of the selected index.
-     * @return island of type Island - the selected island
-     */
-    public Island getIsland(int indexIslad){
-        Island island = world.getIslandByIndex(indexIslad);
-        return island;
     }
 
     /**

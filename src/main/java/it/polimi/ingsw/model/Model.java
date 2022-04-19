@@ -3,9 +3,11 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.exceptions.InvalidMNStepsException;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
+import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.SchoolBoard;
+import it.polimi.ingsw.model.world.Island;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -39,4 +41,14 @@ public interface Model {
     public SchoolBoard getSchoolBoard();
 
     void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to) throws NoSuchStudentException;
+
+    int getSizeWorld();
+
+    boolean getGameMustEnd();
+
+    void entranceToHall(ColorS s) throws PlaceFullException, NoSuchStudentException;
+
+    Island getIslandByIndex(int index);
+
+    Cloud getCloudByIndex(int index);
 }

@@ -39,7 +39,7 @@ public class ExpertController extends Controller {
                 if (m instanceof SpecialMoveIsland mess) {
                     if(msg.getC().equals(CharacterDescription.CHAR1)){
                         try {
-                            expertModel.moveStudent(mess.getStudent(), ((CharacterWithStudent) c), expertModel.getIsland(mess.getIslandIndex()));
+                            expertModel.moveStudent(mess.getStudent(), ((CharacterWithStudent) c), expertModel.getIslandByIndex(mess.getIslandIndex()));
                         } catch (NoSuchStudentException e) {
                             System.out.println("there is no " + mess.getStudent().toString().toLowerCase() + " student on the card");
                         }
@@ -48,12 +48,12 @@ public class ExpertController extends Controller {
                 }
                 if (m instanceof ChooseIsland mess) {
                     if (msg.getC().equals(CharacterDescription.CHAR3))
-                        expertModel.checkIsland(expertModel.getIsland(mess.getIslandIndex()));
+                        expertModel.checkIsland(expertModel.getIslandByIndex(mess.getIslandIndex()));
 
                     if (msg.getC().equals(CharacterDescription.CHAR5)) {
                         int noEntry = ((CharacterWithNoEntry) c).getNumNoEntry();
                         if (noEntry != 0) {
-                            expertModel.getIsland(mess.getIslandIndex()).setNumNoEntry(1);
+                            expertModel.getIslandByIndex(mess.getIslandIndex()).setNumNoEntry(1);
                             expertModel.resetNoEntryCharacter();
                         }
                     }

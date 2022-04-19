@@ -278,7 +278,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
      * @param numMNSteps int - number of steps that Mother Nature want to do.
      * @throws InvalidMNStepsException - if Mother Nature can't make the indicated number of steps
      */
-    //Checks that the numMNSteps is between 1 and 10 are done by the controller.
+    //Checks that the numMNSteps is between 1 and 7 are done by the controller.
     public void moveMN(int numMNSteps) throws InvalidMNStepsException {
         if(numMNSteps > activePlayer.getMNSteps()) {
             throw new InvalidMNStepsException();
@@ -294,7 +294,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
     public void checkIsland(Island island){
         Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players, island);
         nextOwner.ifPresent(owner -> conquest(owner, island));
-        world.checkJoin(world.getIslandByIndex(world.getMNPosition()));
+        world.checkJoin(getIslandByIndex(world.getMNPosition()));
     }
 
     /**
@@ -446,4 +446,38 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
         return activePlayer.getMyBoard();
     }
 
+    /**
+     * Method getSizeWorld returns the size of the World.
+     * @return an Integer, that represents the number of the Islands.
+     */
+    public int getSizeWorld() {
+        return world.getSize();
+    }
+
+    /**
+     * Method getGameMustEnd returns if the game must end at the finish of the round.
+     * @return boolean - the value of GameMustEnd.
+     */
+    public boolean getGameMustEnd() {
+        return gameMustEnd;
+    }
+
+    /**
+     * Method entranceToHall moves a Student from Entrance to Hall in the active player's School Board
+     * @param s the color of the Student being moved
+     * @throws PlaceFullException - if there is no space for the students of the selected color in the hall
+     * @throws NoSuchStudentException - if the entrance is empty
+     */
+    public void entranceToHall(ColorS s) throws PlaceFullException, NoSuchStudentException {
+        activePlayer.getMyBoard().entranceToHall(s);
+    }
+
+    /**
+     * Method getIslandByIndex returns the Island corresponding to the index given by parameter.
+     * @param index int - The index of the Island.
+     * @return an Island - the Island of the world corresponding to the index.
+     */
+    public Island getIslandByIndex(int index) {
+        return world.getIslandByIndex(index);
+    }
 }
