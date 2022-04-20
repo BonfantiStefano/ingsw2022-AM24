@@ -50,6 +50,12 @@ public class TurnController {
             case CHOOSE_CLOUD:
                 if(chooseCloudCheck && characterActionCheck)
                     return PHASE.RESET_ROUND;
+                else if(!chooseAssistantsCheck)
+                    return PHASE.CHARACTER_ACTION;
+                break;
+            case CHARACTER_ACTION:
+                if(characterActionCheck)
+                    return PHASE.RESET_ROUND;
                 break;
             case RESET_ROUND:
                 reset();

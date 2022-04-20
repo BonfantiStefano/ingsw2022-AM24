@@ -68,34 +68,55 @@ public class Controller {
             }
         else if(m instanceof Disconnect);
             //model.setDisconnected(nickname)
-        else if(m instanceof MoveToIsland msg && nickname.equals(currPlayer) && phase.equals(PHASE.MOVE_STUDENTS))
-            actionController.handleAction(msg);
-        else if(m instanceof EntranceToHall msg && nickname.equals(currPlayer) && phase.equals(PHASE.MOVE_STUDENTS))
-            actionController.handleAction(msg);
-        else if(m instanceof MoveMN msg && nickname.equals(currPlayer) && phase.equals(PHASE.MOVE_MN))
-            actionController.handleAction(msg);
-        else if(m instanceof PlayCharacter && nickname.equals(currPlayer))
-            handleCharacter(m, nickname);
-        else if(m instanceof ChooseCloud msg && nickname.equals(currPlayer) && phase.equals(PHASE.CHOOSE_CLOUD))
-            actionController.handleAction(msg);
-
+        else if( nickname.equals(currPlayer)) {
+            if (m instanceof MoveToIsland msg && phase.equals(PHASE.MOVE_STUDENTS))
+                actionController.handleAction(msg);
+            else if (m instanceof EntranceToHall msg && phase.equals(PHASE.MOVE_STUDENTS))
+                actionController.handleAction(msg);
+            else if (m instanceof MoveMN msg && phase.equals(PHASE.MOVE_MN))
+                actionController.handleAction(msg);
+            else if (m instanceof PlayCharacter) //other special messages missing
+                handleCharacter(m, nickname);
+            else if (m instanceof ChooseCloud msg && phase.equals(PHASE.CHOOSE_CLOUD))
+                actionController.handleAction(msg);
+        }
         else {
             server.sendMessage(nickname, "Invalid message!");
         }
         //after a message has been received ask the turnController for the next phase
-        phase=turnController.nextPhase(phase);
+        nextPhase();
     }
 
-    public Model getModel(){
-        return this.model;
-    }
 
-    public void setModel(Model model){
-        this.model = model;
+    public void nextPhase(){
+        PHASE oldPhase = phase;
+        phase = turnController.nextPhase(phase);
+        if(!oldPhase.equals(phase))
+            doPhase();
     }
 
     public void doPhase(){
-
+        String activePlayer = model.getActivePlayer().getNickname();
+        switch(phase){
+            case PLANNING:
+                model.getPlayers(); //getSortedPlayers
+                break;
+            case MOVE_STUDENTS:
+                server.sendMessage(activePlayer, "Select a Student and choose a destination!");
+                break;
+            case MOVE_MN:
+                server.sendMessage(activePlayer, "Choose where you want to move MN!");
+                break;
+            case CHOOSE_CLOUD:
+                server.sendMessage(activePlayer, "Choose a Cloud!");
+                break;
+            case RESET_ROUND:
+                model.newClouds();
+                break;
+            case GAME_WON:
+                //String s = model.checkWin().ifPresent(p -> p.getNickname());
+                break;
+        }
     }
 
     /**
@@ -105,6 +126,10 @@ public class Controller {
      */
     public void handleCharacter(Request m, String nickname){
         server.sendMessage(nickname, "You're not playing in expert mode!");
+    }
+
+    public Model getModel(){
+        return this.model;
     }
 
     public Server getServer(){
@@ -123,7 +148,4 @@ public class Controller {
         return actionController;
     }
 
-    public void setActionController(ActionController actionController) {
-        this.actionController = actionController;
-    }
 }

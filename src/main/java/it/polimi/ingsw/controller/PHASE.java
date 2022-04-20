@@ -6,6 +6,7 @@ public enum PHASE {
     MOVE_STUDENTS,
     MOVE_MN,
     CHOOSE_CLOUD,
+    CHARACTER_ACTION,
     RESET_ROUND,
     GAME_WON
 }
