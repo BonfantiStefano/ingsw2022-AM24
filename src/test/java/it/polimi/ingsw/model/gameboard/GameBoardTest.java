@@ -525,4 +525,17 @@ public class GameBoardTest {
             assertEquals("Alice", gb.getProfs().get(c).getNickname());
         }
     }
+
+    /**
+     * Method entranceToHall tests the move of a Student from the entrance to the hall.
+     */
+    @Test
+    void entranceToHall() throws PlaceFullException, NoSuchStudentException {
+        gb.setActivePlayer(gb.getPlayers().get(0));
+        gb.getActivePlayer().getMyBoard().add(ColorS.BLUE);
+        int sizeEntranceBefore = gb.getActivePlayer().getMyBoard().getEntrance().size();
+        gb.entranceToHall(ColorS.BLUE);
+        assertEquals(1, gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE));
+        assertEquals(sizeEntranceBefore - 1, gb.getActivePlayer().getMyBoard().getEntrance().size());
+    }
 }

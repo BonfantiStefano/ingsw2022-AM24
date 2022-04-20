@@ -45,18 +45,18 @@ public class ActionController {
     public void handleAction(MoveMN m) {
         if(m.getIndex() > 7 || m.getIndex() < 1) {
             server.sendMessage(model.getActivePlayer().getNickname(), "Error: Mother Nature can't do these steps");
+        } else {
+            try {
+                model.moveMN(m.getIndex());
+                Optional<Player> winner = model.checkWin();
+                winner.ifPresentOrElse(w -> {server.sendMessage(w.getNickname(), "You won");
+                            server.sendMessageToOthers(w.getNickname(), "You Lose");},
+                        () -> {if(model.getSizeWorld() == 3 || model.getGameMustEnd()) server.sendMessageToAll("The game ends in a draw");}
+                );
+            } catch (InvalidMNStepsException e) {
+                server.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
+            }
         }
-        try {
-            model.moveMN(m.getIndex());
-        } catch (InvalidMNStepsException e) {
-            server.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
-        }
-        Optional<Player> winner = model.checkWin();
-        winner.ifPresentOrElse(w -> {server.sendMessage(w.getNickname(), "You won");
-            server.sendMessageToOthers(w.getNickname(), "You Lose");},
-                () -> {if(model.getSizeWorld() == 3 || model.getGameMustEnd()) server.sendMessageToAll("The game ends in a draw");}
-        );
-
     }
 
     /**
@@ -110,11 +110,11 @@ public class ActionController {
      * @param m ChooseCloud - the message sent by the client to the server.
      */
     public void handleAction(ChooseCloud m){
-        if(m.getIndex() < 0 || m.getIndex() >= model.getNumPlayers() || model.getCloudByIndex(m.getIndex()).getStudents() == null) {
+        if(m.getIndex() < 0 || m.getIndex() >= model.getNumPlayers() || model.getCloudByIndex(m.getIndex()).getStudents().size() == 0) {
             server.sendMessage(model.getActivePlayer().getNickname(), "Error: invalid Cloud index");
         } else {
             Cloud cloud = model.getCloudByIndex(m.getIndex());
-            for(int counter = 0; counter < 3; counter++) {
+            for(int counter = 0; counter <= model.getNumPlayers(); counter++) {
                 try {
                     model.moveStudent(cloud.getStudents().get(0), cloud, model.getActivePlayer().getMyBoard());
                 } catch (NoSuchStudentException e) {
