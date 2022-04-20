@@ -39,6 +39,9 @@ class TurnControllerTest {
         assertEquals(PHASE.RESET_ROUND, p);
         p = t.nextPhase(p);
         assertEquals(PHASE.PLANNING, p);
+        t.setGameEnded(true);
+        p = t.nextPhase(p);
+        assertEquals(PHASE.GAME_WON, p);
     }
 
     /**

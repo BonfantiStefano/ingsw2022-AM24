@@ -10,6 +10,7 @@ public class TurnController {
     private boolean chooseAssistantsCheck; //true if all Assistants have been chosen
     private boolean characterActionCheck; //true if the selected Character doesn't require other actions
     private boolean gameStarted; //true if the game is in progress
+    private boolean gameEnded;
 
     /**
      * Creates a new TurnController
@@ -21,6 +22,7 @@ public class TurnController {
         chooseCloudCheck=false;
         gameStarted=false;
         characterActionCheck = true;
+        gameEnded = false;
     }
 
     /**
@@ -30,6 +32,9 @@ public class TurnController {
      * @return the next phase of the turn
      */
     public PHASE nextPhase(PHASE currentPhase){
+        if(gameEnded)
+            return PHASE.GAME_WON;
+
         switch (currentPhase) {
             case SETUP:
                 if(gameStarted)
@@ -121,5 +126,13 @@ public class TurnController {
      */
     public void setChooseAssistantsCheck(boolean chooseAssistantsCheck) {
         this.chooseAssistantsCheck = chooseAssistantsCheck;
+    }
+
+    /**
+     * Sets the gameEnded indicator
+     * @param gameEnded true if someone won the game
+     */
+    public void setGameEnded(boolean gameEnded) {
+        this.gameEnded = gameEnded;
     }
 }

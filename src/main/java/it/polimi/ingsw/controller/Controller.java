@@ -45,6 +45,7 @@ public class Controller {
      */
     public void handleMessage(Request m, String nickname){
         String currPlayer = model.getActivePlayer().getNickname();
+
         if(m instanceof GameParams msg && phase == PHASE.SETUP){
             if(msg.getNumPlayers()>1 && msg.getNumPlayers() <= 4) {
                 createModel(msg);
