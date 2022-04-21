@@ -246,6 +246,15 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     }
 
     /**
+     * Removes a NoEntry tile on the CharacterWithNoEntry
+     */
+    public void removeNoEntry() {
+        CharacterWithNoEntry c = (CharacterWithNoEntry) findChar(new Character(CharacterDescription.CHAR5.getCost(), CharacterDescription.CHAR5.getDesc()));
+        if(c!=null)
+            c.removeNoEntry();
+    }
+
+    /**
      * Method setBannedColor invokes setBannedColorS method of class World
      * @param color of type ColorS - The color used in getInfluenceIsland.
      */

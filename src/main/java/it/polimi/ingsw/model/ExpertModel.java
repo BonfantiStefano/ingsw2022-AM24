@@ -38,7 +38,9 @@ public interface ExpertModel extends Model{
 
     void resetNoEntryCharacter();
 
-    public ArrayList<Character> getCharacters();
+    void removeNoEntry();
+
+    ArrayList<Character> getCharacters();
 
     void setBannedColor(ColorS color);
 

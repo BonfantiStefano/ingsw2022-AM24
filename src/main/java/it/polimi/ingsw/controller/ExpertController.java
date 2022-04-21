@@ -17,12 +17,21 @@ public class ExpertController extends Controller {
     private int numSwitchMoves;
     private int numStudMoves;
 
+    /**
+     * The ExpertController handles messages which represent commands received from all the clients and changes
+     * the model's state when the game is played with expert rules
+     */
     public ExpertController(Server server) {
         super(server);
         numSwitchMoves = 0;
         numStudMoves = 0;
     }
 
+    /**
+     * Constructor createExpertModel receives in input the number of players participating in the game and creates a
+     * new ExpertGameBoard instance.
+     * @param m - number of the players
+     */
     public void createExpertModel(GameParams m){
         numPlayers=m.getNumPlayers();
         expertModel = new ExpertGameBoard(m.getNumPlayers());
@@ -30,6 +39,14 @@ public class ExpertController extends Controller {
         expertModel.newClouds();
     }
 
+    /**
+     * Method handleCharacter handles the choice of a Character card :
+     * it triggers the correct method relying on the description of the received card.
+     * If the command sent by the client is valid the model's state can be changed,
+     * otherwise an error message is sent to the client identified by his nickname
+     * @param m Request message sent by a Client
+     * @param nickname the nickname of the Player associated with the Client
+     */
     public void handleCharacter(Request m, String nickname){
         if (m instanceof PlayCharacter msg) {
             Character c = expertModel.getCharacters().stream().
@@ -41,7 +58,7 @@ public class ExpertController extends Controller {
                         try {
                             expertModel.moveStudent(mess.getStudent(), ((CharacterWithStudent) c), expertModel.getIslandByIndex(mess.getIslandIndex()));
                         } catch (NoSuchStudentException e) {
-                            System.out.println("there is no " + mess.getStudent().toString().toLowerCase() + " student on the card");
+                            getServer().sendMessage(nickname,"there is no " + mess.getStudent().toString().toLowerCase() + " student on the card" );
                         }
                         expertModel.resetCharacterStudent();
                     }
@@ -54,7 +71,7 @@ public class ExpertController extends Controller {
                         int noEntry = ((CharacterWithNoEntry) c).getNumNoEntry();
                         if (noEntry != 0) {
                             expertModel.getIslandByIndex(mess.getIslandIndex()).setNumNoEntry(1);
-                            expertModel.resetNoEntryCharacter();
+                            expertModel.removeNoEntry();
                         }
                     }
                 }
@@ -65,7 +82,7 @@ public class ExpertController extends Controller {
                         try {
                             ((CharacterWithStudent) c).remove(mess.getColor());
                         } catch (NoSuchStudentException e) {
-                            System.out.println("there is no " + mess.getColor().toString().toLowerCase() + " students on the card");
+                            getServer().sendMessage(nickname,"there is no " + mess.getColor().toString().toLowerCase() + " students on the card" );
                         }
                         expertModel.removeHall(mess.getColor());
                         expertModel.resetCharacterStudent();
@@ -74,12 +91,12 @@ public class ExpertController extends Controller {
                         try {
                             ((CharacterWithStudent) c).remove(mess.getColor());
                         } catch (NoSuchStudentException e) {
-                            System.out.println("there is no " + mess.getColor().toString().toLowerCase() + " students on the card");
+                            getServer().sendMessage(nickname,"there is no " + mess.getColor().toString().toLowerCase() + " students on the card" );
                         }
                         try {
                             expertModel.addToHall(mess.getColor());
                         } catch (PlaceFullException e) {
-                            System.out.println("There is no space for another " + mess.getColor().toString().toLowerCase() + " student in the hall");
+                            getServer().sendMessage(nickname,"There is no space for another " + mess.getColor().toString().toLowerCase() + " student in the hall");
                         }
                         expertModel.resetCharacterStudent();
                     }
@@ -92,9 +109,9 @@ public class ExpertController extends Controller {
                             try {
                                 expertModel.switchStudents(mess.getFirstColor(), mess.getSecondColor());
                             } catch (NoSuchStudentException e) {
-                                System.out.println("The two chosen students can't be switched");
+                                getServer().sendMessage(nickname,"The two chosen students can't be switched");
                             } catch (PlaceFullException e) {
-                                System.out.println("The two chosen students can't be switched");
+                                getServer().sendMessage(nickname,"The two chosen students can't be switched");
                             }
                             numSwitchMoves++;
                         }
@@ -105,12 +122,12 @@ public class ExpertController extends Controller {
                             try {
                                 expertModel.moveStudent(mess.getFirstColor(), expertModel.getSchoolBoard(), ((CharacterWithStudent) c));
                             } catch (NoSuchStudentException e) {
-                                System.out.println("There is no " + mess.getFirstColor().toString().toLowerCase()+ " students in the entrance");
+                                getServer().sendMessage(nickname,"There is no " + mess.getFirstColor().toString().toLowerCase()+ " students in the entrance");
                             }
                             try {
                                 expertModel.moveStudent(mess.getSecondColor(), ((CharacterWithStudent) c), expertModel.getSchoolBoard());
                             } catch (NoSuchStudentException e) {
-                                System.out.println("There is no " + mess.getSecondColor().toString().toLowerCase()+ " students on the card");
+                                getServer().sendMessage(nickname,"There is no " + mess.getSecondColor().toString().toLowerCase()+ " students on the card");
                             }
                             numStudMoves++;
                         }
