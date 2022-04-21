@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Server;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 /**
  * The Controller will handle messages from all clients by checking their contents and modifying the model's state
@@ -67,9 +68,12 @@ public class Controller {
             }catch (InvalidIndexException e){
                server.sendMessage(nickname, "Invalid index!");
             }
-        else if(m instanceof Disconnect);
-            //model.setDisconnected(nickname)
-        else if( nickname.equals(currPlayer)) {
+        else if(m instanceof Disconnect)
+            if(phase.equals(PHASE.SETUP))
+                server.gameEnded();
+            else;
+                // TODO model.setDisconnected(nickname)
+        else if(nickname.equals(currPlayer)) {
             if (m instanceof MoveToIsland msg && phase.equals(PHASE.MOVE_STUDENTS))
                 actionController.handleAction(msg);
             else if (m instanceof EntranceToHall msg && phase.equals(PHASE.MOVE_STUDENTS))
@@ -98,27 +102,35 @@ public class Controller {
 
     public void doPhase(){
         String activePlayer = model.getActivePlayer().getNickname();
-        switch(phase){
+        switch (phase) {
             case PLANNING:
-                model.getPlayers(); //getSortedPlayers
+                //TODO getSortedPlayers
                 break;
             case MOVE_STUDENTS:
-                server.sendMessage(activePlayer, "Select a Student and choose a destination!");
-                break;
+                model.nextPlayer();
+                activePlayer = model.getActivePlayer().getNickname();
+                server.sendMessage(activePlayer, "Select a Student and choose a destination three times!");
             case MOVE_MN:
                 server.sendMessage(activePlayer, "Choose where you want to move MN!");
-                break;
             case CHOOSE_CLOUD:
                 server.sendMessage(activePlayer, "Choose a Cloud!");
-                break;
             case RESET_ROUND:
-                model.newClouds();
-                break;
-            case GAME_WON:
-                //String s = model.checkWin().ifPresent(p -> p.getNickname());
-                break;
+                if(model.getGameMustEnd()){
+                    Optional<Player> winner = model.checkWin();
+                    winner.ifPresentOrElse(w -> {server.sendMessage(w.getNickname(), "You won");
+                                    server.sendMessageToOthers(w.getNickname(), "You Lose");},
+                                () -> {server.sendMessageToAll("The game ends in a draw");}
+                        );
+                    turnController.setGameEnded(true);
+                    phase = turnController.nextPhase(phase);
+                }
+                // TODO model.resetRound();
+                    break;
+            case CHARACTER_ACTION: server.sendMessage(activePlayer, "You need to perform a Character move!");
+            case GAME_WON: server.gameEnded();
         }
     }
+
 
     /**
      * Handles all Requests regarding Characters

@@ -51,7 +51,7 @@ public class ActionController {
                 Optional<Player> winner = model.checkWin();
                 winner.ifPresentOrElse(w -> {server.sendMessage(w.getNickname(), "You won");
                             server.sendMessageToOthers(w.getNickname(), "You Lose");},
-                        () -> {if(model.getSizeWorld() == 3 || model.getGameMustEnd()) server.sendMessageToAll("The game ends in a draw");}
+                        () -> {if(model.getSizeWorld() == 3) server.sendMessageToAll("The game ends in a draw");}
                 );
             } catch (InvalidMNStepsException e) {
                 server.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());

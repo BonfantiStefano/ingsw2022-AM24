@@ -30,7 +30,7 @@ public interface ExpertModel extends Model{
 
     Character getActiveCharacter();
 
-    void setActiveCharacter(Character activeCharacter);
+    //void setActiveCharacter(Character activeCharacter);
 
     void moveMN(int numMNSteps) throws InvalidMNStepsException;
 

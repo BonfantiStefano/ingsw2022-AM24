@@ -2,7 +2,7 @@ package it.polimi.ingsw.client.request;
 
 import it.polimi.ingsw.model.ColorS;
 
-public class SpecialMoveIsland extends PlayCharacter{
+public class SpecialMoveIsland implements Request{
     private ColorS student;
     private int islandIndex;
 

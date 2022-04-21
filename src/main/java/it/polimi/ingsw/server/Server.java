@@ -7,4 +7,6 @@ public class Server {
     public void sendMessageToOthers(String nickname, String context) {}
 
     public void sendMessageToAll(String context) {}
+
+    public void gameEnded(){}
 }

@@ -52,4 +52,5 @@ public enum CharacterDescription {
     public String getDesc() {
         return desc;
     }
+
 }

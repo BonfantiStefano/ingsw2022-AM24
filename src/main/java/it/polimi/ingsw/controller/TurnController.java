@@ -16,11 +16,11 @@ public class TurnController {
      * Creates a new TurnController
      */
     public TurnController(){
-        moveMNCheck=false;
-        moveStudentsCheck=false;
-        chooseAssistantsCheck=false;
-        chooseCloudCheck=false;
-        gameStarted=false;
+        moveMNCheck = false;
+        moveStudentsCheck = false;
+        chooseAssistantsCheck = false;
+        chooseCloudCheck = false;
+        gameStarted = false;
         characterActionCheck = true;
         gameEnded = false;
     }

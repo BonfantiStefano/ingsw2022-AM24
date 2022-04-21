@@ -135,10 +135,12 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * @throws NotEnoughCoinsException - if the player hasn't enough coins to play the picked Character card
      */
     public void playCharacter(Character c) throws NotEnoughCoinsException {
-        if(activePlayer.getCoins() >= c.getCost() && findChar(c) != null) {
-            activePlayer.setCoins(-c.getCost());
-            setActiveCharacter(findChar(c));
-            coins+=findChar(c).getCost();
+        if(activePlayer.getCoins() >= c.getCost()) {
+            if(findChar(c)!= null) {
+                activePlayer.setCoins(-c.getCost());
+                setActiveCharacter(findChar(c));
+                coins += findChar(c).getCost();
+            }
         }
         else
             throw new NotEnoughCoinsException();

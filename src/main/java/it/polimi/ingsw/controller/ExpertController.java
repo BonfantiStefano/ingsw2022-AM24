@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
+import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.ExpertModel;
 import it.polimi.ingsw.model.character.*;
@@ -54,10 +55,14 @@ public class ExpertController extends Controller {
      */
     public void handleCharacter(Request m, String nickname){
         if (m instanceof PlayCharacter msg) {
-            Character c = expertModel.getCharacters().stream().
-                    filter(character -> msg.getC().equals(character.getDescription())).findAny().orElse(null);
+            try {
+                expertModel.playCharacter(new Character(msg.getC().getCost(), msg.getC().getDesc()));
+            }catch(NotEnoughCoinsException e){
+
+            }
+            Character c=null;
             if (c != null) {
-                expertModel.setActiveCharacter(c);
+                //expertModel.setActiveCharacter(c);
                 if (m instanceof SpecialMoveIsland mess) {
                     if(msg.getC().equals(CharacterDescription.CHAR1)){
                         try {

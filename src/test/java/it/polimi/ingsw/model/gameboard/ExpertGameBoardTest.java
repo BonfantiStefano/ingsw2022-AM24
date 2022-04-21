@@ -4,6 +4,7 @@ import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.Character;
+import it.polimi.ingsw.model.character.CharacterDescription;
 import it.polimi.ingsw.model.character.CharacterWithNoEntry;
 import it.polimi.ingsw.model.character.CharacterWithStudent;
 import it.polimi.ingsw.model.mnstrategy.MNTwoSteps;
@@ -17,6 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.Assert.assertThat;
@@ -333,6 +335,7 @@ class ExpertGameBoardTest {
         assertThrows(NoSuchStudentException.class,
                 ()->lisa.getMyBoard().remove(ColorS.RED) );
     }
+
 
 }
 
