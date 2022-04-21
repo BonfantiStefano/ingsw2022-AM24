@@ -10,6 +10,10 @@ import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.server.Server;
 
+/**
+ * The ExpertController handles messages which represent commands received from all the clients and changes
+ * the model's state when the game is played with expert rules
+ */
 public class ExpertController extends Controller {
 
     private ExpertModel expertModel;
@@ -17,9 +21,10 @@ public class ExpertController extends Controller {
     private int numSwitchMoves;
     private int numStudMoves;
 
+
     /**
-     * The ExpertController handles messages which represent commands received from all the clients and changes
-     * the model's state when the game is played with expert rules
+     * Constructor ExpertController creates a new empty ExpertController instance.
+     * @param server - server
      */
     public ExpertController(Server server) {
         super(server);
@@ -28,7 +33,7 @@ public class ExpertController extends Controller {
     }
 
     /**
-     * Constructor createExpertModel receives in input the number of players participating in the game and creates a
+     * Method createExpertModel receives in input the number of players participating in the game and creates a
      * new ExpertGameBoard instance.
      * @param m - number of the players
      */
