@@ -55,95 +55,104 @@ public class ExpertController extends Controller {
      */
     public void handleCharacter(Request m, String nickname){
         if (m instanceof PlayCharacter msg) {
-            try {
-                expertModel.playCharacter(new Character(msg.getC().getCost(), msg.getC().getDesc()));
-            }catch(NotEnoughCoinsException e){
-
+            if(expertModel.getActiveCharacter() == null){
+                try {
+                    Character c = expertModel.getCharacters().stream().
+                            filter(character -> msg.getC().equals(character.getDescription())).findAny().orElse(null);
+                    if(c!= null) expertModel.playCharacter(c);
+                    else getServer().sendMessage(nickname, "this card is not available");
+                } catch (NotEnoughCoinsException e) {
+                    getServer().sendMessage(nickname, "you can't afford to play this card");
+                }
             }
-            Character c=null;
-            if (c != null) {
-                //expertModel.setActiveCharacter(c);
-                if (m instanceof SpecialMoveIsland mess) {
-                    if(msg.getC().equals(CharacterDescription.CHAR1)){
-                        try {
-                            expertModel.moveStudent(mess.getStudent(), ((CharacterWithStudent) c), expertModel.getIslandByIndex(mess.getIslandIndex()));
-                        } catch (NoSuchStudentException e) {
-                            getServer().sendMessage(nickname,"there is no " + mess.getStudent().toString().toLowerCase() + " student on the card" );
-                        }
-                        expertModel.resetCharacterStudent();
-                    }
-                }
-                if (m instanceof ChooseIsland mess) {
-                    if (msg.getC().equals(CharacterDescription.CHAR3))
-                        expertModel.checkIsland(expertModel.getIslandByIndex(mess.getIslandIndex()));
+        }
 
-                    if (msg.getC().equals(CharacterDescription.CHAR5)) {
-                        int noEntry = ((CharacterWithNoEntry) c).getNumNoEntry();
-                        if (noEntry != 0) {
-                            expertModel.getIslandByIndex(mess.getIslandIndex()).setNumNoEntry(1);
-                            expertModel.removeNoEntry();
-                        }
+        if (expertModel.getActiveCharacter() != null) {
+            Character activeCharacter = expertModel.getActiveCharacter();
+
+            if (m instanceof SpecialMoveIsland mess) {
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR1)) {
+                    try {
+                        expertModel.moveStudent(mess.getStudent(), ((CharacterWithStudent) activeCharacter), expertModel.getIslandByIndex(mess.getIslandIndex()));
+                    } catch (NoSuchStudentException e) {
+                        getServer().sendMessage(nickname,"there is no " + mess.getStudent().toString().toLowerCase() + " student on the card" );
                     }
-                }
-                if (m instanceof ChooseColor mess){
-                    if(msg.getC().equals(CharacterDescription.CHAR9))
-                        expertModel.setBannedColor(mess.getColor());
-                    if(msg.getC().equals(CharacterDescription.CHAR12)){
-                        try {
-                            ((CharacterWithStudent) c).remove(mess.getColor());
-                        } catch (NoSuchStudentException e) {
-                            getServer().sendMessage(nickname,"there is no " + mess.getColor().toString().toLowerCase() + " students on the card" );
-                        }
-                        expertModel.removeHall(mess.getColor());
                         expertModel.resetCharacterStudent();
                     }
-                    if(msg.getC().equals(CharacterDescription.CHAR11)){
+                }
+            if (m instanceof ChooseIsland mess) {
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR3)){
+                    expertModel.checkIsland(expertModel.getIslandByIndex(mess.getIslandIndex()));
+                    expertModel.checkWin();
+                }
+
+                if (activeCharacter.getDescription().equals(CharacterDescription.CHAR5)) {
+                    int noEntry = ((CharacterWithNoEntry) activeCharacter).getNumNoEntry();
+                    if (noEntry != 0) {
+                        expertModel.getIslandByIndex(mess.getIslandIndex()).setNumNoEntry(1);
+                        expertModel.removeNoEntry();
+                    }
+                }
+            }
+            if (m instanceof ChooseColor mess){
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR9))
+                    expertModel.setBannedColor(mess.getColor());
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR12)){
+                    try {
+                        ((CharacterWithStudent) activeCharacter).remove(mess.getColor());
+                    } catch (NoSuchStudentException e) {
+                        getServer().sendMessage(nickname,"there is no " + mess.getColor().toString().toLowerCase() + " students on the card" );
+                    }
+                    expertModel.removeHall(mess.getColor());
+                    expertModel.resetCharacterStudent();
+                    }
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR11)){
+                    try {
+                        ((CharacterWithStudent) activeCharacter).remove(mess.getColor());
+                    } catch (NoSuchStudentException e) {
+                        getServer().sendMessage(nickname,"there is no " + mess.getColor().toString().toLowerCase() + " students on the card" );
+                    }
+                    try {
+                        expertModel.addToHall(mess.getColor());
+                    } catch (PlaceFullException e) {
+                        getServer().sendMessage(nickname,"There is no space for another " + mess.getColor().toString().toLowerCase() + " student in the hall");
+                    }
+                    expertModel.resetCharacterStudent();
+                }
+            }
+
+            if(m instanceof ChooseTwoColors mess){
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR10)){
+                    if(numSwitchMoves < 2){
+                        // first color hall, second color entrance
                         try {
-                            ((CharacterWithStudent) c).remove(mess.getColor());
+                            expertModel.switchStudents(mess.getFirstColor(), mess.getSecondColor());
                         } catch (NoSuchStudentException e) {
-                            getServer().sendMessage(nickname,"there is no " + mess.getColor().toString().toLowerCase() + " students on the card" );
-                        }
-                        try {
-                            expertModel.addToHall(mess.getColor());
+                            getServer().sendMessage(nickname,"The two chosen students can't be switched");
                         } catch (PlaceFullException e) {
-                            getServer().sendMessage(nickname,"There is no space for another " + mess.getColor().toString().toLowerCase() + " student in the hall");
+                            getServer().sendMessage(nickname,"The two chosen students can't be switched");
                         }
-                        expertModel.resetCharacterStudent();
+                        numSwitchMoves++;
                     }
                 }
-
-                if(m instanceof ChooseTwoColors mess){
-                    if(msg.getC().equals(CharacterDescription.CHAR10)){
-                        if(numSwitchMoves < 2){
-                            // first color hall, second color entrance
-                            try {
-                                expertModel.switchStudents(mess.getFirstColor(), mess.getSecondColor());
-                            } catch (NoSuchStudentException e) {
-                                getServer().sendMessage(nickname,"The two chosen students can't be switched");
-                            } catch (PlaceFullException e) {
-                                getServer().sendMessage(nickname,"The two chosen students can't be switched");
-                            }
-                            numSwitchMoves++;
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR7)){
+                    if(numStudMoves < 3){
+                        //first color entrance, second color card
+                        try {
+                            expertModel.moveStudent(mess.getFirstColor(), expertModel.getSchoolBoard(), ((CharacterWithStudent) activeCharacter));
+                        } catch (NoSuchStudentException e) {
+                            getServer().sendMessage(nickname,"There is no " + mess.getFirstColor().toString().toLowerCase()+ " students in the entrance");
                         }
-                    }
-                    if(msg.getC().equals(CharacterDescription.CHAR7)){
-                        if(numStudMoves < 3){
-                            //first color entrance, second color card
-                            try {
-                                expertModel.moveStudent(mess.getFirstColor(), expertModel.getSchoolBoard(), ((CharacterWithStudent) c));
-                            } catch (NoSuchStudentException e) {
-                                getServer().sendMessage(nickname,"There is no " + mess.getFirstColor().toString().toLowerCase()+ " students in the entrance");
-                            }
-                            try {
-                                expertModel.moveStudent(mess.getSecondColor(), ((CharacterWithStudent) c), expertModel.getSchoolBoard());
-                            } catch (NoSuchStudentException e) {
-                                getServer().sendMessage(nickname,"There is no " + mess.getSecondColor().toString().toLowerCase()+ " students on the card");
-                            }
-                            numStudMoves++;
+                        try {
+                            expertModel.moveStudent(mess.getSecondColor(), ((CharacterWithStudent) activeCharacter), expertModel.getSchoolBoard());
+                        } catch (NoSuchStudentException e) {
+                            getServer().sendMessage(nickname,"There is no " + mess.getSecondColor().toString().toLowerCase()+ " students on the card");
                         }
+                        numStudMoves++;
                     }
                 }
             }
         }
     }
 }
+
