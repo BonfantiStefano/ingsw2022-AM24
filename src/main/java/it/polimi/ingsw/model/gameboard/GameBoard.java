@@ -337,7 +337,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
      * @param status the connection status
      */
     public void setConnected(String nickname, boolean status){
-        players.stream().filter(p -> p.getNickname().equals(nickname)).findFirst().get().setConnected(status);
+        players.stream().filter(p -> p.getNickname().equals(nickname)).findFirst().ifPresent(p -> p.setConnected(status));
     }
 
     /**

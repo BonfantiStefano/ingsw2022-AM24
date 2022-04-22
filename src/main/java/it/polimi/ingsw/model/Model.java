@@ -42,6 +42,8 @@ public interface Model {
 
     SchoolBoard getSchoolBoard();
 
+    ArrayList<Player> getSortedPlayers();
+
     void resetRound();
 
     void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to) throws NoSuchStudentException;

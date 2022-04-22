@@ -9,8 +9,10 @@ public class TurnController {
     private boolean chooseCloudCheck; //true if a Cloud has been chosen
     private boolean chooseAssistantsCheck; //true if all Assistants have been chosen
     private boolean characterActionCheck; //true if the selected Character doesn't require other actions
-    private boolean gameStarted; //true if the game is in progress
-    private boolean gameEnded;
+    private boolean gameStarted; //true if the game has started
+    private boolean gameEnded; //true if the game is over
+    private boolean allPlayedCheck; // true if all players completed their turn
+    private boolean playerConnected; //true if the current player is connected
 
     /**
      * Creates a new TurnController
@@ -23,6 +25,8 @@ public class TurnController {
         gameStarted = false;
         characterActionCheck = true;
         gameEnded = false;
+        allPlayedCheck = false;
+        playerConnected = true;
     }
 
     /**
@@ -34,6 +38,8 @@ public class TurnController {
     public PHASE nextPhase(PHASE currentPhase){
         if(gameEnded)
             return PHASE.GAME_WON;
+        if(!playerConnected)
+            return PHASE.RESET_TURN;
 
         switch (currentPhase) {
             case SETUP:
@@ -53,15 +59,20 @@ public class TurnController {
                     return PHASE.CHOOSE_CLOUD;
                 break;
             case CHOOSE_CLOUD:
-                if(chooseCloudCheck && characterActionCheck)
-                    return PHASE.RESET_ROUND;
-                else if(!chooseAssistantsCheck)
+                if(chooseCloudCheck) {
+                    if(characterActionCheck)
+                        return PHASE.RESET_TURN;
                     return PHASE.CHARACTER_ACTION;
+                }
                 break;
             case CHARACTER_ACTION:
                 if(characterActionCheck)
-                    return PHASE.RESET_ROUND;
+                    return PHASE.RESET_TURN;
                 break;
+            case RESET_TURN:
+                if(allPlayedCheck)
+                    return PHASE.RESET_ROUND;
+                return PHASE.PLANNING;
             case RESET_ROUND:
                 reset();
                 return PHASE.PLANNING;
@@ -73,11 +84,21 @@ public class TurnController {
      * After every turn some indicators must be reset in order to track the next Player's actions
      */
     public void reset(){
-        moveMNCheck=false;
-        moveStudentsCheck=false;
-        chooseAssistantsCheck=false;
-        chooseCloudCheck=false;
-        characterActionCheck=true;
+        moveMNCheck = false;
+        moveStudentsCheck = false;
+        chooseAssistantsCheck = false;
+        chooseCloudCheck = false;
+        characterActionCheck = true;
+        allPlayedCheck = false;
+        playerConnected = true;
+    }
+
+    /**
+     * Sets the playerConnected indicator
+     * @param playerConnected the Active Player's status
+     */
+    public void setPlayerConnected(boolean playerConnected) {
+        this.playerConnected = playerConnected;
     }
 
     /**
@@ -135,4 +156,13 @@ public class TurnController {
     public void setGameEnded(boolean gameEnded) {
         this.gameEnded = gameEnded;
     }
+
+    /**
+     * Sets the allPlayedCheck indicator
+     * @param allPlayedCheck true if all Players have completed their turn
+     */
+    public void setAllPlayedCheck(boolean allPlayedCheck) {
+        this.allPlayedCheck = allPlayedCheck;
+    }
+
 }

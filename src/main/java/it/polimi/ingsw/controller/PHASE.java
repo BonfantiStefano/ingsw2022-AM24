@@ -7,6 +7,7 @@ public enum PHASE {
     MOVE_MN,
     CHOOSE_CLOUD,
     CHARACTER_ACTION,
+    RESET_TURN,
     RESET_ROUND,
     GAME_WON
 }
