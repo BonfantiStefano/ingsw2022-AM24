@@ -260,4 +260,11 @@ public class Controller {
         return this.server;
     }
 
+    /**
+     * Gets the TurnController
+     * @return the TurnController
+     */
+    public TurnController getTurnController(){
+        return this.turnController;
+    }
 }

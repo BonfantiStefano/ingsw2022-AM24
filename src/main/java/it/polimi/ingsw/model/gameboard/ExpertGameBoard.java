@@ -106,7 +106,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
 
     /**
      * Method removeHall removes three students of the chosen color from the player's Hall and puts them in the bag.
-     * If any player has fewer than three students of that color, all the students he owns are put back in the bag
+     * If any player has fewer than three students of that color, all the students of that color are put back in the bag
      * @param s the Student being removed
      */
     public void removeHall(ColorS s){

@@ -8,7 +8,10 @@ import it.polimi.ingsw.model.ExpertModel;
 import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Server;
+
+import java.util.Optional;
 
 /**
  * The ExpertController handles messages which represent commands received from all the clients and changes
@@ -71,19 +74,33 @@ public class ExpertController extends Controller {
 
             if (m instanceof SpecialMoveIsland mess) {
                 if(activeCharacter.getDescription().equals(CharacterDescription.CHAR1.getDesc())) {
-                    try {
-                        expertModel.moveStudent(mess.getStudent(), ((CharacterWithStudent) activeCharacter), expertModel.getIslandByIndex(mess.getIslandIndex()));
-                    } catch (NoSuchStudentException e) {
-                        getServer().sendMessage(nickname,"there is no " + mess.getStudent().toString().toLowerCase() + " student on the card" );
-                    }
+                    if (mess.getIslandIndex() < 0 || mess.getIslandIndex() >= expertModel.getSizeWorld()) {
+                        getServer().sendMessage(expertModel.getActivePlayer().getNickname(), "Error: invalid Island index");
+                    } else {
+                        try {
+                            expertModel.moveStudent(mess.getStudent(), ((CharacterWithStudent) activeCharacter), expertModel.getIslandByIndex(mess.getIslandIndex()));
+                        } catch (NoSuchStudentException e) {
+                            getServer().sendMessage(nickname, "there is no " + mess.getStudent().toString().toLowerCase() + " student on the card");
+                        }
                         expertModel.resetCharacterStudent();
                     }
                 }
+            }
             if (m instanceof ChooseIsland mess) {
                 if(activeCharacter.getDescription().equals(CharacterDescription.CHAR3.getDesc())){
                     if(mess.getIslandIndex() < 0 || mess.getIslandIndex() >= expertModel.getSizeWorld()) {
                         expertModel.checkIsland(expertModel.getIslandByIndex(mess.getIslandIndex()));
-                        expertModel.checkWin();
+                        Optional<Player> winner = expertModel.checkWin();
+                        winner.ifPresentOrElse(w -> {getServer().sendMessage(w.getNickname(), "You won");
+                                    getServer().sendMessageToOthers(w.getNickname(), "You Lose");
+                                    getTurnController().setGameEnded(true);},
+                                () -> {if(expertModel.getSizeWorld() == 3) {
+                                        getServer().sendMessageToAll("The game ends in a draw");
+                                        getTurnController().setGameEnded(true);
+                                    }
+                                }
+                        );
+
                     }
                 }
 
@@ -99,14 +116,8 @@ public class ExpertController extends Controller {
                 if(activeCharacter.getDescription().equals(CharacterDescription.CHAR9.getDesc()))
                     expertModel.setBannedColor(mess.getColor());
                 if(activeCharacter.getDescription().equals(CharacterDescription.CHAR12.getDesc())){
-                    try {
-                        ((CharacterWithStudent) activeCharacter).remove(mess.getColor());
-                    } catch (NoSuchStudentException e) {
-                        getServer().sendMessage(nickname,"there is no " + mess.getColor().toString().toLowerCase() + " students on the card" );
-                    }
                     expertModel.removeHall(mess.getColor());
-                    expertModel.resetCharacterStudent();
-                    }
+                }
                 if(activeCharacter.getDescription().equals(CharacterDescription.CHAR11.getDesc())){
                     try {
                         ((CharacterWithStudent) activeCharacter).remove(mess.getColor());
