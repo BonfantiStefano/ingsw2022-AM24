@@ -3,7 +3,7 @@ package it.polimi.ingsw.client.request;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
 
-public class Join{
+public class Join implements Request{
     private String nickname;
     private Mage mage;
     private ColorT colorT;

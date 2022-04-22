@@ -26,12 +26,14 @@ public class Controller {
     private int havePlayed;
     private int haveChosenAssistant;
     private String activePlayer;
+    private boolean gameStarted;
 
     public Controller(Server server){
         this.server = server;
         phase=PHASE.SETUP;
         turnController = new TurnController();
         actionController= new ActionController(model, server, turnController);
+        gameStarted = false;
     }
 
     /**
@@ -54,43 +56,51 @@ public class Controller {
      *                 NOT FINAL
      */
     public void handleMessage(Request m, String nickname){
-        activePlayer = model.getActivePlayer().getNickname();
+        if(model!= null && model.getActivePlayer()!=null)
+            activePlayer = model.getActivePlayer().getNickname();
         //message needed to start the game
         if(m instanceof GameParams msg && phase == PHASE.SETUP){
             if(msg.getNumPlayers()>1 && msg.getNumPlayers() <= 4) {
                 createModel(msg);
+                server.sendMessage(nickname, "Game created!");
             }
         }
-        else if(m instanceof Join msg){
+        else if(m instanceof Join msg && phase.equals(PHASE.SETUP)){
+            if(model == null)
+                server.sendMessage(nickname,"There is no such game!");
             //check if another player can join and his nickname is available
-            if(model.getPlayerByNickname(msg.getNickname())==null && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
+            else if(model.getPlayerByNickname(msg.getNickname())==null && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
                 model.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
-
-                if(model.getPlayers().size() == numPlayers)
+                server.sendMessage(nickname, "Accepted!");
+                if(model.getPlayers().size() == numPlayers) {
                     //all players have connected
                     turnController.setGameStarted(true);
+                    gameStarted = true;
+                }
+
             }
             //if the Player had disconnected update his status as connected
             else if(model.getPlayerByNickname(msg.getNickname())!=null)
                 model.setConnected(nickname, true);
 
         }
-        else if(m instanceof ChooseAssistant  msg && phase.equals(PHASE.PLANNING))
+        else if (m instanceof ChooseAssistant msg && phase.equals(PHASE.PLANNING))
             try {
                 model.chooseAssistants(model.getPlayerByNickname(nickname), msg.getIndex());
                 increaseHaveChosenAssistant();
-            }catch (InvalidIndexException e){
-               server.sendMessage(nickname, "Invalid index!");
+            } catch (InvalidIndexException e) {
+                server.sendMessage(nickname, "Invalid index!");
             }
-        else if(m instanceof Disconnect)
+        else if (m instanceof Disconnect){
             //if a Player disconnects during the setup phase the game is canceled
             //can be changed later
-            if(phase.equals(PHASE.SETUP))
+            if (phase.equals(PHASE.SETUP))
                 server.gameEnded();
-            else
+            else if(gameStarted)
                 model.setConnected(nickname, false);
+        }
         //accept the following messages only if they come from the ActivePlayer
-        else if(nickname.equals(activePlayer)) {
+        else if (nickname.equals(activePlayer)) {
             if (m instanceof MoveToIsland msg && phase.equals(PHASE.MOVE_STUDENTS))
                 actionController.handleAction(msg);
             else if (m instanceof EntranceToHall msg && phase.equals(PHASE.MOVE_STUDENTS))
@@ -101,8 +111,7 @@ public class Controller {
                 handleCharacter(m, nickname);
             else if (m instanceof ChooseCloud msg && phase.equals(PHASE.CHOOSE_CLOUD))
                 actionController.handleAction(msg);
-        }
-        else {
+        } else {
             server.sendMessage(nickname, "Invalid message!");
         }
         //after a message has been received ask the turnController for the next phase
@@ -126,8 +135,12 @@ public class Controller {
      */
     public void doPhase(){
         //get information about Players and the ActivePlayer
-        activePlayer = model.getActivePlayer().getNickname();
-        sortedPlayers = model.getSortedPlayers();
+        if(!phase.equals(PHASE.SETUP)) {
+            sortedPlayers = model.getSortedPlayers();
+        }
+        if(!phase.equals(PHASE.PLANNING)&& !phase.equals(PHASE.SETUP))
+            activePlayer = model.getActivePlayer().getNickname();
+
         switch (phase) {
             case PLANNING:
                 //in this phase the next Player in order must choose his assistant
@@ -227,7 +240,7 @@ public class Controller {
      * @param m Request message sent by a Client
      * @param nickname the nickname of the Player associated with the Client
      */
-    public void handleCharacter(Request m, String nickname){
+    private void handleCharacter(Request m, String nickname){
         server.sendMessage(nickname, "You're not playing in expert mode!");
     }
 
