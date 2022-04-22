@@ -6,6 +6,11 @@ public class SpecialMoveIsland implements Request{
     private ColorS student;
     private int islandIndex;
 
+    public SpecialMoveIsland(ColorS student, int islandIndex) {
+        this.student = student;
+        this.islandIndex = islandIndex;
+    }
+
     public ColorS getStudent() {
         return student;
     }

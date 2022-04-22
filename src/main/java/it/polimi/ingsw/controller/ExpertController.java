@@ -159,5 +159,9 @@ public class ExpertController extends Controller {
             getServer().sendMessage(nickname, "You can't activate this effect because there isn't an Active Character");
         }
     }
+
+    public ExpertModel getExpertModel() {
+        return expertModel;
+    }
 }
 
