@@ -95,9 +95,13 @@ public class ActionController {
                 winner.ifPresentOrElse(w -> {server.sendMessage(w.getNickname(), "You won");
                             server.sendMessageToOthers(w.getNickname(), "You Lose");
                             turnController.setGameEnded(true);},
-                        () -> {if(model.getSizeWorld() == 3) server.sendMessageToAll("The game ends in a draw");
-                            turnController.setGameEnded(true);}
+                        () -> {if(model.getSizeWorld() == 3) {
+                            server.sendMessageToAll("The game ends in a draw");
+                            turnController.setGameEnded(true);
+                        }
+                        }
                 );
+                turnController.setMoveMNCheck(true);
             } catch (InvalidMNStepsException e) {
                 server.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
             }

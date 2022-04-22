@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.model.world.World;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * GameBoard class contains the main logic of Eriantys game, which is divided in areas. The
@@ -134,23 +135,38 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
         }
         return null;
     }
+    public int getFirstPlayer() {
+        ArrayList<Player> sortedPlayers = new ArrayList<>();
+        for(Player p : players) {
+            if (p.getLastAssistant() != null) {
+                sortedPlayers.add(p);
+            }
+        }
+        sortedPlayers.sort((p1, p2) -> {
+            return p1.getLastAssistant().compareTo(p2.getLastAssistant());
+        });
+        return !sortedPlayers.isEmpty() ? players.indexOf(sortedPlayers.get(0)) : 0;
+    }
 
     /**
      * Method getFirstPlayer is used for sorting players by their card value that determines the turn order
      * and returns the first player of the next round
      * @return first of type int - the first player of the next round
      */
+    /*
     public int getFirstPlayer(){
         int first = -1;
-        ArrayList<Player> sortedPlayers = new ArrayList<>();
-        for(Player p : players) sortedPlayers.add(p);
+        ArrayList<Player> sortedPlayers = new ArrayList<>(players);
 
-        Collections.sort(sortedPlayers, (p1, p2) -> {
+        Collections.sort(sortedPlayers.stream().filter( p -> p.getLastAssistant()!= null).collect(Collectors.toList()), (p1, p2) -> {
             return p1.getLastAssistant().compareTo(p2.getLastAssistant());
         });
         first = players.indexOf(sortedPlayers.get(0));
         return first;
     }
+
+     */
+
 
     /**
      * Method getSortedPlayers returns the list containing sorted players

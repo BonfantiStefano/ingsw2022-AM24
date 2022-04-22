@@ -72,9 +72,10 @@ public class TurnController {
             case RESET_TURN:
                 if(allPlayedCheck)
                     return PHASE.RESET_ROUND;
+                resetTurn();
                 return PHASE.PLANNING;
             case RESET_ROUND:
-                reset();
+                resetRound();
                 return PHASE.PLANNING;
         }
         return currentPhase;
@@ -83,7 +84,7 @@ public class TurnController {
     /**
      * After every turn some indicators must be reset in order to track the next Player's actions
      */
-    public void reset(){
+    public void resetRound(){
         moveMNCheck = false;
         moveStudentsCheck = false;
         chooseAssistantsCheck = false;
@@ -91,6 +92,17 @@ public class TurnController {
         characterActionCheck = true;
         allPlayedCheck = false;
         playerConnected = true;
+    }
+
+    /**
+     * After every turn some indicators must be reset in order to track the next Player's actions
+     */
+    public void resetTurn(){
+        moveMNCheck = false;
+        moveStudentsCheck = false;
+        chooseAssistantsCheck = false;
+        chooseCloudCheck = false;
+        characterActionCheck = true;
     }
 
     /**

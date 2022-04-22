@@ -34,10 +34,7 @@ public class ExpertControllerTest {
     @BeforeEach
     public void init() throws PlaceFullException, InvalidIndexException {
         server = new Server();
-        expertController = new ExpertController(server);
-
-        GameParams message00 = new GameParams(3, true, "Bob", Mage.MAGE1, ColorT.BLACK);
-        expertController.createExpertModel(message00);
+        expertController = new ExpertController(server, new GameParams(3, true, "Bob", Mage.MAGE1, ColorT.BLACK));
 
         egb = (ExpertGameBoard)expertController.getExpertModel();
 

@@ -28,8 +28,9 @@ public class Controller {
     private String activePlayer;
     private boolean gameStarted;
 
-    public Controller(Server server){
+    public Controller(Server server , GameParams m){
         this.server = server;
+        createModel(m);
         phase=PHASE.SETUP;
         turnController = new TurnController();
         actionController= new ActionController(model, server, turnController);
@@ -56,20 +57,12 @@ public class Controller {
      *                 NOT FINAL
      */
     public void handleMessage(Request m, String nickname){
-        if(model!= null && model.getActivePlayer()!=null)
+        if(model.getActivePlayer()!=null)
             activePlayer = model.getActivePlayer().getNickname();
         //message needed to start the game
-        if(m instanceof GameParams msg && phase == PHASE.SETUP){
-            if(msg.getNumPlayers()>1 && msg.getNumPlayers() <= 4) {
-                createModel(msg);
-                server.sendMessage(nickname, "Game created!");
-            }
-        }
-        else if(m instanceof Join msg && phase.equals(PHASE.SETUP)){
-            if(model == null)
-                server.sendMessage(nickname,"There is no such game!");
+        if(m instanceof Join msg){
             //check if another player can join and his nickname is available
-            else if(model.getPlayerByNickname(msg.getNickname())==null && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
+            if(model.getPlayerByNickname(msg.getNickname())==null && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
                 model.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
                 server.sendMessage(nickname, "Accepted!");
                 if(model.getPlayers().size() == numPlayers) {
@@ -82,7 +75,9 @@ public class Controller {
             //if the Player had disconnected update his status as connected
             else if(model.getPlayerByNickname(msg.getNickname())!=null)
                 model.setConnected(nickname, true);
-
+            else{
+                server.sendMessage(nickname, "Nickname already in use!");
+            }
         }
         else if (m instanceof ChooseAssistant msg && phase.equals(PHASE.PLANNING))
             try {
@@ -135,20 +130,19 @@ public class Controller {
      */
     public void doPhase(){
         //get information about Players and the ActivePlayer
-        if(!phase.equals(PHASE.SETUP)) {
-            sortedPlayers = model.getSortedPlayers();
-        }
-        if(!phase.equals(PHASE.PLANNING)&& !phase.equals(PHASE.SETUP))
+
+        if(!phase.equals(PHASE.PLANNING) && !phase.equals(PHASE.SETUP) && !phase.equals(PHASE.MOVE_STUDENTS))
             activePlayer = model.getActivePlayer().getNickname();
 
         switch (phase) {
             case PLANNING:
+                sortedPlayers = model.getSortedPlayers();
                 //in this phase the next Player in order must choose his assistant
                 //if he's connected send him a message
                 if(sortedPlayers.get(haveChosenAssistant).isConnected())
                     server.sendMessage(sortedPlayers.get(haveChosenAssistant).getNickname(), "Choose your Assistant!");
-                //in any case increase the number of Players that have chosen their Assistant
-                increaseHaveChosenAssistant();
+                else
+                    increaseHaveChosenAssistant();
                 break;
             case MOVE_STUDENTS:
                 //this phase is the first in a turn so the controller sets the next ActivePlayer
@@ -226,7 +220,7 @@ public class Controller {
     /**
      * Increase the number of Players that have chosen their Assistant, if everyone has done so notify the TurnController
      */
-    private void increaseHaveChosenAssistant(){
+    public void increaseHaveChosenAssistant(){
         if(haveChosenAssistant % numPlayers == 1) {
             turnController.setChooseAssistantsCheck(true);
             haveChosenAssistant = 0;
@@ -260,6 +254,13 @@ public class Controller {
         return this.server;
     }
 
+    /**
+     * Gets the current Phase
+     * @return the current Phase
+     */
+    public PHASE getPhase(){
+        return phase;
+    }
     /**
      * Gets the TurnController
      * @return the TurnController

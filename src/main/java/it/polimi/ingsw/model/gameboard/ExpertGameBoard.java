@@ -166,6 +166,9 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
             nextOwner.ifPresent(owner -> conquest(owner, island));
             world.checkJoin(island);
         }
+        else{
+            resetNoEntryCharacter();
+        }
     }
 
     /**
@@ -233,11 +236,8 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
             throw new InvalidMNStepsException();
         }
         Island island = world.moveMN(numMNSteps);
-        if(world.checkEntry(island)) {
-            checkIsland(island);
-        }
-        else
-            resetNoEntryCharacter();
+
+        checkIsland(island);
     }
 
     /**

@@ -29,8 +29,9 @@ public class ExpertController extends Controller {
      * Constructor ExpertController creates a new empty ExpertController instance.
      * @param server - server
      */
-    public ExpertController(Server server) {
-        super(server);
+    public ExpertController(Server server, GameParams m) {
+        super(server, m);
+        createExpertModel(m);
         numSwitchMoves = 0;
         numStudMoves = 0;
     }

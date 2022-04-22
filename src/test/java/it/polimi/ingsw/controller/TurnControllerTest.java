@@ -103,7 +103,7 @@ class TurnControllerTest {
 
     @Test
     void reset() {
-        t.reset();
+        t.resetRound();
         p = t.nextPhase(p);
         assertEquals(PHASE.SETUP, p);
     }
