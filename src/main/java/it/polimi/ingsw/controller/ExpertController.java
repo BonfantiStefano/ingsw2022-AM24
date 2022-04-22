@@ -82,8 +82,10 @@ public class ExpertController extends Controller {
                 }
             if (m instanceof ChooseIsland mess) {
                 if(activeCharacter.getDescription().equals(CharacterDescription.CHAR3)){
-                    expertModel.checkIsland(expertModel.getIslandByIndex(mess.getIslandIndex()));
-                    expertModel.checkWin();
+                    if(mess.getIslandIndex() < 0 || mess.getIslandIndex() >= expertModel.getSizeWorld()) {
+                        expertModel.checkIsland(expertModel.getIslandByIndex(mess.getIslandIndex()));
+                        expertModel.checkWin();
+                    }
                 }
 
                 if (activeCharacter.getDescription().equals(CharacterDescription.CHAR5)) {

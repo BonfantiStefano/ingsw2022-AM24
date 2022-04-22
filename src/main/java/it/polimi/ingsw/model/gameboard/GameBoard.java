@@ -158,17 +158,21 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
      */
     public ArrayList<Player> getSortedPlayers(){
         ArrayList<Player> sortedPlayers = new ArrayList<>();
-        Player firstPlayer = players.get(getFirstPlayer());
-        int indexFirstPlayer = players.indexOf(firstPlayer);
-        sortedPlayers.add(firstPlayer);
-        for(int i = 1; i < players.size(); i++)
-            sortedPlayers.add(players.get((indexFirstPlayer + i) % numPlayers));
+        if(lastAssistants.isEmpty()) {
+            sortedPlayers.addAll(players);
+        } else {
+            Player firstPlayer = players.get(getFirstPlayer());
+            int indexFirstPlayer = players.indexOf(firstPlayer);
+            sortedPlayers.add(firstPlayer);
+            for (int i = 1; i < players.size(); i++)
+                sortedPlayers.add(players.get((indexFirstPlayer + i) % numPlayers));
+        }
         return sortedPlayers;
     }
 
     /** Method nextPlayer skips to the next player and sets him as Active player */
     public void nextPlayer(){
-        Player nextPlayer = null;
+        Player nextPlayer;
         Player activePlayer = getActivePlayer();
         if (activePlayer == null) nextPlayer = players.get(getFirstPlayer());
         else if (players.indexOf(activePlayer) == players.size()-1) nextPlayer = players.get(0);
@@ -198,8 +202,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
         int numT = numPlayers==3? NT : NUM_TOWERS;
         Player p = new Player(nickname, color, mage, numT);
         for (int i = 0; i < numS; i++) {
-            ColorS s = null;
-            s = container.draw();
+            ColorS s = container.draw();
             p.getMyBoard().getEntrance().add(s);
         }
         players.add(p);
@@ -276,7 +279,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
      * method moveMN checks if the move is legal, then if there isn't noEntryTiles on the arrival Island
      * it calculates the influence on that island and in necessary change the owner of the island and join the Island.
      * @param numMNSteps int - number of steps that Mother Nature want to do.
-     * @throws InvalidMNStepsException - if Mother Nature can't make the indicated number of steps
+     * @throws InvalidMNStepsException - if Mother Nature can't make the indicated number of steps.
      */
     //Checks that the numMNSteps is between 1 and 7 are done by the controller.
     public void moveMN(int numMNSteps) throws InvalidMNStepsException {

@@ -64,9 +64,7 @@ public class Player implements PlayerInterface {
      * @return card of type Assistant - the card selected by the player
      */
     public Assistant chooseAssistant(int index) throws InvalidIndexException {
-        Assistant card = null;
-        card = myCards.getCard(index);
-        return card;
+        return myCards.getCard(index);
     }
 
     /**
@@ -134,16 +132,16 @@ public class Player implements PlayerInterface {
     }
 
     /**
-     * Method setPlaying allows the player to join/quit the game
-     * @param playing of type boolean - true if the player joins the game, false if he decides to quit
+     * Method setPlaying allows the change the activePlayer.
+     * @param playing of type boolean - true if the player will become the activePlayer, false otherwise.
      */
     public void setPlaying(boolean playing) {
         isPlaying = playing;
     }
 
     /**
-     * Method isPlaying allows the player to join/quit the game
-     * @return  isPlaying of type boolean - true if the player is playing, false otherwise
+     * Method isPlaying gives the information if the Player is the activePlayer.
+     * @return  isPlaying of type boolean - true if the player is playing, false otherwise.
      */
     public boolean isPlaying() {
         return isPlaying;
@@ -200,14 +198,6 @@ public class Player implements PlayerInterface {
     }
 
     /**
-     * Method removeLastAssistant removes the last Assistant card played by the player from his Hand
-     */
-    public void removeLastAssistant(){
-        myCards.removeCard(lastAssist);
-    }
-
-
-    /**
      * Method equals is overridden in order to compare two objects Player
      * @param o of type Object
      * @return boolean - true if they are the same, false otherwise
@@ -215,9 +205,7 @@ public class Player implements PlayerInterface {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Player)) return false;
-
-        Player player = (Player) o;
+        if (!(o instanceof Player player)) return false;
 
         return getNickname().equals(player.getNickname());
     }

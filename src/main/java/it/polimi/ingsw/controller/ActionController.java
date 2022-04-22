@@ -1,7 +1,6 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.client.request.*;
-import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.exceptions.InvalidMNStepsException;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
@@ -34,29 +33,6 @@ public class ActionController {
         this.turnController = turnController;
         this.numMoveStudent = 0;
         this.server = server;
-    }
-
-    /**
-     * Method handleAction(MoveMN) checks if the params of the message are corrected, if there are some mistakes sends a message
-     * to the client, otherwise updates the model's state, in particular moves mother nature by a number of steps equal to the
-     * value passed as a parameter in the message and checks if the game must end.
-     * @param m MoveMN - the message sent by the client to the server.
-     */
-    public void handleAction(MoveMN m) {
-        if(m.getIndex() > 7 || m.getIndex() < 1) {
-            server.sendMessage(model.getActivePlayer().getNickname(), "Error: Mother Nature can't do these steps");
-        } else {
-            try {
-                model.moveMN(m.getIndex());
-                Optional<Player> winner = model.checkWin();
-                winner.ifPresentOrElse(w -> {server.sendMessage(w.getNickname(), "You won");
-                            server.sendMessageToOthers(w.getNickname(), "You Lose");},
-                        () -> {if(model.getSizeWorld() == 3) server.sendMessageToAll("The game ends in a draw");}
-                );
-            } catch (InvalidMNStepsException e) {
-                server.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
-            }
-        }
     }
 
     /**
@@ -102,6 +78,32 @@ public class ActionController {
             }
         }
     }
+
+    /**
+     * Method handleAction(MoveMN) checks if the params of the message are corrected, if there are some mistakes sends a message
+     * to the client, otherwise updates the model's state, in particular moves mother nature by a number of steps equal to the
+     * value passed as a parameter in the message and checks if the game must end.
+     * @param m MoveMN - the message sent by the client to the server.
+     */
+    public void handleAction(MoveMN m) {
+        if(m.getIndex() > 7 || m.getIndex() < 1) {
+            server.sendMessage(model.getActivePlayer().getNickname(), "Error: Mother Nature can't do these steps");
+        } else {
+            try {
+                model.moveMN(m.getIndex());
+                Optional<Player> winner = model.checkWin();
+                winner.ifPresentOrElse(w -> {server.sendMessage(w.getNickname(), "You won");
+                            server.sendMessageToOthers(w.getNickname(), "You Lose");
+                            turnController.setGameEnded(true);},
+                        () -> {if(model.getSizeWorld() == 3) server.sendMessageToAll("The game ends in a draw");
+                            turnController.setGameEnded(true);}
+                );
+            } catch (InvalidMNStepsException e) {
+                server.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
+            }
+        }
+    }
+
 
     /**
      * Method handleAction(ChooseCloud) checks if the params of the message are corrected, if there are some mistakes sends a message
