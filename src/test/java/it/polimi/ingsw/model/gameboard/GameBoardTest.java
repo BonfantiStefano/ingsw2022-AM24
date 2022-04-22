@@ -95,11 +95,11 @@ public class GameBoardTest {
         gb.getPlayers().get(0).setPlaying(true);
         gb.setActivePlayer(gb.getPlayers().get(0));
         gb.chooseAssistants(gb.getPlayers().get(0), 9);
-        //spostamento di Mother Nature senza dover cambiare niente
+        //Mother Nature's move where nothing has to happen.
         gb.moveMN(numMNSteps);
         assertEquals(indexMNStart + numMNSteps >= gb.getWorld().getSize() ? indexMNStart + numMNSteps - gb.getWorld().getSize()
                 : indexMNStart + numMNSteps, gb.getWorld().getMNPosition());
-        //spostamento di madre natura in cui cambia l'owner dell'isola(e quindi le torri su di essa)
+        //Mother nature's move where a change of conqueror happen.
         Island islandMN = gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition());
         islandMN.add(ColorS.GREEN);
         islandMN.add(ColorS.GREEN);
@@ -110,7 +110,7 @@ public class GameBoardTest {
         assertEquals(oldMNPos, gb.getWorld().getMNPosition());
         assertEquals(Optional.of(gb.getPlayers().get(0).getColorTower()), islandMN.getTowerColor());
         assertEquals(1, islandMN.getNumSubIsland());
-        //spostamento in cui si uniscono le isole
+        //Mother Nature's move where some Islands join together
         int nextMNPos = oldMNPos + 1 < gb.getWorld().getSize() ? oldMNPos + 1 : 0;
         Island nextMNIsland = gb.getWorld().getIslandByIndex(nextMNPos);
         nextMNIsland.add(ColorS.GREEN);
@@ -120,6 +120,16 @@ public class GameBoardTest {
         assertEquals(Math.min(oldMNPos, nextMNPos), gb.getWorld().getMNPosition());
         assertEquals(Optional.of(gb.getPlayers().get(0).getColorTower()), islandMN.getTowerColor());
         assertEquals(2, gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition()).getNumSubIsland());
+        //Mother Nature's move on an Island with a noEntry tiles.
+        oldMNPos = gb.getWorld().getMNPosition();
+        gb.getWorld().getIslandByIndex((oldMNPos+1)%gb.getSizeWorld()).setNumNoEntry(1);
+        gb.moveMN(1);
+        assertEquals(0, gb.getWorld().getIslandByIndex(gb.getWorld().getMNPosition()).getNumNoEntry());
+        //con strategy
+        gb.getActivePlayer().setStrategy(new MNTwoSteps());
+        oldMNPos = gb.getWorld().getMNPosition();
+        gb.moveMN(7);
+        assertEquals((oldMNPos + 7) % gb.getSizeWorld(), gb.getWorld().getMNPosition());
     }
 
     /**

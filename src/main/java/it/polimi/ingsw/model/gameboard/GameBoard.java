@@ -283,6 +283,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
      */
     //Checks that the numMNSteps is between 1 and 7 are done by the controller.
     public void moveMN(int numMNSteps) throws InvalidMNStepsException {
+        System.out.println(activePlayer.getMNSteps());
         if(numMNSteps > activePlayer.getMNSteps()) {
             throw new InvalidMNStepsException();
         }
@@ -291,13 +292,15 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
     }
 
     /**
-     * Examines and Island and if necessary changes the owner
+     * Examines an Island and if necessary changes the owner
      * @param island the Island to check
      */
     public void checkIsland(Island island){
-        Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players, island);
-        nextOwner.ifPresent(owner -> conquest(owner, island));
-        world.checkJoin(getIslandByIndex(world.getMNPosition()));
+        if(world.checkEntry(island)) {
+            Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players, island);
+            nextOwner.ifPresent(owner -> conquest(owner, island));
+            world.checkJoin(island);
+        }
     }
 
     /**

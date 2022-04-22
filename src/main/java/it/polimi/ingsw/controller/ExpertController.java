@@ -8,7 +8,6 @@ import it.polimi.ingsw.model.ExpertModel;
 import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
-import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.server.Server;
 
 /**
@@ -58,7 +57,7 @@ public class ExpertController extends Controller {
             if(expertModel.getActiveCharacter() == null){
                 try {
                     Character c = expertModel.getCharacters().stream().
-                            filter(character -> msg.getC().equals(character.getDescription())).findAny().orElse(null);
+                            filter(character -> msg.getC().getDesc().equals(character.getDescription())).findAny().orElse(null);
                     if(c!= null) expertModel.playCharacter(c);
                     else getServer().sendMessage(nickname, "this card is not available");
                 } catch (NotEnoughCoinsException e) {
@@ -71,7 +70,7 @@ public class ExpertController extends Controller {
             Character activeCharacter = expertModel.getActiveCharacter();
 
             if (m instanceof SpecialMoveIsland mess) {
-                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR1)) {
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR1.getDesc())) {
                     try {
                         expertModel.moveStudent(mess.getStudent(), ((CharacterWithStudent) activeCharacter), expertModel.getIslandByIndex(mess.getIslandIndex()));
                     } catch (NoSuchStudentException e) {
@@ -81,14 +80,14 @@ public class ExpertController extends Controller {
                     }
                 }
             if (m instanceof ChooseIsland mess) {
-                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR3)){
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR3.getDesc())){
                     if(mess.getIslandIndex() < 0 || mess.getIslandIndex() >= expertModel.getSizeWorld()) {
                         expertModel.checkIsland(expertModel.getIslandByIndex(mess.getIslandIndex()));
                         expertModel.checkWin();
                     }
                 }
 
-                if (activeCharacter.getDescription().equals(CharacterDescription.CHAR5)) {
+                if (activeCharacter.getDescription().equals(CharacterDescription.CHAR5.getDesc())) {
                     int noEntry = ((CharacterWithNoEntry) activeCharacter).getNumNoEntry();
                     if (noEntry != 0) {
                         expertModel.getIslandByIndex(mess.getIslandIndex()).setNumNoEntry(1);
@@ -97,9 +96,9 @@ public class ExpertController extends Controller {
                 }
             }
             if (m instanceof ChooseColor mess){
-                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR9))
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR9.getDesc()))
                     expertModel.setBannedColor(mess.getColor());
-                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR12)){
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR12.getDesc())){
                     try {
                         ((CharacterWithStudent) activeCharacter).remove(mess.getColor());
                     } catch (NoSuchStudentException e) {
@@ -108,7 +107,7 @@ public class ExpertController extends Controller {
                     expertModel.removeHall(mess.getColor());
                     expertModel.resetCharacterStudent();
                     }
-                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR11)){
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR11.getDesc())){
                     try {
                         ((CharacterWithStudent) activeCharacter).remove(mess.getColor());
                     } catch (NoSuchStudentException e) {
@@ -124,20 +123,20 @@ public class ExpertController extends Controller {
             }
 
             if(m instanceof ChooseTwoColors mess){
-                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR10)){
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR10.getDesc())){
                     if(numSwitchMoves < 2){
                         // first color hall, second color entrance
                         try {
                             expertModel.switchStudents(mess.getFirstColor(), mess.getSecondColor());
-                        } catch (NoSuchStudentException e) {
-                            getServer().sendMessage(nickname,"The two chosen students can't be switched");
-                        } catch (PlaceFullException e) {
-                            getServer().sendMessage(nickname,"The two chosen students can't be switched");
+                        } catch (NoSuchStudentException | PlaceFullException e) {
+                            getServer().sendMessage(nickname,"There isn't this Student in the Entrance");
                         }
                         numSwitchMoves++;
+                    } else {
+                        getServer().sendMessage(nickname,"You have already done all the possible switch student");
                     }
                 }
-                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR7)){
+                if(activeCharacter.getDescription().equals(CharacterDescription.CHAR7.getDesc())){
                     if(numStudMoves < 3){
                         //first color entrance, second color card
                         try {
@@ -151,9 +150,13 @@ public class ExpertController extends Controller {
                             getServer().sendMessage(nickname,"There is no " + mess.getSecondColor().toString().toLowerCase()+ " students on the card");
                         }
                         numStudMoves++;
+                    } else {
+                        getServer().sendMessage(nickname, "You have already done all the possible move");
                     }
                 }
             }
+        } else {
+            getServer().sendMessage(nickname, "You can't activate this effect because there isn't an Active Character");
         }
     }
 }
