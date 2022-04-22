@@ -32,13 +32,17 @@ public interface Model {
 
     void newClouds();
 
+    void setConnected(String nickname, boolean status);
+
     boolean checkGameMustEnd();
 
     Player getActivePlayer();
 
     Optional<Player> checkWin();
 
-    public SchoolBoard getSchoolBoard();
+    SchoolBoard getSchoolBoard();
+
+    void resetRound();
 
     void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to) throws NoSuchStudentException;
 

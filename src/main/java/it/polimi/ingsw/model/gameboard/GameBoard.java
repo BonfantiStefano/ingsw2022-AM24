@@ -332,6 +332,28 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
     }
 
     /**
+     * Sets the Player's connected status
+     * @param nickname the Player's nickname
+     * @param status the connection status
+     */
+    public void setConnected(String nickname, boolean status){
+        players.stream().filter(p -> p.getNickname().equals(nickname)).findFirst().get().setConnected(status);
+    }
+
+    /**
+     * Resets the Model to be ready for the next round
+     */
+    public void resetRound(){
+        newClouds();
+        for(Player p : players) {
+            p.setPlaying(false);
+            p.resetStrategy();
+        }
+        resetStrategy();
+        world.resetStrategy();
+    }
+
+    /**
      * Gets the selected Cloud
      * @param i the Cloud's index
      * @return the selected Cloud

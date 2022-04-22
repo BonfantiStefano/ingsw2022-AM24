@@ -137,7 +137,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     public void playCharacter(Character c) throws NotEnoughCoinsException {
         if(activePlayer.getCoins() >= c.getCost()) {
             if(findChar(c)!= null) {
-                activePlayer.setCoins(-c.getCost());
+                activePlayer.setCoins(-findChar(c).getCost());
                 setActiveCharacter(findChar(c));
                 coins += findChar(c).getCost();
             }
@@ -190,7 +190,17 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      */
     public void setActiveCharacter(Character activeCharacter) {
         this.activeCharacter = activeCharacter;
-        activeCharacter.play();
+        if(activeCharacter!=null)
+            activeCharacter.play();
+    }
+
+    /**
+     * Resets the Model to be ready for the next round
+     */
+    @Override
+    public void resetRound() {
+        super.resetRound();
+        setActiveCharacter(null);
     }
 
     /**

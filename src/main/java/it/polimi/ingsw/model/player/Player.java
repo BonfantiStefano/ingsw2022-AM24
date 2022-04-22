@@ -70,6 +70,14 @@ public class Player implements PlayerInterface {
     }
 
     /**
+     * Sets the Player's status
+     * @param connected true if the Player is connected
+     */
+    public void setConnected(boolean connected) {
+        isConnected = connected;
+    }
+
+    /**
      * Method setLastAssistant sets the last Assistant card chosen by the player
      *
      * @param card of type Assistant - the chosen card.
