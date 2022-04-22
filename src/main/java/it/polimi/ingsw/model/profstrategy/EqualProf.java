@@ -5,9 +5,7 @@ import it.polimi.ingsw.model.HasStrategy;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.profstrategy.ProfStrategy;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Alternate behaviour for checkProfs method
@@ -21,17 +19,11 @@ public class EqualProf implements ProfStrategy {
      */
     @Override
     public HashMap<ColorS, Player> checkProfs(ArrayList<Player> players, HashMap<ColorS, Player> profs) {
-        HashMap<ColorS, Player> result=profs;
-
         for(ColorS c: ColorS.values()){
-            int max=((profs.get(c)==null? 0 : profs.get(c).getMyBoard().getHall(c))); //number of students of the Prof's owner
-            for(Player p: players){
-                if(p.getMyBoard().getHall().get(c)>max)
-                    result.put(c,p);
-                else if(p.isPlaying()&&p.getMyBoard().getHall().get(c)>=max)
-                    result.put(c,p);
-            }
+            profs.put(c, players.stream().reduce((p1, p2) -> (p1.getMyBoard().getHall().get(c)>p2.getMyBoard().getHall().get(c))
+                             || (p1.isPlaying() && p1.getMyBoard().getHall().get(c).equals(p2.getMyBoard().getHall().get(c)))? p1 : p2)
+                    .orElse(profs.get(c)));
         }
-        return result;
+        return profs;
     }
 }

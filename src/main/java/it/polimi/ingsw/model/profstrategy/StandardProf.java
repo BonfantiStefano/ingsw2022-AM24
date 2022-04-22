@@ -18,17 +18,11 @@ public class StandardProf implements ProfStrategy {
      */
     @Override
     public HashMap<ColorS, Player> checkProfs(ArrayList<Player> players, HashMap<ColorS, Player> profs) {
-        HashMap<ColorS, Player> result=new HashMap<>();
-        result=profs;
         //for every ColorS put the Player with the highest number of Students of that color in the map
         for(ColorS c: ColorS.values()){
             //number of students held by the Prof's owner, if there's no owner the default value is 0
-            int max=((profs.get(c)==null? 0 : profs.get(c).getMyBoard().getHall(c)));
-            for(Player p: players){
-                if(p.getMyBoard().getHall().get(c)>max)
-                    result.put(c,p);
-            }
+            profs.put(c, players.stream().max(Comparator.comparingInt(p -> p.getMyBoard().getHall().get(c))).orElse(profs.get(c)));
         }
-        return result;
+        return profs;
     }
 }

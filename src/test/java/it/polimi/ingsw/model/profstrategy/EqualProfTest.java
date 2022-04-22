@@ -47,7 +47,7 @@ class EqualProfTest {
     }
 
     /**
-     *  The activePlayer should get the Prof if he has the same number of Students as the current owner
+     * The activePlayer should get the Prof if he has the same number of Students as the current owner
      */
     @Test
     void SameNumberAndActive(){
@@ -90,13 +90,13 @@ class EqualProfTest {
             testSubject.getMyBoard().getHall().put(c,10);
         }
 
-
+        players.add(profOwner);
         testSubject.setPlaying(false);
         ProfStrategy strategy=new EqualProf();
         HashMap<ColorS, Player> result=strategy.checkProfs(players, profs);
 
         for(ColorS c: ColorS.values()) {
-            assertNotEquals("1", result.get(c).getNickname());
+            assertEquals("ProfOwner", result.get(c).getNickname());
         }
     }
 }

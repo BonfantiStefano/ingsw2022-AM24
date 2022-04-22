@@ -3,13 +3,12 @@ package it.polimi.ingsw.model.gameboard;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
+import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
-import it.polimi.ingsw.model.character.CharacterDescription;
-import it.polimi.ingsw.model.character.CharacterWithNoEntry;
-import it.polimi.ingsw.model.character.CharacterWithStudent;
 import it.polimi.ingsw.model.mnstrategy.MNTwoSteps;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.model.profstrategy.EqualProf;
 import it.polimi.ingsw.model.world.Island;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -334,6 +333,21 @@ class ExpertGameBoardTest {
 
         assertThrows(NoSuchStudentException.class,
                 ()->lisa.getMyBoard().remove(ColorS.RED) );
+    }
+
+    @Test
+    void checkProfs(){
+        gb.addPlayer("2", ColorT.WHITE, Mage.MAGE2);
+        gb.setActiveCharacter(new CharacterProf(1,"test", new EqualProf(), gb));
+
+        for(ColorS c : ColorS.values()){
+            gb.getPlayerByNickname("1").getMyBoard().getHall().put(c, 10);
+            gb.getPlayerByNickname("2").getMyBoard().getHall().put(c, 10);
+        }
+        gb.checkProfs();
+        for(ColorS c : ColorS.values()) {
+            assertEquals("1", gb.getProfs().get(c).getNickname());
+        }
     }
 
 
