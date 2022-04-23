@@ -24,8 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpertControllerTest {
 
@@ -106,12 +105,12 @@ public class ExpertControllerTest {
             }
         //System.out.println("non available card: " + notAvailableChar);
 
-        assertTrue(egb.getActiveCharacter()==null);
+        assertNull(egb.getActiveCharacter());
 
         //sending message with not valid card
         PlayCharacter message1 = new PlayCharacter(notAvailableChar);
         expertController.handleCharacter(message1, "Bob");
-        assertTrue(egb.getActiveCharacter()==null);
+        assertNull(egb.getActiveCharacter());
 
         //sending message with valid card
         PlayCharacter message2 = new PlayCharacter(availableChars.get(0));
@@ -119,8 +118,8 @@ public class ExpertControllerTest {
         int initCoins = egb.getActivePlayer().getCoins();
         int initCost = availableChars.get(0).getCost();
         expertController.handleCharacter(message2, egb.getActivePlayer().getNickname());
-        assertTrue(egb.getActiveCharacter().getDescription().equals(availableChars.get(0).getDesc()));
-        assertTrue(egb.getActivePlayer().getCoins() == initCoins-initCost);
+        assertEquals(egb.getActiveCharacter().getDescription(), availableChars.get(0).getDesc());
+        assertEquals(egb.getActivePlayer().getCoins(), initCoins - initCost);
         //System.out.println("active Character: "+ egb.getActiveCharacter().getDescription());
     }
 
@@ -149,7 +148,7 @@ public class ExpertControllerTest {
         expertController.handleCharacter(message_4, "Bob");
         egb.checkIsland(egb.getIslandByIndex(5));
         Optional<ColorT> colorT = egb.getWorld().getIslandByIndex(5).getTowerColor();
-        assertEquals(egb.getPlayerByNickname("Bob").getColorTower(), colorT.get());
+        assertEquals(Optional.of(egb.getPlayerByNickname("Bob").getColorTower()), colorT);
 
         Character char4 = createCharacter(4);
         egb.setActiveCharacter(char4);
@@ -157,22 +156,24 @@ public class ExpertControllerTest {
         int numIslands = egb.getWorld().getSize();
         egb.moveMN(6);
         int newmnPos = egb.getWorld().getMNPosition();
-        assertTrue((mnPos + 6) % numIslands == newmnPos);
+        if(egb.getSizeWorld() == 11) {
+            assertEquals((mnPos + 5) % numIslands, newmnPos);
+        } else {
+            assertEquals((mnPos + 6) % numIslands, newmnPos);
+        }
 
-        /**
         Character char5 = createCharacter(5);
         egb.setActiveCharacter(char5);
-        ChooseIsland message_5 = new ChooseIsland(6);
+        ChooseIsland message_5 = new ChooseIsland(8);
         expertController.handleCharacter(message_5, "Bob");
-        assertEquals(1,egb.getWorld().getIslandByIndex(6).getNumNoEntry());
-        int posmn = egb.getWorld().getMNPosition();
-        while(posmn != 6){
-            egb.moveMN(1);
-            posmn = egb.getWorld().getMNPosition();
-        }
-        Optional<ColorT> colorTower = egb.getWorld().getIslandByIndex(6).getTowerColor();
-        assertEquals(null, colorT.get());
-         */
+        assertEquals(1, egb.getWorld().getIslandByIndex(8).getNumNoEntry());
+        int posMN = egb.getWorld().getMNPosition();
+        int numSteps = posMN < 8 ? 8 - posMN : egb.getSizeWorld() - posMN + 8;
+        int newPosMN = (posMN + numSteps) % egb.getSizeWorld();
+        egb.getWorld().checkEntry(egb.getWorld().getIslandByIndex(8));
+        Optional<ColorT> colorTower = egb.getWorld().getIslandByIndex(8).getTowerColor();
+        assertEquals(0, egb.getWorld().getIslandByIndex(8).getNumNoEntry());
+        assertEquals(Optional.empty(), colorTower);
 
         Character char10 = createCharacter(10);
         egb.setActiveCharacter(char10);
@@ -208,7 +209,6 @@ public class ExpertControllerTest {
 
         assertEquals(egb.getPlayerByNickname("Alice").getMyBoard().getHall(ColorS.PINK), 0);
         assertEquals(egb.getPlayerByNickname("Alice").getMyBoard().getHall(ColorS.YELLOW), 1);
-
     }
 
 
