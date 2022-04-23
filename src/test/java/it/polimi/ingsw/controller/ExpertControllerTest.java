@@ -172,7 +172,7 @@ public class ExpertControllerTest {
         }
         Optional<ColorT> colorTower = egb.getWorld().getIslandByIndex(6).getTowerColor();
         assertEquals(null, colorT.get());
-        */
+         */
 
         Character char10 = createCharacter(10);
         egb.setActiveCharacter(char10);
@@ -197,20 +197,20 @@ public class ExpertControllerTest {
         assertEquals(numStudents + 1, egb.getActivePlayer().getMyBoard().getHall(studentsOnTheCard.get(0)));
 
         Character char12 = createCharacter(12);
+        int lisaPink = egb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.PINK);
+        int bobPink = egb.getPlayerByNickname("Bob").getMyBoard().getHall(ColorS.PINK);
         egb.setActiveCharacter(char12);
         assertEquals(CharacterDescription.CHAR12.getDesc(), egb.getActiveCharacter().getDescription());
-        //lisa 4 pink
-        //bob 4 pink
-        //alice 1 pink, 1 yellow
         ChooseColor message_12 = new ChooseColor(ColorS.PINK);
         expertController.handleCharacter(message_12, "Bob");
-        assertEquals(egb.getPlayerByNickname("Bob").getMyBoard().getHall(ColorS.PINK), 1);
-        assertEquals(egb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.PINK), 1);
+        assertEquals(bobPink-3, egb.getPlayerByNickname("Bob").getMyBoard().getHall(ColorS.PINK));
+        assertEquals(lisaPink-3, egb.getPlayerByNickname("Lisa").getMyBoard().getHall(ColorS.PINK));
 
         assertEquals(egb.getPlayerByNickname("Alice").getMyBoard().getHall(ColorS.PINK), 0);
         assertEquals(egb.getPlayerByNickname("Alice").getMyBoard().getHall(ColorS.YELLOW), 1);
 
     }
+
 
     public Character createCharacter(int charNum){
 
