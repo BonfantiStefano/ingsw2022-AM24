@@ -198,6 +198,15 @@ public class Player implements PlayerInterface {
     }
 
     /**
+     * Get the number of Students of a particular Color in the Player's Hall
+     * @param c the chosen ColorS
+     * @return the number of Students of that Color in the Player's Hall
+     */
+    public int getHall(ColorS c){
+        return myboard.getHall().get(c);
+    }
+
+    /**
      * Method equals is overridden in order to compare two objects Player
      * @param o of type Object
      * @return boolean - true if they are the same, false otherwise

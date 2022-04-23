@@ -207,7 +207,7 @@ class ExpertGameBoardTest {
      * Tests if CharacterWithStudent gets refilled with a Student
      */
     @Test
-    void resetCharacterStudent() throws NoSuchStudentException {
+    void resetCharacterStudent(){
         gb.setActiveCharacter(new CharacterWithNoEntry(1, "ciao"));
         assertThrows(ClassCastException.class,() -> gb.resetCharacterStudent());
 
@@ -290,7 +290,7 @@ class ExpertGameBoardTest {
                 () -> gb.switchStudents(ColorS.GREEN, ColorS.BLUE));
 
         assertTrue(lisa.getMyBoard().getEntrance().isEmpty());
-        assertTrue(lisa.getMyBoard().getHall(ColorS.GREEN) == 0);
+        assertEquals(0, lisa.getMyBoard().getHall(ColorS.GREEN));
         //assertThrows(EmptyPlaceException.class,
         //        () -> gb.switchStudents(ColorS.GREEN, ColorS.BLUE));
 
@@ -346,7 +346,7 @@ class ExpertGameBoardTest {
         }
         gb.checkProfs();
         for(ColorS c : ColorS.values()) {
-            assertNull(gb.getProfs().get(c));
+            assertEquals(gb.getPlayerByNickname("1"), gb.getProfs().get(c));
         }
     }
 

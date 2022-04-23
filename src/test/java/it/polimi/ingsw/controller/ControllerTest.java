@@ -30,7 +30,7 @@ class ControllerTest {
         c.handleMessage(join1, "player2");
     }
 
-    void chooseAssistants( int i) throws InvalidIndexException {
+    void chooseAssistants( int i) {
         c.handleMessage(new ChooseAssistant(i), "test");
         c.handleMessage(new ChooseAssistant(i), "player2");
         /*
@@ -76,10 +76,9 @@ class ControllerTest {
     }
 
     /**
-     *
-     * @throws InvalidIndexException
+     * Handle messages to complete a Turn
      */
-    void completeTurn() throws InvalidIndexException {
+    void completeTurn(){
         addSecondPlayer();
         chooseAssistants(1);
         assertEquals(PHASE.MOVE_STUDENTS, c.getPhase());
@@ -102,12 +101,12 @@ class ControllerTest {
      * Ensures that no Character messages are accepted
      */
     @Test
-    void handleCharacter() throws InvalidIndexException {
+    void handleCharacter() {
         addSecondPlayer();
         chooseAssistants(1);
         GameBoard gb = (GameBoard) c.getModel();
         gb.setActivePlayer(c.getModel().getPlayerByNickname("test"));
-        c.handleMessage(new PlayCharacter(CharacterDescription.CHAR5),"test" );
+        c.handleMessage(new PlayCharacter(CharacterDescription.CHAR5),"test");
     }
 
     /**
@@ -134,6 +133,23 @@ class ControllerTest {
         assertEquals(PHASE.CHOOSE_CLOUD, c.getPhase());
         c.handleMessage(new ChooseCloud(1), "player2");
         assertEquals(PHASE.PLANNING, c.getPhase());
+    }
+
+    /**
+     * Send incorrect messages
+     * NOT FINAL
+     */
+    @Test
+    void incorrectMessages(){
+        Join join2 = new Join("test", Mage.MAGE1, ColorT.BLACK);
+        c.handleMessage(join2, "test");
+        addSecondPlayer();
+        c.handleMessage(new ChooseAssistant(34), "test");
+    }
+
+    @Test
+    void getTurnController(){
+        assertNotNull(c.getTurnController());
     }
 
 }
