@@ -62,7 +62,7 @@ public class ExpertControllerTest {
         egb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
         egb.addPlayer("Alice", ColorT.GREY, Mage.MAGE3);
 
-        // bob 3 pink, lisa 4 pink
+        // in hall: bob 3 pink, lisa 4 pink
         for (int i = 0; i < 3; i++) {
             egb.getPlayerByNickname("Lisa").getMyBoard().addToHall(ColorS.PINK);
             egb.getActivePlayer().getMyBoard().addToHall(ColorS.PINK);
@@ -85,8 +85,9 @@ public class ExpertControllerTest {
             island8.add(ColorS.GREEN);
         }
 
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < 6; i++){
             egb.getActivePlayer().getMyBoard().addToHall(ColorS.GREEN);
+        }
 
         egb.checkProfs();
         Player p = egb.getProfs().get(ColorS.GREEN);
@@ -240,11 +241,13 @@ public class ExpertControllerTest {
         Player lisa = egb.getPlayerByNickname("Lisa");
         egb.setActivePlayer(lisa);
         lisa.getMyBoard().add(ColorS.RED);
+
         Character char7 = createCharacter(7);
         egb.setActiveCharacter(char7);
         assertEquals(CharacterDescription.CHAR7.getDesc(), egb.getActiveCharacter().getDescription());
         ArrayList<ColorS> studentsCard = ((CharacterWithStudent) egb.getActiveCharacter()).getStudents();
         assertEquals(6, studentsCard.size());
+
         ColorS studentCard = studentsCard.get(0);
         int numStudentsLisa = 0;
         for(ColorS c : lisa.getMyBoard().getEntrance()){
@@ -255,12 +258,15 @@ public class ExpertControllerTest {
         expertController.handleCharacter(message_7, "Lisa");
         ArrayList<ColorS> studentsOnCard = ((CharacterWithStudent) char7).getStudents();
         assertEquals(6, studentsOnCard.size());
+
         int numStudLisa = 0;
         for(ColorS c : lisa.getMyBoard().getEntrance()){
             if(c.equals(studentCard))
                 numStudLisa++;
         }
-        assertEquals(numStudentsLisa + 1, numStudLisa);
+
+        if(studentCard.equals(ColorS.RED)) assertEquals(numStudentsLisa, numStudLisa);
+        else assertEquals(numStudentsLisa + 1, numStudLisa);
 
     }
 
