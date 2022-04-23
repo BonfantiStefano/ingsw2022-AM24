@@ -346,7 +346,7 @@ class ExpertGameBoardTest {
         }
         gb.checkProfs();
         for(ColorS c : ColorS.values()) {
-            assertEquals("1", gb.getProfs().get(c).getNickname());
+            assertNull(gb.getProfs().get(c));
         }
     }
 
