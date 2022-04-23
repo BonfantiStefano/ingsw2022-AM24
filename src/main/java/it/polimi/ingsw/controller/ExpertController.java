@@ -152,12 +152,12 @@ public class ExpertController extends Controller {
                     if(numStudMoves < 3){
                         //first color entrance, second color card
                         try {
-                            expertModel.moveStudent(mess.getFirstColor(), expertModel.getSchoolBoard(), ((CharacterWithStudent) activeCharacter));
+                            expertModel.moveStudent(mess.getFirstColor(), expertModel.getActivePlayer().getMyBoard(), ((CharacterWithStudent) activeCharacter));
                         } catch (NoSuchStudentException e) {
                             getServer().sendMessage(nickname,"There is no " + mess.getFirstColor().toString().toLowerCase()+ " students in the entrance");
                         }
                         try {
-                            expertModel.moveStudent(mess.getSecondColor(), ((CharacterWithStudent) activeCharacter), expertModel.getSchoolBoard());
+                            expertModel.moveStudent(mess.getSecondColor(), ((CharacterWithStudent) activeCharacter), expertModel.getActivePlayer().getMyBoard());
                         } catch (NoSuchStudentException e) {
                             getServer().sendMessage(nickname,"There is no " + mess.getSecondColor().toString().toLowerCase()+ " students on the card");
                         }

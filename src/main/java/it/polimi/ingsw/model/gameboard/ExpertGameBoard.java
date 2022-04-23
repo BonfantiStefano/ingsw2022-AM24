@@ -10,9 +10,9 @@ import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PlayerInterface;
 import it.polimi.ingsw.model.world.Island;
-import it.polimi.ingsw.model.world.World;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -275,5 +275,12 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         world.setBannedColorS(color);
     }
 
+    /**
+     * Method getInfluence invokes getInfluence method of class World
+     * @param i of type Island - The island where the influence is calculated
+     */
+    public HashMap<Player, Integer> getInfluence(Island i){
+        return getWorld().getInfluenceIsland(i, getProfs(), getPlayers());
+    }
 
 }
