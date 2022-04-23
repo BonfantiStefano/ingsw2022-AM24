@@ -243,21 +243,21 @@ public class ExpertControllerTest {
         Character char7 = createCharacter(7);
         egb.setActiveCharacter(char7);
         assertEquals(CharacterDescription.CHAR7.getDesc(), egb.getActiveCharacter().getDescription());
-        ArrayList<ColorS> studentsCard = ((CharacterWithStudent) char7).getStudents();
+        ArrayList<ColorS> studentsCard = ((CharacterWithStudent) egb.getActiveCharacter()).getStudents();
         assertEquals(6, studentsCard.size());
-        ColorS student = studentsCard.get(0);
+        ColorS studentCard = studentsCard.get(0);
         int numStudentsLisa = 0;
         for(ColorS c : lisa.getMyBoard().getEntrance()){
-            if(c==student)
+            if(c.equals(studentCard))
                 numStudentsLisa++;
         }
-        ChooseTwoColors message_7 = new ChooseTwoColors(ColorS.RED, student);
+        ChooseTwoColors message_7 = new ChooseTwoColors(ColorS.RED, studentCard);
         expertController.handleCharacter(message_7, "Lisa");
         ArrayList<ColorS> studentsOnCard = ((CharacterWithStudent) char7).getStudents();
         assertEquals(6, studentsOnCard.size());
         int numStudLisa = 0;
         for(ColorS c : lisa.getMyBoard().getEntrance()){
-            if(c==student)
+            if(c.equals(studentCard))
                 numStudLisa++;
         }
         assertEquals(numStudentsLisa + 1, numStudLisa);
