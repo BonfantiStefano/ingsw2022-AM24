@@ -264,7 +264,6 @@ public class ExpertControllerTest {
             if(c.equals(studentCard))
                 numStudLisa++;
         }
-
         if(studentCard.equals(ColorS.RED)) assertEquals(numStudentsLisa, numStudLisa);
         else assertEquals(numStudentsLisa + 1, numStudLisa);
 
