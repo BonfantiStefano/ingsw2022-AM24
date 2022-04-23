@@ -282,5 +282,4 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     public HashMap<Player, Integer> getInfluence(Island i){
         return getWorld().getInfluenceIsland(i, getProfs(), getPlayers());
     }
-
 }

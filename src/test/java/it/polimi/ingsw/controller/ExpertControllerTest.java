@@ -61,11 +61,15 @@ public class ExpertControllerTest {
         egb.setActivePlayer(egb.getPlayerByNickname("Bob"));
         egb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
         egb.addPlayer("Alice", ColorT.GREY, Mage.MAGE3);
-        //lisa and Bob have the same number (4) of pink students
-        for (int i = 0; i < 4; i++) {
+
+        // bob 3 pink, lisa 4 pink
+        for (int i = 0; i < 3; i++) {
             egb.getPlayerByNickname("Lisa").getMyBoard().addToHall(ColorS.PINK);
             egb.getActivePlayer().getMyBoard().addToHall(ColorS.PINK);
         }
+        egb.getPlayerByNickname("Lisa").getMyBoard().addToHall(ColorS.PINK);
+
+
         //Alice has 1 pink student and 1 yellow student
         egb.getPlayerByNickname("Alice").getMyBoard().addToHall(ColorS.PINK);
         egb.getPlayerByNickname("Alice").getMyBoard().addToHall(ColorS.YELLOW);
@@ -87,6 +91,10 @@ public class ExpertControllerTest {
         egb.checkProfs();
         Player p = egb.getProfs().get(ColorS.GREEN);
         assertEquals("Bob", p.getNickname());
+
+        egb.checkProfs();
+        Player player = egb.getProfs().get(ColorS.PINK);
+        assertEquals("Lisa", player.getNickname());
 
     }
 
@@ -144,16 +152,22 @@ public class ExpertControllerTest {
         assertEquals(egb.getIslandByIndex(6).getNumStudentByColor(ColorS.RED), numRedStudentsOnIsland + 1);
     }
 
+
+    @Test
     /** Method testChar2 checks if the Character's ability is actually used when the card 2 is selected */
-    public void testChar2() {
+    /**
+    public void testChar2() throws PlaceFullException {
         Character char2 = createCharacter(2);
+        //lisa 4 pink, now also bob 4 pink
+        egb.getPlayerByNickname("Bob").getMyBoard().addToHall(ColorS.PINK);
         egb.setActiveCharacter(char2);
         assertEquals(CharacterDescription.CHAR2.getDesc(), egb.getActiveCharacter().getDescription());
         egb.checkProfs();
-        //Player player = egb.getProfs().get(ColorS.PINK);
-        //assertEquals(egb.getActivePlayer().getNickname(), player.getNickname());
+        Player player = egb.getProfs().get(ColorS.PINK);
+        assertEquals(egb.getActivePlayer().getNickname(), player.getNickname());
 
     }
+    */
 
     /** Method testChar3 checks if the Character's ability is actually used when the card 3 is selected */
     public void testChar3() {
