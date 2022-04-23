@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.player.Player;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +51,6 @@ class StandardProfTest {
         players.add(new Player("1", ColorT.WHITE, Mage.MAGE1, 7));
         players.add(new Player("2", ColorT.BLACK, Mage.MAGE2, 7));
         players.add(new Player("3", ColorT.GREY, Mage.MAGE3, 7));
-        players.add(new Player("4", ColorT.BLACK, Mage.MAGE4, 7));
 
         int i=1;
         for(Player p : players){
@@ -67,10 +67,62 @@ class StandardProfTest {
         ProfStrategy strategy=new StandardProf();
         HashMap<ColorS, Player> result=strategy.checkProfs(players, profs);
         for(ColorS c: ColorS.values()) {
-            assertEquals("4", result.get(c).getNickname());
+            assertEquals("3", result.get(c).getNickname());
+        }
+    }
+
+    @Test
+    void allTheSame(){
+        ArrayList<Player> players = new ArrayList<>();
+        Player p1 = new Player("1", ColorT.WHITE, Mage.MAGE1, 7);
+        Player p2 = new Player("2", ColorT.WHITE, Mage.MAGE1, 7);
+        Player p3 = new Player("3", ColorT.WHITE, Mage.MAGE1, 7);
+        players.add(p1);
+        players.add(p2);
+        players.add(p3);
+
+        int i=1;
+        for(ColorS c: ColorS.values()){
+            for(Player p : players) {
+                p.getMyBoard().getHall().put(c, i);
+            }
+            i++;
+        }
+        HashMap<ColorS, Player> profs=new HashMap<>();
+        for(ColorS c: ColorS.values()){
+            profs.put(c,p2);
         }
 
+        ProfStrategy strategy=new StandardProf();
+        profs = strategy.checkProfs(players, profs);
 
+        for(ColorS c: ColorS.values())
+            assertEquals(p2, profs.get(c));
+        }
+
+    @Test
+    void noOwner(){
+        ArrayList<Player> players = new ArrayList<>();
+        Player p1 = new Player("1", ColorT.WHITE, Mage.MAGE1, 7);
+        Player p2 = new Player("2", ColorT.WHITE, Mage.MAGE1, 7);
+        Player p3 = new Player("3", ColorT.WHITE, Mage.MAGE1, 7);
+        players.add(p1);
+        players.add(p2);
+        players.add(p3);
+
+        HashMap<ColorS, Player> profs=new HashMap<>();
+
+        for(ColorS c: ColorS.values()){
+            profs.put(c, null);
+            for(Player p: players)
+                p.getMyBoard().getHall().put(c, 1);
+        }
+        ProfStrategy strategy=new StandardProf();
+        profs = strategy.checkProfs(players, profs);
+
+        for(ColorS c: ColorS.values())
+            assertNull(profs.get(c));
     }
 
 }
+
