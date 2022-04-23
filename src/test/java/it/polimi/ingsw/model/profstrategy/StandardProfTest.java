@@ -30,6 +30,7 @@ class StandardProfTest {
             p2.getMyBoard().getHall().put(c, 9);
         }
         players.add(p1);
+        players.add(p2);
 
         HashMap<ColorS, Player> expected = new HashMap<>();
         HashMap<ColorS, Player> profs = new HashMap<>();

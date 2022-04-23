@@ -155,7 +155,7 @@ public class ExpertControllerTest {
 
     @Test
     /** Method testChar2 checks if the Character's ability is actually used when the card 2 is selected */
-    /**
+
     public void testChar2() throws PlaceFullException {
         Character char2 = createCharacter(2);
         //lisa 4 pink, now also bob 4 pink
@@ -167,8 +167,8 @@ public class ExpertControllerTest {
         assertEquals(egb.getActivePlayer().getNickname(), player.getNickname());
 
     }
-    */
 
+    @Test
     /** Method testChar3 checks if the Character's ability is actually used when the card 3 is selected */
     public void testChar3() {
         Character char3 = createCharacter(3);

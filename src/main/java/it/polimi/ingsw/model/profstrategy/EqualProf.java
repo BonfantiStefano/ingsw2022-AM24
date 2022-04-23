@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.profstrategy.ProfStrategy;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Alternate behaviour for checkProfs method
@@ -20,17 +21,21 @@ public class EqualProf implements ProfStrategy {
     @Override
     public HashMap<ColorS, Player> checkProfs(ArrayList<Player> players, HashMap<ColorS, Player> profs) {
         int max;
+        List<Player> sameNumber;
         HashMap<ColorS,Player> result = new HashMap<>(profs);
         for(ColorS c: ColorS.values()){
-            //number of students held by the Prof's owner, if there's no owner the default value is 0
-            max = profs.get(c)!=null ? profs.get(c).getMyBoard().getHall().get(c) : 0;
-            for(Player p : players)
-                if(p.getMyBoard().getHall().get(c) > max || (p.getMyBoard().getHall().get(c).equals(max) && p.isPlaying())) {
-                    result.put(c, p);
-                    max = p.getMyBoard().getHall().get(c);
-                }
-                else if(p.getMyBoard().getHall().get(c).equals(max))
-                    result.put(c, profs.get(c));
+            result.put(c, null);
+            //find the max number of Students of this Color in a Hall
+            max = Collections.max(players.stream().map(p -> p.getHall(c)).toList());
+            int finalMax = max;
+            //find all Players that have the same number of Students in their Hall
+            sameNumber =  players.stream().filter(p->p.getHall(c) == finalMax).collect(Collectors.toList());
+            if(sameNumber.size()>1)
+                //if there are tied Players and the ActivePlayer is one of them he gets the Prof, otherwise the Prof doesn't change owner
+                result.put(c,sameNumber.stream().filter(Player::isPlaying).findFirst().orElse(profs.get(c)));
+            else
+                //if no Players are tied assign the Prof to the one with the highest number of Students in his Hall
+                result.put(c,players.stream().reduce((p1,p2) -> p1.getHall(c)>p2.getHall(c)?p1:p2).orElse(profs.get(c)));
         }
         return result;
     }

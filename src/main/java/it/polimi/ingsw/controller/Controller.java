@@ -20,7 +20,6 @@ public class Controller {
     private ActionController actionController;
     private TurnController turnController;
     private Server server;
-    private ArrayList<Player> sortedPlayers;
     private PHASE phase;
     private int numPlayers;
     private int havePlayed;
@@ -73,7 +72,7 @@ public class Controller {
 
             }
             //if the Player had disconnected update his status as connected
-            else if(model.getPlayerByNickname(msg.getNickname())!=null)
+            else if(model.getPlayerByNickname(msg.getNickname())!=null && !model.getPlayerByNickname(nickname).isConnected())
                 model.setConnected(nickname, true);
             else{
                 server.sendMessage(nickname, "Nickname already in use!");
@@ -136,7 +135,7 @@ public class Controller {
 
         switch (phase) {
             case PLANNING:
-                sortedPlayers = model.getSortedPlayers();
+                ArrayList<Player> sortedPlayers = model.getSortedPlayers();
                 //in this phase the next Player in order must choose his assistant
                 //if he's connected send him a message
                 if(sortedPlayers.get(haveChosenAssistant).isConnected())
