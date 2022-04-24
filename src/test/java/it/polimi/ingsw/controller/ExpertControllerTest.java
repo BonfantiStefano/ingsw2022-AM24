@@ -51,9 +51,7 @@ public class ExpertControllerTest {
         egb = (ExpertGameBoard) expertController.getExpertModel();
 
         players = new ArrayList<>();
-        for (Player p : egb.getPlayers()) {
-            players.add(p);
-        }
+        players.addAll(egb.getPlayers());
 
         //initial position of MotherNature
         mnPos = egb.getWorld().getMNPosition();
@@ -112,15 +110,13 @@ public class ExpertControllerTest {
                     availableChars.add(cd);
             }
         }
-        //System.out.println("available cards: ");
-        //availableChars.stream().forEach(System.out :: println);
 
         for (CharacterDescription c : CharacterDescription.values())
             if (!(availableChars.contains(c))) {
                 notAvailableChar = c;
                 break;
             }
-        //System.out.println("non available card: " + notAvailableChar);
+
 
         assertNull(egb.getActiveCharacter());
 
@@ -153,10 +149,8 @@ public class ExpertControllerTest {
         assertEquals(egb.getIslandByIndex(6).getNumStudentByColor(ColorS.RED), numRedStudentsOnIsland + 1);
     }
 
-
-    @Test
     /** Method testChar2 checks if the Character's ability is actually used when the card 2 is selected */
-
+    @Test
     public void testChar2() throws PlaceFullException {
         Character char2 = createCharacter(2);
         //lisa 4 pink, now also bob 4 pink
@@ -169,8 +163,8 @@ public class ExpertControllerTest {
 
     }
 
-    @Test
     /** Method testChar3 checks if the Character's ability is actually used when the card 3 is selected */
+    @Test
     public void testChar3() {
         Character char3 = createCharacter(3);
         egb.setActiveCharacter(char3);
@@ -205,9 +199,6 @@ public class ExpertControllerTest {
         ChooseIsland message_5 = new ChooseIsland(8);
         expertController.handleCharacter(message_5, "Bob");
         assertEquals(1, egb.getWorld().getIslandByIndex(8).getNumNoEntry());
-        int posMN = egb.getWorld().getMNPosition();
-        int numSteps = posMN < 8 ? 8 - posMN : egb.getSizeWorld() - posMN + 8;
-        int newPosMN = (posMN + numSteps) % egb.getSizeWorld();
         egb.getWorld().checkEntry(egb.getWorld().getIslandByIndex(8));
         Optional<ColorT> colorTower = egb.getWorld().getIslandByIndex(8).getTowerColor();
         assertEquals(0, egb.getWorld().getIslandByIndex(8).getNumNoEntry());
@@ -229,8 +220,7 @@ public class ExpertControllerTest {
 
         Character char6 = createCharacter(6);
         egb.setActiveCharacter(char6);
-        HashMap<Player, Integer> mapInfluence = new HashMap<>();
-        mapInfluence = egb.getInfluence(egb.getIslandByIndex(2));
+        HashMap<Player, Integer> mapInfluence = egb.getInfluence(egb.getIslandByIndex(2));
         int influenceAlice = mapInfluence.get(egb.getPlayerByNickname("Alice"));
         assertEquals(influenceAlice, yellowStudents);
     }
@@ -271,7 +261,7 @@ public class ExpertControllerTest {
 
     /** Method testChar8 checks if the Character's ability is actually used when the card 8 is selected */
     @Test
-    public void testChar8() throws PlaceFullException, InvalidMNStepsException, InvalidIndexException {
+    public void testChar8() throws PlaceFullException {
         for (int i = 0; i < 6; i++)
             egb.getPlayerByNickname("Alice").getMyBoard().addToHall(ColorS.YELLOW);
         Island island2 = egb.getWorld().getIslandByIndex(2);
@@ -284,8 +274,7 @@ public class ExpertControllerTest {
         egb.setActivePlayer(egb.getPlayerByNickname("Alice"));
         Character char8 = createCharacter(8);
         egb.setActiveCharacter(char8);
-        HashMap<Player, Integer> mapInfluence = new HashMap<>();
-        mapInfluence = egb.getInfluence(egb.getIslandByIndex(2));
+        HashMap<Player, Integer> mapInfluence = egb.getInfluence(egb.getIslandByIndex(2));
         int influenceAlice = mapInfluence.get(egb.getPlayerByNickname("Alice"));
         assertEquals(yellowStudents + 1 + 2, influenceAlice);
     }
@@ -301,14 +290,12 @@ public class ExpertControllerTest {
         egb.checkProfs();
         egb.checkIsland(egb.getIslandByIndex(2));
         assertEquals(egb.getPlayerByNickname("Alice").getColorTower(), egb.getWorld().getIslandByIndex(2).getTowerColor().get());
-        int yellowStudents = island2.getNumStudentByColor(ColorS.YELLOW);
         egb.setActivePlayer(egb.getPlayerByNickname("Alice"));
         Character char9 = createCharacter(9);
         egb.setActiveCharacter(char9);
         ChooseColor message_9 = new ChooseColor(ColorS.YELLOW);
         expertController.handleCharacter(message_9, "Alice");
-        HashMap<Player, Integer> mapInfluence = new HashMap<>();
-        mapInfluence = egb.getInfluence(egb.getIslandByIndex(2));
+        HashMap<Player, Integer> mapInfluence = egb.getInfluence(egb.getIslandByIndex(2));
         int influenceAlice = mapInfluence.get(egb.getPlayerByNickname("Alice"));
         assertEquals(1, influenceAlice);
     }
