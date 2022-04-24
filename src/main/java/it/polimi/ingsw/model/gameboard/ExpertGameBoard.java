@@ -65,6 +65,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
             activePlayer.setCoins(1);
             coins--;
         }
+        checkProfs();
     }
 
     /**
@@ -74,6 +75,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      */
     public void hallToEntrance(ColorS s) throws NoSuchStudentException {
         activePlayer.getMyBoard().hallToEntrance(s);
+        checkProfs();
     }
 
     /**
@@ -86,6 +88,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
             activePlayer.setCoins(1);
             coins--;
         }
+        checkProfs();
     }
 
     /**
@@ -97,11 +100,12 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * @throws NoSuchStudentException if there is no students of the selected color in the entrance
      */
     public void switchStudents(ColorS hallS, ColorS entranceS) throws PlaceFullException, NoSuchStudentException {
-            if(activePlayer.getMyBoard().entranceToHall(entranceS)){
-                activePlayer.setCoins(1);
-                coins--;
-            }
-            activePlayer.getMyBoard().hallToEntrance(hallS);
+        if(activePlayer.getMyBoard().entranceToHall(entranceS)){
+            activePlayer.setCoins(1);
+            coins--;
+        }
+        activePlayer.getMyBoard().hallToEntrance(hallS);
+        checkProfs();
     }
 
     /**
@@ -126,6 +130,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
                 }
             }
         }
+        checkProfs();
     }
 
     /**
