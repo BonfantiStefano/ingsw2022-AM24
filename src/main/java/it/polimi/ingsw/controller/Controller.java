@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
+import it.polimi.ingsw.model.ExpertModel;
 import it.polimi.ingsw.model.Model;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Player;
@@ -39,14 +40,16 @@ public class Controller {
     /**
      * Creates a new Model instance
      * @param m message containing the Game Parameters
+     * @return
      */
-    public void createModel(GameParams m){
+    public ExpertModel createModel(GameParams m){
         numPlayers=m.getNumPlayers();
         model = new GameBoard(m.getNumPlayers());
         model.addPlayer(m.getNickname(), m.getColorT(), m.getMage());
         model.newClouds();
         haveChosenAssistant = 0;
         havePlayed = 0;
+        return null;
     }
 
     /**
@@ -251,6 +254,14 @@ public class Controller {
      */
     public Server getServer(){
         return this.server;
+    }
+
+    /**
+     * Sets the the Model
+     * @param model the other model
+     */
+    public void setModel(Model model) {
+        this.model = model;
     }
 
     /**

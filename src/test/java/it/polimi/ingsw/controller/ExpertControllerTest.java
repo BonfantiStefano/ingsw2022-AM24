@@ -50,15 +50,18 @@ public class ExpertControllerTest {
 
         egb = (ExpertGameBoard) expertController.getExpertModel();
 
-        players = new ArrayList<>();
-        players.addAll(egb.getPlayers());
-
         //initial position of MotherNature
         mnPos = egb.getWorld().getMNPosition();
 
         egb.setActivePlayer(egb.getPlayerByNickname("Bob"));
-        egb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
-        egb.addPlayer("Alice", ColorT.GREY, Mage.MAGE3);
+
+        Join join1 = new Join("Lisa", Mage.MAGE2, ColorT.WHITE);
+        expertController.handleMessage(join1, "Lisa");
+
+        Join join2 = new Join("Alice", Mage.MAGE3, ColorT.GREY);
+        expertController.handleMessage(join2, "Alice");
+        //egb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
+        //egb.addPlayer("Alice", ColorT.GREY, Mage.MAGE3);
 
         // in hall: bob 3 pink, lisa 4 pink
         for (int i = 0; i < 3; i++) {
@@ -95,6 +98,8 @@ public class ExpertControllerTest {
         Player player = egb.getProfs().get(ColorS.PINK);
         assertEquals("Lisa", player.getNickname());
 
+        players = new ArrayList<>();
+        players.addAll(egb.getPlayers());
     }
 
     /** Method testPlayCharacter checks if one of the three available Characters is correctly chosen */

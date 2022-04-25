@@ -24,14 +24,15 @@ public class ExpertController extends Controller {
     private int numSwitchMoves;
     private int numStudMoves;
 
-
     /**
      * Constructor ExpertController creates a new empty ExpertController instance.
      * @param server - server
+     * @param m - number of the players
      */
     public ExpertController(Server server, GameParams m) {
         super(server, m);
-        createExpertModel(m);
+        expertModel = createExpertModel(m);
+        setModel(expertModel);
         numSwitchMoves = 0;
         numStudMoves = 0;
     }
@@ -39,14 +40,18 @@ public class ExpertController extends Controller {
     /**
      * Method createExpertModel receives in input the number of players participating in the game and creates a
      * new ExpertGameBoard instance.
-     * @param m - number of the players
+     * @param m - the number of players and first player's info
+     * @return expertModel - the model used for the game with expert rules
      */
-    public void createExpertModel(GameParams m){
+
+    public ExpertModel createExpertModel(GameParams m){
         numPlayers=m.getNumPlayers();
         expertModel = new ExpertGameBoard(m.getNumPlayers());
         expertModel.addPlayer(m.getNickname(), m.getColorT(), m.getMage());
         expertModel.newClouds();
+        return expertModel;
     }
+
 
     /**
      * Method handleCharacter handles the choice of a Character card :
@@ -174,7 +179,7 @@ public class ExpertController extends Controller {
 
 
     public ExpertModel getExpertModel() {
-        return expertModel;
+        return ((ExpertModel) getModel());
     }
 }
 
