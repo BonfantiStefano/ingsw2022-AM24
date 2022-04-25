@@ -32,8 +32,8 @@ public class TurnController {
     /**
      * Acts as an FSM by choosing the next phase based on the current one and checking if it's possible to move to the
      * next one. If the requirements are not met the Controller will remain in its current phase
-     * @param currentPhase the current Phase of the turn
-     * @return the next phase of the turn
+     * @param currentPhase the current turn Phase
+     * @return the next turn phase
      */
     public PHASE nextPhase(PHASE currentPhase){
         if(gameEnded)

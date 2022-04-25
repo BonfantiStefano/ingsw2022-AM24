@@ -20,22 +20,15 @@ public class EqualProf implements ProfStrategy {
      */
     @Override
     public HashMap<ColorS, Player> checkProfs(ArrayList<Player> players, HashMap<ColorS, Player> profs) {
-        int max;
-        List<Player> sameNumber;
         HashMap<ColorS,Player> result = new HashMap<>(profs);
         for(ColorS c: ColorS.values()){
-            result.put(c, null);
-            //find the max number of Students of this Color in a Hall
-            max = Collections.max(players.stream().map(p -> p.getHall(c)).toList());
-            int finalMax = max;
-            //find all Players that have the same number of Students in their Hall
-            sameNumber =  players.stream().filter(p->p.getHall(c) == finalMax).collect(Collectors.toList());
-            if(sameNumber.size()>1)
-                //if there are tied Players and the ActivePlayer is one of them he gets the Prof, otherwise the Prof doesn't change owner
-                result.put(c,sameNumber.stream().filter(Player::isPlaying).findFirst().orElse(profs.get(c)));
-            else
-                //if no Players are tied assign the Prof to the one with the highest number of Students in his Hall
-                result.put(c,players.stream().reduce((p1,p2) -> p1.getHall(c)>p2.getHall(c)?p1:p2).orElse(profs.get(c)));
+            //get all Players with the max number of Students of this Color in their Hall
+            List<Player> tied = players.stream().filter(p -> (p.getHall(c) == players.stream().max(Comparator.comparingInt(p1->p1.getHall(c))).get().getHall(c))).toList();
+            //if the ActivePlayer is tied with other Players he gets the Prof, otherwise it doesn't change owner
+            if(tied.size()>1)
+                result.put(c, tied.stream().filter(Player::isPlaying).findAny().orElse(profs.get(c)));
+            else //if there's no tie the Player with the highest number gets the Profs
+                result.put(c, tied.get(0));
         }
         return result;
     }

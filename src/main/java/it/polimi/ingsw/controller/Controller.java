@@ -63,23 +63,7 @@ public class Controller {
             activePlayer = model.getActivePlayer().getNickname();
         //message needed to start the game
         if(m instanceof Join msg){
-            //check if another player can join and his nickname is available
-            if(model.getPlayerByNickname(msg.getNickname())==null && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
-                model.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
-                server.sendMessage(nickname, "Accepted!");
-                if(model.getPlayers().size() == numPlayers) {
-                    //all players have connected
-                    turnController.setGameStarted(true);
-                    gameStarted = true;
-                }
-
-            }
-            //if the Player had disconnected update his status as connected
-            else if(model.getPlayerByNickname(msg.getNickname())!=null && !model.getPlayerByNickname(nickname).isConnected())
-                model.setConnected(nickname, true);
-            else{
-                server.sendMessage(nickname, "Nickname already in use!");
-            }
+            handleJoin(msg, nickname);
         }
         else if (m instanceof ChooseAssistant msg && phase.equals(PHASE.PLANNING))
             try {
@@ -137,21 +121,21 @@ public class Controller {
             activePlayer = model.getActivePlayer().getNickname();
 
         switch (phase) {
-            case PLANNING:
+            case PLANNING -> {
                 ArrayList<Player> sortedPlayers = model.getSortedPlayers();
                 //in this phase the next Player in order must choose his assistant
                 //if he's connected send him a message
-                if(sortedPlayers.get(haveChosenAssistant).isConnected())
+                if (sortedPlayers.get(haveChosenAssistant).isConnected())
                     server.sendMessage(sortedPlayers.get(haveChosenAssistant).getNickname(), "Choose your Assistant!");
                 else
                     increaseHaveChosenAssistant();
-                break;
-            case MOVE_STUDENTS:
+            }
+            case MOVE_STUDENTS -> {
                 //this phase is the first in a turn so the controller sets the next ActivePlayer
                 //and asks him to move Students
                 model.nextPlayer();
                 //if he's connected send him a message
-                if(model.getActivePlayer().isConnected()) {
+                if (model.getActivePlayer().isConnected()) {
                     activePlayer = model.getActivePlayer().getNickname();
                     server.sendMessage(activePlayer, "Select a Student and choose a destination three times!");
                 }
@@ -160,53 +144,88 @@ public class Controller {
                     turnController.setPlayerConnected(false);
                     nextPhase();
                 }
-                break;
-            case MOVE_MN:
-                //in this phase the Player must move MN
-                server.sendMessage(activePlayer, "Choose where you want to move MN!");
-                break;
-            case CHOOSE_CLOUD:
-                //in this phase the Player must choose a Cloud
-                server.sendMessage(activePlayer, "Choose a Cloud!");
-                break;
-            case RESET_TURN:
+            }
+            case MOVE_MN ->
+                    //in this phase the Player must move MN
+                    server.sendMessage(activePlayer, "Choose where you want to move MN!");
+            case CHOOSE_CLOUD ->
+                    //in this phase the Player must choose a Cloud
+                    server.sendMessage(activePlayer, "Choose a Cloud!");
+            case RESET_TURN -> {
                 //if all Players have played their turn notify the TurnController
-                if(havePlayed % numPlayers == 1)
+                if (havePlayed % numPlayers == 1)
                     turnController.setAllPlayedCheck(true);
-                //if there's still Players that must do their turn
+                    //if there's still Players that must do their turn
                 else
                     havePlayed++;
                 //the turn has ended so the next Player by default is regarded as connected
                 turnController.setPlayerConnected(true);
                 nextPhase();
-                break;
-            case RESET_ROUND:
+            }
+            case RESET_ROUND -> {
                 //in this phase the controller must check if the game must end and in that case look for a winner
                 //otherwise it must prepare the Model for the next round
-                if(model.getGameMustEnd()){
+                if (model.getGameMustEnd()) {
                     Optional<Player> winner = model.checkWin();
-                    winner.ifPresentOrElse(w -> {server.sendMessage(w.getNickname(), "You won");
-                                    server.sendMessageToOthers(w.getNickname(), "You Lose");},
-                                () -> {server.sendMessageToAll("The game ends in a draw");}
-                        );
+                    winner.ifPresentOrElse(w -> {
+                                server.sendMessage(w.getNickname(), "You won");
+                                server.sendMessageToOthers(w.getNickname(), "You Lose");
+                            },
+                            () -> {
+                                server.sendMessageToAll("The game ends in a draw");
+                            }
+                    );
                     //notify the TurnController
                     turnController.setGameEnded(true);
-                }
-                else {
+                } else {
                     model.resetRound();
                     havePlayed = 0;
                 }
                 nextPhase();
-                break;
-            case CHARACTER_ACTION:
-                //in this phase the Player can't end his turn unless he performs a Character move
-                server.sendMessage(activePlayer, "You need to perform a Character move!");
-                break;
-            case GAME_WON:
-                //notify the server that the game has ended
-                server.gameEnded();
-                break;
+            }
+            case CHARACTER_ACTION ->
+                    //in this phase the Player can't end his turn unless he performs a Character move
+                    server.sendMessage(activePlayer, "You need to perform a Character move!");
+            case GAME_WON ->
+                    //notify the server that the game has ended
+                    server.gameEnded();
         }
+    }
+
+    /**
+     * Handles all Join messages received by checking if all conditions to join the Game are met
+     * @param msg the Join message
+     * @param nickname the nickname of the Player associated with the Client
+     */
+    private void handleJoin(Join msg, String nickname){
+        String message = "";
+        boolean availableNickname = model.getPlayerByNickname(msg.getNickname())==null;
+        boolean availableMage = model.getPlayers().stream().noneMatch(p->p.getMage().equals(msg.getMage()));
+
+        //check if another player can join and his nickname is available
+        if(availableNickname && availableMage && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
+            model.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
+            server.sendMessage(nickname, "Accepted!");
+            if(model.getPlayers().size() == numPlayers) {
+                //all players have connected
+                turnController.setGameStarted(true);
+                gameStarted = true;
+            }
+
+        }
+        //if the Player had disconnected update his status as connected
+        else if(!availableNickname && !model.getPlayerByNickname(nickname).isConnected()) {
+            model.setConnected(nickname, true);
+            server.sendMessage(nickname, "You have rejoined the Game!");
+        }
+        else if(!availableNickname)
+            message+="Nickname already in use!";
+        else if(!availableMage)
+            message+="Mage already in use!";
+
+
+        if(!message.isEmpty())
+            server.sendMessage(nickname,message);
     }
 
     /**
@@ -220,7 +239,8 @@ public class Controller {
     }
 
     /**
-     * Increase the number of Players that have chosen their Assistant, if everyone has done so notify the TurnController
+     * Increase the number of Players that have chosen their Assistant, if everyone has done so notifies the TurnController
+     * and resets the counter
      */
     public void increaseHaveChosenAssistant(){
         if(haveChosenAssistant % numPlayers == 1) {
