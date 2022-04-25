@@ -57,7 +57,6 @@ public class ExpertControllerTest {
 
         Join join1 = new Join("Lisa", Mage.MAGE2, ColorT.WHITE);
         expertController.handleMessage(join1, "Lisa");
-
         Join join2 = new Join("Alice", Mage.MAGE3, ColorT.GREY);
         expertController.handleMessage(join2, "Alice");
         //egb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
