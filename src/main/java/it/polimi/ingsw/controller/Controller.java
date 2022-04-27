@@ -1,5 +1,8 @@
 package it.polimi.ingsw.controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.model.ExpertModel;
@@ -37,6 +40,7 @@ public class Controller {
         gameStarted = false;
     }
 
+
     /**
      * Creates a new Model instance
      * @param m message containing the Game Parameters
@@ -52,6 +56,87 @@ public class Controller {
         return null;
     }
 
+
+
+
+    public void handleMessage(ChooseAssistant msg, String nickname){
+        if(phase.equals(PHASE.PLANNING) && model.getPlayers().get(haveChosenAssistant).getNickname().equals(nickname))
+            try {
+                model.chooseAssistants(model.getPlayerByNickname(nickname), msg.getIndex());
+                increaseHaveChosenAssistant();
+            } catch (InvalidIndexException e) {
+                server.sendMessage(nickname, "Invalid index!");
+            }
+        nextPhase();
+    }
+
+    public void handleMessage(Disconnect msg, String nickname){
+        //if a Player disconnects during the setup phase the game is canceled
+        //can be changed later
+        if (phase.equals(PHASE.SETUP))
+            server.gameEnded();
+        else if(gameStarted)
+            model.setConnected(nickname, false);
+        nextPhase();
+    }
+    /**
+     * Handles all Join messages received by checking if all conditions to join the Game are met
+     * @param msg the Join message
+     * @param nickname the nickname of the Player associated with the Client
+     */
+    public void handleMessage(Join msg, String nickname){
+        String message = "";
+        boolean availableNickname = model.getPlayerByNickname(msg.getNickname())==null;
+        boolean availableMage = model.getPlayers().stream().noneMatch(p->p.getMage().equals(msg.getMage()));
+
+        //check if another player can join and his nickname is available
+        if(availableNickname && availableMage && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
+            model.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
+            server.sendMessage(nickname, "Accepted!");
+            if(model.getPlayers().size() == numPlayers) {
+                //all players have connected
+                turnController.setGameStarted(true);
+                gameStarted = true;
+            }
+        }
+        //if the Player had disconnected update his status as connected
+        else if(!availableNickname && !model.getPlayerByNickname(nickname).isConnected()) {
+            model.setConnected(nickname, true);
+            server.sendMessage(nickname, "You have rejoined the Game!");
+        }
+        else if(!availableNickname)
+            message+="Nickname already in use!";
+        else if(!availableMage)
+            message+="Mage already in use!";
+
+
+        if(!message.isEmpty())
+            server.sendMessage(nickname,message);
+        nextPhase();
+    }
+
+    public void handleMessage(MoveToIsland msg, String nickname){
+        if(verifyActive(nickname)&&phase.equals(PHASE.MOVE_STUDENTS))
+            actionController.handleAction(msg);
+        nextPhase();
+    }
+    public void handleMessage(MoveMN msg, String nickname){
+        if(verifyActive(nickname)&&phase.equals(PHASE.MOVE_MN))
+            actionController.handleAction(msg);
+        nextPhase();
+    }
+    public void handleMessage(ChooseCloud msg, String nickname){
+        if(verifyActive(nickname)&&phase.equals(PHASE.CHOOSE_CLOUD))
+            actionController.handleAction(msg);
+        nextPhase();
+    }
+
+    public void handleMessage(EntranceToHall msg, String nickname){
+        if(verifyActive(nickname)&&phase.equals(PHASE.MOVE_STUDENTS))
+            actionController.handleAction(msg);
+        nextPhase();
+    }
+
     /**
      * Handles the message received by performing the correct action based on the type of Request
      * @param m Request message sent by a Client
@@ -59,39 +144,10 @@ public class Controller {
      *                 NOT FINAL
      */
     public void handleMessage(Request m, String nickname){
-        if(model.getActivePlayer()!=null)
-            activePlayer = model.getActivePlayer().getNickname();
-        //message needed to start the game
-        if(m instanceof Join msg){
-            handleJoin(msg, nickname);
-        }
-        else if (m instanceof ChooseAssistant msg && phase.equals(PHASE.PLANNING))
-            try {
-                model.chooseAssistants(model.getPlayerByNickname(nickname), msg.getIndex());
-                increaseHaveChosenAssistant();
-            } catch (InvalidIndexException e) {
-                server.sendMessage(nickname, "Invalid index!");
-            }
-        else if (m instanceof Disconnect){
-            //if a Player disconnects during the setup phase the game is canceled
-            //can be changed later
-            if (phase.equals(PHASE.SETUP))
-                server.gameEnded();
-            else if(gameStarted)
-                model.setConnected(nickname, false);
-        }
         //accept the following messages only if they come from the ActivePlayer
-        else if (nickname.equals(activePlayer)) {
-            if (m instanceof MoveToIsland msg && phase.equals(PHASE.MOVE_STUDENTS))
-                actionController.handleAction(msg);
-            else if (m instanceof EntranceToHall msg && phase.equals(PHASE.MOVE_STUDENTS))
-                actionController.handleAction(msg);
-            else if (m instanceof MoveMN msg && phase.equals(PHASE.MOVE_MN))
-                actionController.handleAction(msg);
-            else if (isMessageCharacter(m))
+        if (nickname.equals(activePlayer)) {
+            if (isMessageCharacter(m))
                 handleCharacter(m, nickname);
-            else if (m instanceof ChooseCloud msg && phase.equals(PHASE.CHOOSE_CLOUD))
-                actionController.handleAction(msg);
         } else {
             server.sendMessage(nickname, "Invalid message!");
         }
@@ -193,42 +249,6 @@ public class Controller {
     }
 
     /**
-     * Handles all Join messages received by checking if all conditions to join the Game are met
-     * @param msg the Join message
-     * @param nickname the nickname of the Player associated with the Client
-     */
-    private void handleJoin(Join msg, String nickname){
-        String message = "";
-        boolean availableNickname = model.getPlayerByNickname(msg.getNickname())==null;
-        boolean availableMage = model.getPlayers().stream().noneMatch(p->p.getMage().equals(msg.getMage()));
-
-        //check if another player can join and his nickname is available
-        if(availableNickname && availableMage && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
-            model.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
-            server.sendMessage(nickname, "Accepted!");
-            if(model.getPlayers().size() == numPlayers) {
-                //all players have connected
-                turnController.setGameStarted(true);
-                gameStarted = true;
-            }
-
-        }
-        //if the Player had disconnected update his status as connected
-        else if(!availableNickname && !model.getPlayerByNickname(nickname).isConnected()) {
-            model.setConnected(nickname, true);
-            server.sendMessage(nickname, "You have rejoined the Game!");
-        }
-        else if(!availableNickname)
-            message+="Nickname already in use!";
-        else if(!availableMage)
-            message+="Mage already in use!";
-
-
-        if(!message.isEmpty())
-            server.sendMessage(nickname,message);
-    }
-
-    /**
      * Verify if a Request is relative to Characters
      * @param m the Request to analyze
      * @return true if the Request is a message relative to Characters
@@ -258,6 +278,14 @@ public class Controller {
      */
     private void handleCharacter(Request m, String nickname){
         server.sendMessage(nickname, "You're not playing in expert mode!");
+    }
+
+    private boolean verifyActive(String nickname){
+        if(model!=null) {
+            activePlayer=model.getActivePlayer().getNickname();
+            return activePlayer.equals(nickname);
+        }
+        return false;
     }
 
     /**

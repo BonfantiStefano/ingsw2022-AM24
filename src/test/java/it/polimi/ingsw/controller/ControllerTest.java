@@ -58,6 +58,7 @@ class ControllerTest {
     void disconnect(){
         c.handleMessage(new Join("player2", Mage.MAGE1, ColorT.BLACK), "player2");
         c.handleMessage(new Disconnect(), "test");
+        chooseAssistants(1);
         assertFalse(c.getModel().getPlayers().stream().filter( p -> p.getNickname().equals("test")).findFirst().get().isConnected());
     }
 
@@ -151,5 +152,4 @@ class ControllerTest {
     void getTurnController(){
         assertNotNull(c.getTurnController());
     }
-
 }
