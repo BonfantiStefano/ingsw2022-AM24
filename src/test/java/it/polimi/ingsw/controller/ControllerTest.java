@@ -33,12 +33,6 @@ class ControllerTest {
     void chooseAssistants( int i) {
         c.handleMessage(new ChooseAssistant(i), "test");
         c.handleMessage(new ChooseAssistant(i), "player2");
-        /*
-        c.getModel().chooseAssistants(c.getModel().getPlayerByNickname("test"), 1);
-        c.increaseHaveChosenAssistant();
-        c.getModel().chooseAssistants(c.getModel().getPlayerByNickname("player2"), 1);
-        c.increaseHaveChosenAssistant();
-         */
     }
 
     /**
@@ -66,7 +60,7 @@ class ControllerTest {
      * Ensures that a Player is able to rejoin a Game
      */
     @Test
-    void rejoin() throws InvalidIndexException {
+    void rejoin() {
         addSecondPlayer();
         //System.out.println(c.getPhase());
         chooseAssistants(1);
@@ -151,5 +145,17 @@ class ControllerTest {
     @Test
     void getTurnController(){
         assertNotNull(c.getTurnController());
+    }
+
+    /**
+     * The Controller should ignore these messages because the game isn't in expert mode
+     */
+    @Test
+    void sendCharacterMessages(){
+        c.handleMessage(new PlayCharacter(CharacterDescription.CHAR5), "test");
+        c.handleMessage(new ChooseColor(ColorS.BLUE), "test");
+        c.handleMessage(new ChooseTwoColors(ColorS.BLUE, ColorS.GREEN), "test");
+        c.handleMessage(new ChooseIsland(1), "test");
+        c.handleMessage(new SpecialMoveIsland(ColorS.GREEN, 1), "test");
     }
 }

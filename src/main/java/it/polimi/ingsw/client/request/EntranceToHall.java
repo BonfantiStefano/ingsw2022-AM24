@@ -1,9 +1,10 @@
 package it.polimi.ingsw.client.request;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.ColorS;
 
 public class EntranceToHall implements Request{
-    private ColorS colorS;
+    private final ColorS colorS;
 
     public EntranceToHall(ColorS colorS) {
         this.colorS = colorS;
@@ -11,5 +12,10 @@ public class EntranceToHall implements Request{
 
     public ColorS getColorS() {
         return colorS;
+    }
+
+    @Override
+    public void accept(Controller c) {
+        c.visit(this);
     }
 }

@@ -27,7 +27,7 @@ public class Server {
             case "ChooseTwoColors" -> gson.fromJson(jsonString, ChooseTwoColors.class);
             case "Disconnect" -> gson.fromJson(jsonString, Disconnect.class);
             case "EntranceToHall" -> gson.fromJson(jsonString, EntranceToHall.class);
-            case "GameParams" -> gson.fromJson(jsonString, GameParams.class);
+            //case "GameParams" -> gson.fromJson(jsonString, GameParams.class);
             case "Join" -> gson.fromJson(jsonString, Join.class);
             case "MoveMN" -> gson.fromJson(jsonString, MoveMN.class);
             case "MoveToIsland" -> gson.fromJson(jsonString, MoveToIsland.class);

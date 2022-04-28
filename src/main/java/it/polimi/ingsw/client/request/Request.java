@@ -1,6 +1,8 @@
 package it.polimi.ingsw.client.request;
 
-import java.io.Serializable;
+import it.polimi.ingsw.controller.Controller;
 
-public interface Request extends Serializable {
+
+public interface Request{
+    void accept(Controller c);
 }

@@ -48,7 +48,7 @@ public class ExpertControllerTest {
         Server server = new Server();
         expertController = new ExpertController(server, new GameParams(3, true, "Bob", Mage.MAGE1, ColorT.BLACK));
 
-        egb = (ExpertGameBoard) expertController.getExpertModel();
+        egb = (ExpertGameBoard) expertController.getModel();
 
         //initial position of MotherNature
         mnPos = egb.getWorld().getMNPosition();
@@ -402,7 +402,5 @@ public class ExpertControllerTest {
             }
             return c;
     }
-
-
 
 }

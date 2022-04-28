@@ -1,9 +1,10 @@
 package it.polimi.ingsw.client.request;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.ColorS;
 
 public class ChooseColor implements Request {
-    private ColorS color;
+    private final ColorS color;
 
     public ChooseColor(ColorS color){
        this.color = color;
@@ -13,4 +14,8 @@ public class ChooseColor implements Request {
         return color;
     }
 
+    @Override
+    public void accept(Controller c) {
+        c.visit(this);
+    }
 }

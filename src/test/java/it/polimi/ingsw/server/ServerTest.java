@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server;
 
+import com.google.gson.Gson;
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 class ServerTest {
-    private Server s = new Server();
+    private final Server s = new Server();
 
 
     void toJson(Request r) {
@@ -37,8 +38,8 @@ class ServerTest {
         assertEquals(msg.getClass(), s.parseMessage(s.toJson(msg)).getClass());
         msg = new EntranceToHall(ColorS.BLUE);
         assertEquals(msg.getClass(), s.parseMessage(s.toJson(msg)).getClass());
-        msg = new GameParams(2, true, "pippo", Mage.MAGE2, ColorT.WHITE);
-        assertEquals(msg.getClass(), s.parseMessage(s.toJson(msg)).getClass());
+        //msg = new GameParams(2, true, "pippo", Mage.MAGE2, ColorT.WHITE);
+        //assertEquals(msg.getClass(), s.parseMessage(s.toJson(msg)).getClass());
         msg = new Join("ciao", Mage.MAGE2, ColorT.WHITE);
         assertEquals(msg.getClass(), s.parseMessage(s.toJson(msg)).getClass());
         msg = new MoveMN(1);
@@ -49,5 +50,13 @@ class ServerTest {
         assertEquals(msg.getClass(), s.parseMessage(s.toJson(msg)).getClass());
         msg = new SpecialMoveIsland(ColorS.YELLOW, 2);
         assertEquals(msg.getClass(), s.parseMessage(s.toJson(msg)).getClass());
+    }
+    @Test
+    void prova() {
+        Request msg = new ChooseColor(ColorS.BLUE);
+        String toJson = s.toJson(msg);
+        System.out.println(toJson);
+        ChooseColor c = new Gson().fromJson(toJson, ChooseColor.class);
+        System.out.println(c.getColor());
     }
 }

@@ -1,4 +1,7 @@
 package it.polimi.ingsw.client.request;
 
-public class Pong implements Request{
+import it.polimi.ingsw.controller.Controller;
+
+public class Pong{
+
 }

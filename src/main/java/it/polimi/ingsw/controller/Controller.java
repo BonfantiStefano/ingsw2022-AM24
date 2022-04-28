@@ -1,11 +1,8 @@
 package it.polimi.ingsw.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
+
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
-import it.polimi.ingsw.model.ExpertModel;
 import it.polimi.ingsw.model.Model;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Player;
@@ -29,9 +26,10 @@ public class Controller {
     private int havePlayed;
     private int haveChosenAssistant;
     private String activePlayer;
+    private String messageSender;
     private boolean gameStarted;
 
-    public Controller(Server server , GameParams m){
+    public Controller(Server server, GameParams m){
         this.server = server;
         createModel(m);
         phase=PHASE.SETUP;
@@ -46,45 +44,59 @@ public class Controller {
      * @param m message containing the Game Parameters
      * @return
      */
-    public ExpertModel createModel(GameParams m){
+    public void createModel(GameParams m){
         numPlayers=m.getNumPlayers();
         model = new GameBoard(m.getNumPlayers());
         model.addPlayer(m.getNickname(), m.getColorT(), m.getMage());
         model.newClouds();
+        numPlayers = m.getNumPlayers();
         haveChosenAssistant = 0;
         havePlayed = 0;
-        return null;
     }
 
+    /**
+     * Receives a Request and visits the message
+     * @param r the Request submitted
+     * @param nickname nickname belonging to the Player submitting the Request
+     */
+    public void handleMessage(Request r, String nickname){
+        messageSender = nickname;
+        r.accept(this);
+        messageSender = null;
+    }
 
-
-
-    public void handleMessage(ChooseAssistant msg, String nickname){
-        if(phase.equals(PHASE.PLANNING) && model.getPlayers().get(haveChosenAssistant).getNickname().equals(nickname))
+    /**
+     * If the game Phase is right perform the correct actions for this kind of Message
+     * @param msg a Client's Request
+     */
+    public void visit(ChooseAssistant msg){
+        if(phase.equals(PHASE.PLANNING) && model.getPlayers().get(haveChosenAssistant).getNickname().equals(messageSender))
             try {
-                model.chooseAssistants(model.getPlayerByNickname(nickname), msg.getIndex());
+                model.chooseAssistants(model.getPlayerByNickname(messageSender), msg.getIndex());
                 increaseHaveChosenAssistant();
             } catch (InvalidIndexException e) {
-                server.sendMessage(nickname, "Invalid index!");
+                server.sendMessage(messageSender, ERRORS.INVALID_INDEX.toString());
             }
         nextPhase();
     }
-
-    public void handleMessage(Disconnect msg, String nickname){
+    /**
+     * If the game Phase is right perform the correct actions for this kind of Message
+     * @param msg a Client's Request
+     */
+    public void visit(Disconnect msg){
         //if a Player disconnects during the setup phase the game is canceled
         //can be changed later
         if (phase.equals(PHASE.SETUP))
             server.gameEnded();
         else if(gameStarted)
-            model.setConnected(nickname, false);
+            model.setConnected(messageSender, false);
         nextPhase();
     }
     /**
      * Handles all Join messages received by checking if all conditions to join the Game are met
      * @param msg the Join message
-     * @param nickname the nickname of the Player associated with the Client
      */
-    public void handleMessage(Join msg, String nickname){
+    public void visit(Join msg){
         String message = "";
         boolean availableNickname = model.getPlayerByNickname(msg.getNickname())==null;
         boolean availableMage = model.getPlayers().stream().noneMatch(p->p.getMage().equals(msg.getMage()));
@@ -92,7 +104,7 @@ public class Controller {
         //check if another player can join and his nickname is available
         if(availableNickname && availableMage && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
             model.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
-            server.sendMessage(nickname, "Accepted!");
+            server.sendMessage(messageSender, "Accepted!");
             if(model.getPlayers().size() == numPlayers) {
                 //all players have connected
                 turnController.setGameStarted(true);
@@ -100,61 +112,76 @@ public class Controller {
             }
         }
         //if the Player had disconnected update his status as connected
-        else if(!availableNickname && !model.getPlayerByNickname(nickname).isConnected()) {
-            model.setConnected(nickname, true);
-            server.sendMessage(nickname, "You have rejoined the Game!");
+        else if(!availableNickname && !model.getPlayerByNickname(messageSender).isConnected()) {
+            model.setConnected(messageSender, true);
+            server.sendMessage(messageSender, "You have rejoined the Game!");
         }
         else if(!availableNickname)
-            message+="Nickname already in use!";
+            message+=ERRORS.NICKNAME_TAKEN;
         else if(!availableMage)
-            message+="Mage already in use!";
+            message+=ERRORS.MAGE_TAKEN;
 
 
         if(!message.isEmpty())
-            server.sendMessage(nickname,message);
+            server.sendMessage(messageSender,message);
+        nextPhase();
+    }
+    /**
+     * If the game Phase is right perform the correct actions for this kind of Message
+     * @param msg a Client's Request
+     */
+    public void visit(MoveToIsland msg){
+        if(verifyActive(messageSender)&&phase.equals(PHASE.MOVE_STUDENTS))
+            actionController.handleAction(msg);
+        nextPhase();
+    }
+    /**
+     * If the game Phase is right perform the correct actions for this kind of Message
+     * @param msg a Client's Request
+     */
+    public void visit(MoveMN msg){
+        if(verifyActive(messageSender)&&phase.equals(PHASE.MOVE_MN))
+            actionController.handleAction(msg);
+        nextPhase();
+    }
+    /**
+     * If the game Phase is right perform the correct actions for this kind of Message
+     * @param msg a Client's Request
+     */
+    public void visit(ChooseCloud msg){
+        if(verifyActive(messageSender)&&phase.equals(PHASE.CHOOSE_CLOUD))
+            actionController.handleAction(msg);
+        nextPhase();
+    }
+    /**
+     * If the game Phase is right perform the correct actions for this kind of Message
+     * @param msg a Client's Request
+     */
+    public void visit(EntranceToHall msg){
+        if(verifyActive(messageSender)&&phase.equals(PHASE.MOVE_STUDENTS))
+            actionController.handleAction(msg);
         nextPhase();
     }
 
-    public void handleMessage(MoveToIsland msg, String nickname){
-        if(verifyActive(nickname)&&phase.equals(PHASE.MOVE_STUDENTS))
-            actionController.handleAction(msg);
-        nextPhase();
-    }
-    public void handleMessage(MoveMN msg, String nickname){
-        if(verifyActive(nickname)&&phase.equals(PHASE.MOVE_MN))
-            actionController.handleAction(msg);
-        nextPhase();
-    }
-    public void handleMessage(ChooseCloud msg, String nickname){
-        if(verifyActive(nickname)&&phase.equals(PHASE.CHOOSE_CLOUD))
-            actionController.handleAction(msg);
-        nextPhase();
-    }
-
-    public void handleMessage(EntranceToHall msg, String nickname){
-        if(verifyActive(nickname)&&phase.equals(PHASE.MOVE_STUDENTS))
-            actionController.handleAction(msg);
-        nextPhase();
-    }
 
     /**
      * Handles the message received by performing the correct action based on the type of Request
      * @param m Request message sent by a Client
-     * @param nickname the nickname of the Player associated with the Client
      *                 NOT FINAL
      */
-    public void handleMessage(Request m, String nickname){
+/*
+    public void visit(Request m){
         //accept the following messages only if they come from the ActivePlayer
-        if (nickname.equals(activePlayer)) {
+        if (messageSender.equals(activePlayer)) {
             if (isMessageCharacter(m))
-                handleCharacter(m, nickname);
+                handleCharacter(m, messageSender);
         } else {
-            server.sendMessage(nickname, "Invalid message!");
+            server.sendMessage(messageSender, "Invalid message!");
         }
         //after a message has been received ask the turnController for the next phase
         nextPhase();
     }
-
+*/
     /**
      * Invoke the TurnController to ask for the next phase.
      */
@@ -247,16 +274,42 @@ public class Controller {
                     server.gameEnded();
         }
     }
-
     /**
-     * Verify if a Request is relative to Characters
-     * @param m the Request to analyze
-     * @return true if the Request is a message relative to Characters
+     * If the game Phase is right perform the correct actions for this kind of Message
+     * @param m a Client's Request regarding a Character
      */
-    private boolean isMessageCharacter(Request m){
-        return (m instanceof PlayCharacter || m instanceof ChooseIsland || m instanceof ChooseColor
-                || m instanceof ChooseTwoColors || m instanceof SpecialMoveIsland);
+    public void visit(PlayCharacter m){
+        handleCharacter(m, messageSender);
     }
+    /**
+     * If the game Phase is right perform the correct actions for this kind of Message
+     * @param m a Client's Request regarding a Character
+     */
+    public void visit(ChooseIsland m){
+        handleCharacter(m, messageSender);
+    }
+    /**
+     * If the game Phase is right perform the correct actions for this kind of Message
+     * @param m a Client's Request regarding a Character
+     */
+    public void visit(ChooseColor m){
+        handleCharacter(m, messageSender);
+    }
+    /**
+     * If the game Phase is right perform the correct actions for this kind of Message
+     * @param m a Client's Request regarding a Character
+     */
+    public void visit(ChooseTwoColors m){
+        handleCharacter(m, messageSender);
+    }
+    /**
+     * If the game Phase is right perform the correct actions for this kind of Message
+     * @param m a Client's Request regarding a Character
+     */
+    public void visit(SpecialMoveIsland m){
+        handleCharacter(m, messageSender);
+    }
+
 
     /**
      * Increase the number of Players that have chosen their Assistant, if everyone has done so notifies the TurnController
@@ -326,5 +379,17 @@ public class Controller {
      */
     public TurnController getTurnController(){
         return this.turnController;
+    }
+
+    public void setNumPlayers(int numPlayers) {
+        this.numPlayers = numPlayers;
+    }
+
+    public String getMessageSender() {
+        return messageSender;
+    }
+
+    public void setMessageSender(String messageSender) {
+        this.messageSender = messageSender;
     }
 }
