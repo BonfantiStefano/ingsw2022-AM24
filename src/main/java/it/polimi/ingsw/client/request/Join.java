@@ -8,11 +8,13 @@ public class Join implements Request{
     private final String nickname;
     private final Mage mage;
     private final ColorT colorT;
+    private int index;
 
-    public Join(String nickname, Mage mage, ColorT colorT) {
+    public Join(String nickname, Mage mage, ColorT colorT, int index) {
         this.nickname = nickname;
         this.mage = mage;
         this.colorT = colorT;
+        this.index = index;
     }
 
     public ColorT getColorT() { return colorT; }
@@ -23,6 +25,10 @@ public class Join implements Request{
 
     public Mage getMage() {
         return mage;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     @Override

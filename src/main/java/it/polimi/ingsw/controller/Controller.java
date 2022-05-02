@@ -6,7 +6,7 @@ import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.model.Model;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.server.Server;
+import it.polimi.ingsw.server.Lobby;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -20,7 +20,7 @@ public class Controller {
     private Model model;
     private ActionController actionController;
     private TurnController turnController;
-    private Server server;
+    private Lobby lobby;
     private PHASE phase;
     private int numPlayers;
     private int havePlayed;
@@ -29,12 +29,12 @@ public class Controller {
     private String messageSender;
     private boolean gameStarted;
 
-    public Controller(Server server, GameParams m){
-        this.server = server;
+    public Controller(Lobby lobby, GameParams m){
+        this.lobby = lobby;
         createModel(m);
         phase=PHASE.SETUP;
         turnController = new TurnController();
-        actionController= new ActionController(model, server, turnController);
+        actionController= new ActionController(model, lobby, turnController);
         gameStarted = false;
     }
 
@@ -42,7 +42,6 @@ public class Controller {
     /**
      * Creates a new Model instance
      * @param m message containing the Game Parameters
-     * @return
      */
     public void createModel(GameParams m){
         numPlayers=m.getNumPlayers();
@@ -75,7 +74,7 @@ public class Controller {
                 model.chooseAssistants(model.getPlayerByNickname(messageSender), msg.getIndex());
                 increaseHaveChosenAssistant();
             } catch (InvalidIndexException e) {
-                server.sendMessage(messageSender, ERRORS.INVALID_INDEX.toString());
+                lobby.sendMessage(messageSender, ERRORS.INVALID_INDEX.toString());
             }
         nextPhase();
     }
@@ -87,7 +86,7 @@ public class Controller {
         //if a Player disconnects during the setup phase the game is canceled
         //can be changed later
         if (phase.equals(PHASE.SETUP))
-            server.gameEnded();
+            lobby.gameEnded();
         else if(gameStarted)
             model.setConnected(messageSender, false);
         nextPhase();
@@ -104,7 +103,7 @@ public class Controller {
         //check if another player can join and his nickname is available
         if(availableNickname && availableMage && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
             model.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
-            server.sendMessage(messageSender, "Accepted!");
+            lobby.sendMessage(messageSender, "Accepted!");
             if(model.getPlayers().size() == numPlayers) {
                 //all players have connected
                 turnController.setGameStarted(true);
@@ -114,7 +113,7 @@ public class Controller {
         //if the Player had disconnected update his status as connected
         else if(!availableNickname && !model.getPlayerByNickname(messageSender).isConnected()) {
             model.setConnected(messageSender, true);
-            server.sendMessage(messageSender, "You have rejoined the Game!");
+            lobby.sendMessage(messageSender, "You have rejoined the Game!");
         }
         else if(!availableNickname)
             message+=ERRORS.NICKNAME_TAKEN;
@@ -123,7 +122,7 @@ public class Controller {
 
 
         if(!message.isEmpty())
-            server.sendMessage(messageSender,message);
+            lobby.sendMessage(messageSender,message);
         nextPhase();
     }
     /**
@@ -209,7 +208,7 @@ public class Controller {
                 //in this phase the next Player in order must choose his assistant
                 //if he's connected send him a message
                 if (sortedPlayers.get(haveChosenAssistant).isConnected())
-                    server.sendMessage(sortedPlayers.get(haveChosenAssistant).getNickname(), "Choose your Assistant!");
+                    lobby.sendMessage(sortedPlayers.get(haveChosenAssistant).getNickname(), "Choose your Assistant!");
                 else
                     increaseHaveChosenAssistant();
             }
@@ -220,7 +219,7 @@ public class Controller {
                 //if he's connected send him a message
                 if (model.getActivePlayer().isConnected()) {
                     activePlayer = model.getActivePlayer().getNickname();
-                    server.sendMessage(activePlayer, "Select a Student and choose a destination three times!");
+                    lobby.sendMessage(activePlayer, "Select a Student and choose a destination three times!");
                 }
                 //if the Player isn't connected notify the TurnController and ask the next phase
                 else {
@@ -230,10 +229,10 @@ public class Controller {
             }
             case MOVE_MN ->
                     //in this phase the Player must move MN
-                    server.sendMessage(activePlayer, "Choose where you want to move MN!");
+                    lobby.sendMessage(activePlayer, "Choose where you want to move MN!");
             case CHOOSE_CLOUD ->
                     //in this phase the Player must choose a Cloud
-                    server.sendMessage(activePlayer, "Choose a Cloud!");
+                    lobby.sendMessage(activePlayer, "Choose a Cloud!");
             case RESET_TURN -> {
                 //if all Players have played their turn notify the TurnController
                 if (havePlayed % numPlayers == 1)
@@ -251,11 +250,11 @@ public class Controller {
                 if (model.getGameMustEnd()) {
                     Optional<Player> winner = model.checkWin();
                     winner.ifPresentOrElse(w -> {
-                                server.sendMessage(w.getNickname(), "You won");
-                                server.sendMessageToOthers(w.getNickname(), "You Lose");
+                                lobby.sendMessage(w.getNickname(), "You won");
+                                lobby.sendMessageToOthers(w.getNickname(), "You Lose");
                             },
                             () -> {
-                                server.sendMessageToAll("The game ends in a draw");
+                                lobby.sendMessageToAll("The game ends in a draw");
                             }
                     );
                     //notify the TurnController
@@ -268,10 +267,10 @@ public class Controller {
             }
             case CHARACTER_ACTION ->
                     //in this phase the Player can't end his turn unless he performs a Character move
-                    server.sendMessage(activePlayer, "You need to perform a Character move!");
+                    lobby.sendMessage(activePlayer, "You need to perform a Character move!");
             case GAME_WON ->
-                    //notify the server that the game has ended
-                    server.gameEnded();
+                    //notify the lobby that the game has ended
+                    lobby.gameEnded();
         }
     }
     /**
@@ -330,7 +329,7 @@ public class Controller {
      * @param nickname the nickname of the Player associated with the Client
      */
     private void handleCharacter(Request m, String nickname){
-        server.sendMessage(nickname, "You're not playing in expert mode!");
+        lobby.sendMessage(nickname, "You're not playing in expert mode!");
     }
 
     private boolean verifyActive(String nickname){
@@ -350,16 +349,16 @@ public class Controller {
     }
 
     /**
-     * Gets the Server
-     * @return the Game's server
+     * Gets the lobby
+     * @return the Game's lobby
      */
-    public Server getServer(){
-        return this.server;
+    public Lobby getLobby(){
+        return this.lobby;
     }
 
 
     /**
-     * Sets the the Model
+     * Sets the Model
      * @param model the other model
      */
     public void setModel(Model model) {

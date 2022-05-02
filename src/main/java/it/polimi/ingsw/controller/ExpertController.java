@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
 
 import java.util.Optional;
@@ -25,11 +26,11 @@ public class ExpertController extends Controller {
 
     /**
      * Constructor ExpertController creates a new empty ExpertController instance.
-     * @param server - server
+     * @param lobby - lobby
      * @param m - number of the players
      */
-    public ExpertController(Server server, GameParams m) {
-        super(server, m);
+    public ExpertController(Lobby lobby, GameParams m) {
+        super(lobby, m);
         createModel(m);
         numSwitchMoves = 0;
         numStudMoves = 0;
@@ -40,7 +41,6 @@ public class ExpertController extends Controller {
      * new ExpertGameBoard instance.
      * @param m - the number of players and first player's info
      */
-
     public void createModel(GameParams m){
         setNumPlayers(m.getNumPlayers());
         setModel(new ExpertGameBoard(m.getNumPlayers()));
@@ -68,9 +68,9 @@ public class ExpertController extends Controller {
                 Character c = getModel().getCharacters().stream().
                         filter(character -> msg.getC().getDesc().equals(character.getDescription())).findAny().orElse(null);
                 if(c!= null) getModel().playCharacter(c);
-                else getServer().sendMessage(getMessageSender(), ERRORS.CHARACTER_NOT_AVAILABLE.toString());
+                else getLobby().sendMessage(getMessageSender(), ERRORS.CHARACTER_NOT_AVAILABLE.toString());
             } catch (NotEnoughCoinsException e) {
-                getServer().sendMessage(getMessageSender(), ERRORS.NOT_ENOUGH_COINS.toString());
+                getLobby().sendMessage(getMessageSender(), ERRORS.NOT_ENOUGH_COINS.toString());
             }
         }
     }
@@ -78,12 +78,12 @@ public class ExpertController extends Controller {
     public void visit(SpecialMoveIsland m){
         if(filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR1.getDesc())) {
             if (m.getIslandIndex() < 0 || m.getIslandIndex() >= getModel().getSizeWorld()) {
-                getServer().sendMessage(getModel().getActivePlayer().getNickname(), ERRORS.INVALID_INDEX.toString());
+                getLobby().sendMessage(getModel().getActivePlayer().getNickname(), ERRORS.INVALID_INDEX.toString());
             } else {
                 try {
                     getModel().moveStudent(m.getStudent(), ((CharacterWithStudent) activeCharacter), getModel().getIslandByIndex(m.getIslandIndex()));
                 } catch (NoSuchStudentException e) {
-                    getServer().sendMessage(getMessageSender(), "there is no " + m.getStudent().toString().toLowerCase() + " student on the card");
+                    getLobby().sendMessage(getMessageSender(), "there is no " + m.getStudent().toString().toLowerCase() + " student on the card");
                 }
                 getModel().resetCharacterStudent();
             }
@@ -96,13 +96,13 @@ public class ExpertController extends Controller {
                 getModel().checkIsland(getModel().getIslandByIndex(m.getIslandIndex()));
                 Optional<Player> winner = getModel().checkWin();
                 winner.ifPresentOrElse(w -> {
-                            getServer().sendMessage(w.getNickname(), "You won");
-                            getServer().sendMessageToOthers(w.getNickname(), "You Lose");
+                            getLobby().sendMessage(w.getNickname(), "You won");
+                            getLobby().sendMessageToOthers(w.getNickname(), "You Lose");
                             getTurnController().setGameEnded(true);
                         },
                         () -> {
                             if (getModel().getSizeWorld() == 3) {
-                                getServer().sendMessageToAll("The game ends in a draw");
+                                getLobby().sendMessageToAll("The game ends in a draw");
                                 getTurnController().setGameEnded(true);
                             }
                         }
@@ -134,12 +134,12 @@ public class ExpertController extends Controller {
                 try {
                     ((CharacterWithStudent) activeCharacter).remove(m.getColor());
                 } catch (NoSuchStudentException e) {
-                    getServer().sendMessage(getMessageSender(), "there is no " + m.getColor().toString().toLowerCase() + " students on the card");
+                    getLobby().sendMessage(getMessageSender(), "there is no " + m.getColor().toString().toLowerCase() + " students on the card");
                 }
                 try {
                     getModel().addToHall(m.getColor());
                 } catch (PlaceFullException e) {
-                    getServer().sendMessage(getMessageSender(), "There is no space for another " + m.getColor().toString().toLowerCase() + " student in the hall");
+                    getLobby().sendMessage(getMessageSender(), "There is no space for another " + m.getColor().toString().toLowerCase() + " student in the hall");
                 }
                 getModel().resetCharacterStudent();
             }
@@ -154,11 +154,11 @@ public class ExpertController extends Controller {
                     try {
                         getModel().switchStudents(m.getFirstColor(), m.getSecondColor());
                     } catch (NoSuchStudentException | PlaceFullException e) {
-                        getServer().sendMessage(getMessageSender(), ERRORS.NO_SUCH_STUDENT.toString());
+                        getLobby().sendMessage(getMessageSender(), ERRORS.NO_SUCH_STUDENT.toString());
                     }
                     numSwitchMoves++;
                 } else {
-                    getServer().sendMessage(getMessageSender(), ERRORS.NO_MOVES_REMAINING.toString());
+                    getLobby().sendMessage(getMessageSender(), ERRORS.NO_MOVES_REMAINING.toString());
                 }
             }
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR7.getDesc())) {
@@ -167,16 +167,16 @@ public class ExpertController extends Controller {
                     try {
                         getModel().moveStudent(m.getFirstColor(), getModel().getActivePlayer().getMyBoard(), ((CharacterWithStudent) activeCharacter));
                     } catch (NoSuchStudentException e) {
-                        getServer().sendMessage(getMessageSender(), "There is no " + m.getFirstColor().toString().toLowerCase() + " students in the entrance");
+                        getLobby().sendMessage(getMessageSender(), "There is no " + m.getFirstColor().toString().toLowerCase() + " students in the entrance");
                     }
                     try {
                         getModel().moveStudent(m.getSecondColor(), ((CharacterWithStudent) activeCharacter), getModel().getActivePlayer().getMyBoard());
                     } catch (NoSuchStudentException e) {
-                        getServer().sendMessage(getMessageSender(), "There is no " + m.getSecondColor().toString().toLowerCase() + " students on the card");
+                        getLobby().sendMessage(getMessageSender(), "There is no " + m.getSecondColor().toString().toLowerCase() + " students on the card");
                     }
                     numStudMoves++;
                 } else {
-                    getServer().sendMessage(getMessageSender(), ERRORS.NO_MOVES_REMAINING.toString());
+                    getLobby().sendMessage(getMessageSender(), ERRORS.NO_MOVES_REMAINING.toString());
                 }
             }
         }
@@ -188,7 +188,7 @@ public class ExpertController extends Controller {
      */
     private boolean filter(){
         if(activeCharacter==null){
-            getServer().sendMessage(getMessageSender(), ERRORS.NO_ACTIVE_CHARACTER.toString());
+            getLobby().sendMessage(getMessageSender(), ERRORS.NO_ACTIVE_CHARACTER.toString());
             return false;
         }
         return true;

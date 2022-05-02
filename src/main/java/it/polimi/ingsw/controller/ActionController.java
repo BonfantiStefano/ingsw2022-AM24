@@ -7,6 +7,7 @@ import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.Cloud;
 import it.polimi.ingsw.model.Model;
 import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
 
 import java.util.Optional;
@@ -20,19 +21,19 @@ public class ActionController {
     private Model model;
     private TurnController turnController; //maybe is better the interface
     private int numMoveStudent;
-    private Server server; //maybe is better the interface
+    private Lobby lobby; //maybe is better the interface
 
     /**
      * Constructor ActionController creates a new empty ActionController instance.
      * @param model Model - the model associated to the controller.
-     * @param server Server - the server where all the messages are sent.
+     * @param lobby Lobby - the lobby where all the messages are sent.
      * @param turnController - the turnController used to updating the Phase of the game.
      */
-    public ActionController(Model model, Server server, TurnController turnController){
+    public ActionController(Model model, Lobby lobby, TurnController turnController){
         this.model=model;
         this.turnController = turnController;
         this.numMoveStudent = 0;
-        this.server = server;
+        this.lobby = lobby;
     }
 
     /**
@@ -50,9 +51,9 @@ public class ActionController {
                 numMoveStudent = 0;
             }
         } catch (PlaceFullException e) {
-            server.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
+            lobby.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
         } catch (NoSuchStudentException e) {
-            server.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
+            lobby.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
         }
     }
 
@@ -64,17 +65,17 @@ public class ActionController {
      */
     public void handleAction(MoveToIsland m){
         if(m.getIndex() < 0 || m.getIndex() >= model.getSizeWorld()) {
-            server.sendMessage(model.getActivePlayer().getNickname(), "Error: invalid Island index");
+            lobby.sendMessage(model.getActivePlayer().getNickname(), "Error: invalid Island index");
         } else {
             try {
                 model.moveStudent(m.getColorS(), model.getActivePlayer().getMyBoard(), model.getIslandByIndex(m.getIndex()));
                 numMoveStudent++;
-                if(numMoveStudent == 3) {
+                if(numMoveStudent == model.getNumPlayers()+1) {
                     turnController.setMoveStudentsCheck(true);
                     numMoveStudent = 0;
                 }
             } catch (NoSuchStudentException e) {
-                server.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
+                lobby.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
             }
         }
     }
@@ -87,23 +88,23 @@ public class ActionController {
      */
     public void handleAction(MoveMN m) {
         if(m.getIndex() > 7 || m.getIndex() < 1) {
-            server.sendMessage(model.getActivePlayer().getNickname(), "Error: Mother Nature can't do these steps");
+            lobby.sendMessage(model.getActivePlayer().getNickname(), "Error: Mother Nature can't do these steps");
         } else {
             try {
                 model.moveMN(m.getIndex());
                 Optional<Player> winner = model.checkWin();
-                winner.ifPresentOrElse(w -> {server.sendMessage(w.getNickname(), "You won");
-                            server.sendMessageToOthers(w.getNickname(), "You Lose");
+                winner.ifPresentOrElse(w -> {lobby.sendMessage(w.getNickname(), "You won");
+                            lobby.sendMessageToOthers(w.getNickname(), "You Lose");
                             turnController.setGameEnded(true);},
                         () -> {if(model.getSizeWorld() == 3) {
-                            server.sendMessageToAll("The game ends in a draw");
+                            lobby.sendMessageToAll("The game ends in a draw");
                             turnController.setGameEnded(true);
                         }
                         }
                 );
                 turnController.setMoveMNCheck(true);
             } catch (InvalidMNStepsException e) {
-                server.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
+                lobby.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
             }
         }
     }
@@ -117,14 +118,14 @@ public class ActionController {
      */
     public void handleAction(ChooseCloud m){
         if(m.getIndex() < 0 || m.getIndex() >= model.getNumPlayers() || model.getCloudByIndex(m.getIndex()).getStudents().size() == 0) {
-            server.sendMessage(model.getActivePlayer().getNickname(), "Error: invalid Cloud index");
+            lobby.sendMessage(model.getActivePlayer().getNickname(), "Error: invalid Cloud index");
         } else {
             Cloud cloud = model.getCloudByIndex(m.getIndex());
             for(int counter = 0; counter <= model.getNumPlayers(); counter++) {
                 try {
                     model.moveStudent(cloud.getStudents().get(0), cloud, model.getActivePlayer().getMyBoard());
                 } catch (NoSuchStudentException e) {
-                    server.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
+                    lobby.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
                 }
             }
             turnController.setChooseCloudCheck(true);

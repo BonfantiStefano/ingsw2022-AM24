@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.StudentContainer;
 import it.polimi.ingsw.model.character.CharacterDescription;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Mage;
+import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,15 +19,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ControllerTest {
     Controller c;
-    Server s = new Server();
+    Lobby lobby = new Lobby();
 
     @BeforeEach
     void init(){
-        c = new Controller(s, new GameParams(2, false, "test", Mage.MAGE2, ColorT.WHITE));
+        c = new Controller(lobby, new GameParams(2, false, "test", Mage.MAGE2, ColorT.WHITE));
     }
 
     void addSecondPlayer() {
-        Join join1 = new Join("player2", Mage.MAGE1, ColorT.BLACK);
+        Join join1 = new Join("player2", Mage.MAGE1, ColorT.BLACK, 1);
         c.handleMessage(join1, "player2");
     }
 
@@ -50,7 +51,7 @@ class ControllerTest {
      */
     @Test
     void disconnect(){
-        c.handleMessage(new Join("player2", Mage.MAGE1, ColorT.BLACK), "player2");
+        c.handleMessage(new Join("player2", Mage.MAGE1, ColorT.BLACK,1), "player2");
         c.handleMessage(new Disconnect(), "test");
         chooseAssistants(1);
         assertFalse(c.getModel().getPlayers().stream().filter( p -> p.getNickname().equals("test")).findFirst().get().isConnected());
@@ -66,7 +67,7 @@ class ControllerTest {
         chooseAssistants(1);
 
         c.handleMessage(new Disconnect(), "test");
-        c.handleMessage(new Join("test", Mage.MAGE2, ColorT.WHITE), "test");
+        c.handleMessage(new Join("test", Mage.MAGE2, ColorT.WHITE,1), "test");
         assertTrue(c.getModel().getPlayers().stream().filter( p -> p.getNickname().equals("test")).findFirst().get().isConnected());
     }
 
@@ -136,7 +137,7 @@ class ControllerTest {
      */
     @Test
     void incorrectMessages(){
-        Join join2 = new Join("test", Mage.MAGE1, ColorT.BLACK);
+        Join join2 = new Join("test", Mage.MAGE1, ColorT.BLACK,1);
         c.handleMessage(join2, "test");
         addSecondPlayer();
         c.handleMessage(new ChooseAssistant(34), "test");

@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.model.world.World;
+import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ActionControllerTest {
     private GameBoard gameBoard;
     private ActionController actionController;
-    private Server server;
+    private Lobby lobby;
     private TurnController turnController;
 
     /** Method setup creates an ActionController and a GameBoard that
@@ -36,7 +37,7 @@ class ActionControllerTest {
      * */
     @BeforeEach
     void setUp() throws InvalidIndexException {
-        server = new Server();
+        lobby = new Lobby();
         turnController = new TurnController();
         gameBoard = new GameBoard(3);
         gameBoard.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
@@ -46,7 +47,7 @@ class ActionControllerTest {
         gameBoard.chooseAssistants(gameBoard.getPlayerByNickname("Lisa"), 8);
         gameBoard.chooseAssistants(gameBoard.getPlayerByNickname("Bob"), 7);
         gameBoard.chooseAssistants(gameBoard.getPlayerByNickname("Alice"), 4);
-        actionController = new ActionController(gameBoard, server, turnController);
+        actionController = new ActionController(gameBoard, lobby, turnController);
     }
 
     /**

@@ -1,48 +1,97 @@
 package it.polimi.ingsw.server;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import it.polimi.ingsw.client.request.ChooseAssistant;
 import it.polimi.ingsw.client.request.*;
+import it.polimi.ingsw.server.answer.Answer;
+import it.polimi.ingsw.server.answer.Error;
+import it.polimi.ingsw.server.answer.Welcome;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+//Not final, work in progress
 public class Server {
+    private ExecutorService executorService;
+    private Map<Integer, SocketClientHandler> mapIdSocket;
+    private Map<Integer, Lobby> mapIdLobby;
+    private ArrayList<Lobby> lobbies;
+    private ServerSocket serverSocket;
+    private int idClients;
 
-    public void sendMessage(String nickname, String content){}
-
-    public void sendMessageToOthers(String nickname, String context) {}
-
-    public void sendMessageToAll(String context) {}
-
-    public void gameEnded(){}
-
-    public Request parseMessage(String jsonString) throws Exception {
-        Gson gson = new Gson();
-        JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
-        return switch (jsonObject.get("type").getAsString()) {
-            case "ChooseAssistant" -> gson.fromJson(jsonString, ChooseAssistant.class);
-            case "ChooseCloud" -> gson.fromJson(jsonString, ChooseCloud.class);
-            case "ChooseColor" -> gson.fromJson(jsonString, ChooseColor.class);
-            case "ChooseIsland" -> gson.fromJson(jsonString, ChooseIsland.class);
-            case "ChooseTwoColors" -> gson.fromJson(jsonString, ChooseTwoColors.class);
-            case "Disconnect" -> gson.fromJson(jsonString, Disconnect.class);
-            case "EntranceToHall" -> gson.fromJson(jsonString, EntranceToHall.class);
-            //case "GameParams" -> gson.fromJson(jsonString, GameParams.class);
-            case "Join" -> gson.fromJson(jsonString, Join.class);
-            case "MoveMN" -> gson.fromJson(jsonString, MoveMN.class);
-            case "MoveToIsland" -> gson.fromJson(jsonString, MoveToIsland.class);
-            case "PlayCharacter" -> gson.fromJson(jsonString, PlayCharacter.class);
-            case "SpecialMoveIsland" -> gson.fromJson(jsonString, SpecialMoveIsland.class);
-            default -> throw new Exception("Invalid message");
-        };
+    public Server() {
+        executorService = Executors.newCachedThreadPool();
+        mapIdSocket = new HashMap<>();
+        mapIdLobby = new HashMap<>();
+        lobbies = new ArrayList<>();
     }
 
-    public String toJson(Request r){
-        Gson gson = new Gson();
-        JsonElement jsonElement;
-        jsonElement = gson.toJsonTree(r);
-        jsonElement.getAsJsonObject().addProperty("type", r.getClass().getSimpleName());
+    public void startServer(int port) {
+        try {
+            serverSocket = new ServerSocket(port);
+            System.out.println("Server started on port " + port);
+        } catch (IOException e) {
+            System.err.println("Error during Socket initialization, the application will close");
+            System.exit(0);
+        }
+        //Thread t = new Thread(()-> {
+            while (true) {
+                //Until the server is stopped, he keeps accepting new connections from clients who connect to its socket
+                try {
+                    System.out.println("Waiting a new client");
+                    Socket clientSocket = serverSocket.accept();
+                    System.out.println("A client is connected for the server");
+                    SocketClientHandler socketClientHandler = new SocketClientHandler(clientSocket, this, idClients);
+                    mapIdSocket.put(idClients, socketClientHandler);
+                    executorService.submit(socketClientHandler);
+                    idClients++;
+                } catch (IOException e) {
+                    System.out.println("An exception caused the server to stop working.");
+                    System.exit(0);
+                }
+            }
+        //});
+        //t.start();
+    }
 
-        return gson.toJson(jsonElement);
+    public void handleClientDisconnection(int clientId) {
+        /*
+        if (!gameStarted) {
+            getLobbyByIdClient(clientId).remove(clientId);
+        } else {
+            getControllerByIdClient(clientId).setInactivePlayer(mapIdNickname.get(clientId));
+        }
+         */
+    }
+
+    public boolean handleJoin(Join join, int clientId) {
+        //per gestire i vari casi di errori separatamente poteri usare if(lobbies.get(join.getIndex()).getFull()) ...
+        if(join.getIndex() < 0 || join.getIndex() > lobbies.size()) {
+            boolean ris = lobbies.get(join.getIndex()).addPlayer(join, mapIdSocket.get(clientId), clientId);
+            if (ris) {
+                mapIdLobby.put(clientId, lobbies.get(join.getIndex()));
+            }
+            return ris;
+        }
+        return false;
+    }
+
+    public void forwardMessage(Request request, int clientID) {
+        mapIdLobby.get(clientID).handleMessage(request, clientID);
+    }
+
+    public void createLobby(GameParams gameParams, int clientId) {
+        Lobby lobby = new Lobby(gameParams, mapIdSocket.get(clientId), clientId);
+        lobbies.add(lobby);
+        mapIdLobby.put(clientId, lobby);
+    }
+
+    public Welcome getLobbies() {
+        //Not final, it needs to be improved
+        return new Welcome(lobbies);
     }
 }

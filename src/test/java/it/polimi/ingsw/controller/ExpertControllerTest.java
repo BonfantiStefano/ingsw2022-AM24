@@ -17,6 +17,7 @@ import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.model.world.influence.AdditionalInfluence;
 import it.polimi.ingsw.model.world.influence.NoColorInfluence;
 import it.polimi.ingsw.model.world.influence.NoTowerInfluence;
+import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,8 +46,8 @@ public class ExpertControllerTest {
      */
     @BeforeEach
     public void init() throws PlaceFullException, InvalidIndexException {
-        Server server = new Server();
-        expertController = new ExpertController(server, new GameParams(3, true, "Bob", Mage.MAGE1, ColorT.BLACK));
+        Lobby lobby = new Lobby();
+        expertController = new ExpertController(lobby, new GameParams(3, true, "Bob", Mage.MAGE1, ColorT.BLACK));
 
         egb = (ExpertGameBoard) expertController.getModel();
 
@@ -55,9 +56,9 @@ public class ExpertControllerTest {
 
         egb.setActivePlayer(egb.getPlayerByNickname("Bob"));
 
-        Join join1 = new Join("Lisa", Mage.MAGE2, ColorT.WHITE);
+        Join join1 = new Join("Lisa", Mage.MAGE2, ColorT.WHITE,0);
         expertController.handleMessage(join1, "Lisa");
-        Join join2 = new Join("Alice", Mage.MAGE3, ColorT.GREY);
+        Join join2 = new Join("Alice", Mage.MAGE3, ColorT.GREY, 0);
         expertController.handleMessage(join2, "Alice");
         //egb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
         //egb.addPlayer("Alice", ColorT.GREY, Mage.MAGE3);
