@@ -2,12 +2,12 @@ package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import it.polimi.ingsw.client.request.GameParams;
-import it.polimi.ingsw.client.request.Join;
-import it.polimi.ingsw.client.request.MoveMN;
-import it.polimi.ingsw.client.request.Request;
+import com.google.gson.JsonObject;
+import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
+import it.polimi.ingsw.server.answer.Answer;
+import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Ping;
 
 import java.io.*;
@@ -21,6 +21,7 @@ public class Client {
     private ObjectOutputStream os;
     private ObjectInputStream is;
     private Thread ponger;
+    private boolean active;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -35,6 +36,9 @@ public class Client {
     }
 
     public void startClient(String ip, int port) {
+        active = true;
+        //TODO implementare che quando mi arriva un errore per cui sono disconnesso metto active a false in modo da non poter più
+        //leggere e poi chiudere il socket
         try {
             Socket socket = new Socket(ip, port);
             System.out.println("Connection established");
@@ -48,7 +52,7 @@ public class Client {
             }
             System.out.println("Stream created");
             ponger = new Thread(() -> {
-                while (true){
+                while (active){
                     try{
                         String s = (String) is.readObject();
                         System.out.println(s);
@@ -60,13 +64,12 @@ public class Client {
             ponger.start();
             Scanner scanner = new Scanner(System.in);
             try {
-                while (true) {
+                while (active) {
                     String input = scanner.nextLine();
                     String jsonInput = jsonFromInput(input);
                     os.reset();
                     os.writeObject(jsonInput);
                     os.flush();
-                    System.out.println(input);
                     System.out.println(jsonInput);
                 }
             } catch (NoSuchElementException e) {
@@ -82,13 +85,16 @@ public class Client {
     }
 
     public String jsonFromInput(String s){
-        return switch (s){
-            case "Join" -> toJson(new Join("test", Mage.MAGE2, ColorT.WHITE, 0));
-            case "MoveMN" -> toJson(new MoveMN(5));
-            default -> throw new IllegalStateException("Unexpected value: " + s);
+         switch (s){
+             case "Join" :
+                 return toJson(new Join("test", Mage.MAGE2, ColorT.WHITE, 0));
+             case "MoveMN" :
+                 return toJson(new MoveMN(5));
+             default : System.out.println("Invalid String");
+                 return null;
             //non possibile perché non è una request
             //case "GameParams" -> toJson(new GameParams(3, true, "Carlo",Mage.MAGE1, ColorT.BLACK))
-        };
+        }
     }
 
     public String toJson(Request r){

@@ -81,7 +81,11 @@ public class Server {
     }
 
     public void forwardMessage(Request request, int clientID) {
-        mapIdLobby.get(clientID).handleMessage(request, clientID);
+        if(mapIdLobby.containsKey(clientID)) {
+            mapIdLobby.get(clientID).handleMessage(request, clientID);
+        } else {
+            sendMessage(clientID, "Error: you are not in a lobby, please send a Join or GameParams request");
+        }
     }
 
     public void createLobby(GameParams gameParams, int clientId) {
@@ -90,8 +94,13 @@ public class Server {
         mapIdLobby.put(clientId, lobby);
     }
 
-    public Welcome getLobbies() {
+    public Answer getLobbies() {
         //Not final, it needs to be improved
         return new Welcome(lobbies);
+    }
+
+    public void sendMessage(int clientID, String content){
+        Answer answer = new Error(content);
+        mapIdSocket.get(clientID).sendMessage(answer);
     }
 }

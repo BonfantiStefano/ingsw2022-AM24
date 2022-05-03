@@ -4,15 +4,11 @@ import it.polimi.ingsw.server.Lobby;
 
 import java.util.ArrayList;
 
-public class Welcome {
+public class Welcome implements Answer{
     private ArrayList<Lobby> lobbies;
 
     public Welcome(ArrayList<Lobby> lobbies) {
-        if(lobbies != null) {
-            this.lobbies.addAll(lobbies);
-        } else {
-            this.lobbies = null;
-        }
+        this.lobbies = new ArrayList<>(lobbies);
     }
     /*
     //NOT FINAL, just for debug

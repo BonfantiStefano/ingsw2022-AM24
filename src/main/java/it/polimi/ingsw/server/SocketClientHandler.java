@@ -38,7 +38,7 @@ public class SocketClientHandler implements Runnable{
                     Thread.sleep(PING_PERIOD);
                     sendMessage(new Ping());
                 }catch (InterruptedException e){
-                    break;
+                    System.out.println(e.getMessage());
                 }
             }
         });
@@ -66,7 +66,6 @@ public class SocketClientHandler implements Runnable{
         //sendMessage(server.getLobbies());
         while (active) {
             try {
-                //System.out.println("Sono nel while");
                 jsonString = (String) inputStream.readObject();
                 if(jsonString != null) {
                     System.out.println(jsonString);
@@ -77,9 +76,7 @@ public class SocketClientHandler implements Runnable{
                 }
             } catch (ClassNotFoundException | IOException e) {
                 handleClientDisconnection();
-                e.printStackTrace();
-            } catch (Exception e) {
-                sendMessage(new Error(e.getMessage()));
+                System.out.println(e.getMessage());
             }
         }
     }
@@ -91,7 +88,8 @@ public class SocketClientHandler implements Runnable{
                 System.out.println("Timeout expires");
                 handleClientDisconnection();
             } catch (InterruptedException e){
-                e.printStackTrace();
+                System.out.println("The timeout timer has been stopped");
+
             }
         });
         timer.start();
@@ -147,13 +145,15 @@ public class SocketClientHandler implements Runnable{
         stopTimer();
         System.out.println("Trying to set active to false");
         this.active = false;
+        pingController.interrupt();
         //the server has to verify if the game as already started
         //server.handleClientDisconnection(clientID);
         sendMessage(new Error("You have been disconnected, you can rejoin the game in the future"));
+        //TODO prima di rimuovere questo commento è necessario che il client sappia gestire una sua disconnessione
         //closeSocket();
     }
 
-    public Request parseMessage(String jsonString) throws Exception {
+    public Request parseMessage(String jsonString) {
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
         switch (jsonObject.get("type").getAsString()) {
@@ -200,7 +200,9 @@ public class SocketClientHandler implements Runnable{
                 stopTimer();
                 startTimer();
                 return null;
-            default : throw new Exception("Invalid message");
+            default :
+                sendMessage(new Error("Invalid message"));
+                return null;
         }
     }
 }
