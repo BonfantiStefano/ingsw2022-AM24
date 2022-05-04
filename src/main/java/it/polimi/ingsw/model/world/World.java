@@ -1,11 +1,16 @@
 package it.polimi.ingsw.model.world;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.HasStrategy;
+import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.world.influence.InfluenceStrategy;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.world.influence.StandardInfluence;
+import it.polimi.ingsw.server.virtualview.VirtualIsland;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.*;
 
 /**
@@ -19,6 +24,15 @@ public class World implements HasStrategy<InfluenceStrategy> {
     private InfluenceStrategy influenceStrategy;
     private int posMN;
     private Optional<ColorS> bannedColorS;
+
+
+    protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
+
+    public void addListener(PropertyChangeListener gameBoard){
+        listener.addPropertyChangeListener(gameBoard);
+        islands.forEach(island -> island.addListener(gameBoard));
+    }
+
 
     /**Constructor World creates a new World instance with already the students allocated.*/
     public World(ArrayList<ColorS> initialStudent) {
@@ -134,6 +148,8 @@ public class World implements HasStrategy<InfluenceStrategy> {
     public Island join(Island i1, Island i2) {
         int indexIsland = islands.indexOf(i1);
         Island newIsland = new Island(i1, i2);
+        //TODO cambiare riferimento listener
+        Arrays.stream(listener.getPropertyChangeListeners()).toList().forEach(newIsland::addListener);
         islands.remove(i1);
         islands.remove(i2);
         islands.add(indexIsland, newIsland);
@@ -213,6 +229,16 @@ public class World implements HasStrategy<InfluenceStrategy> {
     }
 
     /**
+     * Method getIndexByIsland takes an island of the World and returns the relative index.
+     * @param island of type Island - the island of World.
+     * @return index of type int - the index of the island.
+     */
+    public int getIndexByIsland(Island island){
+        int index = islands.indexOf(island);
+        return index;
+    }
+
+    /**
      * Method getMNPosition returns the index of the Island where Mother Nature is.
      * @return an index of an Island.
      */
@@ -221,10 +247,16 @@ public class World implements HasStrategy<InfluenceStrategy> {
     }
 
     /**
-     * Method getBannedColorS returns the color banned by the effect of a character.
-     * @return Optional<ColorS></> - The color banned.
+     * Method getBannedColorS returns the banned color by the effect of a character.
+     * @return Optional<ColorS></> - The banned color.
      */
     public Optional<ColorS> getBannedColorS() {
         return bannedColorS;
     }
+
+     public ArrayList<VirtualIsland> createVirtualWorld(){
+        ArrayList<VirtualIsland> virtualWorld = new ArrayList<>();
+        islands.forEach(island -> virtualWorld.add(new VirtualIsland(island)));
+        return virtualWorld;
+     }
 }

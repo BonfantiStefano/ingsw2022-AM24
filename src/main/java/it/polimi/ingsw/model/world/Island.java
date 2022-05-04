@@ -1,7 +1,11 @@
 package it.polimi.ingsw.model.world;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.gameboard.GameBoard;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -11,11 +15,13 @@ import java.util.Optional;
  *
  * @author Bonfanti Stefano
  */
-public class Island implements CanAcceptStudent, AcceptTower {
+public class Island implements CanAcceptStudent, AcceptTower{
+
     private ArrayList<ColorS> students;
     private ArrayList<ColorT> towers;
     private int numSubIsland;
     private int numNoEntry;
+    protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**Constructor Island creates a new Island instance.*/
     public Island(){
@@ -25,6 +31,10 @@ public class Island implements CanAcceptStudent, AcceptTower {
         numSubIsland = 1;
     }
 
+    public void addListener(PropertyChangeListener gameBoard){
+        listener.addPropertyChangeListener(gameBoard);
+    }
+
     /**
      * Method add inserts a student in the List of the Students.
      * @param student ColorS - The student that has to be added to the list.
@@ -32,6 +42,7 @@ public class Island implements CanAcceptStudent, AcceptTower {
     @Override
     public void add(ColorS student) {
         students.add(student);
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_ISLAND), null, this);
     }
 
     /**
@@ -41,6 +52,8 @@ public class Island implements CanAcceptStudent, AcceptTower {
     @Override
     public void add(ColorT tower){
         towers.add(tower);
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_ISLAND), null, this);
+
     }
 
     /**
@@ -51,6 +64,7 @@ public class Island implements CanAcceptStudent, AcceptTower {
     public void remove(ColorT tower) {
         if(towers.size() > 0) {
             towers.remove(tower);
+            listener.firePropertyChange(String.valueOf(EVENT.CHANGE_ISLAND), null, this);
         }
     }
 
@@ -88,6 +102,7 @@ public class Island implements CanAcceptStudent, AcceptTower {
      */
     public void setNumNoEntry(int ne) {
         numNoEntry = numNoEntry + ne;
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_ISLAND), null, this);
     }
 
     /**Constructor Island creates a new Island instance by merging two existing Island.*/
@@ -117,4 +132,11 @@ public class Island implements CanAcceptStudent, AcceptTower {
         return numStudent;
     }
 
+    public ArrayList<ColorS> getStudents() {
+        return students;
+    }
+
+    public ArrayList<ColorT> getTowers() {
+        return towers;
+    }
 }

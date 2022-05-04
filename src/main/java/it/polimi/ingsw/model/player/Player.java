@@ -2,8 +2,12 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.mnstrategy.MNStandard;
 import it.polimi.ingsw.model.mnstrategy.MNStrategy;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 /**
  * Player class represents the Player and contains all the information about him:
@@ -20,6 +24,7 @@ public class Player implements PlayerInterface {
     private MNStrategy strategy;
     private int coins;
     private boolean isConnected;
+    protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
 
     /**
@@ -39,6 +44,10 @@ public class Player implements PlayerInterface {
         this.coins=0;
         this.strategy = new MNStandard();
         this.isConnected = true;
+    }
+
+    public void addListener(PropertyChangeListener gameBoard){
+        listener.addPropertyChangeListener(gameBoard);
     }
 
     /**
@@ -195,6 +204,7 @@ public class Player implements PlayerInterface {
      */
     public void setCoins(int amount){
         coins = coins + amount;
+        listener.firePropertyChange("change player's coins", null, this);
     }
 
     /**

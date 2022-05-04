@@ -3,7 +3,10 @@ package it.polimi.ingsw.model.player;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.model.gameboard.GameBoard;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +23,7 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
     private ArrayList<ColorS> entrance;
     private ArrayList<ColorT> towers;
     private Map<ColorS,Integer> hall;
+    protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**
      * Constructor SchoolBoard creates a new SchoolBoard instance subdivided into three areas, two for the students
@@ -38,6 +42,10 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
         }
     }
 
+    public void addListener(PropertyChangeListener gameBoard){
+        listener.addPropertyChangeListener(gameBoard);
+    }
+
     /**
      * Moves a Student form Entrance to Hall
      * @param s the color of the Student being moved
@@ -54,10 +62,9 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
             throw new NoSuchStudentException();
         }
         else{
-            addToHall(s);
-            hall.put(s,temp);
+            boolean result = addToHall(s);
             entrance.remove(s);
-            return (temp%3 == 0) && temp!=0;
+            return result;
         }
     }
 
@@ -70,6 +77,7 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
         int temp = hall.get(s)-1;
         if(temp < 0) throw new NoSuchStudentException();
         else hall.put(s,temp);
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_SCHOOLBOARD), null, this);
     }
 
     /**
@@ -102,6 +110,7 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
         }
         else {
             hall.put(s, temp);
+            listener.firePropertyChange(String.valueOf(EVENT.CHANGE_SCHOOLBOARD), null, this);
             return temp % 3 == 0 && temp != 0;
         }
     }
@@ -112,6 +121,7 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
      */
     public void add(ColorS s){
         entrance.add(s);
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_SCHOOLBOARD), null, this);
     }
 
     /**
@@ -123,13 +133,16 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
         if(!entrance.contains(s))
             throw new NoSuchStudentException();
         entrance.remove(s);
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_SCHOOLBOARD), null, this);
     }
 
     /**
      * Adds a Tower to the Player's Board
      * @param t the color of the Tower being added
      */
-    public void add(ColorT t){towers.add(t);
+    public void add(ColorT t){
+        towers.add(t);
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_SCHOOLBOARD), null, this);
     }
 
     /**
@@ -138,6 +151,7 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
      */
     public void remove(ColorT t){
         towers.remove(t);
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_SCHOOLBOARD), null, this);
     }
 
     /**

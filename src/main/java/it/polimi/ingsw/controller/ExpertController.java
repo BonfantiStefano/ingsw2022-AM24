@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
+import it.polimi.ingsw.model.EVENT;
 import it.polimi.ingsw.model.ExpertModel;
 import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
@@ -11,7 +12,12 @@ import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
+import it.polimi.ingsw.server.virtualview.VirtualCharacter;
+import it.polimi.ingsw.server.virtualview.VirtualCharacterWithNoEntry;
+import it.polimi.ingsw.server.virtualview.VirtualCharacterWithStudents;
 
+import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -196,6 +202,41 @@ public class ExpertController extends Controller {
 
     public ExpertModel getModel() {
         return ((ExpertModel) super.getModel());
+    }
+
+    /**
+     * Method propertyChange updates the virtual view according to the events received by the model
+     * @param evt - received event
+     */
+    public void propertyChange(PropertyChangeEvent evt){
+        super.propertyChange(evt);
+        EVENT event = EVENT.valueOf(evt.getPropertyName());
+        switch (event){
+            case REPLACE_CHARACTER:
+                int indexChar = (int) evt.getOldValue();
+                Character modelChar = (Character) evt.getNewValue();
+                VirtualCharacter virtualChar = new VirtualCharacter(modelChar);
+                getVirtualView().setVirtualCharacters(indexChar, virtualChar);
+                break;
+            case REPLACE_CHARACTER_S:
+                int indexCharacter = (int) evt.getNewValue();
+                VirtualCharacterWithStudents character = (VirtualCharacterWithStudents) evt.getNewValue();
+                getVirtualView().setVirtualCharacters(indexCharacter, character);
+                break;
+            case REPLACE_CHARACTER_NE:
+                int indexC = (int) evt.getOldValue();
+                VirtualCharacterWithNoEntry VirtualC = (VirtualCharacterWithNoEntry) evt.getNewValue();
+                getVirtualView().setVirtualCharacters(indexC, VirtualC);
+                break;
+            case CREATE_CHARACTERS:
+                ArrayList<VirtualCharacter> virtualCharacters = (ArrayList<VirtualCharacter>) evt.getNewValue();
+                getVirtualView().setVirtualCharacters(virtualCharacters);
+                break;
+            case BOARD_COINS:
+                int coins = (int) evt.getNewValue();
+                getVirtualView().setVirtualCoins(coins);
+                break;
+        }
     }
 }
 

@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.gameboard;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
+import it.polimi.ingsw.model.EVENT;
 import it.polimi.ingsw.model.ExpertModel;
 import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
@@ -10,7 +11,13 @@ import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PlayerInterface;
 import it.polimi.ingsw.model.world.Island;
+import it.polimi.ingsw.server.virtualview.VirtualCharacter;
+import it.polimi.ingsw.server.virtualview.VirtualCharacterWithNoEntry;
+import it.polimi.ingsw.server.virtualview.VirtualCharacterWithStudents;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -25,6 +32,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     private ArrayList<Character> characters;
     private CharacterFactory factory;
     int coins;
+    protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**Constructor ExpertGameBoard creates a new empty ExpertGameBoard instance with 20 coins.*/
     public ExpertGameBoard(int numPlayers){
@@ -35,6 +43,12 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         for(int i=0;i<3;i++){
             characters.add(factory.createCharacter());
         }
+        listener.firePropertyChange(String.valueOf(EVENT.CREATE_CHARACTERS), null, createVirtualCharacters());
+    }
+
+    public void addListener(PropertyChangeListener expertController){
+        listener.addPropertyChangeListener(expertController);
+        characters.forEach(character -> character.addListener(this));
     }
 
     /**
@@ -49,6 +63,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         super.addPlayer(nickname, color, mage);
         getPlayerByNickname(nickname).setCoins(1);
         coins--;
+        listener.firePropertyChange(String.valueOf(EVENT.BOARD_COINS), null, coins);
     }
 
     /**
@@ -64,6 +79,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         if (result){
             activePlayer.setCoins(1);
             coins--;
+            listener.firePropertyChange(String.valueOf(EVENT.BOARD_COINS), null, coins);
         }
         checkProfs();
     }
@@ -87,6 +103,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         if(activePlayer.getMyBoard().addToHall(s)){
             activePlayer.setCoins(1);
             coins--;
+            listener.firePropertyChange(String.valueOf(EVENT.BOARD_COINS), null, coins);
         }
         checkProfs();
     }
@@ -103,6 +120,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         if(activePlayer.getMyBoard().entranceToHall(entranceS)){
             activePlayer.setCoins(1);
             coins--;
+            listener.firePropertyChange(String.valueOf(EVENT.BOARD_COINS), null, coins);
         }
         activePlayer.getMyBoard().hallToEntrance(hallS);
         checkProfs();
@@ -146,6 +164,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
                 activePlayer.setCoins(-characterToPlay.getCost());
                 setActiveCharacter(characterToPlay);
                 coins += characterToPlay.getCost();
+                listener.firePropertyChange(String.valueOf(EVENT.BOARD_COINS), null, coins);
             }
         }
         else
@@ -287,4 +306,45 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     public HashMap<Player, Integer> getInfluence(Island i){
         return getWorld().getInfluenceIsland(i, getProfs(), getPlayers());
     }
+
+    /**
+     * Method propertyChange receives updates whenever the expert gameBoard's state changes and
+     * communicates to the controller the received events.
+     * @param evt - the received event
+     */
+    public void propertyChange(PropertyChangeEvent evt){
+        super.propertyChange(evt);
+        EVENT event = EVENT.valueOf(evt.getPropertyName());
+        switch (event){
+            case CHANGE_CHARACTER_NE:
+                CharacterWithNoEntry modelCard = (CharacterWithNoEntry) evt.getNewValue();
+                int indexCard = characters.indexOf(modelCard);
+                VirtualCharacterWithNoEntry virtualCard = new VirtualCharacterWithNoEntry(modelCard);
+                listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CHARACTER_NE), indexCard, virtualCard);
+                break;
+            case CHANGE_CHARACTER_S:
+                CharacterWithStudent modelC = (CharacterWithStudent) evt.getNewValue();
+                int indexC = characters.indexOf(modelC);
+                VirtualCharacterWithStudents virtualC = new VirtualCharacterWithStudents(modelC);
+                listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CHARACTER_S), indexC, virtualC);
+                break;
+            case CHARACTER_COST:
+                Character modelCharacter = (Character) evt.getNewValue();
+                int indexCharacter = characters.indexOf(modelCharacter);
+                listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CHARACTER), indexCharacter, modelCharacter);
+                break;
+        }
+
+    }
+
+    /**
+     * Method createVirtualCharacters creates virtual characters
+     * @return virtualCharacters - virtual characters
+     */
+    public ArrayList<VirtualCharacter> createVirtualCharacters(){
+        ArrayList<VirtualCharacter> virtualCharacters = new ArrayList<>();
+        characters.forEach(character -> virtualCharacters.add(new VirtualCharacter(character)));
+        return virtualCharacters;
+    }
+
 }

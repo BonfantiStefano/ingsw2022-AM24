@@ -10,9 +10,14 @@ import it.polimi.ingsw.model.profstrategy.ProfStrategy;
 import it.polimi.ingsw.model.profstrategy.StandardProf;
 import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.model.world.World;
+import it.polimi.ingsw.server.virtualview.VirtualCloud;
+import it.polimi.ingsw.server.virtualview.VirtualIsland;
+import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * GameBoard class contains the main logic of Eriantys game, which is divided in areas. The
@@ -23,7 +28,7 @@ import java.util.stream.Collectors;
  *
  * @author Baratto Marco, Bonfanti Stefano, Chyzheuskaya Hanna.
  */
-public class GameBoard implements HasStrategy<ProfStrategy>, Model{
+public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChangeListener {
 
     final protected static int NUM_TOWERS = 8;
     final protected static int NUM_STUDENTS = 7;
@@ -40,6 +45,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
     protected HashMap<ColorS, Player> profs;
     protected boolean gameMustEnd;
 
+    protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**Constructor GameBoard creates a new empty gameBoard instance.
      * @param numPlayers of type int - the number of the players in the game
@@ -51,17 +57,25 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
         container = new StudentContainer();
         strategy = new StandardProf();
         world = new World(container.initialDraw());
+        world.addListener(this);
         this.numPlayers = numPlayers;
         this.gameMustEnd = false;
         profs=new HashMap<>();
         for(ColorS c:ColorS.values()){
             profs.put(c,null);
         }
-
         clouds = new ArrayList<>();
         for(int i = 0; i < numPlayers; i++) {
             clouds.add(new Cloud());
         }
+        clouds.forEach(cloud -> cloud.addListener(this));
+        listener.firePropertyChange(String.valueOf(EVENT.CREATE_WORLD), null, world.createVirtualWorld());
+        listener.firePropertyChange(String.valueOf(EVENT.CREATE_CLOUDS), null, createVirtualClouds());
+        listener.firePropertyChange(String.valueOf(EVENT.MN_POS), null, world.getMNPosition());
+    }
+
+    public void addListener(PropertyChangeListener controller){
+        listener.addPropertyChangeListener(controller);
     }
 
 
@@ -110,6 +124,10 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
             lastAssistants.add(assistant);
             player.setLastAssist(assistant);
             player.getMyCards().removeCard(assistant);
+
+            int indexPlayer = players.indexOf(player);
+            VirtualPlayer virtualPlayer = new VirtualPlayer(player);
+            listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PLAYER), indexPlayer, virtualPlayer);
         }
         //Check if any Player has used all cards, if so the game must end after the current round
         for(Player p: players)
@@ -202,6 +220,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
      * @param player of type Player
      */
     public void addPlayer(Player player) {
+        listener.firePropertyChange(String.valueOf(EVENT.ADD_PLAYER), null, player);
         players.add(player);
     }
 
@@ -217,6 +236,8 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
         int numS = numPlayers==3? NS : NUM_STUDENTS;
         int numT = numPlayers==3? NT : NUM_TOWERS;
         Player p = new Player(nickname, color, mage, numT);
+        listener.firePropertyChange(String.valueOf(EVENT.ADD_PLAYER), null, p);
+        p.getMyBoard().addListener(this);
         for (int i = 0; i < numS; i++) {
             ColorS s = container.draw();
             p.getMyBoard().getEntrance().add(s);
@@ -299,12 +320,18 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
      */
     //Checks that the numMNSteps is between 1 and 7 are done by the controller.
     public void moveMN(int numMNSteps) throws InvalidMNStepsException {
+        int oldWoldSize = world.getSize();
         System.out.println(activePlayer.getMNSteps());
         if(numMNSteps > activePlayer.getMNSteps()) {
             throw new InvalidMNStepsException();
         }
         Island island = world.moveMN(numMNSteps);
         checkIsland(island);
+        int newWorldSize = world.getSize();
+        if(newWorldSize != oldWoldSize)
+            listener.firePropertyChange(String.valueOf(EVENT.CREATE_WORLD), null, world.createVirtualWorld());
+        int mnPos = world.getMNPosition();
+        listener.firePropertyChange(String.valueOf(EVENT.MN_POS), null, mnPos);
     }
 
     /**
@@ -351,6 +378,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
                 }
                 else
                     gameMustEnd = true;
+        listener.firePropertyChange(String.valueOf(EVENT.CREATE_CLOUDS), null, createVirtualClouds());
     }
 
     /**
@@ -480,6 +508,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
      */
     public void checkProfs() {
         profs = strategy.checkProfs(players, profs);
+        listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PROFS), null, profs);
     }
 
     /**
@@ -524,4 +553,56 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model{
     public Island getIslandByIndex(int index) {
         return world.getIslandByIndex(index);
     }
+
+    /**
+     * Method propertyChange receives updates whenever the gameBoard's state changes and
+     * communicates to the controller the received events.
+     * @param evt - the received event
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        EVENT event = EVENT.valueOf(evt.getPropertyName());
+        switch(event){
+            case CHANGE_SCHOOLBOARD:
+                int indexPlayer = -1;
+                VirtualPlayer virtualPlayer = null;
+                SchoolBoard modelBoard = ((SchoolBoard) evt.getNewValue());
+                for(Player p : players)
+                    if(p.getMyBoard().equals(modelBoard)){
+                        indexPlayer = players.indexOf(p);
+                        virtualPlayer = new VirtualPlayer(p);
+                    }
+                listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PLAYER), indexPlayer, virtualPlayer);
+                break;
+            case PLAYER_COINS:
+                Player modelPlayer = (Player) evt.getNewValue();
+                int indexP = players.indexOf(modelPlayer);
+                VirtualPlayer virtualP = new VirtualPlayer(modelPlayer);
+                listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PLAYER), indexP, virtualP);
+                break;
+            case CHANGE_ISLAND:
+                Island modelIsland = (Island) evt.getNewValue();
+                int indexIsland = world.getIndexByIsland(modelIsland);
+                VirtualIsland virtualIsland = new VirtualIsland(modelIsland);
+                listener.firePropertyChange(String.valueOf(EVENT.REPLACE_ISLAND), indexIsland, virtualIsland);
+                break;
+            case CHANGE_CLOUD:
+                Cloud modelCloud = (Cloud) evt.getNewValue();
+                int indexCloud = clouds.indexOf(modelCloud);
+                VirtualCloud virtualCloud = new VirtualCloud(modelCloud);
+                listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CLOUD), indexCloud, virtualCloud);
+                break;
+        }
+    }
+
+    /**
+     * Method createVirtualClouds creates virtual clouds
+     * @return virtualCharacters - virtual clouds
+     */
+    public ArrayList<VirtualCloud> createVirtualClouds(){
+        ArrayList<VirtualCloud> virtualClouds = new ArrayList<>();
+        clouds.forEach(cloud -> virtualClouds.add(new VirtualCloud(cloud)));
+        return virtualClouds;
+    }
+
 }

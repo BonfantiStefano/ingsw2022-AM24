@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.exceptions.InvalidMNStepsException;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
@@ -9,6 +10,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.SchoolBoard;
 import it.polimi.ingsw.model.world.Island;
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -55,6 +57,8 @@ public interface Model {
     void entranceToHall(ColorS s) throws PlaceFullException, NoSuchStudentException;
 
     Island getIslandByIndex(int index);
+
+    void addListener(PropertyChangeListener controller);
 
     Cloud getCloudByIndex(int index);
 }

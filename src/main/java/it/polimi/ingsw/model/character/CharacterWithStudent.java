@@ -5,7 +5,11 @@ import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.CanAcceptStudent;
 import it.polimi.ingsw.model.CanRemoveStudent;
 import it.polimi.ingsw.model.ColorS;
+import it.polimi.ingsw.model.EVENT;
+import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
+import it.polimi.ingsw.model.gameboard.GameBoard;
 
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
 /**
@@ -17,6 +21,7 @@ import java.util.ArrayList;
 public class CharacterWithStudent extends Character implements CanAcceptStudent, CanRemoveStudent {
     private ArrayList<ColorS> students;
     private int maxStudents;
+    protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**
      * Creates a new CharacterWithStudent object
@@ -27,12 +32,17 @@ public class CharacterWithStudent extends Character implements CanAcceptStudent,
         this.maxStudents=maxStudents;
     }
 
+    public void addListener(ExpertGameBoard expertBoard){
+        listener.addPropertyChangeListener(expertBoard);
+    }
+
     /**
      * Adds a Student
      * @param s the Color of the Student being added
      */
     public void add(ColorS s){
         students.add(s);
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_CHARACTER_S), null, this);
     }
 
 
@@ -42,8 +52,10 @@ public class CharacterWithStudent extends Character implements CanAcceptStudent,
      */
     @Override
     public void remove(ColorS s) throws NoSuchStudentException {
-        if(students.contains(s))
+        if(students.contains(s)){
             students.remove(s);
+            listener.firePropertyChange(String.valueOf(EVENT.CHANGE_CHARACTER_S), null, this);
+        }
         else {throw new NoSuchStudentException();}
     }
 

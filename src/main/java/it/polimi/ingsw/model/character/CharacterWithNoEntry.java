@@ -1,5 +1,10 @@
 package it.polimi.ingsw.model.character;
 
+import it.polimi.ingsw.model.EVENT;
+import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
+
+import java.beans.PropertyChangeSupport;
+
 /**
  * Class CharacterWithNoEntry models the Character that can limit MN's action on Islands
  */
@@ -27,9 +32,13 @@ public class CharacterWithNoEntry extends Character {
      */
     public void removeNoEntry(){
         numNoEntry--;
+        getListener().firePropertyChange(String.valueOf(EVENT.CHANGE_CHARACTER_NE), null, this);
     }
     /**
      * Restores a NoEntry tile on the card
      */
-    public void resetNoEntry(){ numNoEntry++; }
+    public void resetNoEntry(){
+        numNoEntry++;
+        getListener().firePropertyChange(String.valueOf(EVENT.CHANGE_CHARACTER_NE), null, this);
+    }
 }

@@ -3,19 +3,28 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
+import it.polimi.ingsw.model.ColorS;
+import it.polimi.ingsw.model.EVENT;
 import it.polimi.ingsw.model.Model;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
+import it.polimi.ingsw.server.virtualview.VirtualCloud;
+import it.polimi.ingsw.server.virtualview.VirtualIsland;
+import it.polimi.ingsw.server.virtualview.VirtualPlayer;
+import it.polimi.ingsw.server.virtualview.VirtualView;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 /**
  * The Controller will handle messages from all clients by checking their contents and modifying the model's state
  * according to the commands received
  */
-public class Controller {
+public class Controller implements PropertyChangeListener {
 
     private Model model;
     private ActionController actionController;
@@ -28,8 +37,10 @@ public class Controller {
     private String activePlayer;
     private String messageSender;
     private boolean gameStarted;
+    private VirtualView virtualView;
 
     public Controller(Lobby lobby, GameParams m){
+        virtualView = new VirtualView();
         this.lobby = lobby;
         createModel(m);
         phase=PHASE.SETUP;
@@ -391,4 +402,57 @@ public class Controller {
     public void setMessageSender(String messageSender) {
         this.messageSender = messageSender;
     }
+
+    /**
+     * Method propertyChange updates the virtual view according to the events received by the model
+     * @param evt - received event
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        EVENT event = EVENT.valueOf(evt.getPropertyName());
+        switch(event){
+            case ADD_PLAYER:
+                Player modelPlayer = (Player) evt.getNewValue();
+                VirtualPlayer virtualPlayer = new VirtualPlayer(modelPlayer);
+                virtualView.addVirtualPlayer(virtualPlayer);
+                break;
+            case REPLACE_ISLAND:
+                int indexIsland = (int) evt.getOldValue();
+                VirtualIsland island = (VirtualIsland) evt.getNewValue();
+                virtualView.setVirtualWorld(indexIsland, island);
+                break;
+            case CREATE_WORLD:
+                ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
+                virtualView.setVirtualWorld(virtualWorld);
+                break;
+            case REPLACE_PLAYER:
+                int indexPlayer = (int) evt.getOldValue();
+                VirtualPlayer player = (VirtualPlayer) evt.getNewValue();
+                virtualView.setVirtualPlayers(indexPlayer, player);
+                break;
+            case CREATE_CLOUDS:
+                ArrayList<VirtualCloud> virtualClouds = (ArrayList<VirtualCloud>) evt.getNewValue();
+                virtualView.setVirtualClouds(virtualClouds);
+                break;
+            case REPLACE_CLOUD:
+                int indexCloud = (int) evt.getOldValue();
+                VirtualCloud cloud = (VirtualCloud) evt.getNewValue();
+                virtualView.setVirtualClouds(indexCloud, cloud);
+                break;
+            case REPLACE_PROFS:
+                HashMap<ColorS, Player> profs = (HashMap<ColorS, Player>) evt.getNewValue();
+                virtualView.setVirtualProfs(profs);
+                break;
+            case MN_POS:
+                int mnPos = (int) evt.getNewValue();
+                virtualView.setMnPos(mnPos);
+                break;
+        }
+
+    }
+
+    public VirtualView getVirtualView() {
+        return virtualView;
+    }
+
 }

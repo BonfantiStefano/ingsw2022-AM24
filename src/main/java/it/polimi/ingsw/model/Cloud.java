@@ -1,7 +1,10 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
+import it.polimi.ingsw.model.gameboard.GameBoard;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
 /**
@@ -12,10 +15,15 @@ import java.util.ArrayList;
  */
 public class Cloud implements CanAcceptStudent, CanRemoveStudent{
     private ArrayList<ColorS> students;
+    protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**Constructor Cloud creates a new empty cloud instance.*/
     public Cloud() {
         this.students = new ArrayList<>();
+    }
+
+    public void addListener(PropertyChangeListener gameBoard){
+        listener.addPropertyChangeListener(gameBoard);
     }
 
     /**
@@ -25,6 +33,7 @@ public class Cloud implements CanAcceptStudent, CanRemoveStudent{
     @Override
     public void add(ColorS s){
         students.add(s);
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_CLOUD), null, this);
     }
 
     /**
@@ -33,8 +42,10 @@ public class Cloud implements CanAcceptStudent, CanRemoveStudent{
      */
     @Override
     public void remove(ColorS s) throws NoSuchStudentException {
-        if(students.contains(s))
+        if(students.contains(s)){
             students.remove(s);
+            listener.firePropertyChange(String.valueOf(EVENT.CHANGE_CLOUD), null, this);
+        }
         else
             throw new NoSuchStudentException();
     }

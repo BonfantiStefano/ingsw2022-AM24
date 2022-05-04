@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.character;
 
 import it.polimi.ingsw.model.ColorS;
+import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.world.World;
 import it.polimi.ingsw.model.world.influence.InfluenceStrategy;
 import it.polimi.ingsw.model.world.influence.NoColorInfluence;
