@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.request.GameParams;
 import it.polimi.ingsw.client.request.Join;
 import it.polimi.ingsw.client.request.Request;
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.ERRORS;
 import it.polimi.ingsw.controller.ExpertController;
 import it.polimi.ingsw.server.answer.Answer;
 import it.polimi.ingsw.server.answer.Error;
@@ -19,6 +20,9 @@ public class Lobby {
     private Map<Integer, String> mapIdNickname;
     private Map<Integer, SocketClientHandler> mapIdSocket;
     private ArrayList<Integer> clientsId;
+    //TODO understand what to do when a Player disconnect before the game has started, this can cause problems in the Model (because if I
+    // add a player there aren't methods to remove him)
+    private ArrayList<Integer> disconnectedClientsId;
     private final int numPlayers;
     //private boolean full;
     //private VirtualView virtualView;
@@ -35,6 +39,7 @@ public class Lobby {
         mapIdSocket = new HashMap<>();
         mapNicknameId = new HashMap<>();
         clientsId = new ArrayList<>();
+        disconnectedClientsId = new ArrayList<>();
         mapIdNickname.put(idClients, gameParams.getNickname());
         mapNicknameId.put(gameParams.getNickname(), idClients);
         mapIdSocket.put(idClients, socketClientHandler);
@@ -51,14 +56,19 @@ public class Lobby {
         }
     }
 
-
+    //TODO introdurre la sincronizzazione per gestire i casi in cui più player vogliono aggiungersi contemporaneamente
+    //TODO implementare la verfica anche sul colore delle torri e sul mago
     public boolean addPlayer(Join join, SocketClientHandler socketClientHandler, int idClients) {
         //TODO implements the handling of the disconnected player
-        if(mapIdNickname.size() < numPlayers) {
+        if(disconnectedClientsId.contains(idClients)) {
+            socketClientHandler.sendMessage(new Error("Welcome back " + mapIdNickname.get(idClients)));
+            sendMessageToOthers(mapIdNickname.get(idClients), mapIdNickname.get(idClients) + " re-connected");
+        } else if(mapIdNickname.size() < numPlayers) {
             boolean ris = true;
             for (int counter = 0; counter < numPlayers && ris; counter++) {
                 if (mapIdNickname.get(counter).equals(join.getNickname())) {
                     ris = false;
+                    socketClientHandler.sendMessage(new Error(ERRORS.NICKNAME_TAKEN.toString()));
                 }
             }
             if (ris) {
@@ -68,6 +78,8 @@ public class Lobby {
                 clientsId.add(idClients);
             }
             return ris;
+        } else {
+            socketClientHandler.sendMessage(new Error("Error: the lobby is full"));
         }
         //full = true;
         return false;
@@ -106,11 +118,21 @@ public class Lobby {
     //TODO understand what to do with this method and in general with this condition
     public void gameEnded(){}
 
+    //TODO understand who has to reject a message (for example a MoveMN while the game isn't already started). The only message that
+    //can cause problems is Disconnect (because Join and GameParams are managed in other ways, maybe i can do the same thing)
     public void handleMessage(Request request, int clientId) {
-        controller.handleMessage(request, mapIdNickname.get(clientId));
+        //Understand what to do with a disconnected player
+        if(clientsId.size() < numPlayers) {
+            controller.handleMessage(request, mapIdNickname.get(clientId));
+        } else {
+            sendMessage(mapIdNickname.get(clientId), "Error: the game is not started");
+        }
     }
 
-
-    //public boolean getFull() {return full;}
+    //TODO implementare un modo per capire se un giocatore è disconnesso e aggiornare questo metodo
+    public boolean isDisconnected(int clientId) {
+        //return disconnectedClientsId.contains(clientId);
+        return false;
+    }
 }
 

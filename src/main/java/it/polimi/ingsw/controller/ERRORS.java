@@ -3,7 +3,7 @@ package it.polimi.ingsw.controller;
 public enum ERRORS {
 
     INVALID_MESSAGE ("Invalid Message"),
-    NICKNAME_TAKEN ("Nickame already in use"),
+    NICKNAME_TAKEN ("Nickname already in use"),
     MAGE_TAKEN("Mage already in use"),
     CHARACTER_NOT_AVAILABLE("This card is not available"),
     NOT_ENOUGH_COINS("You don't have enough coins"),
