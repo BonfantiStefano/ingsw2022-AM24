@@ -7,10 +7,11 @@ import it.polimi.ingsw.model.player.Player;
 /** VirtualPlayer class is a simplified representation of a player.*/
 public class VirtualPlayer {
 
-    private int virtualCoins;
-    private Assistant virtualLastAssistant;
-    private Hand virtualHand;
-    private VirtualSchoolBoard virtualBoard;
+    private final String nickname;
+    private final int virtualCoins;
+    private final Assistant virtualLastAssistant;
+    private final Hand virtualHand;
+    private final VirtualSchoolBoard virtualBoard;
 
     /**Constructor VirtualPlayer creates a new VirtualPlayer instance.*/
     public VirtualPlayer(Player player) {
@@ -18,7 +19,26 @@ public class VirtualPlayer {
         this.virtualLastAssistant = player.getLastAssistant();
         this.virtualHand = player.getMyCards();
         this.virtualBoard = new VirtualSchoolBoard(player.getMyBoard());
+        this.nickname = player.getNickname();
     }
 
+    public int getVirtualCoins() {
+        return virtualCoins;
+    }
 
+    public Assistant getVirtualLastAssistant() {
+        return virtualLastAssistant;
+    }
+
+    public Hand getVirtualHand() {
+        return virtualHand;
+    }
+
+    public VirtualSchoolBoard getVirtualBoard() {
+        return virtualBoard;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
 }

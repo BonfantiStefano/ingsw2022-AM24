@@ -9,9 +9,13 @@ import java.util.ArrayList;
 /** VirtualCharacterWithStudents class is a simplified representation of a VirtualCharacterWithStudents card containing students.*/
 public class VirtualCharacterWithStudents extends VirtualCharacter {
 
-    private ArrayList<ColorS> students;
+    private final ArrayList<ColorS> students;
     public VirtualCharacterWithStudents(Character character) {
         super(character);
         this.students = ((CharacterWithStudent) character).getStudents();
+    }
+
+    public ArrayList<ColorS> getStudents() {
+        return students;
     }
 }

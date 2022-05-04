@@ -9,9 +9,9 @@ import java.util.Map;
 
 /** VirtualSchoolBoard class is a simplified representation of a player's schoolBoard.*/
 public class VirtualSchoolBoard {
-    private ArrayList<ColorS> entrance;
-    private ArrayList<ColorT> towers;
-    private Map<ColorS,Integer> hall;
+    private final ArrayList<ColorS> entrance;
+    private final ArrayList<ColorT> towers;
+    private final Map<ColorS,Integer> hall;
 
     /**Constructor VirtualSchoolBoard creates a new VirtualSchoolBoard instance.*/
     public VirtualSchoolBoard(SchoolBoard schoolBoard) {
@@ -20,4 +20,15 @@ public class VirtualSchoolBoard {
         hall = schoolBoard.getHall();
     }
 
+    public ArrayList<ColorS> getEntrance() {
+        return entrance;
+    }
+
+    public ArrayList<ColorT> getTowers() {
+        return towers;
+    }
+
+    public Map<ColorS, Integer> getHall() {
+        return hall;
+    }
 }

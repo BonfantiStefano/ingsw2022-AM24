@@ -110,6 +110,7 @@ public class Lobby {
         controller.handleMessage(request, mapIdNickname.get(clientId));
     }
 
+
     //public boolean getFull() {return full;}
 }
 

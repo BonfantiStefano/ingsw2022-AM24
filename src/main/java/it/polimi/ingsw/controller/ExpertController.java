@@ -52,6 +52,7 @@ public class ExpertController extends Controller {
         setModel(new ExpertGameBoard(m.getNumPlayers()));
         getModel().addPlayer(m.getNickname(), m.getColorT(), m.getMage());
         getModel().newClouds();
+        getModel().addListener(this);
     }
 
     /**

@@ -69,13 +69,14 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
             clouds.add(new Cloud());
         }
         clouds.forEach(cloud -> cloud.addListener(this));
-        listener.firePropertyChange(String.valueOf(EVENT.CREATE_WORLD), null, world.createVirtualWorld());
-        listener.firePropertyChange(String.valueOf(EVENT.CREATE_CLOUDS), null, createVirtualClouds());
-        listener.firePropertyChange(String.valueOf(EVENT.MN_POS), null, world.getMNPosition());
+
     }
 
     public void addListener(PropertyChangeListener controller){
         listener.addPropertyChangeListener(controller);
+        listener.firePropertyChange(String.valueOf(EVENT.CREATE_WORLD), null, world.createVirtualWorld());
+        listener.firePropertyChange(String.valueOf(EVENT.CREATE_CLOUDS), null, createVirtualClouds());
+        listener.firePropertyChange(String.valueOf(EVENT.MN_POS), null, world.getMNPosition());
     }
 
 

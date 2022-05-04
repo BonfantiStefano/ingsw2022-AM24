@@ -9,38 +9,18 @@ import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
+import it.polimi.ingsw.model.player.SchoolBoard;
 import it.polimi.ingsw.model.world.Island;
+import it.polimi.ingsw.server.virtualview.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 class CLITest {
     CLI c = new CLI();
 
-
-    void drawCharStud() {
-        CharacterWithStudent character = new CharacterWithStudent(1,"test", 5);
-        character.add(ColorS.GREEN);
-        character.add(ColorS.BLUE);
-        character.add(ColorS.YELLOW);
-        character.add(ColorS.YELLOW);
-        character.add(ColorS.YELLOW);
-        c.drawChar(character, 1, true);
-
-
-    }
-
-    void drawCharNoEntry() {
-        CharacterWithNoEntry character = new CharacterWithNoEntry(1,"test");
-        c.drawChar(character, 1, true);
-    }
-
-
-    void drawNormalChar(){
-        c.drawChar(new Character(1, "test"), 1, true);
-        c.drawChar(new Character(1, "test"), 1, false);
-    }
 
     @Test
     void schoolBoard(){
@@ -56,7 +36,7 @@ class CLITest {
         ArrayList<ColorT> tow = new ArrayList<>();
         for(int i=0;i<5;i++)
             tow.add(ColorT.WHITE);
-        c.printSchoolBoard("test", entrance,hall,profs, tow);
+
     }
 
     @Test
@@ -70,10 +50,10 @@ class CLITest {
         CharacterWithNoEntry character2 = new CharacterWithNoEntry(1,"test");
         Character character3 = new Character(1,"test");
 
-        ArrayList<Character> chars = new ArrayList<>();
-        chars.add(character2);
-        chars.add(character1);
-        chars.add(character3);
+        ArrayList<VirtualCharacter> chars = new ArrayList<>();
+        chars.add(new VirtualCharacterWithNoEntry(character2));
+        chars.add(new VirtualCharacterWithStudents(character1));
+        chars.add(new VirtualCharacter(character3));
         c.drawCharacters(chars);
     }
 
@@ -82,7 +62,8 @@ class CLITest {
         ArrayList<Island> islands = new ArrayList<>();
         Island i1 = new Island();
         addIslands(islands);
-        c.drawIslands(islands);
+
+        c.drawIslands(new ArrayList<>(islands.stream().map(VirtualIsland::new).collect(Collectors.toList())));
     }
 
     public void addIslands(ArrayList<Island> is){
@@ -112,7 +93,7 @@ class CLITest {
         c2.add(ColorS.BLUE);
         c2.add(ColorS.GREEN);
         c1.add(ColorS.BLUE);
-        c.drawClouds(clouds);
+        c.drawClouds(new ArrayList<>(clouds.stream().map(VirtualCloud::new).collect(Collectors.toList())));
     }
     @Test
     void printAssistant(){
