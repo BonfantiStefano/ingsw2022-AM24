@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.polimi.ingsw.client.request.*;
@@ -38,18 +39,18 @@ public class SocketClientHandler implements Runnable{
                     Thread.sleep(PING_PERIOD);
                     sendMessage(new Ping());
                 }catch (InterruptedException e){
+                    e.printStackTrace();
                     System.out.println(e.getMessage());
                 }
             }
         });
         try {
             outputStream = new ObjectOutputStream(this.socket.getOutputStream());
-            System.out.println("creato l'outputStream");
             outputStream.flush();
-            System.out.println("Flushato l'output stream");
             inputStream = new ObjectInputStream(this.socket.getInputStream());
             System.out.println("Ho creato gli stream");
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("Error during initialization of the client!");
             System.exit(0);
         }
@@ -76,7 +77,7 @@ public class SocketClientHandler implements Runnable{
                 }
             } catch (ClassNotFoundException | IOException e) {
                 handleClientDisconnection();
-                System.out.println(e.getMessage());
+                //System.out.println(e.getMessage());
             }
         }
     }
@@ -101,10 +102,11 @@ public class SocketClientHandler implements Runnable{
     public void stopTimer(){
         if (timer != null && timer.isAlive()){
             timer.interrupt();
+            timer = null;
         }
     }
 
-    public void sendMessage(Answer serverAnswer) {
+    public synchronized void sendMessage(Answer serverAnswer) {
         try {
             outputStream.reset();
             outputStream.writeObject(toJson(serverAnswer));
@@ -117,15 +119,17 @@ public class SocketClientHandler implements Runnable{
     private void closeSocket() {
         try {
             inputStream.close();
-        } catch (IOException e) {
-        }
-        try {
             outputStream.close();
+            System.out.println("The streams have been closed");
         } catch (IOException e) {
+            System.out.println("Exception during the closure of the stream");
+            e.printStackTrace();
         }
         try {
             socket.close();
+            System.out.println("The socket has been closed");
         } catch (IOException e) {
+            e.printStackTrace();
             System.err.println(e.getMessage());
             System.exit(0);
         }
@@ -149,12 +153,13 @@ public class SocketClientHandler implements Runnable{
         //the server has to verify if the game as already started
         //server.handleClientDisconnection(clientID);
         sendMessage(new Error("You have been disconnected, you can rejoin the game in the future"));
-        //TODO prima di rimuovere questo commento è necessario che il client sappia gestire una sua disconnessione
-        //closeSocket();
+        closeSocket();
     }
 
     public Request parseMessage(String jsonString) {
-        Gson gson = new Gson();
+        GsonBuilder builder = new GsonBuilder();
+        builder.disableHtmlEscaping();
+        Gson gson = builder.create();
         JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
         switch (jsonObject.get("type").getAsString()) {
             case "ChooseAssistant" :
@@ -173,6 +178,7 @@ public class SocketClientHandler implements Runnable{
             case "EntranceToHall" :
                 return gson.fromJson(jsonString, EntranceToHall.class);
             case "GameParams" :
+                System.out.println("È arrivato un messaggio di GameParams");
                 GameParams gameParams = gson.fromJson(jsonString, GameParams.class);
                 if(gameParams.getNumPlayers() < 2 || gameParams.getNumPlayers() > 3) {
                     sendMessage(new Error("Error: is only possible to play in 2 or 3 players"));
@@ -181,13 +187,9 @@ public class SocketClientHandler implements Runnable{
                 }
                 return null;
             case "Join" :
-                if(server.handleJoin(gson.fromJson(jsonString, Join.class), clientID)) {
-                    return gson.fromJson(jsonString, Join.class);
-                } else {
-                    System.out.println("Error wow");
-                    sendMessage(new Error("Nickname already chosen or lobby full, please retry"));
-                    return null;
-                }
+                System.out.println("È arrivato un messaggio di Join");
+                server.handleJoin(gson.fromJson(jsonString, Join.class), clientID);
+                return null;
             case "MoveMN" :
                 return gson.fromJson(jsonString, MoveMN.class);
             case "MoveToIsland" :

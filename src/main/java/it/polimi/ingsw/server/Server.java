@@ -38,24 +38,21 @@ public class Server {
             System.err.println("Error during Socket initialization, the application will close");
             System.exit(0);
         }
-        //Thread t = new Thread(()-> {
-            while (true) {
-                //Until the server is stopped, he keeps accepting new connections from clients who connect to its socket
-                try {
-                    System.out.println("Waiting a new client");
-                    Socket clientSocket = serverSocket.accept();
-                    System.out.println("A client is connected for the server");
-                    SocketClientHandler socketClientHandler = new SocketClientHandler(clientSocket, this, idClients);
-                    mapIdSocket.put(idClients, socketClientHandler);
-                    executorService.submit(socketClientHandler);
-                    idClients++;
-                } catch (IOException e) {
-                    System.out.println("An exception caused the server to stop working.");
-                    System.exit(0);
-                }
+        while (true) {
+            //Until the server is stopped, he keeps accepting new connections from clients who connect to its socket
+            try {
+                System.out.println("Waiting a new client");
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("A client is connected for the server");
+                SocketClientHandler socketClientHandler = new SocketClientHandler(clientSocket, this, idClients);
+                mapIdSocket.put(idClients, socketClientHandler);
+                executorService.submit(socketClientHandler);
+                idClients++;
+            } catch (IOException e) {
+                System.out.println("An exception caused the server to stop working.");
+                System.exit(0);
             }
-        //});
-        //t.start();
+        }
     }
 
     public void handleClientDisconnection(int clientId) {
@@ -68,16 +65,20 @@ public class Server {
          */
     }
 
-    public boolean handleJoin(Join join, int clientId) {
-        //per gestire i vari casi di errori separatamente poteri usare if(lobbies.get(join.getIndex()).getFull()) ...
-        if(join.getIndex() < 0 || join.getIndex() > lobbies.size()) {
+    public void handleJoin(Join join, int clientId) {
+        if(mapIdLobby.containsKey(clientId) && !mapIdLobby.get(clientId).isDisconnected(clientId)) {
+            sendMessage(clientId, "Error: you are already in a lobby");
+        } else if(lobbies.isEmpty()) {
+            sendMessage(clientId, "Error: there is no lobby available, please create a new one");
+        //Capire come gestire le riconessioni, si può fare o nel metodo addPlayer che verifica che quel giocatore sia uguale ad uno che esiste
+        //già nella lobby oppure facendo un altro if simile al primo in cui chiamo un metodo che mi pone ad active tale client
+        } else if(join.getIndex() < 0 || join.getIndex() > lobbies.size()) {
             boolean ris = lobbies.get(join.getIndex()).addPlayer(join, mapIdSocket.get(clientId), clientId);
             if (ris) {
                 mapIdLobby.put(clientId, lobbies.get(join.getIndex()));
+                forwardMessage(join, clientId);
             }
-            return ris;
         }
-        return false;
     }
 
     public void forwardMessage(Request request, int clientID) {
@@ -89,16 +90,25 @@ public class Server {
     }
 
     public void createLobby(GameParams gameParams, int clientId) {
-        Lobby lobby = new Lobby(gameParams, mapIdSocket.get(clientId), clientId);
-        lobbies.add(lobby);
-        mapIdLobby.put(clientId, lobby);
+        if(mapIdLobby.containsKey(clientId)) {
+            sendMessage(clientId, "Error: you are already in a lobby");
+        } else {
+            System.out.println("Creazione di una nuova lobby");
+            Lobby lobby = new Lobby(gameParams, mapIdSocket.get(clientId), clientId);
+            lobbies.add(lobby);
+            mapIdLobby.put(clientId, lobby);
+            System.out.println("La lobby è stata creata correttamente");
+        }
     }
 
+    //TODO cambiare questo metodo e anche la classe Welcome
     public Answer getLobbies() {
         //Not final, it needs to be improved
         return new Welcome(lobbies);
     }
 
+    //TODO capire cosa è meglio tra inviare una stringa e poi vi creo un messaggio generico che ha una stringa o fare una sendMessage che prende
+    //in ingresso una Answer e quindi sono gli altri a crearsi l'oggetto Error o simili e glielo passano già fatto al metodo
     public void sendMessage(int clientID, String content){
         Answer answer = new Error(content);
         mapIdSocket.get(clientID).sendMessage(answer);
