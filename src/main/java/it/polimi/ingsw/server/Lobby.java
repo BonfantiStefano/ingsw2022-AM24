@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.server.answer.Answer;
 import it.polimi.ingsw.server.answer.Error;
+import it.polimi.ingsw.server.answer.Update.Update;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -178,5 +179,8 @@ public class Lobby {
         return nicknames;
         //Capire se mi basta fare return (ArrayList<Mage>) mapIdNickname.values();
     }
-}
 
+    public void sendUpdate(Update u){
+
+    }
+}

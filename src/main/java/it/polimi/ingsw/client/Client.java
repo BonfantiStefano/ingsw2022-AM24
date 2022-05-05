@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
@@ -11,6 +12,7 @@ import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.server.answer.Answer;
 import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Ping;
+import it.polimi.ingsw.server.virtualview.VirtualView;
 
 import java.io.*;
 import java.net.Socket;
@@ -24,6 +26,7 @@ public class Client {
     private ObjectInputStream is;
     private boolean active;
     private final Scanner scanner;
+    private final CLI cli;
 
     public static void main(String[] args) {
         Scanner initialScanner = new Scanner(System.in);
@@ -40,6 +43,7 @@ public class Client {
     public Client() {
         active = false;
         scanner = new Scanner(System.in);
+        cli = new CLI();
     }
 
     public void startClient(String ip, int port) {
@@ -131,7 +135,7 @@ public class Client {
     public String jsonFromInput(String s){
          switch (s){
              case "Join" :
-                 return toJson(new Join("test", Mage.MAGE2, ColorT.WHITE, 0));
+                 return toJson(new Join("test's", Mage.MAGE2, ColorT.WHITE, 0));
              case "MoveMN" :
                  return toJson(new MoveMN(5));
              case "MoveToIsland" :
@@ -167,9 +171,9 @@ public class Client {
                     String s = (String) is.readObject();
                     //metodo primordiale per gestire ping e disconnessioni, poi dovrò mettere un metodo che mi fa il de-parsing della stringa
                     //e in base al risulato vedere come comportarmi
-                        /*if(s.equals("{\"type\":\"Ping\"}")) {
-                            sendMessage(s)
-                        } else */
+                        if(s.equals("{\"type\":\"Ping\"}")) {
+                            sendMessage(toJson(new Pong()));
+                        } else
                     if (s.equals("{\"error\":\"You have been disconnected, you can rejoin the game in the future\",\"type\":\"Error\"}")) {
                         System.out.println(s);
                         handleClientDisconnection();

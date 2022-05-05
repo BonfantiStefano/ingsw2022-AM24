@@ -12,6 +12,9 @@ import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
+import it.polimi.ingsw.server.answer.Update.CreateCharacters;
+import it.polimi.ingsw.server.answer.Update.ReplaceCharacter;
+import it.polimi.ingsw.server.answer.Update.UpdateCoins;
 import it.polimi.ingsw.server.virtualview.VirtualCharacter;
 import it.polimi.ingsw.server.virtualview.VirtualCharacterWithNoEntry;
 import it.polimi.ingsw.server.virtualview.VirtualCharacterWithStudents;
@@ -218,24 +221,29 @@ public class ExpertController extends Controller {
                 Character modelChar = (Character) evt.getNewValue();
                 VirtualCharacter virtualChar = new VirtualCharacter(modelChar);
                 getVirtualView().setVirtualCharacters(indexChar, virtualChar);
+                getLobby().sendUpdate(new ReplaceCharacter(virtualChar, indexChar));
                 break;
             case REPLACE_CHARACTER_S:
                 int indexCharacter = (int) evt.getNewValue();
                 VirtualCharacterWithStudents character = (VirtualCharacterWithStudents) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(indexCharacter, character);
+                getLobby().sendUpdate(new ReplaceCharacter(character, indexCharacter));
                 break;
             case REPLACE_CHARACTER_NE:
                 int indexC = (int) evt.getOldValue();
                 VirtualCharacterWithNoEntry VirtualC = (VirtualCharacterWithNoEntry) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(indexC, VirtualC);
+                getLobby().sendUpdate(new ReplaceCharacter(VirtualC, indexC));
                 break;
             case CREATE_CHARACTERS:
                 ArrayList<VirtualCharacter> virtualCharacters = (ArrayList<VirtualCharacter>) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(virtualCharacters);
+                getLobby().sendUpdate(new CreateCharacters(virtualCharacters));
                 break;
             case BOARD_COINS:
                 int coins = (int) evt.getNewValue();
                 getVirtualView().setVirtualCoins(coins);
+                getLobby().sendUpdate(new UpdateCoins(coins));
                 break;
         }
     }
