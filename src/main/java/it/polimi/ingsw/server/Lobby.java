@@ -1,11 +1,14 @@
 package it.polimi.ingsw.server;
 
+import it.polimi.ingsw.client.request.Disconnect;
 import it.polimi.ingsw.client.request.GameParams;
 import it.polimi.ingsw.client.request.Join;
 import it.polimi.ingsw.client.request.Request;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.ERRORS;
 import it.polimi.ingsw.controller.ExpertController;
+import it.polimi.ingsw.model.ColorT;
+import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.server.answer.Answer;
 import it.polimi.ingsw.server.answer.Error;
 
@@ -24,7 +27,9 @@ public class Lobby {
     // add a player there aren't methods to remove him)
     private ArrayList<Integer> disconnectedClientsId;
     private final int numPlayers;
-    //private boolean full;
+    //Capire se conviene tenere una mappa o mi basta solo un array
+    private Map<Integer, ColorT> mapIdTower;
+    private Map<Integer, Mage> mapIdMage;
     //private VirtualView virtualView;
 
     //metodo inutile usato solo perchè altrimenti per i test dell'expert controller dovrei creare tutti i parametri, poi
@@ -39,12 +44,16 @@ public class Lobby {
         mapIdSocket = new HashMap<>();
         mapNicknameId = new HashMap<>();
         clientsId = new ArrayList<>();
+        mapIdMage = new HashMap<>();
+        mapIdTower = new HashMap<>();
         disconnectedClientsId = new ArrayList<>();
         mapIdNickname.put(idClients, gameParams.getNickname());
         mapNicknameId.put(gameParams.getNickname(), idClients);
         mapIdSocket.put(idClients, socketClientHandler);
         numPlayers = gameParams.getNumPlayers();
         clientsId.add(idClients);
+        mapIdTower.put(idClients, gameParams.getColorT());
+        mapIdMage.put(idClients, gameParams.getMage());
         //virtualView = new VirtualView();
     }
 
@@ -57,7 +66,7 @@ public class Lobby {
     }
 
     //TODO introdurre la sincronizzazione per gestire i casi in cui più player vogliono aggiungersi contemporaneamente
-    //TODO implementare la verfica anche sul colore delle torri e sul mago
+    //TODO implementare la verfica anche sul colore delle torri e sul mago, per farlo dovrei salvarmi questi valori
     public boolean addPlayer(Join join, SocketClientHandler socketClientHandler, int idClients) {
         //TODO implements the handling of the disconnected player
         if(disconnectedClientsId.contains(idClients)) {
@@ -83,6 +92,14 @@ public class Lobby {
         }
         //full = true;
         return false;
+    }
+
+    public void handleDisconnection(int clientId) {
+        /*
+        disconnectedClientsId.add(clientId);
+        handleMessage(new Disconnect(), clientId);
+
+         */
     }
 
     public void sendMessage(String nickname, String content){
@@ -122,10 +139,10 @@ public class Lobby {
     //can cause problems is Disconnect (because Join and GameParams are managed in other ways, maybe i can do the same thing)
     public void handleMessage(Request request, int clientId) {
         //Understand what to do with a disconnected player
-        if(clientsId.size() < numPlayers) {
+        if(clientsId.size() == numPlayers) {
             controller.handleMessage(request, mapIdNickname.get(clientId));
         } else {
-            sendMessage(mapIdNickname.get(clientId), "Error: the game is not started");
+            mapIdSocket.get(clientId).sendMessage(new Error("Error: the game is not started"));
         }
     }
 
@@ -133,6 +150,33 @@ public class Lobby {
     public boolean isDisconnected(int clientId) {
         //return disconnectedClientsId.contains(clientId);
         return false;
+    }
+
+    public ArrayList<Mage> getMages() {
+        ArrayList<Mage> mages = new ArrayList<>();
+        for(Integer id : clientsId) {
+            mages.add(mapIdMage.get(id));
+        }
+        return mages;
+        //Capire se mi basta fare return (ArrayList<Mage>) mapIdMage.values();
+    }
+
+    public ArrayList<ColorT> getColorTowers() {
+        ArrayList<ColorT> colorTowers = new ArrayList<>();
+        for(Integer id : clientsId) {
+            colorTowers.add(mapIdTower.get(id));
+        }
+        return colorTowers;
+        //Capire se mi basta fare return (ArrayList<Mage>) mapIdTower.values();
+    }
+
+    public ArrayList<String> getNicknames() {
+        ArrayList<String> nicknames = new ArrayList<>();
+        for(Integer id : clientsId) {
+            nicknames.add(mapIdNickname.get(id));
+        }
+        return nicknames;
+        //Capire se mi basta fare return (ArrayList<Mage>) mapIdNickname.values();
     }
 }
 

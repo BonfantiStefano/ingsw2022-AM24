@@ -175,6 +175,7 @@ public class SocketClientHandler implements Runnable{
             case "Disconnect" :
                 handleClientDisconnection();
                 return gson.fromJson(jsonString, Disconnect.class);
+                //return null;
             case "EntranceToHall" :
                 return gson.fromJson(jsonString, EntranceToHall.class);
             case "GameParams" :

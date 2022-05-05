@@ -58,10 +58,13 @@ public class Server {
     public void handleClientDisconnection(int clientId) {
         /*
         if (!gameStarted) {
-            getLobbyByIdClient(clientId).remove(clientId);
+            mapIdLobby.get(clientId).handleDisconnection(clientId);
         } else {
             getControllerByIdClient(clientId).setInactivePlayer(mapIdNickname.get(clientId));
         }
+        magari basta fare:
+        mapIdLobby.get(clientId).handleDisconnection(clientId);
+        e poi gestisco tutto nella lobby
          */
     }
 
@@ -104,6 +107,7 @@ public class Server {
     //TODO cambiare questo metodo e anche la classe Welcome
     public Answer getLobbies() {
         //Not final, it needs to be improved
+        //Se voglio i nickname, maghi e torri posso o fare un set/mappa di queste cose?
         return new Welcome(lobbies);
     }
 
