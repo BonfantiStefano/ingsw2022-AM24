@@ -59,6 +59,7 @@ public class Controller implements PropertyChangeListener {
         model = new GameBoard(m.getNumPlayers());
         model.addPlayer(m.getNickname(), m.getColorT(), m.getMage());
         model.newClouds();
+        model.addListener(this);
         numPlayers = m.getNumPlayers();
         haveChosenAssistant = 0;
         havePlayed = 0;
@@ -440,6 +441,7 @@ public class Controller implements PropertyChangeListener {
                 virtualView.setVirtualClouds(indexCloud, cloud);
                 break;
             case REPLACE_PROFS:
+                //TODO convert to VirtualPlayer
                 HashMap<ColorS, Player> profs = (HashMap<ColorS, Player>) evt.getNewValue();
                 virtualView.setVirtualProfs(profs);
                 break;

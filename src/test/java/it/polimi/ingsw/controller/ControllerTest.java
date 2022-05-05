@@ -4,7 +4,6 @@ import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
-import it.polimi.ingsw.model.StudentContainer;
 import it.polimi.ingsw.model.character.CharacterDescription;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Mage;
