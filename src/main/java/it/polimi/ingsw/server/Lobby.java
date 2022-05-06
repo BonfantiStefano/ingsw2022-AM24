@@ -104,12 +104,13 @@ public class Lobby {
     }
 
     public void sendMessage(String nickname, String content){
-        /*
+
         //TODO change the dynamical type of the message (maybe, due to all the Server message contains a string is possible to insert
         // this in the interface)
         Answer answer = new Error(content);
-        mapIdSocket.get(mapNicknameId.get(nickname)).sendMessage(answer);
-        */
+        if(mapNicknameId!=null && mapIdSocket!=null)
+            mapIdSocket.get(mapNicknameId.get(nickname)).sendMessage(answer);
+
     }
 
     //This two messages might have to change the signature (depends on whom calls this method)
