@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
@@ -11,6 +12,7 @@ import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.server.answer.Answer;
 import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Ping;
+import it.polimi.ingsw.server.virtualview.VirtualView;
 
 import java.io.*;
 import java.net.Socket;
@@ -25,6 +27,7 @@ public class Client {
     private ObjectInputStream is;
     private boolean active;
     private final Scanner scanner;
+    private final CLI cli;
 
     public static void main(String[] args) {
         Scanner initialScanner = new Scanner(System.in);
@@ -41,6 +44,7 @@ public class Client {
     public Client() {
         active = false;
         scanner = new Scanner(System.in);
+        cli = new CLI();
     }
 
     public void startClient(String ip, int port) {

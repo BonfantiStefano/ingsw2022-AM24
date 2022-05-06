@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.server.answer.*;
 import it.polimi.ingsw.server.answer.Error;
+import it.polimi.ingsw.server.answer.Update.Update;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -179,12 +180,9 @@ public class Lobby {
         }
     }
 
-    public boolean isPresent(String nickname) {
-        for(Integer clientId : clientsId) {
-            if(mapIdNickname.get(clientId).equals(nickname)) {
-                return true;
-            }
-        }
+    //TODO implementare un modo per capire se un giocatore è disconnesso e aggiornare questo metodo
+    public boolean isDisconnected(int clientId) {
+        //return disconnectedClientsId.contains(clientId);
         return false;
     }
 
@@ -218,3 +216,7 @@ public class Lobby {
     }
 }
 
+    public void sendUpdate(Update u){
+
+    }
+}

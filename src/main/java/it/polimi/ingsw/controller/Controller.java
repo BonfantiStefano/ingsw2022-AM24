@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Information;
+import it.polimi.ingsw.server.answer.Update.*;
 import it.polimi.ingsw.server.virtualview.VirtualCloud;
 import it.polimi.ingsw.server.virtualview.VirtualIsland;
 import it.polimi.ingsw.server.virtualview.VirtualPlayer;
@@ -99,8 +100,9 @@ public class Controller implements PropertyChangeListener {
     public void visit(Disconnect msg){
         //if a Player disconnects during the setup phase the game is canceled
         //can be changed later
-        if (phase.equals(PHASE.SETUP))
-            lobby.gameEnded();
+        //Stefano: Ho commentato questo metodo perchè in teoria non ci serve
+        if (phase.equals(PHASE.SETUP)) {}
+            //lobby.gameEnded();
         else if(gameStarted)
             model.setConnected(messageSender, false);
         nextPhase();
@@ -176,25 +178,6 @@ public class Controller implements PropertyChangeListener {
         nextPhase();
     }
 
-
-    /**
-     * Handles the message received by performing the correct action based on the type of Request
-     * @param m Request message sent by a Client
-     *                 NOT FINAL
-     */
-/*
-    public void visit(Request m){
-        //accept the following messages only if they come from the ActivePlayer
-        if (messageSender.equals(activePlayer)) {
-            if (isMessageCharacter(m))
-                handleCharacter(m, messageSender);
-        } else {
-            server.sendMessage(messageSender, new Error("Invalid message!"));
-        }
-        //after a message has been received ask the turnController for the next phase
-        nextPhase();
-    }
-*/
     /**
      * Invoke the TurnController to ask for the next phase.
      */
@@ -416,38 +399,46 @@ public class Controller implements PropertyChangeListener {
                 Player modelPlayer = (Player) evt.getNewValue();
                 VirtualPlayer virtualPlayer = new VirtualPlayer(modelPlayer);
                 virtualView.addVirtualPlayer(virtualPlayer);
+                lobby.sendUpdate(new AddPlayer(virtualPlayer));
                 break;
             case REPLACE_ISLAND:
                 int indexIsland = (int) evt.getOldValue();
                 VirtualIsland island = (VirtualIsland) evt.getNewValue();
                 virtualView.setVirtualWorld(indexIsland, island);
+                lobby.sendUpdate(new UpdateIsland(island, indexIsland));
                 break;
             case CREATE_WORLD:
                 ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
                 virtualView.setVirtualWorld(virtualWorld);
+                lobby.sendUpdate(new UpdateWorld(virtualWorld));
                 break;
             case REPLACE_PLAYER:
                 int indexPlayer = (int) evt.getOldValue();
                 VirtualPlayer player = (VirtualPlayer) evt.getNewValue();
                 virtualView.setVirtualPlayers(indexPlayer, player);
+                lobby.sendUpdate(new UpdatePlayer(player, indexPlayer));
                 break;
             case CREATE_CLOUDS:
                 ArrayList<VirtualCloud> virtualClouds = (ArrayList<VirtualCloud>) evt.getNewValue();
                 virtualView.setVirtualClouds(virtualClouds);
+                lobby.sendUpdate(new CreateClouds(virtualClouds));
                 break;
             case REPLACE_CLOUD:
                 int indexCloud = (int) evt.getOldValue();
                 VirtualCloud cloud = (VirtualCloud) evt.getNewValue();
                 virtualView.setVirtualClouds(indexCloud, cloud);
+                lobby.sendUpdate(new ReplaceCloud(cloud, indexCloud));
                 break;
             case REPLACE_PROFS:
                 //TODO convert to VirtualPlayer
                 HashMap<ColorS, Player> profs = (HashMap<ColorS, Player>) evt.getNewValue();
                 virtualView.setVirtualProfs(profs);
+                lobby.sendUpdate(new UpdateProfs(profs));
                 break;
             case MN_POS:
                 int mnPos = (int) evt.getNewValue();
                 virtualView.setMnPos(mnPos);
+                lobby.sendUpdate(new UpdateMN(mnPos));
                 break;
         }
 

@@ -69,7 +69,6 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
             clouds.add(new Cloud());
         }
         clouds.forEach(cloud -> cloud.addListener(this));
-
     }
 
     public void addListener(PropertyChangeListener controller){

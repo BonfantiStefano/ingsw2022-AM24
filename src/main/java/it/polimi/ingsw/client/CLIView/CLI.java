@@ -1,14 +1,9 @@
 package it.polimi.ingsw.client.CLIView;
 
 
-import it.polimi.ingsw.model.Cloud;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
-import it.polimi.ingsw.model.character.Character;
-import it.polimi.ingsw.model.character.CharacterWithNoEntry;
-import it.polimi.ingsw.model.character.CharacterWithStudent;
 import it.polimi.ingsw.model.player.Assistant;
-import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.server.virtualview.*;
 
 import java.io.PrintStream;
@@ -42,85 +37,80 @@ public class CLI{
 
     }
 
-
-    //TODO change to StringBuilder instead of String Array
+    /**
+     * Prints a SchoolBoard
+     * @param schoolBoard the SchoolBoard to print
+     * @param profs the HashMap containing all Profs
+     */
     public void printSchoolBoard(VirtualSchoolBoard schoolBoard, HashMap<ColorS, VirtualPlayer> profs){
         //TODO add nickname parameter
+        String appendix = "'s SchoolBoard";
         String nickname = "Test";
         ArrayList<ColorS> entrance = schoolBoard.getEntrance();
         HashMap<ColorS, Integer> hall = (HashMap<ColorS, Integer>) schoolBoard.getHall();
         ArrayList<ColorT> towers = schoolBoard.getTowers();
-
+        ArrayList<StringBuilder> lines = new ArrayList<>();
         final int xSize=40, ySize=7;
         String[][] draw = new String[ySize][xSize];
 
-
+        StringBuilder currLine = new StringBuilder();
+        lines.add(currLine);
+        firstLine(currLine, nickname+appendix, xSize);
         int entrIndex = 0, towIndex = 0;
-        int y, x;
-        String appendix = "'s SchoolBoard";
-        firstLine(draw, xSize, appendix, nickname);
-        y=1;
+
+        currLine = new StringBuilder();
+        lines.add(currLine);
 
         for(ColorS c: ColorS.values()) {
-            x=0;
             //for every row
-            draw[y][x] = BOX.VERT +" ";
-            for (x = 1; x < 3; x++) {
+            currLine.append(BOX.VERT).append(" ");
+            for (int i = 1; i < 3; i++) {
                 if (entrIndex < entrance.size()) {
-                    draw[y][x] = (getChar(entrance.get(entrIndex)) + " ");
+                    currLine.append(getChar(entrance.get(entrIndex))).append(" ");
                     entrIndex++;
                 } else
-                    draw[y][x] = "  ";
+                    currLine.append("  ");
             }
 
-            draw[y][x] = BOX.VERT +" ";
-            x++;
-            for (int w =0; w < hall.get(c); w++,x++){
-                draw[y][x] = getChar(c) + " ";
+            currLine.append(BOX.VERT).append(" ");
+            for (int w =0; w < hall.get(c); w++){
+                currLine.append(getChar(c)).append(" ");
             }
 
-            for (int w=0; w < 10 - hall.get(c); w++,x++){
-                draw[y][x] = "  ";
-            }
+            currLine.append(" ".repeat(Math.max(0, 10 - hall.get(c))));
 
-            draw[y][x] = BOX.VERT +" ";
+            currLine.append(BOX.VERT);
 
-            x++;
             //TODO change parameter
             if(profs.get(c).getNickname().equals("test"))
-                draw[y][x]=getChar(c);
+                currLine.append(getChar(c));
             else
-                draw[y][x]=" ";
+                currLine.append(" ");
 
-            x++;
-            draw[y][x] = " "+ BOX.VERT+ " ";
-            x++;
-            for(int w = 0; w<2;w++,x++){
+            currLine.append(" ").append(BOX.VERT).append(" ");
+
+            for(int w = 0; w<2;w++){
                 if(towIndex<towers.size()) {
-                    draw[y][x]=getChar(towers.get(towIndex)) + BOX.CIRCLE+" " + Color.RESET;
+                    currLine.append(getChar(towers.get(towIndex))).append(BOX.CIRCLE).append(" ").append(Color.RESET);
                     towIndex++;
                 }
                 else
-                    draw[y][x] = "  ";
+                    currLine.append("  ");
             }
 
-            draw[y][x] = " "+ BOX.VERT;
+            currLine.append(" ").append(BOX.VERT);
 
-            y++;
        }
-        lastLine(draw, xSize, ySize);
+        lastLine(xSize,1,lines);
 
-        print(draw, xSize, ySize);
-
+        lines.forEach(System.out::println);
     }
 
-    private void clearScreen(){
-        for(int i=0;i<50;i++)
-            System.out.println();
-
-    }
-
-
+    /**
+     * Gets the special Char corresponding to the parameter's ColorS
+     * @param c the ColorS being searched
+     * @return the Symbol and Color corresponding to the parameter
+     */
     private String getChar(ColorS c) {
         final String circle = BOX.CIRCLE.toString();
         return switch (c) {
@@ -131,6 +121,12 @@ public class CLI{
             case PINK -> Color.ANSI_PURPLE + circle + Color.RESET;
         };
     }
+
+    /**
+     * Gets the special Char corresponding to the parameter's ColorS
+     * @param c the ColorS being searched
+     * @return the Symbol and Color corresponding to the parameter
+     */
     private String getChar(ColorT c) {
         return switch (c) {
             case BLACK -> Color.ANSI_BLACK.toString();
@@ -140,7 +136,10 @@ public class CLI{
         };
     }
 
-
+    /**
+     * Draws all Characters
+     * @param characters ArrayList containing the VirtualCharacters
+     */
     public void drawCharacters(ArrayList<VirtualCharacter> characters){
         int xSize=25;
         ArrayList<StringBuilder> lines = new ArrayList<>();
@@ -213,6 +212,10 @@ public class CLI{
 
     }
 
+    /**
+     * Draws all Islands, one next to the other
+     * @param islands ArrayList containing all the VirtualIslands
+     */
     public void drawIslands(ArrayList<VirtualIsland> islands){
         int ySize = 5, xSize = 17;
         int numIslands = islands.size();
@@ -258,6 +261,12 @@ public class CLI{
         lastLine(xSize, numIslands, lines);
     }
 
+    /**
+     * Builds the drawing's first line
+     * @param currLine StringBuilder to use
+     * @param text String containing the drawing's label
+     * @param xSize the drawing's X dimension
+     */
     public void firstLine(StringBuilder currLine, String text, int xSize){
         currLine.append(BOX.TOP_LEFT);
         currLine.append(text);
@@ -265,7 +274,12 @@ public class CLI{
         currLine.append(BOX.TOP_RIGHT);
     }
 
-
+    /**
+     * Builds the drawing's last line
+     * @param lines ArrayList containing all other lines
+     * @param repeat how many boxes are in this line
+     * @param xSize the drawing's X dimension
+     */
     private void lastLine(int xSize, int repeat, ArrayList<StringBuilder> lines) {
         StringBuilder currLine;
         currLine=new StringBuilder();
@@ -280,9 +294,12 @@ public class CLI{
         lines.forEach(System.out::println);
     }
 
+    /**
+     * Draws all Clouds
+     * @param clouds ArrayList containing all VirtualClouds
+     */
     public void drawClouds(ArrayList<VirtualCloud> clouds){
         ArrayList<StringBuilder> lines = new ArrayList<>();
-        int numClouds = clouds.size();
         int xSize = 20;
 
         StringBuilder currLine = new StringBuilder();
@@ -320,7 +337,10 @@ public class CLI{
     }
 
 
-
+    /**
+     * Draws all Assistants
+     * @param assistants ArrayList containing all VirtualAssistants
+     */
     public void printAssistants(ArrayList<Assistant> assistants){
         ArrayList<StringBuilder> lines = new ArrayList<>();
         int numAssistants = assistants.size();
@@ -344,55 +364,6 @@ public class CLI{
 
         lastLine(xSize, numAssistants, lines);
     }
-
-
-    private void lineText(String[][] draw, int y, int xSize, String text){
-        int x=0;
-        draw[y][x]= BOX.VERT.toString();
-        x++;
-        for(int j=0;j<text.length();x++,j++)
-            draw[y][x]= String.valueOf(text.charAt(j));
-        for(;x<xSize-1;x++)
-            draw[y][x]= " ";
-        draw[y][x]= BOX.VERT.toString();
-    }
-
-    private void firstLine(String[][] draw, int xSize, String appendix, String nickname){
-        int y=0, x=0;
-        draw[x][y]= BOX.TOP_LEFT.toString();
-        x++;
-        draw[y][x]= BOX.HORIZ.toString();
-
-        for(int w=0;w<nickname.length();w++,x++)
-            draw[y][x]= String.valueOf(nickname.charAt(w));
-        for(int w=0;w<appendix.length();w++,x++)
-            draw[y][x]= String.valueOf(appendix.charAt(w));
-        for(;x<xSize-1;x++)
-            draw[y][x]= BOX.HORIZ.toString();
-
-        draw[y][x]= BOX.TOP_RIGHT.toString();
-
-    }
-
-    private void lastLine(String[][] s, int xSize, int ySize){
-        int x=0;
-        s[ySize-1][x]= BOX.BOT_LEFT.toString();
-        x++;
-
-        for(;x<xSize-1;x++)
-            s[ySize-1][x]= BOX.HORIZ.toString();
-
-        s[ySize-1][x]= BOX.BOT_RIGHT.toString();
-    }
-
-    public void print(String[][] s, int xSize,int ySize){
-        for(int i = 0; i<ySize;i++) {
-            for (int j = 0; j < xSize; j++)
-                System.out.print(s[i][j]);
-            System.out.print("\n");
-        }
-    }
-
 }
 
 class ReadRunnable implements Runnable {
