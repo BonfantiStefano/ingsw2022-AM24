@@ -181,9 +181,8 @@ public class Lobby {
     }
 
     //TODO implementare un modo per capire se un giocatore è disconnesso e aggiornare questo metodo
-    public boolean isDisconnected(int clientId) {
-        //return disconnectedClientsId.contains(clientId);
-        return false;
+    public boolean isPresent(String nickname) {
+        return mapNicknameId.containsKey(nickname);
     }
 
     public GameStatus getGameStatus() {
@@ -214,7 +213,6 @@ public class Lobby {
     public boolean isMode() {
         return mode;
     }
-}
 
     public void sendUpdate(Update u){
 
