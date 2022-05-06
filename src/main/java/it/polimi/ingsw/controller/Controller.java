@@ -9,6 +9,8 @@ import it.polimi.ingsw.model.Model;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
+import it.polimi.ingsw.server.answer.Error;
+import it.polimi.ingsw.server.answer.Information;
 import it.polimi.ingsw.server.virtualview.VirtualCloud;
 import it.polimi.ingsw.server.virtualview.VirtualIsland;
 import it.polimi.ingsw.server.virtualview.VirtualPlayer;
@@ -86,7 +88,7 @@ public class Controller implements PropertyChangeListener {
                 model.chooseAssistants(model.getPlayerByNickname(messageSender), msg.getIndex());
                 increaseHaveChosenAssistant();
             } catch (InvalidIndexException e) {
-                lobby.sendMessage(messageSender, ERRORS.INVALID_INDEX.toString());
+                lobby.sendMessage(messageSender, new Error(ERRORS.INVALID_INDEX.toString()));
             }
         nextPhase();
     }
@@ -115,7 +117,7 @@ public class Controller implements PropertyChangeListener {
         //check if another player can join and his nickname is available
         if(availableNickname && availableMage && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
             model.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
-            lobby.sendMessage(messageSender, "Accepted!");
+            lobby.sendMessage(messageSender, new Information("Accepted!"));
             if(model.getPlayers().size() == numPlayers) {
                 //all players have connected
                 turnController.setGameStarted(true);
@@ -125,7 +127,7 @@ public class Controller implements PropertyChangeListener {
         //if the Player had disconnected update his status as connected
         else if(!availableNickname && !model.getPlayerByNickname(messageSender).isConnected()) {
             model.setConnected(messageSender, true);
-            lobby.sendMessage(messageSender, "You have rejoined the Game!");
+            lobby.sendMessage(messageSender, new Information("You have rejoined the Game!"));
         }
         else if(!availableNickname)
             message+=ERRORS.NICKNAME_TAKEN;
@@ -134,7 +136,7 @@ public class Controller implements PropertyChangeListener {
 
 
         if(!message.isEmpty())
-            lobby.sendMessage(messageSender,message);
+            lobby.sendMessage(messageSender, new Error(message));
         nextPhase();
     }
     /**
@@ -187,7 +189,7 @@ public class Controller implements PropertyChangeListener {
             if (isMessageCharacter(m))
                 handleCharacter(m, messageSender);
         } else {
-            server.sendMessage(messageSender, "Invalid message!");
+            server.sendMessage(messageSender, new Error("Invalid message!"));
         }
         //after a message has been received ask the turnController for the next phase
         nextPhase();
@@ -220,7 +222,7 @@ public class Controller implements PropertyChangeListener {
                 //in this phase the next Player in order must choose his assistant
                 //if he's connected send him a message
                 if (sortedPlayers.get(haveChosenAssistant).isConnected())
-                    lobby.sendMessage(sortedPlayers.get(haveChosenAssistant).getNickname(), "Choose your Assistant!");
+                    lobby.sendMessage(sortedPlayers.get(haveChosenAssistant).getNickname(), new Information("Choose your Assistant!"));
                 else
                     increaseHaveChosenAssistant();
             }
@@ -231,7 +233,7 @@ public class Controller implements PropertyChangeListener {
                 //if he's connected send him a message
                 if (model.getActivePlayer().isConnected()) {
                     activePlayer = model.getActivePlayer().getNickname();
-                    lobby.sendMessage(activePlayer, "Select a Student and choose a destination three times!");
+                    lobby.sendMessage(activePlayer, new Information("Select a Student and choose a destination three times!"));
                 }
                 //if the Player isn't connected notify the TurnController and ask the next phase
                 else {
@@ -241,10 +243,10 @@ public class Controller implements PropertyChangeListener {
             }
             case MOVE_MN ->
                     //in this phase the Player must move MN
-                    lobby.sendMessage(activePlayer, "Choose where you want to move MN!");
+                    lobby.sendMessage(activePlayer, new Information("Choose where you want to move MN!"));
             case CHOOSE_CLOUD ->
                     //in this phase the Player must choose a Cloud
-                    lobby.sendMessage(activePlayer, "Choose a Cloud!");
+                    lobby.sendMessage(activePlayer, new Information("Choose a Cloud!"));
             case RESET_TURN -> {
                 //if all Players have played their turn notify the TurnController
                 if (havePlayed % numPlayers == 1)
@@ -262,12 +264,10 @@ public class Controller implements PropertyChangeListener {
                 if (model.getGameMustEnd()) {
                     Optional<Player> winner = model.checkWin();
                     winner.ifPresentOrElse(w -> {
-                                lobby.sendMessage(w.getNickname(), "You won");
-                                lobby.sendMessageToOthers(w.getNickname(), "You Lose");
+                                lobby.sendMessage(w.getNickname(), new Information("You won"));
+                                lobby.sendMessageToOthers(w.getNickname(), new Information("You Lose"));
                             },
-                            () -> {
-                                lobby.sendMessageToAll("The game ends in a draw");
-                            }
+                            () -> lobby.sendMessageToAll(new Information("The game ends in a draw"))
                     );
                     //notify the TurnController
                     turnController.setGameEnded(true);
@@ -279,7 +279,7 @@ public class Controller implements PropertyChangeListener {
             }
             case CHARACTER_ACTION ->
                     //in this phase the Player can't end his turn unless he performs a Character move
-                    lobby.sendMessage(activePlayer, "You need to perform a Character move!");
+                    lobby.sendMessage(activePlayer, new Information("You need to perform a Character move!"));
             case GAME_WON ->
                     //notify the lobby that the game has ended
                     lobby.gameEnded();
@@ -341,7 +341,7 @@ public class Controller implements PropertyChangeListener {
      * @param nickname the nickname of the Player associated with the Client
      */
     private void handleCharacter(Request m, String nickname){
-        lobby.sendMessage(nickname, "You're not playing in expert mode!");
+        lobby.sendMessage(nickname, new Error("You're not playing in expert mode!"));
     }
 
     private boolean verifyActive(String nickname){

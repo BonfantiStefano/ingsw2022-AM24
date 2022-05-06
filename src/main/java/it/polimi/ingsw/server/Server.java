@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.server.answer.Answer;
 import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Welcome;
+import it.polimi.ingsw.server.virtualview.VirtualLobby;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -15,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 //Not final, work in progress
+//TODO implementare metodo per gestire il caso in cui non riesce a connettersi a nessun client e quindi deve spegnersi, tutte le lobby le eliminiamo
 public class Server {
     private ExecutorService executorService;
     private Map<Integer, SocketClientHandler> mapIdSocket;
@@ -41,7 +43,6 @@ public class Server {
         while (true) {
             //Until the server is stopped, he keeps accepting new connections from clients who connect to its socket
             try {
-                System.out.println("Waiting a new client");
                 Socket clientSocket = serverSocket.accept();
                 System.out.println("A client is connected for the server");
                 SocketClientHandler socketClientHandler = new SocketClientHandler(clientSocket, this, idClients);
@@ -56,31 +57,35 @@ public class Server {
     }
 
     public void handleClientDisconnection(int clientId) {
-        /*
-        if (!gameStarted) {
-            mapIdLobby.get(clientId).handleDisconnection(clientId);
-        } else {
-            getControllerByIdClient(clientId).setInactivePlayer(mapIdNickname.get(clientId));
-        }
-        magari basta fare:
         mapIdLobby.get(clientId).handleDisconnection(clientId);
-        e poi gestisco tutto nella lobby
-         */
+        mapIdSocket.remove(clientId);
     }
 
     public void handleJoin(Join join, int clientId) {
-        if(mapIdLobby.containsKey(clientId) && !mapIdLobby.get(clientId).isDisconnected(clientId)) {
-            sendMessage(clientId, "Error: you are already in a lobby");
+        if(mapIdLobby.containsKey(clientId)) {
+            //Case when a client has already sent a good GameParams or join
+            sendMessage(clientId, new Error("Error: you are already in a lobby"));
         } else if(lobbies.isEmpty()) {
-            sendMessage(clientId, "Error: there is no lobby available, please create a new one");
-        //Capire come gestire le riconessioni, si può fare o nel metodo addPlayer che verifica che quel giocatore sia uguale ad uno che esiste
-        //già nella lobby oppure facendo un altro if simile al primo in cui chiamo un metodo che mi pone ad active tale client
-        } else if(join.getIndex() < 0 || join.getIndex() > lobbies.size()) {
+            //Case when the first client connects to the server
+            sendMessage(clientId, new Error("Error: there is no lobby available, please create a new one"));
+        } else if(join.getIndex() >= 0 && join.getIndex() < lobbies.size() && lobbies.get(join.getIndex()).isPresent(join.getNickname())){
+            //Case when a client maybe is a disconnected player
+            int oldClientId = lobbies.get(join.getIndex()).checkReconnection(join, mapIdSocket.get(clientId), clientId);
+            if(oldClientId != -1) {
+                mapIdLobby.remove(oldClientId);
+                mapIdLobby.put(clientId, lobbies.get(join.getIndex()));
+            }
+        } else if(join.getIndex() >= 0 && join.getIndex() < lobbies.size()) {
+            //Standard case when a player want to join an available lobby
+            System.out.println("Provo ad aggiungere il player alla lobby");
             boolean ris = lobbies.get(join.getIndex()).addPlayer(join, mapIdSocket.get(clientId), clientId);
             if (ris) {
                 mapIdLobby.put(clientId, lobbies.get(join.getIndex()));
-                forwardMessage(join, clientId);
+                System.out.println("Il player è stato aggiunto correttamente");
             }
+        } else {
+            sendMessage(clientId, new Error("Error: invalid lobby index, please retry"));
+            sendMessage(clientId, getLobbies());
         }
     }
 
@@ -88,15 +93,14 @@ public class Server {
         if(mapIdLobby.containsKey(clientID)) {
             mapIdLobby.get(clientID).handleMessage(request, clientID);
         } else {
-            sendMessage(clientID, "Error: you are not in a lobby, please send a Join or GameParams request");
+            sendMessage(clientID, new Error("Error: you are not in a lobby, please send a Join or GameParams request"));
         }
     }
 
     public void createLobby(GameParams gameParams, int clientId) {
         if(mapIdLobby.containsKey(clientId)) {
-            sendMessage(clientId, "Error: you are already in a lobby");
+            sendMessage(clientId, new Error("Error: you are already in a lobby"));
         } else {
-            System.out.println("Creazione di una nuova lobby");
             Lobby lobby = new Lobby(gameParams, mapIdSocket.get(clientId), clientId);
             lobbies.add(lobby);
             mapIdLobby.put(clientId, lobby);
@@ -104,17 +108,18 @@ public class Server {
         }
     }
 
-    //TODO cambiare questo metodo e anche la classe Welcome
     public Answer getLobbies() {
-        //Not final, it needs to be improved
-        //Se voglio i nickname, maghi e torri posso o fare un set/mappa di queste cose?
-        return new Welcome(lobbies);
+        ArrayList<VirtualLobby> virtualLobbies = new ArrayList<>();
+        for(Lobby lobby : lobbies) {
+            if(lobby.getGameStatus().equals(GameStatus.SETUP)) {
+                virtualLobbies.add(new VirtualLobby(lobby.getNicknames(), lobby.getMages(), lobby.getColorTowers(),
+                        lobby.getNumPlayers(), lobby.isMode(), lobbies.indexOf(lobby)));
+            }
+        }
+        return new Welcome(virtualLobbies);
     }
 
-    //TODO capire cosa è meglio tra inviare una stringa e poi vi creo un messaggio generico che ha una stringa o fare una sendMessage che prende
-    //in ingresso una Answer e quindi sono gli altri a crearsi l'oggetto Error o simili e glielo passano già fatto al metodo
-    public void sendMessage(int clientID, String content){
-        Answer answer = new Error(content);
+    public void sendMessage(int clientID, Answer answer){
         mapIdSocket.get(clientID).sendMessage(answer);
     }
 }

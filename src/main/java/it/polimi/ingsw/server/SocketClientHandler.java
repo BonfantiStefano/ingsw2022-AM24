@@ -5,16 +5,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.polimi.ingsw.client.request.*;
-import it.polimi.ingsw.model.ColorT;
-import it.polimi.ingsw.model.player.Mage;
-import it.polimi.ingsw.server.answer.Answer;
+import it.polimi.ingsw.server.answer.*;
 import it.polimi.ingsw.server.answer.Error;
-import it.polimi.ingsw.server.answer.Ping;
-import it.polimi.ingsw.server.answer.Welcome;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 
 //Not final, work in progress
 public class SocketClientHandler implements Runnable{
@@ -63,8 +58,7 @@ public class SocketClientHandler implements Runnable{
         pingController.start();
         startTimer();
         String jsonString;
-        //TODO implements a method getLobbies in the server that return a WELCOME message that will be sent to the client
-        //sendMessage(server.getLobbies());
+        sendMessage(server.getLobbies());
         while (active) {
             try {
                 jsonString = (String) inputStream.readObject();
@@ -179,7 +173,6 @@ public class SocketClientHandler implements Runnable{
             case "EntranceToHall" :
                 return gson.fromJson(jsonString, EntranceToHall.class);
             case "GameParams" :
-                System.out.println("È arrivato un messaggio di GameParams");
                 GameParams gameParams = gson.fromJson(jsonString, GameParams.class);
                 if(gameParams.getNumPlayers() < 2 || gameParams.getNumPlayers() > 3) {
                     sendMessage(new Error("Error: is only possible to play in 2 or 3 players"));
@@ -188,7 +181,6 @@ public class SocketClientHandler implements Runnable{
                 }
                 return null;
             case "Join" :
-                System.out.println("È arrivato un messaggio di Join");
                 server.handleJoin(gson.fromJson(jsonString, Join.class), clientID);
                 return null;
             case "MoveMN" :

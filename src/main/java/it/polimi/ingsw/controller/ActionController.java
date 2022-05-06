@@ -9,6 +9,8 @@ import it.polimi.ingsw.model.Model;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
+import it.polimi.ingsw.server.answer.Error;
+import it.polimi.ingsw.server.answer.Information;
 
 import java.util.Optional;
 
@@ -51,9 +53,9 @@ public class ActionController {
                 numMoveStudent = 0;
             }
         } catch (PlaceFullException e) {
-            lobby.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
+            lobby.sendMessage(model.getActivePlayer().getNickname(), new Error(e.getMessage()));
         } catch (NoSuchStudentException e) {
-            lobby.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
+            lobby.sendMessage(model.getActivePlayer().getNickname(), new Error(e.getMessage()));
         }
     }
 
@@ -65,7 +67,7 @@ public class ActionController {
      */
     public void handleAction(MoveToIsland m){
         if(m.getIndex() < 0 || m.getIndex() >= model.getSizeWorld()) {
-            lobby.sendMessage(model.getActivePlayer().getNickname(), "Error: invalid Island index");
+            lobby.sendMessage(model.getActivePlayer().getNickname(), new Error("Error: invalid Island index"));
         } else {
             try {
                 model.moveStudent(m.getColorS(), model.getActivePlayer().getMyBoard(), model.getIslandByIndex(m.getIndex()));
@@ -75,7 +77,7 @@ public class ActionController {
                     numMoveStudent = 0;
                 }
             } catch (NoSuchStudentException e) {
-                lobby.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
+                lobby.sendMessage(model.getActivePlayer().getNickname(), new Error(e.getMessage()));
             }
         }
     }
@@ -88,23 +90,23 @@ public class ActionController {
      */
     public void handleAction(MoveMN m) {
         if(m.getIndex() > 7 || m.getIndex() < 1) {
-            lobby.sendMessage(model.getActivePlayer().getNickname(), "Error: Mother Nature can't do these steps");
+            lobby.sendMessage(model.getActivePlayer().getNickname(), new Error("Error: Mother Nature can't do these steps"));
         } else {
             try {
                 model.moveMN(m.getIndex());
                 Optional<Player> winner = model.checkWin();
-                winner.ifPresentOrElse(w -> {lobby.sendMessage(w.getNickname(), "You won");
-                            lobby.sendMessageToOthers(w.getNickname(), "You Lose");
+                winner.ifPresentOrElse(w -> {lobby.sendMessage(w.getNickname(), new Information("You won"));
+                            lobby.sendMessageToOthers(w.getNickname(), new Information("You Lose"));
                             turnController.setGameEnded(true);},
                         () -> {if(model.getSizeWorld() == 3) {
-                            lobby.sendMessageToAll("The game ends in a draw");
+                            lobby.sendMessageToAll(new Information("The game ends in a draw"));
                             turnController.setGameEnded(true);
                         }
                         }
                 );
                 turnController.setMoveMNCheck(true);
             } catch (InvalidMNStepsException e) {
-                lobby.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
+                lobby.sendMessage(model.getActivePlayer().getNickname(), new Error(e.getMessage()));
             }
         }
     }
@@ -118,14 +120,14 @@ public class ActionController {
      */
     public void handleAction(ChooseCloud m){
         if(m.getIndex() < 0 || m.getIndex() >= model.getNumPlayers() || model.getCloudByIndex(m.getIndex()).getStudents().size() == 0) {
-            lobby.sendMessage(model.getActivePlayer().getNickname(), "Error: invalid Cloud index");
+            lobby.sendMessage(model.getActivePlayer().getNickname(), new Error("Error: invalid Cloud index"));
         } else {
             Cloud cloud = model.getCloudByIndex(m.getIndex());
             for(int counter = 0; counter <= model.getNumPlayers(); counter++) {
                 try {
                     model.moveStudent(cloud.getStudents().get(0), cloud, model.getActivePlayer().getMyBoard());
                 } catch (NoSuchStudentException e) {
-                    lobby.sendMessage(model.getActivePlayer().getNickname(), e.getMessage());
+                    lobby.sendMessage(model.getActivePlayer().getNickname(), new Error(e.getMessage()));
                 }
             }
             turnController.setChooseCloudCheck(true);

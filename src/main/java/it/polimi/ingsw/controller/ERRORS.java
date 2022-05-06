@@ -5,6 +5,7 @@ public enum ERRORS {
     INVALID_MESSAGE ("Invalid Message"),
     NICKNAME_TAKEN ("Nickname already in use"),
     MAGE_TAKEN("Mage already in use"),
+    COLOR_TOWER_TAKEN("Towers' color already in use"),
     CHARACTER_NOT_AVAILABLE("This card is not available"),
     NOT_ENOUGH_COINS("You don't have enough coins"),
     NO_SUCH_STUDENT("There's no such Student"),

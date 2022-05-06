@@ -1,11 +1,5 @@
 package it.polimi.ingsw.server;
 
-import it.polimi.ingsw.client.request.GameParams;
-import it.polimi.ingsw.client.request.Request;
-
-import java.io.IOException;
-
-import java.net.Socket;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 

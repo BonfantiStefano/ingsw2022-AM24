@@ -19,6 +19,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 //Not final, work in progress
+//TODO implementare timer che aspetta per un intervallo un messaggio dal server dopodichè dice che il server è stato disconnesso e si scollega
 public class Client {
     private ObjectOutputStream os;
     private ObjectInputStream is;
@@ -131,7 +132,13 @@ public class Client {
     public String jsonFromInput(String s){
          switch (s){
              case "Join" :
-                 return toJson(new Join("test", Mage.MAGE2, ColorT.WHITE, 0));
+                 return toJson(new Join("Carlo", Mage.MAGE1, ColorT.BLACK, 0));
+             case "Jo1" :
+                 return toJson(new Join("Alessia", Mage.MAGE2, ColorT.GREY, 0));
+             case "Jo1.1" :
+                 return toJson(new Join("Emily", Mage.MAGE3, ColorT.WHITE, 0));
+             case "Jo2" :
+                 return toJson(new Join("Giulia", Mage.MAGE1, ColorT.BLACK, 1));
              case "MoveMN" :
                  return toJson(new MoveMN(5));
              case "MoveToIsland" :
@@ -142,6 +149,8 @@ public class Client {
                  return toJson(new ChooseCloud(1));
              case "GameParams" :
                  return toJson(new GameParams(3, true, "Carlo",Mage.MAGE1, ColorT.BLACK));
+             case "gp" :
+                 return toJson(new GameParams(75, true, "Carlo",Mage.MAGE1, ColorT.BLACK));
              case "Quit" :
                  return toJson(new Disconnect());
              default : System.out.println("Invalid String");

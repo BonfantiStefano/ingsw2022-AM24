@@ -1,9 +1,9 @@
 package it.polimi.ingsw.server.answer;
 
-public class Error implements AnswerWithString{
+public class Information implements AnswerWithString{
     private String string;
 
-    public Error(String string) {
+    public Information(String string) {
         this.string = string;
     }
 
