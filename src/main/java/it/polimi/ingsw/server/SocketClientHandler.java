@@ -31,7 +31,7 @@ public class SocketClientHandler implements Runnable{
         this.pingController = new Thread(() -> {
             while (active){
                 try{
-                    Thread.sleep(PING_PERIOD);
+                    Thread.sleep(PING_PERIOD*PING_PERIOD);
                     sendMessage(new Ping());
                 }catch (InterruptedException e){
                     e.printStackTrace();
@@ -70,7 +70,9 @@ public class SocketClientHandler implements Runnable{
                     }
                 }
             } catch (ClassNotFoundException | IOException e) {
-                handleClientDisconnection();
+                if(!socket.isClosed()) {
+                    handleClientDisconnection();
+                }
                 //System.out.println(e.getMessage());
             }
         }
@@ -106,19 +108,32 @@ public class SocketClientHandler implements Runnable{
             outputStream.writeObject(toJson(serverAnswer));
             outputStream.flush();
         } catch (IOException e) {
-            closeSocket();
+            if(/*socket != null && */!socket.isClosed()) {
+                closeSocket();
+            }
         }
     }
 
     private void closeSocket() {
         try {
-            inputStream.close();
-            outputStream.close();
+            //outputStream.close();
+            socket.close();
             System.out.println("The streams have been closed");
         } catch (IOException e) {
             System.out.println("Exception during the closure of the stream");
             e.printStackTrace();
         }
+        //Questi in teoria si possono togliere
+        /*finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                //Vedere se è necessario perchè l'outputStream dovrebbe chiudere anche il socket
+                e.printStackTrace();
+            }
+        }
+        */
+        /*
         try {
             socket.close();
             System.out.println("The socket has been closed");
@@ -127,6 +142,8 @@ public class SocketClientHandler implements Runnable{
             System.err.println(e.getMessage());
             System.exit(0);
         }
+
+         */
     }
 
     public String toJson(Answer answer){
@@ -144,10 +161,12 @@ public class SocketClientHandler implements Runnable{
         System.out.println("Trying to set active to false");
         this.active = false;
         pingController.interrupt();
-        //the server has to verify if the game as already started
-        //server.handleClientDisconnection(clientID);
         sendMessage(new Error("You have been disconnected, you can rejoin the game in the future"));
-        closeSocket();
+        //the server has to verify if the game as already started
+        server.handleClientDisconnection(clientID);
+        if(/*socket != null &&*/ !socket.isClosed()) {
+            closeSocket();
+        }
     }
 
     public Request parseMessage(String jsonString) {

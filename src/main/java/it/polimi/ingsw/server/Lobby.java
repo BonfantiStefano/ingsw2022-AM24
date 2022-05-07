@@ -17,9 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO implementare che quando rimane un giocatore rimane da solo devo mettere il gioco in pausa per un intervallo di tempo, se
-//scade questo tempo la partita finisca, se si riconnette qualcuno interrompo il timer.
-
 //Not final, work in progress
 public class Lobby {
     private Controller controller;
@@ -70,23 +67,28 @@ public class Lobby {
         }
     }
 
-    //TODO introdurre la sincronizzazione per gestire i casi in cui più player vogliono aggiungersi contemporaneamente
+    //TODO introdurre la sincronizzazione per gestire i casi in cui più player vogliono aggiungersi contemporaneamente, prima testare
     public boolean addPlayer(Join join, SocketClientHandler socketClientHandler, int idClients) {
         if(mapIdNickname.size() < numPlayers && gameStatus.equals(GameStatus.SETUP)) {
             boolean ris = true;
             for (int counter = 0; counter < clientsId.size() && ris; counter++) {
+                //Controllo unicità nickname
                 if (mapIdNickname.get(clientsId.get(counter)).equals(join.getNickname())) {
                     ris = false;
                     socketClientHandler.sendMessage(new Error(ERRORS.NICKNAME_TAKEN.toString()));
                 }
+                //Controllo unicità colore torri
                 if (towers.contains(join.getColorT())) {
                     ris = false;
                     socketClientHandler.sendMessage(new Error(ERRORS.COLOR_TOWER_TAKEN.toString()));
-                }if (mages.contains(join.getMage())) {
+                }
+                //Controllo unicità mago
+                if (mages.contains(join.getMage())) {
                     ris = false;
                     socketClientHandler.sendMessage(new Error(ERRORS.MAGE_TAKEN.toString()));
                 }
             }
+            //Nel caso in cui non ci sono problemi devo aggiungerlo alla lobby
             if (ris) {
                 mapIdNickname.put(idClients, join.getNickname());
                 mapNicknameId.put(join.getNickname(), idClients);
@@ -121,9 +123,13 @@ public class Lobby {
             mapIdSocket.remove(oldId);
             mapIdSocket.put(clientId, socketClientHandler);
             disconnectedClientsId.remove((Integer) oldId);
+            clientsId.remove((Integer) oldId);
+            clientsId.add((Integer) clientId);
             controller.handleMessage(join, join.getNickname());
+            System.out.println(mapIdNickname.toString());
             return oldId;
         }
+        //forse si può mettere che se uno prova a riconnettersi dopo che la partita è finita può dirgli che la partita è finita
         return -1;
     }
 
@@ -132,12 +138,14 @@ public class Lobby {
     public void handleDisconnection(int clientId) {
         disconnectedClientsId.add(clientId);
         if(disconnectedClientsId.size() == 1 && clientsId.size() == 1 && gameStatus != GameStatus.ENDED) {
-            sendMessage(mapIdNickname.get(clientId), new Error("Error: the lobby must be closed"));
-            //in questo caso devo cancellare la lobby, non si può rimuovere dalla lista delle lobby del server, perchè poi cambiano anche
-            //gli indici delle altre lobby, se è finita non posso farvici più niente, lo segnalo poichè lo status è a ENDED
+            System.out.println("The lobby must be closed");
+            //Togliere commento delle istruzioni sotto solo quando avremo finito altrimenti mi sarà difficile fare il debug
+            //gameStatus = GameStatus.ENDED;
         } else {
             controller.handleMessage(new Disconnect(), mapIdNickname.get(clientId));
-        }
+        } /*if(clientsId.size() - disconnectedClientsId.size() == 1 && gameStatus != GameStatus.ENDED) {
+            //inserire timer e poi nel caso far finire la partita, mi basta mettere gameStatus ad Ended
+        }*/
     }
 
     public void sendMessage(String nickname, AnswerWithString answer){
@@ -168,7 +176,7 @@ public class Lobby {
         }
     }
 
-    //TODO understand what to do with this method and in general with this condition
+    //TODO aggiornare il controller e togliere questo metodo
     public void gameEnded(){}
 
     public void handleMessage(Request request, int clientId) {
@@ -180,10 +188,21 @@ public class Lobby {
         }
     }
 
-    //TODO implementare un modo per capire se un giocatore è disconnesso e aggiornare questo metodo
     public boolean isPresent(String nickname) {
         return mapNicknameId.containsKey(nickname);
     }
+
+    /*
+    prima facevo:
+    public boolean isPresent(String nickname) {
+        for(Integer clientId : clientsId) {
+            if(mapIdNickname.get(clientId).equals(nickname)) {
+                return true;
+            }
+        }
+        return false;
+    }
+     */
 
     public GameStatus getGameStatus() {
         return gameStatus;

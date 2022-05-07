@@ -3,6 +3,7 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.server.answer.Answer;
 import it.polimi.ingsw.server.answer.Error;
+import it.polimi.ingsw.server.answer.Information;
 import it.polimi.ingsw.server.answer.Welcome;
 import it.polimi.ingsw.server.virtualview.VirtualLobby;
 
@@ -22,7 +23,6 @@ public class Server {
     private Map<Integer, SocketClientHandler> mapIdSocket;
     private Map<Integer, Lobby> mapIdLobby;
     private ArrayList<Lobby> lobbies;
-    private ServerSocket serverSocket;
     private int idClients;
 
     public Server() {
@@ -33,26 +33,25 @@ public class Server {
     }
 
     public void startServer(int port) {
-        try {
-            serverSocket = new ServerSocket(port);
-            System.out.println("Server started on port " + port);
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+                System.out.println("Server started on port " + port);
+                while (true) {
+                    //Until the server is stopped, he keeps accepting new connections from clients who connect to its socket
+                    try {
+                        Socket clientSocket = serverSocket.accept();
+                        System.out.println("A client is connected for the server");
+                        SocketClientHandler socketClientHandler = new SocketClientHandler(clientSocket, this, idClients);
+                        mapIdSocket.put(idClients, socketClientHandler);
+                        executorService.submit(socketClientHandler);
+                        idClients++;
+                    } catch (IOException e) {
+                        System.out.println("An exception caused the server to stop working.");
+                        System.exit(0);
+                    }
+                }
         } catch (IOException e) {
             System.err.println("Error during Socket initialization, the application will close");
             System.exit(0);
-        }
-        while (true) {
-            //Until the server is stopped, he keeps accepting new connections from clients who connect to its socket
-            try {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("A client is connected for the server");
-                SocketClientHandler socketClientHandler = new SocketClientHandler(clientSocket, this, idClients);
-                mapIdSocket.put(idClients, socketClientHandler);
-                executorService.submit(socketClientHandler);
-                idClients++;
-            } catch (IOException e) {
-                System.out.println("An exception caused the server to stop working.");
-                System.exit(0);
-            }
         }
     }
 
@@ -105,6 +104,7 @@ public class Server {
             lobbies.add(lobby);
             mapIdLobby.put(clientId, lobby);
             System.out.println("La lobby è stata creata correttamente");
+            sendMessage(clientId, new Information("The lobby has been created"));
         }
     }
 

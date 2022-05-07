@@ -21,13 +21,16 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 //Not final, work in progress
-//TODO implementare timer che aspetta per un intervallo un messaggio dal server dopodichè dice che il server è stato disconnesso e si scollega
+//TODO implementare timer che aspetta per un intervallo un messaggio dal server dopodichè dice che il server è stato disconnesso
+// e si scollega --> implementato, da togliere quando vogliamo e vedere se funziona
 public class Client {
     private ObjectOutputStream os;
     private ObjectInputStream is;
     private boolean active;
     private final Scanner scanner;
     private final CLI cli;
+    private Thread timer;
+    private static final int TIMEOUT = 20000;
 
     public static void main(String[] args) {
         Scanner initialScanner = new Scanner(System.in);
@@ -49,6 +52,7 @@ public class Client {
 
     public void startClient(String ip, int port) {
         active = true;
+        //startTimer();
         try {
             //creazione del socket
             try (Socket socket = new Socket(ip, port)) {
@@ -97,6 +101,7 @@ public class Client {
 
     public void handleClientDisconnection() {
         active = false;
+        //stopTimer();
         try {
             os.close();
             is.close();
@@ -178,6 +183,13 @@ public class Client {
             while (active) {
                 try {
                     String s = (String) is.readObject();
+                    /*
+                    if(s!= null) {
+                        stopTimer();
+                        startTimer();
+                    }
+
+                     */
                     //metodo primordiale per gestire ping e disconnessioni, poi dovrò mettere un metodo che mi fa il de-parsing della stringa
                     //e in base al risulato vedere come comportarmi
                         /*if(s.equals("{\"type\":\"Ping\"}")) {
@@ -191,10 +203,34 @@ public class Client {
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("Socket chiuso, al posto di e.printStackTrace");
+                    //e.printStackTrace();
                     handleClientDisconnection();
                 }
             }
         }).start();
     }
+
+    /*
+    //Utile se vogliamo implementare un timer che ci dice che il server non è raggiungibile
+    public void startTimer(){
+        timer = new Thread(() -> {
+            try{
+                Thread.sleep(TIMEOUT);
+                System.out.println("The server isn't available");
+                handleClientDisconnection();
+            } catch (InterruptedException e){
+                //System.out.println("The timeout timer has been stopped");
+            }
+        });
+        timer.start();
+    }
+
+    public void stopTimer(){
+        if (timer != null && timer.isAlive()){
+            timer.interrupt();
+            timer = null;
+        }
+    }
+    */
 }
