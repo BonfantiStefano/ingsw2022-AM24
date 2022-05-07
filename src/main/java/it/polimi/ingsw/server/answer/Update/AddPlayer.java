@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.answer.Update;
 
+import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 
 public class AddPlayer implements Update {
@@ -11,5 +12,10 @@ public class AddPlayer implements Update {
 
     public VirtualPlayer getPlayer() {
         return player;
+    }
+
+    @Override
+    public void accept(CLI c){
+        c.visit(this);
     }
 }

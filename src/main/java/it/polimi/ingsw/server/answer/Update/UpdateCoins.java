@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.answer.Update;
 
+import it.polimi.ingsw.client.CLIView.CLI;
+
 public class UpdateCoins implements Update{
     private final int coins;
 
@@ -9,5 +11,10 @@ public class UpdateCoins implements Update{
 
     public int getCoins() {
         return coins;
+    }
+
+    @Override
+    public void accept(CLI c){
+        c.visit(this);
     }
 }

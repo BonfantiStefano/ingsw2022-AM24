@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.answer.Update;
 
+import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.player.Player;
 
@@ -14,5 +15,10 @@ public class UpdateProfs implements Update{
 
     public HashMap<ColorS, Player> getProfs() {
         return profs;
+    }
+
+    @Override
+    public void accept(CLI c){
+        c.visit(this);
     }
 }

@@ -73,7 +73,7 @@ public class TurnController {
                 if(allPlayedCheck)
                     return PHASE.RESET_ROUND;
                 resetTurn();
-                return PHASE.PLANNING;
+                return PHASE.MOVE_STUDENTS;
             case RESET_ROUND:
                 resetRound();
                 return PHASE.PLANNING;

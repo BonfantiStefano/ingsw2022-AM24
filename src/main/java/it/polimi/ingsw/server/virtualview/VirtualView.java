@@ -156,6 +156,12 @@ public class VirtualView {
         return virtualClouds;
     }
 
+    /**
+     * Method getVirtualCharacters returns the Characters
+     * @return virtualCharacters - Characters
+     */
+    public ArrayList<VirtualCharacter> getVirtualCharacters(){return virtualCharacters;}
+
     /** Method getMnPos returns the mother nature's position.
      * @return mnPos - mother nature's position
      */

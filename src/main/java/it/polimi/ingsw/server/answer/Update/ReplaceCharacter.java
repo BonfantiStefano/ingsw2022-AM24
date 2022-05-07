@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.answer.Update;
 
+import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.server.virtualview.VirtualCharacter;
 
 public class ReplaceCharacter implements Update{
@@ -17,5 +18,10 @@ public class ReplaceCharacter implements Update{
 
     public int getIndex() {
         return index;
+    }
+
+    @Override
+    public void accept(CLI c){
+        c.visit(this);
     }
 }

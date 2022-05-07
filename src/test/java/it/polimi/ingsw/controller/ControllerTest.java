@@ -30,9 +30,9 @@ class ControllerTest {
         c.handleMessage(join1, "player2");
     }
 
-    void chooseAssistants( int i) {
+    void chooseAssistants(int i) {
         c.handleMessage(new ChooseAssistant(i), "test");
-        c.handleMessage(new ChooseAssistant(i), "player2");
+        c.handleMessage(new ChooseAssistant(i+1), "player2");
     }
 
     /**
@@ -89,7 +89,7 @@ class ControllerTest {
         c.handleMessage(new MoveMN(1), "test");
         assertEquals(PHASE.CHOOSE_CLOUD, c.getPhase());
         c.handleMessage(new ChooseCloud(0), "test");
-        assertEquals(PHASE.PLANNING, c.getPhase());
+        assertEquals(PHASE.MOVE_STUDENTS, c.getPhase());
     }
 
     /**
@@ -112,7 +112,7 @@ class ControllerTest {
         //first player plays his whole turn
         completeTurn();
         //both choose assistants
-        chooseAssistants(2);
+
         //second Player's turn
         assertEquals(PHASE.MOVE_STUDENTS, c.getPhase());
         ArrayList<ColorS> entrance = new ArrayList<>(c.getModel().getPlayerByNickname("player2").getMyBoard().getEntrance());

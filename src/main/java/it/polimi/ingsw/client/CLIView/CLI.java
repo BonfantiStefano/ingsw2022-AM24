@@ -1,9 +1,16 @@
 package it.polimi.ingsw.client.CLIView;
 
 
+import it.polimi.ingsw.client.request.GameParams;
+import it.polimi.ingsw.client.request.Join;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Assistant;
+import it.polimi.ingsw.model.player.Mage;
+import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.server.Lobby;
+import it.polimi.ingsw.server.answer.Update.*;
+import it.polimi.ingsw.server.answer.Welcome;
 import it.polimi.ingsw.server.virtualview.*;
 
 import java.io.PrintStream;
@@ -12,29 +19,130 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 
-public class CLI{
+public class CLI {
     private boolean gameOn = true;
     private long start;
+    private VirtualView virtualView;
 
     public static void main(String[] args) {
         CLI c = new CLI();
-        c.run();
     }
 
     private final PrintStream output;
     private final Scanner input;
 
-    public CLI(){
+    public CLI() {
         output = new PrintStream(System.out);
         input = new Scanner(System.in);
+        virtualView = new VirtualView();
     }
 
+    private void printView() {
+        ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
+        drawIslands((ArrayList<VirtualIsland>) virtualWorld.subList(0, virtualWorld.size() / 2));
+        drawIslands((ArrayList<VirtualIsland>) virtualWorld.subList(virtualWorld.size() / 2 + 1, virtualWorld.size() - 1));
+        drawCharacters(virtualView.getVirtualCharacters());
+        for (VirtualPlayer vp : virtualView.getVirtualPlayers())
+            drawSchoolBoard(vp.getVirtualBoard(), vp.getNickname(), virtualView.getVirtualProfs());
+    }
 
-    public void run() {
-        new Thread(new ReadRunnable()).start();
-        new Thread(new PrintRunnable()).start();
-        gameOn=true;
+    /**
+     * Ask the Player whether they want to create a Lobby or Join one
+     * @param w Welcome message containing all available Lobbies
+     */
+    private void getInfo(Welcome w) {
+        //TODO set lobbies to w.getLobbies()
+        ArrayList<Lobby> lobbies = new ArrayList<>();
+        System.out.println("Here's the list of available lobbies:");
+        for (Lobby l : lobbies) {
+            System.out.println(lobbies.indexOf(l) + ":");
+            System.out.println(l.isMode() ? "Expert Mode" : "Normal Mode");
+            System.out.println("Num Players: " + l.getNumPlayers());
+        }
 
+        String answer;
+        do {
+            System.out.println("Do you want to Join a Lobby? (y/n)");
+            answer = input.nextLine();
+        } while (!answer.equals("y") && !answer.equals("n"));
+
+        if (answer.equals("y")) {
+            int index;
+            System.out.println("Insert the Lobby's number: ");
+            index = input.nextInt();
+
+
+            String nickname;
+            do {
+                System.out.println("Choose your nickname: ");
+                nickname = input.nextLine();
+                if (lobbies.get(index).getNicknames().contains(nickname)) {
+                    System.out.println("Nickname already in use!");
+                    nickname = null;
+                }
+            } while (nickname == null);
+
+            int mageIndex;
+            do {
+                System.out.println("Choose your Mage (1,2,3,4):");
+                mageIndex = input.nextInt();
+                if (lobbies.get(index).getMages().contains(Mage.values()[mageIndex])) {
+                    System.out.println("Mage already in use!");
+                    mageIndex = -1;
+                }
+            } while (mageIndex < 0 || mageIndex > 4);
+
+            int towerIndex;
+            do {
+                System.out.println("Choose your TowerColor (1,2,3):");
+                towerIndex = input.nextInt();
+                if (lobbies.get(index).getColorTowers().contains(ColorT.values()[towerIndex])) {
+                    System.out.println("Tower Color already in use!");
+                    towerIndex = -1;
+                }
+            } while (towerIndex < 0 || towerIndex > 4);
+
+            Join msg = new Join(nickname, Mage.values()[mageIndex], ColorT.values()[towerIndex], index);
+        }
+        else{
+            int numPlayers;
+            do {
+                System.out.println("How many other Players do you want to play with? (2/3)");
+                numPlayers = input.nextInt();
+            }while(numPlayers<2 || numPlayers>3);
+
+            String expert;
+            do{
+                System.out.println("Do you want to create an Expert Game? (y/n)");
+                expert = input.nextLine();
+            }while(!expert.equals("y")&&!expert.equals("n"));
+
+            String nickname;
+            do {
+                System.out.println("Choose your nickname: ");
+                nickname = input.nextLine();
+            } while (nickname == null);
+
+            int mageIndex;
+            do {
+                System.out.println("Choose your Mage (1,2,3,4):");
+                mageIndex = input.nextInt();
+            } while (mageIndex < 0 || mageIndex > 4);
+
+            int towerIndex;
+            do {
+                System.out.println("Choose your TowerColor (1,2,3):");
+                towerIndex = input.nextInt();
+            } while (towerIndex < 0 || towerIndex > 4);
+
+            GameParams msg = new GameParams(numPlayers, expert.equals("y"), nickname,Mage.values()[mageIndex], ColorT.values()[towerIndex]);
+        }
+        //client.sendMessage(msg);
+    }
+
+    public void update(Update u){
+        u.accept(this);
+        printView();
     }
 
     /**
@@ -42,16 +150,14 @@ public class CLI{
      * @param schoolBoard the SchoolBoard to print
      * @param profs the HashMap containing all Profs
      */
-    public void printSchoolBoard(VirtualSchoolBoard schoolBoard, HashMap<ColorS, VirtualPlayer> profs){
+    public void drawSchoolBoard(VirtualSchoolBoard schoolBoard,String nickname, HashMap<ColorS, Player> profs){
         //TODO add nickname parameter
         String appendix = "'s SchoolBoard";
-        String nickname = "Test";
         ArrayList<ColorS> entrance = schoolBoard.getEntrance();
         HashMap<ColorS, Integer> hall = (HashMap<ColorS, Integer>) schoolBoard.getHall();
         ArrayList<ColorT> towers = schoolBoard.getTowers();
         ArrayList<StringBuilder> lines = new ArrayList<>();
         final int xSize=40, ySize=7;
-        String[][] draw = new String[ySize][xSize];
 
         StringBuilder currLine = new StringBuilder();
         lines.add(currLine);
@@ -364,38 +470,39 @@ public class CLI{
 
         lastLine(xSize, numAssistants, lines);
     }
-}
 
-class ReadRunnable implements Runnable {
-
-    @Override
-    public void run() {
-        final Scanner in = new Scanner(System.in);
-        while(in.hasNext()) {
-            final String line = in.nextLine();
-            System.out.println("Input line: " + line);
-            if ("end".equalsIgnoreCase(line)) {
-                System.out.println("Ending one thread");
-                break;
-            }
-        }
+    public void visit(AddPlayer u){
+        virtualView.addVirtualPlayer(u.getPlayer());
+    }
+    public void visit(CreateCharacters u){
+        virtualView.setVirtualCharacters(u.getCharacters());
+    }
+    public void visit(CreateClouds u){
+        virtualView.setVirtualClouds(u.getClouds());
+    }
+    public void visit(ReplaceCharacter u){
+        virtualView.setVirtualCharacters(u.getIndex(),u.getCharacter());
+    }
+    public void visit(ReplaceCloud u){
+        virtualView.setVirtualClouds(u.getIndex(),u.getCloud());
+    }
+    public void visit(UpdateCoins u){
+        virtualView.setVirtualCoins(u.getCoins());
+    }
+    public void visit(UpdateIsland u){
+        virtualView.setVirtualWorld(u.getIndex(),u.getIsland());
+    }
+    public void visit(UpdateWorld u){
+        virtualView.setVirtualWorld(u.getIslands());
+    }
+    public void visit(UpdateMN u){
+        virtualView.setMnPos(u.getIndex());
+    }
+    public void visit(UpdatePlayer u){
+        virtualView.setVirtualPlayers(u.getIndex(),u.getPlayer());
+    }
+    public void visit(UpdateProfs u){
+        virtualView.setVirtualProfs(u.getProfs());
     }
 
-}
-
-class PrintRunnable implements Runnable {
-
-    @Override
-    public void run() {
-        int i = 50;
-        while(i>0) {
-            System.out.println("Beep: " + i --);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                throw new IllegalStateException(ex);
-            }
-        }
-        System.out.println("!!!! BOOM !!!!");
-    }
 }

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.answer.Update;
 
+import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.server.answer.Update.Update;
 import it.polimi.ingsw.server.virtualview.VirtualIsland;
 
@@ -18,5 +19,10 @@ public class UpdateIsland implements Update {
 
     public VirtualIsland getIsland() {
         return island;
+    }
+
+    @Override
+    public void accept(CLI c){
+        c.visit(this);
     }
 }
