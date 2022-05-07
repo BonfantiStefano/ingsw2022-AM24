@@ -124,6 +124,7 @@ public class Controller implements PropertyChangeListener {
                 //all players have connected
                 turnController.setGameStarted(true);
                 gameStarted = true;
+                lobby.sendMessageToAll(new Information("Game Started!"));
             }
         }
         //if the Player had disconnected update his status as connected
@@ -146,7 +147,7 @@ public class Controller implements PropertyChangeListener {
      * @param msg a Client's Request
      */
     public void visit(MoveToIsland msg){
-        if(verifyActive(messageSender)&&phase.equals(PHASE.MOVE_STUDENTS))
+        if(phase.equals(PHASE.MOVE_STUDENTS)&&verifyActive(messageSender))
             actionController.handleAction(msg);
         nextPhase();
     }
@@ -155,7 +156,7 @@ public class Controller implements PropertyChangeListener {
      * @param msg a Client's Request
      */
     public void visit(MoveMN msg){
-        if(verifyActive(messageSender)&&phase.equals(PHASE.MOVE_MN))
+        if(phase.equals(PHASE.MOVE_MN)&&verifyActive(messageSender))
             actionController.handleAction(msg);
         nextPhase();
     }
@@ -164,7 +165,7 @@ public class Controller implements PropertyChangeListener {
      * @param msg a Client's Request
      */
     public void visit(ChooseCloud msg){
-        if(verifyActive(messageSender)&&phase.equals(PHASE.CHOOSE_CLOUD))
+        if(phase.equals(PHASE.CHOOSE_CLOUD)&&verifyActive(messageSender))
             actionController.handleAction(msg);
         nextPhase();
     }
@@ -173,7 +174,7 @@ public class Controller implements PropertyChangeListener {
      * @param msg a Client's Request
      */
     public void visit(EntranceToHall msg){
-        if(verifyActive(messageSender)&&phase.equals(PHASE.MOVE_STUDENTS))
+        if(phase.equals(PHASE.MOVE_STUDENTS)&&verifyActive(messageSender))
             actionController.handleAction(msg);
         nextPhase();
     }
@@ -328,7 +329,7 @@ public class Controller implements PropertyChangeListener {
     }
 
     private boolean verifyActive(String nickname){
-        if(model!=null) {
+        if(model!=null&&model.getActivePlayer()!=null) {
             activePlayer=model.getActivePlayer().getNickname();
             return activePlayer.equals(nickname);
         }
