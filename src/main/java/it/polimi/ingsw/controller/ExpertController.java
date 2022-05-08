@@ -20,6 +20,7 @@ import it.polimi.ingsw.server.answer.Update.UpdateCoins;
 import it.polimi.ingsw.server.virtualview.VirtualCharacter;
 import it.polimi.ingsw.server.virtualview.VirtualCharacterWithNoEntry;
 import it.polimi.ingsw.server.virtualview.VirtualCharacterWithStudents;
+import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;

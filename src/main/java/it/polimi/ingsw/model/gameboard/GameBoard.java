@@ -75,6 +75,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         listener.addPropertyChangeListener(controller);
         listener.firePropertyChange(String.valueOf(EVENT.CREATE_WORLD), null, world.createVirtualWorld());
         listener.firePropertyChange(String.valueOf(EVENT.CREATE_CLOUDS), null, createVirtualClouds());
+        listener.firePropertyChange(String.valueOf(EVENT.CREATE_PLAYERS), null, createVirtualPlayers());
         listener.firePropertyChange(String.valueOf(EVENT.MN_POS), null, world.getMNPosition());
     }
 
@@ -543,6 +544,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      */
     public void entranceToHall(ColorS s) throws PlaceFullException, NoSuchStudentException {
         activePlayer.getMyBoard().entranceToHall(s);
+        checkProfs();
     }
 
     /**
@@ -562,16 +564,17 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         EVENT event = EVENT.valueOf(evt.getPropertyName());
-        switch(event){
+        switch(event) {
             case CHANGE_SCHOOLBOARD:
                 int indexPlayer = -1;
                 VirtualPlayer virtualPlayer = null;
                 SchoolBoard modelBoard = ((SchoolBoard) evt.getNewValue());
-                for(Player p : players)
-                    if(p.getMyBoard().equals(modelBoard)){
+                for (Player p : players)
+                    if (p.getMyBoard().equals(modelBoard)) {
                         indexPlayer = players.indexOf(p);
                         virtualPlayer = new VirtualPlayer(p);
                     }
+                checkProfs();
                 listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PLAYER), indexPlayer, virtualPlayer);
                 break;
             case PLAYER_COINS:
@@ -604,5 +607,13 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         clouds.forEach(cloud -> virtualClouds.add(new VirtualCloud(cloud)));
         return virtualClouds;
     }
+
+
+    public ArrayList<VirtualPlayer> createVirtualPlayers(){
+        ArrayList<VirtualPlayer> virtualPlayers = new ArrayList<>();
+        players.forEach(player -> virtualPlayers.add(new VirtualPlayer(player)));
+        return virtualPlayers;
+    }
+
 
 }

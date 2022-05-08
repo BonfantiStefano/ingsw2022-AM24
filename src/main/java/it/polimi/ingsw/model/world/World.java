@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.world;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.ColorS;
+import it.polimi.ingsw.model.EVENT;
 import it.polimi.ingsw.model.HasStrategy;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.world.influence.InfluenceStrategy;
@@ -148,7 +149,6 @@ public class World implements HasStrategy<InfluenceStrategy> {
     public Island join(Island i1, Island i2) {
         int indexIsland = islands.indexOf(i1);
         Island newIsland = new Island(i1, i2);
-        //TODO cambiare riferimento listener
         Arrays.stream(listener.getPropertyChangeListeners()).toList().forEach(newIsland::addListener);
         islands.remove(i1);
         islands.remove(i2);
@@ -254,9 +254,11 @@ public class World implements HasStrategy<InfluenceStrategy> {
         return bannedColorS;
     }
 
+
      public ArrayList<VirtualIsland> createVirtualWorld(){
         ArrayList<VirtualIsland> virtualWorld = new ArrayList<>();
         islands.forEach(island -> virtualWorld.add(new VirtualIsland(island)));
         return virtualWorld;
      }
+
 }

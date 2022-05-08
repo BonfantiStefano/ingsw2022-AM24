@@ -2,18 +2,18 @@ package it.polimi.ingsw.server.answer.Update;
 
 import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.model.ColorS;
-import it.polimi.ingsw.model.player.Player;
+import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 
 import java.util.HashMap;
 
 public class UpdateProfs implements Update{
-    private final HashMap<ColorS, Player> profs;
+    private final HashMap<ColorS, VirtualPlayer> profs;
 
-    public UpdateProfs(HashMap<ColorS, Player> profs) {
+    public UpdateProfs(HashMap<ColorS, VirtualPlayer> profs) {
         this.profs = profs;
     }
 
-    public HashMap<ColorS, Player> getProfs() {
+    public HashMap<ColorS, VirtualPlayer> getProfs() {
         return profs;
     }
 

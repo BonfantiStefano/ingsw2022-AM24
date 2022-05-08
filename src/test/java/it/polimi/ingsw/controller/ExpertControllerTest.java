@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
+import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PlayerInterface;
@@ -19,6 +20,8 @@ import it.polimi.ingsw.model.world.influence.NoColorInfluence;
 import it.polimi.ingsw.model.world.influence.NoTowerInfluence;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
+import it.polimi.ingsw.server.virtualview.VirtualCharacter;
+import it.polimi.ingsw.server.virtualview.VirtualView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class ExpertControllerTest {
 
-    private ExpertController expertController;
+    private ExpertController expertController, expController;
 
     private ExpertGameBoard egb;
     private int mnPos;
@@ -58,7 +61,7 @@ public class ExpertControllerTest {
 
         Join join1 = new Join("Lisa", Mage.MAGE2, ColorT.WHITE,0);
         expertController.handleMessage(join1, "Lisa");
-        Join join2 = new Join("Alice", Mage.MAGE3, ColorT.GREY, 0);
+        Join join2 = new Join("Alice", Mage.MAGE3, ColorT.GREY, 1);
         expertController.handleMessage(join2, "Alice");
         //egb.addPlayer("Lisa", ColorT.WHITE, Mage.MAGE2);
         //egb.addPlayer("Alice", ColorT.GREY, Mage.MAGE3);
@@ -352,6 +355,58 @@ public class ExpertControllerTest {
         assertEquals(egb.getPlayerByNickname("Alice").getMyBoard().getHall(ColorS.YELLOW), 1);
     }
 
+    @Test
+    public void testListeners(){
+        Lobby lobby = new Lobby();
+        expController = new ExpertController(lobby, new GameParams(2, true, "Leo", Mage.MAGE1, ColorT.BLACK));
+        Join join = new Join("Lisa", Mage.MAGE2, ColorT.WHITE, 1);
+        expController.handleMessage(join, "Lisa");
+        ExpertGameBoard gameBoard = (ExpertGameBoard) expController.getModel();
+        VirtualView view = expController.getVirtualView();
+
+        expertController.handleMessage(new ChooseAssistant(2), "Leo");
+        expertController.handleMessage(new ChooseAssistant(6), "Lisa");
+
+        //TODO: model(expert gameBoard) hasn't been updated after handleMessage
+        //System.out.println(gameBoard.getPlayers().get(0).getLastAssistant().getTurn());
+        //System.out.println(gameBoard.getPlayers().get(1).getLastAssistant().getTurn());
+
+        assertEquals(3, view.getVirtualCharacters().size());
+        assertEquals(12, view.getVirtualWorld().size());
+        assertEquals(2, view.getVirtualPlayers().size());
+        assertEquals(20 - gameBoard.getNumPlayers(), view.getVirtualCoins());
+
+        assertEquals(1, view.getVirtualPlayers().get(0).getVirtualCoins());
+        //TODO: virtual player 2 for some reason doesn't have 1 coin at the beginning of the game
+        //assertEquals(1, view.getVirtualPlayers().get(1).getVirtualCoins());
+        //assertEquals(1, gameBoard.getPlayers().get(1).getCoins());
+
+        //System.out.println(gameBoard.getActivePlayer().getNickname());
+        //System.out.println(expController.getPhase());
+        /**
+        Character characterplayed = gameBoard.getCharacters().get(0);
+        int cost = characterplayed.getCost();
+        String desc = characterplayed.getDescription();
+        PlayCharacter messageCharacter = new PlayCharacter(CharacterDescription.valueOf(desc));
+        expertController.handleCharacter(messageCharacter, "");
+*/
+
+        ArrayList<VirtualCharacter> characters = view.getVirtualCharacters();
+        ArrayList<CharacterDescription> availableChars = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            String description = characters.get(i).getDescription();
+            for (CharacterDescription cd : CharacterDescription.values()) {
+                if (cd.getDesc().equals(description))
+                    availableChars.add(cd);
+            }
+        }
+
+        System.out.println(availableChars);
+
+
+
+    }
+
     /** Method createCharacter for creating different Character cards used in the tests */
     public Character createCharacter ( int charNum){
 
@@ -403,5 +458,6 @@ public class ExpertControllerTest {
             }
             return c;
     }
+
 
 }

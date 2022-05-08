@@ -31,7 +31,7 @@ public class Client {
     private final CLI cli;
     private Thread timer;
     private static final int TIMEOUT = 20000;
-
+    //192.168.181.42
     public static void main(String[] args) {
         Scanner initialScanner = new Scanner(System.in);
         System.out.println("Enter IP");

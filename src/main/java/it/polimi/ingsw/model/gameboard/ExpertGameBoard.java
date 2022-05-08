@@ -46,6 +46,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     }
 
     public void addListener(PropertyChangeListener expertController){
+        super.addListener(expertController);
         listener.addPropertyChangeListener(expertController);
         characters.forEach(character -> character.addListener(this));
         listener.firePropertyChange(String.valueOf(EVENT.CREATE_CHARACTERS), null, createVirtualCharacters());

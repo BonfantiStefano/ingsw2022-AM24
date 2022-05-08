@@ -7,7 +7,6 @@ import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
-import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.answer.Update.*;
 import it.polimi.ingsw.server.answer.Welcome;
@@ -150,7 +149,7 @@ public class CLI {
      * @param schoolBoard the SchoolBoard to print
      * @param profs the HashMap containing all Profs
      */
-    public void drawSchoolBoard(VirtualSchoolBoard schoolBoard,String nickname, HashMap<ColorS, Player> profs){
+    public void drawSchoolBoard(VirtualSchoolBoard schoolBoard, String nickname, HashMap<ColorS, VirtualPlayer> profs){
         //TODO add nickname parameter
         String appendix = "'s SchoolBoard";
         ArrayList<ColorS> entrance = schoolBoard.getEntrance();

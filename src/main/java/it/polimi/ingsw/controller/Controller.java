@@ -20,6 +20,7 @@ import it.polimi.ingsw.server.virtualview.VirtualView;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -424,6 +425,10 @@ public class Controller implements PropertyChangeListener {
                 virtualView.setVirtualClouds(virtualClouds);
                 lobby.sendUpdate(new CreateClouds(virtualClouds));
                 break;
+            case CREATE_PLAYERS:
+                ArrayList<VirtualPlayer> virtualPlayers = (ArrayList<VirtualPlayer>) evt.getNewValue();
+                virtualView.setVirtualPlayers(virtualPlayers);
+                break;
             case REPLACE_CLOUD:
                 int indexCloud = (int) evt.getOldValue();
                 VirtualCloud cloud = (VirtualCloud) evt.getNewValue();
@@ -431,10 +436,14 @@ public class Controller implements PropertyChangeListener {
                 lobby.sendUpdate(new ReplaceCloud(cloud, indexCloud));
                 break;
             case REPLACE_PROFS:
-                //TODO convert to VirtualPlayer
-                HashMap<ColorS, Player> profs = (HashMap<ColorS, Player>) evt.getNewValue();
-                virtualView.setVirtualProfs(profs);
-                lobby.sendUpdate(new UpdateProfs(profs));
+                HashMap<ColorS, Player> modelProfs = (HashMap<ColorS, Player>) evt.getNewValue();
+                HashMap<ColorS, VirtualPlayer> virtualProfs = new HashMap<>();
+                for(ColorS c : ColorS.values()){
+                    if(modelProfs.get(c) != null)
+                        virtualProfs.put(c, new VirtualPlayer(modelProfs.get(c)));
+                }
+                virtualView.setVirtualProfs(virtualProfs);
+                lobby.sendUpdate(new UpdateProfs(virtualProfs));
                 break;
             case MN_POS:
                 int mnPos = (int) evt.getNewValue();

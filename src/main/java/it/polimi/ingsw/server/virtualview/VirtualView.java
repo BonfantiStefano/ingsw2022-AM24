@@ -15,7 +15,7 @@ public class VirtualView {
     private ArrayList<VirtualIsland> virtualWorld;
     private ArrayList<VirtualPlayer> virtualPlayers;
     private ArrayList<VirtualCloud> virtualClouds;
-    private HashMap<ColorS, Player> virtualProfs;
+    private HashMap<ColorS, VirtualPlayer> virtualProfs;
     private ArrayList<VirtualCharacter> virtualCharacters;
     private int virtualCoins;
     int mnPos;
@@ -92,7 +92,7 @@ public class VirtualView {
     /** Method setVirtualProfs is intended to be called whenever there is a change of the of professors.
      * @param virtualProfs - changed profs
      */
-    public void setVirtualProfs(HashMap<ColorS, Player> virtualProfs) {
+    public void setVirtualProfs(HashMap<ColorS, VirtualPlayer> virtualProfs) {
         this.virtualProfs = virtualProfs;
     }
 
@@ -145,7 +145,7 @@ public class VirtualView {
     /** Method getVirtualProfs returns the profs.
      * @return virtualProfs - profs
      */
-    public HashMap<ColorS, Player> getVirtualProfs() {
+    public HashMap<ColorS, VirtualPlayer> getVirtualProfs() {
         return virtualProfs;
     }
 
@@ -167,6 +167,10 @@ public class VirtualView {
      */
     public int getMnPos() {
         return mnPos;
+    }
+
+    public void setVirtualPlayers(ArrayList<VirtualPlayer> virtualPlayers) {
+        this.virtualPlayers = virtualPlayers;
     }
 
 }
