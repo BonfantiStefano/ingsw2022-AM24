@@ -3,6 +3,11 @@ package it.polimi.ingsw.server;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+/**
+ * Class ServerMain used to start the server on a port, is possible to choose a port or to use the default configuration
+ *
+ * @author Bonfanti Stefano
+ */
 public class ServerMain {
     private static final int DEFAULT_PORT = 1234;
     private static final int MIN_PORT = 1024;

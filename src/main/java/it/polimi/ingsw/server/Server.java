@@ -18,6 +18,12 @@ import java.util.concurrent.Executors;
 
 //Not final, work in progress
 //TODO implementare metodo per gestire il caso in cui non riesce a connettersi a nessun client e quindi deve spegnersi, tutte le lobby le eliminiamo
+/**
+ * Class Server used to manage new connecting clients, the forwarding of the messages from the socket that handle the client to the
+ * right lobby.
+ *
+ * @author Bonfanti Stefano
+ */
 public class Server {
     private ExecutorService executorService;
     private Map<Integer, SocketClientHandler> mapIdSocket;
@@ -25,6 +31,9 @@ public class Server {
     private ArrayList<Lobby> lobbies;
     private int idClients;
 
+    /**
+     * Constructor Server creates a new Server instance.
+     */
     public Server() {
         executorService = Executors.newCachedThreadPool();
         mapIdSocket = new HashMap<>();
@@ -32,6 +41,11 @@ public class Server {
         lobbies = new ArrayList<>();
     }
 
+    /**
+     * Method startServer is used to start the server on the port given by parameter, then he keeps accepting new connections
+     * form clients till the server is alive.
+     * @param port int - the port where the server is started.
+     */
     public void startServer(int port) {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
                 System.out.println("Server started on port " + port);
@@ -55,11 +69,21 @@ public class Server {
         }
     }
 
+    /**
+     * Method handleClientDisconnection calls the method handleDisconnection of the corresponding lobby then remove from the map
+     * id-Socket this client id
+     * @param clientId int - the id of the client who has to be disconnected.
+     */
     public void handleClientDisconnection(int clientId) {
         mapIdLobby.get(clientId).handleDisconnection(clientId);
         mapIdSocket.remove(clientId);
     }
 
+    /**
+     * Method handleJoin manages a join message from a client, it also handles the re-connection of a client.
+     * @param join Join - the join message sent by the client.
+     * @param clientId int - the client's id that sent the join to the server.
+     */
     public void handleJoin(Join join, int clientId) {
         if(mapIdLobby.containsKey(clientId)) {
             //Case when a client has already sent a good GameParams or join
@@ -88,6 +112,11 @@ public class Server {
         }
     }
 
+    /**
+     * Method forwardMessage receives a request message from a client and sends it to the corresponding lobby.
+     * @param request Request - the message that has to be forwarded.
+     * @param clientID int - the client's id that sent the request to the server.
+     */
     public void forwardMessage(Request request, int clientID) {
         if(mapIdLobby.containsKey(clientID)) {
             mapIdLobby.get(clientID).handleMessage(request, clientID);
@@ -96,6 +125,11 @@ public class Server {
         }
     }
 
+    /**
+     * Method createLobby is utilized to create a lobby based on the GameParams message received from a client.
+     * @param gameParams GameParams - the message that is used to create the lobby.
+     * @param clientId int - the client's id that sent the message to the server.
+     */
     public void createLobby(GameParams gameParams, int clientId) {
         if(mapIdLobby.containsKey(clientId)) {
             sendMessage(clientId, new Error("Error: you are already in a lobby"));
@@ -108,6 +142,10 @@ public class Server {
         }
     }
 
+    /**
+     * Method getLobbies is used to create the Welcome message that must be sent to all the clients that connect to the server
+     * @return Answer - the message containing all the lobbies available with their parameters.
+     */
     public Answer getLobbies() {
         ArrayList<VirtualLobby> virtualLobbies = new ArrayList<>();
         for(Lobby lobby : lobbies) {
@@ -119,6 +157,11 @@ public class Server {
         return new Welcome(virtualLobbies);
     }
 
+    /**
+     * Method sendMessage sends a message to the client.
+     * @param clientID int - the client's id that will receive the answer.
+     * @param answer Answer - the message that has to be sent to the client.
+     */
     public void sendMessage(int clientID, Answer answer){
         mapIdSocket.get(clientID).sendMessage(answer);
     }

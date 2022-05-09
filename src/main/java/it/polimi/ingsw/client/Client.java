@@ -9,9 +9,8 @@ import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
-import it.polimi.ingsw.server.answer.Answer;
+import it.polimi.ingsw.server.answer.*;
 import it.polimi.ingsw.server.answer.Error;
-import it.polimi.ingsw.server.answer.Ping;
 import it.polimi.ingsw.server.virtualview.VirtualView;
 
 import java.io.*;
@@ -31,7 +30,7 @@ public class Client {
     private final CLI cli;
     private Thread timer;
     private static final int TIMEOUT = 20000;
-    //192.168.181.42
+
     public static void main(String[] args) {
         Scanner initialScanner = new Scanner(System.in);
         System.out.println("Enter IP");
@@ -115,21 +114,12 @@ public class Client {
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
         switch (jsonObject.get("type").getAsString()) {
-            /*
-            case "SelectAssistant" :
-                return gson.fromJson(jsonString, SelectAssistant.class);
-            case "SelectCloud" :
-                return gson.fromJson(jsonString, SelectCloud.class);
-            case "MoveMN" :
-                return gson.fromJson(jsonString, MoveMN.class);
-            case "MoveToIsland" :
-                return gson.fromJson(jsonString, MoveToIsland.class);
-            case "PlayCharacter" :
-                return gson.fromJson(jsonString, PlayCharacter.class);
-            case "SpecialMoveIsland" :
-                return gson.fromJson(jsonString, SpecialMoveIsland.class);
-
-             */
+            case "Welcome" :
+                return gson.fromJson(jsonString, Welcome.class);
+            case "Error" :
+                return gson.fromJson(jsonString, Error.class);
+            case "Information" :
+                return gson.fromJson(jsonString, Information.class);
             case "Ping" :
                 sendMessage("Pong");
                 return null;

@@ -12,6 +12,11 @@ import java.io.*;
 import java.net.Socket;
 
 //Not final, work in progress
+/**
+ * Class SocketClientHandler manages a single Client connected to the server.
+ *
+ * @author Stefano Bonfanti
+ */
 public class SocketClientHandler implements Runnable{
     private static final int PING_PERIOD = 10000;
     private final Socket socket;
@@ -23,6 +28,12 @@ public class SocketClientHandler implements Runnable{
     private final Thread pingController;
     private Thread timer;
 
+    /**
+     * Constructor SocketClientHandler create a new instance of SocketClientHandler.
+     * @param socket Socket - the client's socket.
+     * @param server Server - the server that has accepted the client's connection.
+     * @param clientID int - the client's id.
+     */
     public SocketClientHandler(Socket socket, Server server, int clientID){
         this.socket = socket;
         this.server = server;
@@ -31,6 +42,7 @@ public class SocketClientHandler implements Runnable{
         this.pingController = new Thread(() -> {
             while (active){
                 try{
+                    //Modificare il valore
                     Thread.sleep(PING_PERIOD*PING_PERIOD);
                     sendMessage(new Ping());
                 }catch (InterruptedException e){
@@ -51,6 +63,9 @@ public class SocketClientHandler implements Runnable{
         }
     }
 
+    /**
+     * Method run contains the actions that will be done till the socket is active.
+     */
     @Override
     public void run() {
         System.out.println("Il socketClientHandler è partito");
@@ -78,10 +93,14 @@ public class SocketClientHandler implements Runnable{
         }
     }
 
+    /**
+     * Method startTimer starts the timer that checks if the client is active.
+     */
     public void startTimer(){
         timer = new Thread(() -> {
             try{
-                Thread.sleep(5*PING_PERIOD);
+                //Correct the value
+                Thread.sleep(5*PING_PERIOD*PING_PERIOD);
                 System.out.println("Timeout expires");
                 handleClientDisconnection();
             } catch (InterruptedException e){
@@ -102,6 +121,10 @@ public class SocketClientHandler implements Runnable{
         }
     }
 
+    /**
+     * Method sendMessage sends a message to the client on the output stream.
+     * @param serverAnswer Answer - the message that will be sent to the client.
+     */
     public synchronized void sendMessage(Answer serverAnswer) {
         try {
             outputStream.reset();
@@ -114,6 +137,9 @@ public class SocketClientHandler implements Runnable{
         }
     }
 
+    /**
+     * Method closeSocket is used to close the socket.
+     */
     private void closeSocket() {
         try {
             //outputStream.close();
@@ -146,6 +172,11 @@ public class SocketClientHandler implements Runnable{
          */
     }
 
+    /**
+     * Method toJson converts an Answer message to the json codify
+     * @param answer Answer - the message that has to be transformed.
+     * @return a String that is the json codify of the message.
+     */
     public String toJson(Answer answer){
         Gson gson = new Gson();
         JsonElement jsonElement;
@@ -155,6 +186,9 @@ public class SocketClientHandler implements Runnable{
         return gson.toJson(jsonElement);
     }
 
+    /**
+     * Method handleClientDisconnection handles the disconnection of the client, stopping the timers and closing the socket.
+     */
     private void handleClientDisconnection(){
         System.out.println("Trying to stopping the timer");
         stopTimer();
@@ -169,6 +203,12 @@ public class SocketClientHandler implements Runnable{
         }
     }
 
+    /**
+     * Method parseMessage is used to convert the string (that should be in json codify) given by parameter to the corresponding
+     * message that will be returned.
+     * @param jsonString String - the string that has to be parsed.
+     * @return a Request, that represents the string given in input.
+     */
     public Request parseMessage(String jsonString) {
         GsonBuilder builder = new GsonBuilder();
         builder.disableHtmlEscaping();
@@ -187,8 +227,7 @@ public class SocketClientHandler implements Runnable{
                 return gson.fromJson(jsonString, ChooseTwoColors.class);
             case "Disconnect" :
                 handleClientDisconnection();
-                return gson.fromJson(jsonString, Disconnect.class);
-                //return null;
+                return null;
             case "EntranceToHall" :
                 return gson.fromJson(jsonString, EntranceToHall.class);
             case "GameParams" :

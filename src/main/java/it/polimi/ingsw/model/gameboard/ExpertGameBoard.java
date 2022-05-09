@@ -119,9 +119,11 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      */
     public void switchStudents(ColorS hallS, ColorS entranceS) throws PlaceFullException, NoSuchStudentException {
         if(activePlayer.getMyBoard().entranceToHall(entranceS)){
-            activePlayer.setCoins(1);
-            coins--;
-            listener.firePropertyChange(String.valueOf(EVENT.BOARD_COINS), null, coins);
+            if(coins > 0) {
+                activePlayer.setCoins(1);
+                coins--;
+                listener.firePropertyChange(String.valueOf(EVENT.BOARD_COINS), null, coins);
+            }
         }
         activePlayer.getMyBoard().hallToEntrance(hallS);
         checkProfs();
