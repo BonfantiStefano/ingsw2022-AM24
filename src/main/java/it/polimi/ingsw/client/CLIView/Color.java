@@ -1,5 +1,8 @@
 package it.polimi.ingsw.client.CLIView;
 
+/**
+ * Color Enum contains all ANSI escape codes to change the terminal's text color
+ */
 public enum Color {
 
     ANSI_RED("\u001B[31m"),

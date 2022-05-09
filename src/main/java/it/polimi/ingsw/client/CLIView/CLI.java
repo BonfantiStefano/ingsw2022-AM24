@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.CLIView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
@@ -20,50 +21,79 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
+/**
+ * Class CLI represents the terminal UI
+ */
 public class CLI{
-    private boolean gameOn = true;
-    private long start;
-    private VirtualView virtualView;
+    //TODO add handle disconnection
+    private final VirtualView virtualView;
+    private final Client client;
 
-    private final PrintStream output;
-    private Scanner input;
+    private PrintStream output;
+    private final Scanner input;
 
-    public CLI() {
+    /**
+     * Creates a new CLI object
+     * @param client the Client creating the UI
+     */
+    public CLI(Client client) {
         output = new PrintStream(System.out);
         input = new Scanner(System.in);
         virtualView = new VirtualView();
+        this.client = client;
     }
 
+    /**
+     * Handles the continuous loop
+     */
     public void run(){
+        //TODO add welcome input;
+        getInfo(new Welcome(new ArrayList<>()));
+        input.nextLine();
         while(true){
             loop();
         }
     }
 
+    /**
+     * Operations repeated until the game ends
+     */
     public void loop(){
-        getInfo(new Welcome(new ArrayList<>()));
         String s = input.nextLine();
         parseInput(s);
     }
+/*
+    /**
+     * Operations performed on CLI startup
 
     public void init(){
         new Thread(() -> {
             input = new Scanner(System.in);
             while (true)
-                try {
-                    String s = input.nextLine();
-                    parseInput(s);
-                }catch (NoSuchElementException ignored){}
+                while(input.hasNextLine()) {
+                    try {
+                        String s = input.nextLine();
+                        parseInput(s);
+                    } catch (NoSuchElementException ignored) {}
+                }
         }).start();
     }
+    */
 
+    /**
+     * Handles all Updates calling the respective visitor method
+     * @param a the Update received
+     */
     public void handleMessage(Update a){
         clearScreen();
         a.accept(this);
     }
 
-    private void parseInput(String s){
+    /**
+     * Parses the user's input and tries to match it to all possible commands
+     * @param s the user's input
+     */
+    public void parseInput(String s){
         Pattern pattern;
         Matcher matcher;
         for(REGEX r:REGEX.values()){
@@ -73,7 +103,7 @@ public class CLI{
             if(matcher.find()) {
                 Request msg = createMessage(r, s);
                 System.out.println(toJson(msg));
-                //client.sendMessage(toJson(msg));
+                client.sendMessage(toJson(msg));
                 return;
             }
         }
@@ -81,15 +111,26 @@ public class CLI{
 
     }
 
-    public String toJson(Request answer){
+    /**
+     * Converts an Object to Json format
+     * @param r the Client's request
+     * @return Request Object containing the Message
+     */
+    public String toJson(Object r){
         Gson gson = new Gson();
         JsonElement jsonElement;
-        jsonElement = gson.toJsonTree(answer);
-        jsonElement.getAsJsonObject().addProperty("type", answer.getClass().getSimpleName());
+        jsonElement = gson.toJsonTree(r);
+        jsonElement.getAsJsonObject().addProperty("type", r.getClass().getSimpleName());
 
         return gson.toJson(jsonElement);
     }
 
+    /**
+     * Based on the Pattern matched parse the user's input
+     * @param r the Pattern matched
+     * @param s the user's input
+     * @return the Request corresponding to the user's input
+     */
     private Request createMessage(REGEX r, String s){
         //TODO check all substring indexes
         switch (r){
@@ -98,7 +139,7 @@ public class CLI{
             case ENTR_HALL: return new EntranceToHall(colorByString(s.substring(5)));
             case ONE_COLOR: return new ChooseColor(colorByString(s));
             case PLAY_CHAR:
-                int index = Integer.parseInt(s.substring(6))-1;
+                int index = Integer.parseInt(s.substring(5))-1;
                 //get the corresponding enum value
                 CharacterDescription c = Arrays.stream(CharacterDescription.values()).filter(c1 -> c1.getDesc().equals(virtualView.getVirtualCharacters().get(index).getDescription())).findFirst().get();
                 return new PlayCharacter(c);
@@ -115,7 +156,6 @@ public class CLI{
                 return new ChooseTwoColors(first,second);
             case SPECIAL_MOVE:
                 ColorS color = colorByString(s.split(" ")[1]);
-                String[] split = s.split(" ");
                 int i = Integer.parseInt(s.split(" ")[3]);
                 return new SpecialMoveIsland(color, i);
             }
@@ -123,6 +163,9 @@ public class CLI{
         return null;
     }
 
+    /**
+     * Prints elements contained in the VirtualView
+     */
     private void printView() {
         ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
         drawIslands((ArrayList<VirtualIsland>) virtualWorld.subList(0, virtualWorld.size() / 2));
@@ -157,7 +200,6 @@ public class CLI{
             System.out.println("Insert the Lobby's number: ");
             index = input.nextInt();
 
-
             String nickname;
             do {
                 System.out.println("Choose your nickname: ");
@@ -189,6 +231,7 @@ public class CLI{
             } while (towerIndex < 0 || towerIndex > 4);
 
             Join msg = new Join(nickname, Mage.values()[mageIndex], ColorT.values()[towerIndex], index);
+            client.sendMessage(toJson(msg));
         }
         else{
             int numPlayers;
@@ -196,7 +239,7 @@ public class CLI{
                 System.out.println("How many other Players do you want to play with? (2/3)");
                 numPlayers = input.nextInt();
             }while(numPlayers<2 || numPlayers>3);
-
+            input.nextLine();
             String expert;
             do{
                 System.out.println("Do you want to create an Expert Game? (y/n)");
@@ -221,11 +264,16 @@ public class CLI{
                 towerIndex = input.nextInt();
             } while (towerIndex < 0 || towerIndex > 4);
 
-            GameParams msg = new GameParams(numPlayers, expert.equals("y"), nickname,Mage.values()[mageIndex], ColorT.values()[towerIndex]);
+            GameParams msg = new GameParams(numPlayers, expert.equals("y"), nickname,Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1]);
+            client.sendMessage(toJson(msg));
         }
-        //client.sendMessage(msg);
+
     }
 
+    /**
+     * Receives an update and calls the visitor's method
+     * @param u the Update received
+     */
     public void update(Update u){
         u.accept(this);
         printView();
@@ -395,12 +443,9 @@ public class CLI{
             thirdLine.append(BOX.VERT);
         }
 
-
         lastLine(xSize,characters.size(),lines);
 
-
         lines.forEach(System.out::println);
-
     }
 
     /**
@@ -480,8 +525,6 @@ public class CLI{
             currLine.append(BOX.HORIZ.toString().repeat(xSize));
             currLine.append(BOX.BOT_RIGHT);
         }
-
-
         lines.forEach(System.out::println);
     }
 
@@ -516,7 +559,6 @@ public class CLI{
         }
         lines.add(currLine);
         currLine = new StringBuilder();
-
 
         for(int i = 0;i<clouds.size();i++){
             currLine.append(BOX.BOT_LEFT);
@@ -588,6 +630,11 @@ public class CLI{
         virtualView.setVirtualProfs(u.getProfs());
     }
 
+    /**
+     * Gets the color corresponding to the user's string
+     * @param s the user's input
+     * @return the ColorS corresponding to the input string
+     */
     private ColorS colorByString(String s){
         return switch (s.charAt(0)){
             case ('p') -> ColorS.PINK;
@@ -598,6 +645,10 @@ public class CLI{
             default -> null;
         };
     }
+
+    /**
+     * Clears the screen
+     */
     public static void clearScreen() {
         try{
             if(System.getProperty("os.name").contains("Windows")){

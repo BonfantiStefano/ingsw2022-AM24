@@ -1,5 +1,8 @@
 package it.polimi.ingsw.client.CLIView;
 
+/**
+ * BOX Enum contains all unicode characters used to print the CLI interface
+ */
 public enum BOX {
     TOP_LEFT("\u250C"),
     TOP_RIGHT("\u2510"),
@@ -12,8 +15,7 @@ public enum BOX {
 
     private final String c;
 
-
-    private BOX(String c){
+    BOX(String c){
         this.c=c;
     }
 

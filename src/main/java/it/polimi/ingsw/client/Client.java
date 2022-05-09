@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.server.answer.*;
 import it.polimi.ingsw.server.answer.Error;
+import it.polimi.ingsw.server.answer.Update.*;
 import it.polimi.ingsw.server.virtualview.VirtualView;
 
 import java.io.*;
@@ -26,7 +27,6 @@ public class Client {
     private ObjectOutputStream os;
     private ObjectInputStream is;
     private boolean active;
-    private final Scanner scanner;
     private final CLI cli;
     private Thread timer;
     private static final int TIMEOUT = 20000;
@@ -45,8 +45,7 @@ public class Client {
 
     public Client() {
         active = false;
-        scanner = new Scanner(System.in);
-        cli = new CLI();
+        cli = new CLI(this);
     }
 
     public void startClient(String ip, int port) {
@@ -69,17 +68,9 @@ public class Client {
                 //Avvio del thread che si occupa della lettura dei messaggi che gli invia il server e del loro smistamento
                 System.out.println("Stream created");
                 startServerReader();
-
+                cli.run();
                 //Lettura dell'input da tastiera, traduzione in json e invio del messaggio
-                while (active) {
-                    String input = scanner.nextLine();
-                    String jsonInput = jsonFromInput(input);
-                    sendMessage(jsonInput);
-                    if (input.equals("Quit")) {
-                        handleClientDisconnection();
-                    }
-                    System.out.println(jsonInput);
-                }
+
             } catch (NoSuchElementException | IllegalStateException e) {
                 System.out.println("Connection closed");
             }
@@ -104,7 +95,6 @@ public class Client {
         try {
             os.close();
             is.close();
-            scanner.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -123,11 +113,33 @@ public class Client {
             case "Ping" :
                 sendMessage("Pong");
                 return null;
+            case "AddPlayer":
+                return gson.fromJson(jsonString, AddPlayer.class);
+            case "CreateCharacters":
+                return gson.fromJson(jsonString, CreateCharacters.class);
+            case "CreateClouds":
+                return gson.fromJson(jsonString, CreateClouds.class);
+            case "ReplaceCharacter":
+                return gson.fromJson(jsonString, ReplaceCharacter.class);
+            case "ReplaceCloud":
+                return gson.fromJson(jsonString, ReplaceCloud.class);
+            case "UpdateCoins":
+                return gson.fromJson(jsonString, UpdateCoins.class);
+            case "UpdateIsland":
+                return gson.fromJson(jsonString, UpdateIsland.class);
+            case "UpdateMN":
+                return gson.fromJson(jsonString, UpdateMN.class);
+            case "UpdatePlayer":
+                return gson.fromJson(jsonString, UpdatePlayer.class);
+            case "UpdateProfs":
+                return gson.fromJson(jsonString, UpdateProfs.class);
+            case "UpdateWorld":
+                return gson.fromJson(jsonString, UpdateWorld.class);
             default : System.out.println("Invalid message");
                 return null;
         }
     }
-
+    /*
     public String jsonFromInput(String s){
          switch (s){
              case "Join" :
@@ -156,17 +168,7 @@ public class Client {
                  return null;
         }
     }
-
-    public String toJson(Object r){
-        GsonBuilder builder = new GsonBuilder();
-        builder.disableHtmlEscaping();
-        Gson gson = builder.create();
-        JsonElement jsonElement;
-        jsonElement = gson.toJsonTree(r);
-        jsonElement.getAsJsonObject().addProperty("type", r.getClass().getSimpleName());
-
-        return gson.toJson(jsonElement);
-    }
+     */
 
     public void startServerReader() {
         new Thread(() -> {
@@ -189,6 +191,10 @@ public class Client {
                         System.out.println(s);
                         handleClientDisconnection();
                     }
+                    Answer a = parseMessage(s);
+                    //TODO handle all other messages
+                    if(a instanceof Update)
+                        cli.handleMessage((Update)a);
                     System.out.println(s);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
