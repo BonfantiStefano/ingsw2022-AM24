@@ -1,10 +1,10 @@
 package it.polimi.ingsw.client.CLIView;
 
 
-import it.polimi.ingsw.client.request.GameParams;
-import it.polimi.ingsw.client.request.Join;
+import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
+import it.polimi.ingsw.model.character.CharacterDescription;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.server.Lobby;
@@ -14,8 +14,11 @@ import it.polimi.ingsw.server.virtualview.*;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class CLI {
@@ -34,6 +37,55 @@ public class CLI {
         output = new PrintStream(System.out);
         input = new Scanner(System.in);
         virtualView = new VirtualView();
+    }
+
+    private void parseInput(String s){
+        Pattern pattern;
+        Matcher matcher;
+        for(REGEX r:REGEX.values()){
+            pattern = Pattern.compile(r.toString(), Pattern.CASE_INSENSITIVE);
+            matcher = pattern.matcher(s);
+
+            if(matcher.find()) {
+                Request msg = createMessage(r, s);
+                //client.sendMessage(msg);
+                return;
+            }
+        }
+
+    }
+
+    private Request createMessage(REGEX r, String s){
+        //TODO check all substring indexes
+        switch (r){
+            case DISCONNECT: return new Disconnect();
+            case MOVE_MN: new MoveMN(Integer.parseInt(s.substring(8))-1);
+            case ENTR_HALL: new EntranceToHall(colorByString(s.substring(5)));
+            case ONE_COLOR: new ChooseColor(colorByString(s));
+            case PLAY_CHAR:
+                int index = Integer.parseInt(s.substring(6))-1;
+                //get the corresponding enum value
+                CharacterDescription c = Arrays.stream(CharacterDescription.values()).filter(c1 -> c1.getDesc().equals(virtualView.getVirtualCharacters().get(index).getDescription())).findFirst().get();
+                return new PlayCharacter(c);
+            case CHOOSE_ASSISTANT: new ChooseAssistant(Integer.parseInt(s.substring(10))-1);
+            case TO_ISLAND:
+                ColorS colorS = colorByString(s.substring(5));
+                int in = Integer.parseInt(s.split("\\s*")[2])-1;
+                new MoveToIsland(colorS, in);
+            case CHOOSE_CLOUD: new ChooseCloud(Integer.parseInt(s.substring(6))-1);
+            case TWO_COLORS:
+                ColorS first, second;
+                first = colorByString(s.split("\\s*")[0]);
+                second =  colorByString(s.split("\\s*")[1]);
+                new ChooseTwoColors(first,second);
+
+            case SPECIAL_MOVE:
+                ColorS color = colorByString(s.split("\\s*")[1]);
+                int i = Integer.parseInt(s.split("\\s*")[3]);
+                new SpecialMoveIsland(color, i);
+            }
+
+        return null;
     }
 
     private void printView() {
@@ -504,4 +556,14 @@ public class CLI {
         virtualView.setVirtualProfs(u.getProfs());
     }
 
+    private ColorS colorByString(String s){
+        return switch (s.charAt(0)){
+            case ('p') -> ColorS.PINK;
+            case ('b') -> ColorS.BLUE;
+            case ('y') -> ColorS.YELLOW;
+            case ('g') -> ColorS.GREEN;
+            case ('r') -> ColorS.RED;
+            default -> null;
+        };
+    }
 }

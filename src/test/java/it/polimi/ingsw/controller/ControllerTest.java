@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.client.request.*;
+import it.polimi.ingsw.controller.controllers.Controller;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
-import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.CharacterDescription;
@@ -10,9 +10,7 @@ import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
-import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.server.Lobby;
-import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.virtualview.VirtualIsland;
 import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 import it.polimi.ingsw.server.virtualview.VirtualView;

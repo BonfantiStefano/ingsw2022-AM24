@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.request;
 
-import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.controllers.Controller;
 
 public class ChooseAssistant implements Request{
     private final int index;

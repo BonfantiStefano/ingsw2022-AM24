@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.client.request.*;
+import it.polimi.ingsw.controller.controllers.ExpertController;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.exceptions.InvalidMNStepsException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
@@ -9,7 +10,6 @@ import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
-import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PlayerInterface;
@@ -19,15 +19,12 @@ import it.polimi.ingsw.model.world.influence.AdditionalInfluence;
 import it.polimi.ingsw.model.world.influence.NoColorInfluence;
 import it.polimi.ingsw.model.world.influence.NoTowerInfluence;
 import it.polimi.ingsw.server.Lobby;
-import it.polimi.ingsw.server.Server;
-import it.polimi.ingsw.server.virtualview.VirtualCharacter;
 import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 import it.polimi.ingsw.server.virtualview.VirtualView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -395,12 +392,12 @@ public class ExpertControllerTest {
         assertNotNull(gameBoard.getActivePlayer());
         EntranceToHall messageHall = new EntranceToHall(ColorS.BLUE);
         //TODO
-        //expController.handleMessage(messageHall, "Leo");
+        expController.handleMessage(messageHall, "Leo");
         //assertEquals(1, virtualLeo.getVirtualBoard().getHall().get(ColorS.BLUE));
 
         System.out.println(expController.getPhase());
 
-        /**
+        /*
         System.out.println(gameBoard.getPlayerByNickname("Leo").getCoins());
         Character characterplayed = gameBoard.getCharacters().get(0);
         int cost = characterplayed.getCost();

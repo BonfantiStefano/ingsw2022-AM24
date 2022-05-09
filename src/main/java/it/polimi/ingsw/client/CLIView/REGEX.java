@@ -13,7 +13,7 @@ public enum REGEX {
     PLAY_CHAR("^play [1-3]$"),
     CHOOSE_ASSISTANT("^assistant ([1-9]|10)$"),
     CHOOSE_CLOUD("^cloud [1-3]$"),
-    DISCONNECT("disconnect")
+    DISCONNECT("^disconnect$")
     ;
 
     REGEX(String s) {

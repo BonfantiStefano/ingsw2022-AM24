@@ -1,6 +1,5 @@
 package it.polimi.ingsw.client.request;
 
-import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
 

@@ -1,7 +1,11 @@
-package it.polimi.ingsw.controller;
+package it.polimi.ingsw.controller.controllers;
 
 
 import it.polimi.ingsw.client.request.*;
+import it.polimi.ingsw.controller.ActionController;
+import it.polimi.ingsw.controller.ERRORS;
+import it.polimi.ingsw.controller.PHASE;
+import it.polimi.ingsw.controller.TurnController;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.EVENT;
@@ -30,18 +34,18 @@ import java.util.Optional;
  */
 public class Controller implements PropertyChangeListener {
 
-    private Model model;
-    private ActionController actionController;
-    private TurnController turnController;
-    private Lobby lobby;
-    private PHASE phase;
-    private int numPlayers;
-    private int havePlayed;
-    private int haveChosenAssistant;
-    private String activePlayer;
-    private String messageSender;
-    private boolean gameStarted;
-    private VirtualView virtualView;
+    protected Model model;
+    protected ActionController actionController;
+    protected TurnController turnController;
+    protected Lobby lobby;
+    protected PHASE phase;
+    protected int numPlayers;
+    protected int havePlayed;
+    protected int haveChosenAssistant;
+    protected String activePlayer;
+    protected String messageSender;
+    protected boolean gameStarted;
+    protected VirtualView virtualView;
 
     public Controller(Lobby lobby, GameParams m){
         virtualView = new VirtualView();
@@ -102,10 +106,8 @@ public class Controller implements PropertyChangeListener {
         //if a Player disconnects during the setup phase the game is canceled
         //can be changed later
         //Stefano: Ho commentato questo metodo perchè in teoria non ci serve
-        if (phase.equals(PHASE.SETUP)) {}
-            //lobby.gameEnded();
-        else if(gameStarted)
-            model.setConnected(messageSender, false);
+
+        model.setConnected(messageSender, false);
         nextPhase();
     }
     /**
@@ -458,4 +460,7 @@ public class Controller implements PropertyChangeListener {
         return virtualView;
     }
 
+    public ActionController getActionController() {
+        return actionController;
+    }
 }

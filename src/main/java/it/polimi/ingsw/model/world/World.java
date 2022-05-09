@@ -1,10 +1,7 @@
 package it.polimi.ingsw.model.world;
 
-import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.model.ColorS;
-import it.polimi.ingsw.model.EVENT;
 import it.polimi.ingsw.model.HasStrategy;
-import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.world.influence.InfluenceStrategy;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.world.influence.StandardInfluence;

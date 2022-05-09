@@ -1,6 +1,6 @@
 package it.polimi.ingsw.client.request;
 
-import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.controllers.Controller;
 
 public class ChooseIsland implements Request {
     private final int islandIndex;
