@@ -21,11 +21,13 @@ import it.polimi.ingsw.model.world.influence.NoTowerInfluence;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.virtualview.VirtualCharacter;
+import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 import it.polimi.ingsw.server.virtualview.VirtualView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -358,52 +360,71 @@ public class ExpertControllerTest {
     @Test
     public void testListeners(){
         Lobby lobby = new Lobby();
-        expController = new ExpertController(lobby, new GameParams(2, true, "Leo", Mage.MAGE1, ColorT.BLACK));
+        expController = new ExpertController(lobby, new GameParams(3, true, "Leo", Mage.MAGE1, ColorT.BLACK));
         Join join = new Join("Lisa", Mage.MAGE2, ColorT.WHITE, 1);
         expController.handleMessage(join, "Lisa");
+        Join join_message = new Join("Alice", Mage.MAGE3, ColorT.GREY, 2);
+        expController.handleMessage(join_message, "Alice");
         ExpertGameBoard gameBoard = (ExpertGameBoard) expController.getModel();
         VirtualView view = expController.getVirtualView();
 
-        expertController.handleMessage(new ChooseAssistant(2), "Leo");
-        expertController.handleMessage(new ChooseAssistant(6), "Lisa");
-
-        //TODO: model(expert gameBoard) hasn't been updated after handleMessage
-        //System.out.println(gameBoard.getPlayers().get(0).getLastAssistant().getTurn());
-        //System.out.println(gameBoard.getPlayers().get(1).getLastAssistant().getTurn());
-
         assertEquals(3, view.getVirtualCharacters().size());
         assertEquals(12, view.getVirtualWorld().size());
-        assertEquals(2, view.getVirtualPlayers().size());
+        assertEquals(3, view.getVirtualPlayers().size());
         assertEquals(20 - gameBoard.getNumPlayers(), view.getVirtualCoins());
 
-        assertEquals(1, view.getVirtualPlayers().get(0).getVirtualCoins());
-        //TODO: virtual player 2 for some reason doesn't have 1 coin at the beginning of the game
-        //assertEquals(1, view.getVirtualPlayers().get(1).getVirtualCoins());
-        //assertEquals(1, gameBoard.getPlayers().get(1).getCoins());
+        expController.handleMessage(new ChooseAssistant(2), "Leo");
+        expController.handleMessage(new ChooseAssistant(6), "Lisa");
+        expController.handleMessage(new ChooseAssistant(10), "Alice");
 
-        //System.out.println(gameBoard.getActivePlayer().getNickname());
-        //System.out.println(expController.getPhase());
+        assertEquals(1, view.getVirtualPlayers().get(0).getVirtualCoins());
+        assertEquals(1, view.getVirtualPlayers().get(1).getVirtualCoins());
+        assertEquals(1, view.getVirtualPlayers().get(2).getVirtualCoins());
+
+        Player modelLeo = gameBoard.getActivePlayer();
+        VirtualPlayer virtualLeo = view.getVirtualPlayers().get(0);
+        modelLeo.getMyBoard().getEntrance().removeAll(modelLeo.getMyBoard().getEntrance());
+        assertEquals(0, virtualLeo.getVirtualBoard().getEntrance().size());
+        //now Leo has: 7 blue
+        for(int i = 0; i < 7; i++){
+            modelLeo.getMyBoard().add(ColorS.BLUE);
+        }
+        assertEquals(7, virtualLeo.getVirtualBoard().getEntrance().size());
+
+        assertEquals("Leo", gameBoard.getActivePlayer().getNickname());
+        assertNotNull(gameBoard.getActivePlayer());
+        EntranceToHall messageHall = new EntranceToHall(ColorS.BLUE);
+        //TODO
+        //expController.handleMessage(messageHall, "Leo");
+        //assertEquals(1, virtualLeo.getVirtualBoard().getHall().get(ColorS.BLUE));
+
+        System.out.println(expController.getPhase());
+
         /**
+        System.out.println(gameBoard.getPlayerByNickname("Leo").getCoins());
         Character characterplayed = gameBoard.getCharacters().get(0);
         int cost = characterplayed.getCost();
+        System.out.println("cost " + cost);
         String desc = characterplayed.getDescription();
-        PlayCharacter messageCharacter = new PlayCharacter(CharacterDescription.valueOf(desc));
-        expertController.handleCharacter(messageCharacter, "");
-*/
+        PlayCharacter messageCharacter = new PlayCharacter(Arrays.stream(CharacterDescription.values()).
+                filter(c->c.getDesc().equals(desc)).findFirst().get());
+        expertController.handleCharacter(messageCharacter, "Leo");
+        System.out.println(gameBoard.getPlayerByNickname("Leo").getCoins());
 
-        ArrayList<VirtualCharacter> characters = view.getVirtualCharacters();
-        ArrayList<CharacterDescription> availableChars = new ArrayList<>();
+
+        ArrayList<VirtualCharacter> virtualCharacters = view.getVirtualCharacters();
+        ArrayList<CharacterDescription> availableVirtualCharacters = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
-            String description = characters.get(i).getDescription();
+            String description = virtualCharacters.get(i).getDescription();
             for (CharacterDescription cd : CharacterDescription.values()) {
                 if (cd.getDesc().equals(description))
-                    availableChars.add(cd);
+                    availableVirtualCharacters.add(cd);
             }
         }
 
-        System.out.println(availableChars);
+        System.out.println(availableVirtualCharacters);
 
-
+*/
 
     }
 

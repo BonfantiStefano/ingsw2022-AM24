@@ -238,6 +238,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         int numT = numPlayers==3? NT : NUM_TOWERS;
         Player p = new Player(nickname, color, mage, numT);
         listener.firePropertyChange(String.valueOf(EVENT.ADD_PLAYER), null, p);
+        p.addListener(this);
         p.getMyBoard().addListener(this);
         for (int i = 0; i < numS; i++) {
             ColorS s = container.draw();

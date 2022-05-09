@@ -204,7 +204,7 @@ public class Player implements PlayerInterface {
      */
     public void setCoins(int amount){
         coins = coins + amount;
-        listener.firePropertyChange("change player's coins", null, this);
+        listener.firePropertyChange(String.valueOf(EVENT.PLAYER_COINS), null, this);
     }
 
     /**
