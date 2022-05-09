@@ -224,29 +224,29 @@ public class ExpertController extends Controller {
                 Character modelChar = (Character) evt.getNewValue();
                 VirtualCharacter virtualChar = new VirtualCharacter(modelChar);
                 getVirtualView().setVirtualCharacters(indexChar, virtualChar);
-                lobby.sendUpdate(new ReplaceCharacter(virtualChar, indexChar));
+                lobby.sendMessageToAll(new ReplaceCharacter(virtualChar, indexChar));
                 break;
             case REPLACE_CHARACTER_S:
                 int indexCharacter = (int) evt.getNewValue();
                 VirtualCharacterWithStudents character = (VirtualCharacterWithStudents) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(indexCharacter, character);
-                lobby.sendUpdate(new ReplaceCharacter(character, indexCharacter));
+                lobby.sendMessageToAll(new ReplaceCharacter(character, indexCharacter));
                 break;
             case REPLACE_CHARACTER_NE:
                 int indexC = (int) evt.getOldValue();
                 VirtualCharacterWithNoEntry VirtualC = (VirtualCharacterWithNoEntry) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(indexC, VirtualC);
-                lobby.sendUpdate(new ReplaceCharacter(VirtualC, indexC));
+                lobby.sendMessageToAll(new ReplaceCharacter(VirtualC, indexC));
                 break;
             case CREATE_CHARACTERS:
                 ArrayList<VirtualCharacter> virtualCharacters = (ArrayList<VirtualCharacter>) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(virtualCharacters);
-                lobby.sendUpdate(new CreateCharacters(virtualCharacters));
+                lobby.sendMessageToAll(new CreateCharacters(virtualCharacters));
                 break;
             case BOARD_COINS:
                 int coins = (int) evt.getNewValue();
                 getVirtualView().setVirtualCoins(coins);
-                lobby.sendUpdate(new UpdateCoins(coins));
+                lobby.sendMessageToAll(new UpdateCoins(coins));
                 break;
         }
     }

@@ -13,6 +13,7 @@ import it.polimi.ingsw.server.answer.*;
 import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Update.Update;
 
+import javax.naming.AuthenticationNotSupportedException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -216,7 +217,7 @@ public class Lobby {
      * Method sendMessageToAll sends an Answer message to all the clients.
      * @param answer AnswerWithString - the message that will be sent to the clients.
      */
-    public void sendMessageToAll(AnswerWithString answer) {
+    public void sendMessageToAll(Answer answer) {
         if(clientsId != null) {
             for (Integer id : clientsId) {
                 if (!disconnectedClientsId.contains(id) && mapIdSocket != null) {
@@ -308,11 +309,4 @@ public class Lobby {
         return mode;
     }
 
-    /**
-     * Method sendUpdate sends to all the clients the updates of the view.
-     * @param u Update - the message containing all the update.
-     */
-    public void sendUpdate(Update u){
-
-    }
 }

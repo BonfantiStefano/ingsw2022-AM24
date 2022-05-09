@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 class CLITest {
+    /*
     CLI c = new CLI();
 
 
@@ -103,4 +104,7 @@ class CLITest {
         }
         c.printAssistants(assistants);
     }
+
+ */
 }
+

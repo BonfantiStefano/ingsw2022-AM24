@@ -6,7 +6,7 @@ package it.polimi.ingsw.client.CLIView;
 public enum REGEX {
     ENTR_HALL("^move (blue|pink|green|red|yellow) entr hall$"),
     TO_ISLAND("^move (blue|pink|green|red|yellow) entr ([1-9]|1[0-2])$"),
-    SPECIAL_MOVE("^move (blue|pink|green|red|yellow) char ([1-9]|1[0-2])$"),
+    SPECIAL_MOVE("^move (blue|pink|green|red|yellow) isle ([1-9]|1[0-2])$"),
     TWO_COLORS("^(blue|pink|green|red|yellow) (blue|pink|green|red|yellow)$"),
     ONE_COLOR("^(blue|pink|green|red|yellow)$"),
     MOVE_MN("^move mn ([1-9]|1[0-2])$"),
@@ -17,6 +17,7 @@ public enum REGEX {
     ;
 
     REGEX(String s) {
+        this.s = s;
     }
 
     private String s;

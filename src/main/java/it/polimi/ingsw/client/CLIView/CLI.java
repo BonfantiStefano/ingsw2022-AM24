@@ -1,6 +1,8 @@
 package it.polimi.ingsw.client.CLIView;
 
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
@@ -12,31 +14,53 @@ import it.polimi.ingsw.server.answer.Update.*;
 import it.polimi.ingsw.server.answer.Welcome;
 import it.polimi.ingsw.server.virtualview.*;
 
+import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class CLI {
+public class CLI{
     private boolean gameOn = true;
     private long start;
     private VirtualView virtualView;
 
-    public static void main(String[] args) {
-        CLI c = new CLI();
-    }
-
     private final PrintStream output;
-    private final Scanner input;
+    private Scanner input;
 
     public CLI() {
         output = new PrintStream(System.out);
         input = new Scanner(System.in);
         virtualView = new VirtualView();
+    }
+
+    public void run(){
+        while(true){
+            loop();
+        }
+    }
+
+    public void loop(){
+        getInfo(new Welcome(new ArrayList<>()));
+        String s = input.nextLine();
+        parseInput(s);
+    }
+
+    public void init(){
+        new Thread(() -> {
+            input = new Scanner(System.in);
+            while (true)
+                try {
+                    String s = input.nextLine();
+                    parseInput(s);
+                }catch (NoSuchElementException ignored){}
+        }).start();
+    }
+
+    public void handleMessage(Update a){
+        clearScreen();
+        a.accept(this);
     }
 
     private void parseInput(String s){
@@ -48,41 +72,52 @@ public class CLI {
 
             if(matcher.find()) {
                 Request msg = createMessage(r, s);
-                //client.sendMessage(msg);
+                System.out.println(toJson(msg));
+                //client.sendMessage(toJson(msg));
                 return;
             }
         }
+        System.out.println("Invalid command!");
 
+    }
+
+    public String toJson(Request answer){
+        Gson gson = new Gson();
+        JsonElement jsonElement;
+        jsonElement = gson.toJsonTree(answer);
+        jsonElement.getAsJsonObject().addProperty("type", answer.getClass().getSimpleName());
+
+        return gson.toJson(jsonElement);
     }
 
     private Request createMessage(REGEX r, String s){
         //TODO check all substring indexes
         switch (r){
             case DISCONNECT: return new Disconnect();
-            case MOVE_MN: new MoveMN(Integer.parseInt(s.substring(8))-1);
-            case ENTR_HALL: new EntranceToHall(colorByString(s.substring(5)));
-            case ONE_COLOR: new ChooseColor(colorByString(s));
+            case MOVE_MN: return new MoveMN(Integer.parseInt(s.substring(8))-1);
+            case ENTR_HALL: return new EntranceToHall(colorByString(s.substring(5)));
+            case ONE_COLOR: return new ChooseColor(colorByString(s));
             case PLAY_CHAR:
                 int index = Integer.parseInt(s.substring(6))-1;
                 //get the corresponding enum value
                 CharacterDescription c = Arrays.stream(CharacterDescription.values()).filter(c1 -> c1.getDesc().equals(virtualView.getVirtualCharacters().get(index).getDescription())).findFirst().get();
                 return new PlayCharacter(c);
-            case CHOOSE_ASSISTANT: new ChooseAssistant(Integer.parseInt(s.substring(10))-1);
+            case CHOOSE_ASSISTANT: return new ChooseAssistant(Integer.parseInt(s.substring(10))-1);
             case TO_ISLAND:
                 ColorS colorS = colorByString(s.substring(5));
-                int in = Integer.parseInt(s.split("\\s*")[2])-1;
-                new MoveToIsland(colorS, in);
-            case CHOOSE_CLOUD: new ChooseCloud(Integer.parseInt(s.substring(6))-1);
+                int in = Integer.parseInt(s.split(" ")[3])-1;
+                return new MoveToIsland(colorS, in);
+            case CHOOSE_CLOUD: return new ChooseCloud(Integer.parseInt(s.substring(6))-1);
             case TWO_COLORS:
                 ColorS first, second;
-                first = colorByString(s.split("\\s*")[0]);
-                second =  colorByString(s.split("\\s*")[1]);
-                new ChooseTwoColors(first,second);
-
+                first = colorByString(s.split(" ")[0]);
+                second =  colorByString(s.split(" ")[1]);
+                return new ChooseTwoColors(first,second);
             case SPECIAL_MOVE:
-                ColorS color = colorByString(s.split("\\s*")[1]);
-                int i = Integer.parseInt(s.split("\\s*")[3]);
-                new SpecialMoveIsland(color, i);
+                ColorS color = colorByString(s.split(" ")[1]);
+                String[] split = s.split(" ");
+                int i = Integer.parseInt(s.split(" ")[3]);
+                return new SpecialMoveIsland(color, i);
             }
 
         return null;
@@ -238,8 +273,7 @@ public class CLI {
 
             currLine.append(BOX.VERT);
 
-            //TODO change parameter
-            if(profs.get(c).getNickname().equals("test"))
+            if(profs.get(c).getNickname().equals(nickname))
                 currLine.append(getChar(c));
             else
                 currLine.append(" ");
@@ -537,9 +571,7 @@ public class CLI {
     public void visit(ReplaceCloud u){
         virtualView.setVirtualClouds(u.getIndex(),u.getCloud());
     }
-    public void visit(UpdateCoins u){
-        virtualView.setVirtualCoins(u.getCoins());
-    }
+    public void visit(UpdateCoins u){virtualView.setVirtualCoins(u.getCoins());}
     public void visit(UpdateIsland u){
         virtualView.setVirtualWorld(u.getIndex(),u.getIsland());
     }
@@ -565,5 +597,19 @@ public class CLI {
             case ('r') -> ColorS.RED;
             default -> null;
         };
+    }
+    public static void clearScreen() {
+        try{
+            if(System.getProperty("os.name").contains("Windows")){
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            }
+            else
+                Runtime.getRuntime().exec("clear");
+        }
+        catch (IOException | InterruptedException e){
+            Thread.currentThread().interrupt();
+        }
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }

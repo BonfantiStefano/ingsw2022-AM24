@@ -403,29 +403,29 @@ public class Controller implements PropertyChangeListener {
                 Player modelPlayer = (Player) evt.getNewValue();
                 VirtualPlayer virtualPlayer = new VirtualPlayer(modelPlayer);
                 virtualView.addVirtualPlayer(virtualPlayer);
-                lobby.sendUpdate(new AddPlayer(virtualPlayer));
+                lobby.sendMessageToAll(new AddPlayer(virtualPlayer));
                 break;
             case REPLACE_ISLAND:
                 int indexIsland = (int) evt.getOldValue();
                 VirtualIsland island = (VirtualIsland) evt.getNewValue();
                 virtualView.setVirtualWorld(indexIsland, island);
-                lobby.sendUpdate(new UpdateIsland(island, indexIsland));
+                lobby.sendMessageToAll(new UpdateIsland(island, indexIsland));
                 break;
             case CREATE_WORLD:
                 ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
                 virtualView.setVirtualWorld(virtualWorld);
-                lobby.sendUpdate(new UpdateWorld(virtualWorld));
+                lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
                 break;
             case REPLACE_PLAYER:
                 int indexPlayer = (int) evt.getOldValue();
                 VirtualPlayer player = (VirtualPlayer) evt.getNewValue();
                 virtualView.setVirtualPlayers(indexPlayer, player);
-                lobby.sendUpdate(new UpdatePlayer(player, indexPlayer));
+                lobby.sendMessageToAll(new UpdatePlayer(player, indexPlayer));
                 break;
             case CREATE_CLOUDS:
                 ArrayList<VirtualCloud> virtualClouds = (ArrayList<VirtualCloud>) evt.getNewValue();
                 virtualView.setVirtualClouds(virtualClouds);
-                lobby.sendUpdate(new CreateClouds(virtualClouds));
+                lobby.sendMessageToAll(new CreateClouds(virtualClouds));
                 break;
             case CREATE_PLAYERS:
                 ArrayList<VirtualPlayer> virtualPlayers = (ArrayList<VirtualPlayer>) evt.getNewValue();
@@ -435,7 +435,7 @@ public class Controller implements PropertyChangeListener {
                 int indexCloud = (int) evt.getOldValue();
                 VirtualCloud cloud = (VirtualCloud) evt.getNewValue();
                 virtualView.setVirtualClouds(indexCloud, cloud);
-                lobby.sendUpdate(new ReplaceCloud(cloud, indexCloud));
+                lobby.sendMessageToAll(new ReplaceCloud(cloud, indexCloud));
                 break;
             case REPLACE_PROFS:
                 HashMap<ColorS, Player> modelProfs = (HashMap<ColorS, Player>) evt.getNewValue();
@@ -445,12 +445,12 @@ public class Controller implements PropertyChangeListener {
                         virtualProfs.put(c, new VirtualPlayer(modelProfs.get(c)));
                 }
                 virtualView.setVirtualProfs(virtualProfs);
-                lobby.sendUpdate(new UpdateProfs(virtualProfs));
+                lobby.sendMessageToAll(new UpdateProfs(virtualProfs));
                 break;
             case MN_POS:
                 int mnPos = (int) evt.getNewValue();
                 virtualView.setMnPos(mnPos);
-                lobby.sendUpdate(new UpdateMN(mnPos));
+                lobby.sendMessageToAll(new UpdateMN(mnPos));
                 break;
         }
 
@@ -458,9 +458,5 @@ public class Controller implements PropertyChangeListener {
 
     public VirtualView getVirtualView() {
         return virtualView;
-    }
-
-    public ActionController getActionController() {
-        return actionController;
     }
 }
