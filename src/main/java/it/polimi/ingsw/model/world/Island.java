@@ -31,6 +31,10 @@ public class Island implements CanAcceptStudent, AcceptTower{
         numSubIsland = 1;
     }
 
+    /**
+     * Method addListener is used in order to register an event listener
+     * @param gameBoard - event listener that is used for receiving the events
+     */
     public void addListener(PropertyChangeListener gameBoard){
         listener.addPropertyChangeListener(gameBoard);
     }
@@ -132,10 +136,19 @@ public class Island implements CanAcceptStudent, AcceptTower{
         return numStudent;
     }
 
+    /**
+     * Method getStudents returns the students placed on the island
+     * @return students
+     */
     public ArrayList<ColorS> getStudents() {
         return students;
     }
 
+
+    /**
+     * Method getTowers returns the towers placed on the island
+     * @return towers
+     */
     public ArrayList<ColorT> getTowers() {
         return towers;
     }

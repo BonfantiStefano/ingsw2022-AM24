@@ -24,6 +24,10 @@ public class Character {
         this.alreadyPlayed = false;
     }
 
+    /**
+     * Method addListener is used in order to register an event listener
+     * @param expertBoard - event listener that is used for receiving the events
+     */
     public void addListener(PropertyChangeListener expertBoard){
         listener.addPropertyChangeListener(expertBoard);
     }
@@ -55,10 +59,18 @@ public class Character {
         }
     }
 
+    /**
+     * Getter for the alreadyPlayed attribute.
+     * @return alredyPlayed - attribute which tells if a Character has been already played
+     */
     public boolean isAlreadyPlayed() {
         return alreadyPlayed;
     }
 
+    /**
+     * Getter for the listener attribute.
+     * @return listener - attribute which register rhe listener
+     */
     public PropertyChangeSupport getListener() {
         return listener;
     }

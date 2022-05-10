@@ -14,6 +14,7 @@ import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.server.virtualview.VirtualCharacter;
 import it.polimi.ingsw.server.virtualview.VirtualCharacterWithNoEntry;
 import it.polimi.ingsw.server.virtualview.VirtualCharacterWithStudents;
+import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -45,6 +46,10 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         }
     }
 
+    /**
+     * Method addListener is used in order to register an event listener
+     * @param expertController - event listener that is used for receiving the events
+     */
     public void addListener(PropertyChangeListener expertController){
         super.addListener(expertController);
         listener.addPropertyChangeListener(expertController);
@@ -341,8 +346,8 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     }
 
     /**
-     * Method createVirtualCharacters creates virtual characters
-     * @return virtualCharacters - virtual characters
+     * Method createVirtualCharacters creates a simplified representation of the characters
+     * @return virtualCharacters - virtual characters used in VirtualView
      */
     public ArrayList<VirtualCharacter> createVirtualCharacters(){
         ArrayList<VirtualCharacter> virtualCharacters = new ArrayList<>();

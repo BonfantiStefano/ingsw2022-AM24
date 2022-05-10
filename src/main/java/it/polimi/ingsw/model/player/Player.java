@@ -46,6 +46,10 @@ public class Player implements PlayerInterface {
         this.isConnected = true;
     }
 
+    /**
+     * Method addListener is used in order to register an event listener
+     * @param gameBoard - event listener that is used for receiving the events
+     */
     public void addListener(PropertyChangeListener gameBoard){
         listener.addPropertyChangeListener(gameBoard);
     }

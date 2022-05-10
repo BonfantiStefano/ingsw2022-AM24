@@ -22,22 +22,42 @@ public class VirtualPlayer {
         this.nickname = player.getNickname();
     }
 
+    /**
+     * Method getVirtualCoins returns virtual player's coins
+     * @return virtualCoins - virtual player's coins
+     */
     public int getVirtualCoins() {
         return virtualCoins;
     }
 
+    /**
+     * Method getVirtualLastAssistant returns the Assistant card played by the virtual player
+     * @return virtualLastAssistant - the last Assistant card played
+     */
     public Assistant getVirtualLastAssistant() {
         return virtualLastAssistant;
     }
 
+    /**
+     * Method getVirtualHand returns the virtual player's available Assistant cards
+     * @return virtualHand - virtual player's hand
+     */
     public Hand getVirtualHand() {
         return virtualHand;
     }
 
+    /**
+     * Method getVirtualBoard returns the virtual player's board
+     * @return virtualBoard - virtual player's board
+     */
     public VirtualSchoolBoard getVirtualBoard() {
         return virtualBoard;
     }
 
+    /**
+     * Method getNickname returns the virtual player's nickname
+     * @return virtualBoard - virtual player's nickname
+     */
     public String getNickname() {
         return nickname;
     }

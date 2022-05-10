@@ -14,6 +14,10 @@ public class VirtualCloud {
         this.students = new ArrayList<>(cloud.getStudents());
     }
 
+    /**
+     * Method getStudents returns all the students placed on the virtual cloud
+     * @return students - students placed on the virtual cloud
+     */
     public ArrayList<ColorS> getStudents() {
         return students;
     }

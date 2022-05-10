@@ -22,15 +22,16 @@ public class World implements HasStrategy<InfluenceStrategy> {
     private InfluenceStrategy influenceStrategy;
     private int posMN;
     private Optional<ColorS> bannedColorS;
-
-
     protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
+    /**
+     * Method addListener is used in order to register an event listener
+     * @param gameBoard - event listener that is used for receiving the events
+     */
     public void addListener(PropertyChangeListener gameBoard){
         listener.addPropertyChangeListener(gameBoard);
         islands.forEach(island -> island.addListener(gameBoard));
     }
-
 
     /**Constructor World creates a new World instance with already the students allocated.*/
     public World(ArrayList<ColorS> initialStudent) {
@@ -251,7 +252,10 @@ public class World implements HasStrategy<InfluenceStrategy> {
         return bannedColorS;
     }
 
-
+    /**
+     * Method createVirtualWorld is used to create a simplified representation of the islands
+     * @return virtualWorld - a simplified representation of the World used in VirtualView
+     */
      public ArrayList<VirtualIsland> createVirtualWorld(){
         ArrayList<VirtualIsland> virtualWorld = new ArrayList<>();
         islands.forEach(island -> virtualWorld.add(new VirtualIsland(island)));
