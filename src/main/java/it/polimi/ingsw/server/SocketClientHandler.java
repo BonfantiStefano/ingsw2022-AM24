@@ -86,7 +86,7 @@ public class SocketClientHandler implements Runnable{
                 }
             } catch (ClassNotFoundException | IOException e) {
                 if(!socket.isClosed()) {
-                    handleClientDisconnection();
+                    handleClientDisconnection(false);
                 }
                 //System.out.println(e.getMessage());
             }
@@ -100,9 +100,9 @@ public class SocketClientHandler implements Runnable{
         timer = new Thread(() -> {
             try{
                 //Correct the value
-                Thread.sleep(5*PING_PERIOD*PING_PERIOD);
+                Thread.sleep(5*PING_PERIOD);
                 System.out.println("Timeout expires");
-                handleClientDisconnection();
+                handleClientDisconnection(true);
             } catch (InterruptedException e){
                 System.out.println("The timeout timer has been stopped");
 
@@ -189,14 +189,15 @@ public class SocketClientHandler implements Runnable{
     /**
      * Method handleClientDisconnection handles the disconnection of the client, stopping the timers and closing the socket.
      */
-    private void handleClientDisconnection(){
+    private void handleClientDisconnection(boolean timeout){
         System.out.println("Trying to stopping the timer");
         stopTimer();
         System.out.println("Trying to set active to false");
         this.active = false;
         pingController.interrupt();
-        sendMessage(new Error("You have been disconnected, you can rejoin the game in the future"));
-        //the server has to verify if the game as already started
+        if(timeout) {
+            sendMessage(new NotifyDisconnection("You have been disconnected, you can rejoin the game in the future"));
+        }
         server.handleClientDisconnection(clientID);
         if(/*socket != null &&*/ !socket.isClosed()) {
             closeSocket();
@@ -226,7 +227,7 @@ public class SocketClientHandler implements Runnable{
             case "ChooseTwoColors" :
                 return gson.fromJson(jsonString, ChooseTwoColors.class);
             case "Disconnect" :
-                handleClientDisconnection();
+                handleClientDisconnection(false);
                 return null;
             case "EntranceToHall" :
                 return gson.fromJson(jsonString, EntranceToHall.class);

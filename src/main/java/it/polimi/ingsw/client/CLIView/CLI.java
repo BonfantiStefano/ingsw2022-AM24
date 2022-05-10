@@ -196,6 +196,7 @@ public class CLI{
         } while (!answer.equals("y") && !answer.equals("n"));
 
         if (answer.equals("y")) {
+            //TODO check the value of the lobby's index
             int index;
             System.out.println("Insert the Lobby's number: ");
             index = input.nextInt();
@@ -219,7 +220,7 @@ public class CLI{
                     mageIndex = -1;
                 }
             } while (mageIndex < 0 || mageIndex > 4);
-
+            //TODO print also the color of the tower
             int towerIndex;
             do {
                 System.out.println("Choose your TowerColor (1,2,3):");
@@ -662,5 +663,25 @@ public class CLI{
         }
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    public void printLobbies(Welcome welcome) {
+        ArrayList<VirtualLobby> lobbies = welcome.getLobbies();
+        if(lobbies.isEmpty()) {
+            System.out.println("There aren't lobby available, please create a new one");
+        } else {
+            System.out.println("Here's the list of available lobbies:");
+            for (VirtualLobby lobby : lobbies) {
+                System.out.println(lobbies.indexOf(lobby) + ":");
+                System.out.println(lobby.isMode() ? "Expert Mode" : "Normal Mode");
+                System.out.println("Num Players: " + lobby.getNumPlayers());
+                System.out.println("NickName taken: ");
+                lobby.getNicknames().forEach(System.out::println);
+                System.out.println("Mage already chosen: ");
+                lobby.getMages().forEach(System.out::println);
+                System.out.println("Tower's Color already chosen: ");
+                lobby.getTowers().forEach(System.out::println);
+            }
+        }
     }
 }

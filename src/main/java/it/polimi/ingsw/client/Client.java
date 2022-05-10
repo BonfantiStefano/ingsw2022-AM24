@@ -113,6 +113,12 @@ public class Client {
             case "Ping" :
                 sendMessage("Pong");
                 return null;
+            case "NotifyDisconnection" :
+                //Dopo si toglie la system out
+                System.out.println(gson.fromJson(jsonString, NotifyDisconnection.class).getString());
+                handleClientDisconnection();
+                //TODO manca da chiudere lo scanner se no il programma non si ferma
+                return null;
             case "AddPlayer":
                 return gson.fromJson(jsonString, AddPlayer.class);
             case "CreateCharacters":

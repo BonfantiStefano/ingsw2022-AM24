@@ -38,7 +38,7 @@ public class Lobby {
     private GameStatus gameStatus;
     //private VirtualView virtualView;
 
-    //metodo inutile usato solo perchè altrimenti per i test dell'expert controller dovrei creare tutti i parametri, poi
+    //metodo inutile usato solo perché altrimenti per i test dell'expert controller dovrei creare tutti i parametri, poi
     //lo cambierò.
     /**
      * Constructor Lobby creates a new empty Lobby instance.
@@ -123,7 +123,6 @@ public class Lobby {
                 towers.add(join.getColorT());
                 clientsId.add(idClients);
                 controller.handleMessage(join, mapIdNickname.get(idClients));
-                //Poi andranno aggiunti i messaggi agli altri giocatori
                 socketClientHandler.sendMessage(new Information("You have joined the game"));
                 sendMessageToOthers(join.getNickname(), new Information(join.getNickname() + " entered the lobby"));
                 if(clientsId.size() == numPlayers) {
@@ -157,7 +156,7 @@ public class Lobby {
             mapIdSocket.put(clientId, socketClientHandler);
             disconnectedClientsId.remove((Integer) oldId);
             clientsId.remove((Integer) oldId);
-            clientsId.add((Integer) clientId);
+            clientsId.add(clientId);
             controller.handleMessage(join, join.getNickname());
             System.out.println(mapIdNickname.toString());
             return oldId;
@@ -180,8 +179,11 @@ public class Lobby {
             //gameStatus = GameStatus.ENDED;
         } else {
             controller.handleMessage(new Disconnect(), mapIdNickname.get(clientId));
-        } /*if(clientsId.size() - disconnectedClientsId.size() == 1 && gameStatus != GameStatus.ENDED) {
-            //inserire timer e poi nel caso far finire la partita, mi basta mettere gameStatus ad Ended
+        } /* Mettere questo: (capire dove va messo perché devo disconnettere il player ma poi deve andare in pausa e quindi non accettare
+        i messaggi del player connesso e aspettare che si faccia un checkReconnection che va a buon fine)
+            if(clientsId.size() - disconnectedClientsId.size() == 1 && gameStatus == GameStatus.PLAYING) {
+            //inserire timer e poi nel caso far finire la partita, mi basta mettere gameStatus a Ended e poi inviare all'unico
+            //player attivo un messaggio che gli dice che ha vinto poiché gli altri giocatori sono stati disconnessi
         }*/
     }
 
@@ -240,7 +242,6 @@ public class Lobby {
      * @param clientId int - the sender's id.
      */
     public void handleMessage(Request request, int clientId) {
-        //Understand what to do with a disconnected player
         if(clientsId.size() == numPlayers && gameStatus == GameStatus.PLAYING) {
             controller.handleMessage(request, mapIdNickname.get(clientId));
         } else {

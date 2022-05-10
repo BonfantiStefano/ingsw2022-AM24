@@ -11,29 +11,8 @@ public class Welcome implements Answer{
     public Welcome(ArrayList<VirtualLobby> lobbies) {
         this.lobbies = new ArrayList<>(lobbies);
     }
-    /*
-    //NOT FINAL, just for debug
-    private int idLobby;
-    private boolean expertMode;
-    private int numPlayers;
 
-    public Welcome(int idLobby, boolean expertMode, int numPlayers) {
-        this.idLobby = idLobby;
-        this.expertMode = expertMode;
-        this.numPlayers = numPlayers;
+    public ArrayList<VirtualLobby> getLobbies() {
+        return lobbies;
     }
-
-    public int getNumPlayers() {
-        return numPlayers;
-    }
-
-    public boolean isExpertMode() {
-        return expertMode;
-    }
-
-    public int getIdLobby() {
-        return idLobby;
-    }
-
-     */
 }
