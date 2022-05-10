@@ -472,65 +472,6 @@ public class ExpertControllerTest {
 
     }
 
-    @Test
-    public void testListeners2(){
-        Lobby lobby = new Lobby();
-        expController = new ExpertController(lobby, new GameParams(2, true, "Leo", Mage.MAGE1, ColorT.BLACK));
-        Join join = new Join("Lisa", Mage.MAGE2, ColorT.WHITE, 1);
-        expController.handleMessage(join, "Lisa");
-
-        ExpertGameBoard gameBoard = (ExpertGameBoard) expController.getModel();
-        VirtualView view = expController.getVirtualView();
-
-        assertEquals(3, view.getVirtualCharacters().size());
-        assertEquals(12, view.getVirtualWorld().size());
-        assertEquals(2, view.getVirtualPlayers().size());
-        assertEquals(20 - gameBoard.getNumPlayers(), view.getVirtualCoins());
-
-        expController.handleMessage(new ChooseAssistant(2), "Leo");
-        expController.handleMessage(new ChooseAssistant(6), "Lisa");
-
-        assertEquals(1, view.getVirtualPlayers().get(0).getVirtualCoins());
-        assertEquals(1, view.getVirtualPlayers().get(1).getVirtualCoins());
-
-        Player modelLeo = gameBoard.getActivePlayer();
-        VirtualPlayer virtualLeo = view.getVirtualPlayers().get(0);
-        modelLeo.getMyBoard().getEntrance().removeAll(modelLeo.getMyBoard().getEntrance());
-        assertEquals(0, view.getVirtualPlayers().get(0).getVirtualBoard().getEntrance().size());
-        //now Leo has: 7 blue
-        for(int i = 0; i < 7; i++){
-            modelLeo.getMyBoard().add(ColorS.BLUE);
-        }
-        assertEquals(7, virtualLeo.getVirtualBoard().getEntrance().size());
-
-        assertEquals("Leo", gameBoard.getActivePlayer().getNickname());
-        assertNotNull(gameBoard.getActivePlayer());
-        EntranceToHall messageHall = new EntranceToHall(ColorS.BLUE);
-        for(int i = 0; i < 3; i++){
-            expController.handleMessage(messageHall, "Leo");
-        }
-        //now Leo has 2 coins, 3 blue in hall
-        assertEquals(2, view.getVirtualPlayers().get(0).getVirtualCoins());
-        assertEquals(3, virtualLeo.getVirtualBoard().getHall().get(ColorS.BLUE));
-        //now Leo has 3 coins
-        modelLeo.setCoins(1);
-        assertEquals(view.getVirtualPlayers().get(0), view.getVirtualPlayers().get(0));
-
-        CharacterWithNoEntry char5 = (CharacterWithNoEntry) createCharacter(5);
-        VirtualCharacterWithNoEntry virtualChar5 = new VirtualCharacterWithNoEntry(char5);
-        gameBoard.set(0, char5);
-        view.setVirtualCharacters(0, virtualChar5);
-        assertEquals(view.getVirtualCharacters().get(0).getDescription(), gameBoard.getCharacters().get(0).getDescription());
-        PlayCharacter messageCharacter = new PlayCharacter(CharacterDescription.CHAR5);
-        expertController.handleMessage(messageCharacter, "Leo");
-
-
-
-    }
-
-
-
-
     /** Method createCharacter for creating different Character cards used in the tests */
     public Character createCharacter ( int charNum){
 
