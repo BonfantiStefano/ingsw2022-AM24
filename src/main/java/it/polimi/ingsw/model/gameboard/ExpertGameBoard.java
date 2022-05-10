@@ -351,8 +351,23 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      */
     public ArrayList<VirtualCharacter> createVirtualCharacters(){
         ArrayList<VirtualCharacter> virtualCharacters = new ArrayList<>();
-        characters.forEach(character -> virtualCharacters.add(new VirtualCharacter(character)));
+        for(Character character : characters){
+            String desc = character.getDescription();
+            if(desc.equals(CharacterDescription.CHAR1.getDesc()) ||
+                   desc.equals(CharacterDescription.CHAR7.getDesc()) ||
+                        desc.equals(CharacterDescription.CHAR11.getDesc()))
+                virtualCharacters.add(new VirtualCharacterWithStudents(character));
+            else if (desc.equals(CharacterDescription.CHAR5.getDesc()))
+                virtualCharacters.add(new VirtualCharacterWithNoEntry(character));
+            else virtualCharacters.add(new VirtualCharacter(character));
+        }
         return virtualCharacters;
     }
+
+    public void set(int index, Character c){
+        characters.set(index, c);
+        characters.get(index).addListener(this);
+    }
+
 
 }

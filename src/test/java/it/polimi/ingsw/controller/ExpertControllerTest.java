@@ -354,6 +354,7 @@ public class ExpertControllerTest {
         assertEquals(egb.getPlayerByNickname("Alice").getMyBoard().getHall(ColorS.YELLOW), 1);
     }
 
+
     /**
      * Method testListeners checks if view update itself each time an update event is emitted.
      */
@@ -422,28 +423,25 @@ public class ExpertControllerTest {
         //active character gameBoard: char 5
         //view: virtual characters[0] = char 5
         Character char5 = createCharacter(5);
-        gameBoard.setActiveCharacter(char5);
-
-        int initialNE = ((CharacterWithNoEntry) char5).getNumNoEntry();
-        view.getVirtualCharacters().set(0, new VirtualCharacter(char5));
-
-        assertEquals(view.getVirtualCharacters().get(0).getDescription(), gameBoard.getActiveCharacter().getDescription());
+        gameBoard.set(0, char5);
+        view.getVirtualCharacters().set(0, new VirtualCharacterWithNoEntry(char5));
+        int initialNE = ((CharacterWithNoEntry) gameBoard.getCharacters().get(0)).getNumNoEntry();
 
         int posMN = gameBoard.getWorld().getMNPosition();
         int virtualPosMN = view.getMnPos();
         assertEquals(posMN, virtualPosMN);
         int indexIsland = (mnPos + 1) % view.getVirtualWorld().size();
         assertEquals(0, view.getVirtualWorld().get(indexIsland).getNoEntry());
+        gameBoard.setActiveCharacter(char5);
+
         ChooseIsland messageIsland = new ChooseIsland(indexIsland);
         expController.handleCharacter(messageIsland, "Leo");
 
-        int finalNE = ((CharacterWithNoEntry) char5).getNumNoEntry();
-
+        int finalNE = ((CharacterWithNoEntry) gameBoard.getCharacters().get(0)).getNumNoEntry();
         assertEquals(finalNE, initialNE - 1);
         assertEquals(1, view.getVirtualWorld().get(indexIsland).getNoEntry());
-        //TODO
-        // VirtualCharacterWithNoEntry virtualChar5 = (VirtualCharacterWithNoEntry) view.getVirtualCharacters().get(0);
-        // assertEquals(finalNE, virtualChar5.getNoEntry());
+        int virtualNE = ((VirtualCharacterWithNoEntry) view.getVirtualCharacters().get(0)).getNoEntry();
+        assertEquals(finalNE, virtualNE);
         //move MN on island with no entry
         int blu = gameBoard.getIslandByIndex(indexIsland).getNumStudentByColor(ColorS.BLUE);
         gameBoard.getWorld().getIslandByIndex(indexIsland).add(ColorS.BLUE);
@@ -454,15 +452,15 @@ public class ExpertControllerTest {
         assertEquals(0, view.getVirtualWorld().get(indexIsland).getTowers().size());
 
         //---------CHARACTER WITH STUDENTS--------------------------
-        //active character gameBoard: char 1
-        //view: virtual characters[0] = char 1
+        //active character gameBoard: char 11
+        //view: virtual characters[0] = char 11
         Character char11 = createCharacter(11);
-        view.getVirtualCharacters().set(0, new VirtualCharacter(char11));
+        gameBoard.set(0, char11);
+        view.getVirtualCharacters().set(0, new VirtualCharacterWithStudents(char11));
         ArrayList<ColorS> studentsOnTheCard = new ArrayList<>();
         studentsOnTheCard.addAll(((CharacterWithStudent) char11).getStudents());
-        //TODO
-        // ArrayList<ColorS> virtualStudentsOnTheCard = ((VirtualCharacterWithStudents) view.getVirtualCharacters().get(0)).getStudents();
-        // assertTrue(studentsOnTheCard.containsAll(virtualStudentsOnTheCard));
+        ArrayList<ColorS> virtualStudentsOnTheCard = ((VirtualCharacterWithStudents) view.getVirtualCharacters().get(0)).getStudents();
+        assertTrue(studentsOnTheCard.containsAll(virtualStudentsOnTheCard));
         int numVirtualStudents = view.getVirtualPlayers().get(0).getVirtualBoard().getHall().get(studentsOnTheCard.get(0));
         int numStudents = gameBoard.getActivePlayer().getMyBoard().getHall(studentsOnTheCard.get(0));
         gameBoard.setActiveCharacter(char11);
@@ -473,6 +471,65 @@ public class ExpertControllerTest {
         assertEquals(numVirtualStudents + 1, view.getVirtualPlayers().get(0).getVirtualBoard().getHall().get(studentsOnTheCard.get(0)));
 
     }
+
+    @Test
+    public void testListeners2(){
+        Lobby lobby = new Lobby();
+        expController = new ExpertController(lobby, new GameParams(2, true, "Leo", Mage.MAGE1, ColorT.BLACK));
+        Join join = new Join("Lisa", Mage.MAGE2, ColorT.WHITE, 1);
+        expController.handleMessage(join, "Lisa");
+
+        ExpertGameBoard gameBoard = (ExpertGameBoard) expController.getModel();
+        VirtualView view = expController.getVirtualView();
+
+        assertEquals(3, view.getVirtualCharacters().size());
+        assertEquals(12, view.getVirtualWorld().size());
+        assertEquals(2, view.getVirtualPlayers().size());
+        assertEquals(20 - gameBoard.getNumPlayers(), view.getVirtualCoins());
+
+        expController.handleMessage(new ChooseAssistant(2), "Leo");
+        expController.handleMessage(new ChooseAssistant(6), "Lisa");
+
+        assertEquals(1, view.getVirtualPlayers().get(0).getVirtualCoins());
+        assertEquals(1, view.getVirtualPlayers().get(1).getVirtualCoins());
+
+        Player modelLeo = gameBoard.getActivePlayer();
+        VirtualPlayer virtualLeo = view.getVirtualPlayers().get(0);
+        modelLeo.getMyBoard().getEntrance().removeAll(modelLeo.getMyBoard().getEntrance());
+        assertEquals(0, view.getVirtualPlayers().get(0).getVirtualBoard().getEntrance().size());
+        //now Leo has: 7 blue
+        for(int i = 0; i < 7; i++){
+            modelLeo.getMyBoard().add(ColorS.BLUE);
+        }
+        assertEquals(7, virtualLeo.getVirtualBoard().getEntrance().size());
+
+        assertEquals("Leo", gameBoard.getActivePlayer().getNickname());
+        assertNotNull(gameBoard.getActivePlayer());
+        EntranceToHall messageHall = new EntranceToHall(ColorS.BLUE);
+        for(int i = 0; i < 3; i++){
+            expController.handleMessage(messageHall, "Leo");
+        }
+        //now Leo has 2 coins, 3 blue in hall
+        assertEquals(2, view.getVirtualPlayers().get(0).getVirtualCoins());
+        assertEquals(3, virtualLeo.getVirtualBoard().getHall().get(ColorS.BLUE));
+        //now Leo has 3 coins
+        modelLeo.setCoins(1);
+        assertEquals(view.getVirtualPlayers().get(0), view.getVirtualPlayers().get(0));
+
+        CharacterWithNoEntry char5 = (CharacterWithNoEntry) createCharacter(5);
+        VirtualCharacterWithNoEntry virtualChar5 = new VirtualCharacterWithNoEntry(char5);
+        gameBoard.set(0, char5);
+        view.setVirtualCharacters(0, virtualChar5);
+        assertEquals(view.getVirtualCharacters().get(0).getDescription(), gameBoard.getCharacters().get(0).getDescription());
+        PlayCharacter messageCharacter = new PlayCharacter(CharacterDescription.CHAR5);
+        expertController.handleMessage(messageCharacter, "Leo");
+
+
+
+    }
+
+
+
 
     /** Method createCharacter for creating different Character cards used in the tests */
     public Character createCharacter ( int charNum){

@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.character;
 import it.polimi.ingsw.model.EVENT;
 import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
@@ -32,13 +33,14 @@ public class CharacterWithNoEntry extends Character {
      */
     public void removeNoEntry(){
         numNoEntry--;
-        getListener().firePropertyChange(String.valueOf(EVENT.CHANGE_CHARACTER_NE), null, this);
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_CHARACTER_NE), null, this);
     }
+
     /**
      * Restores a NoEntry tile on the card
      */
     public void resetNoEntry(){
         numNoEntry++;
-        getListener().firePropertyChange(String.valueOf(EVENT.CHANGE_CHARACTER_NE), null, this);
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_CHARACTER_NE), null, this);
     }
 }

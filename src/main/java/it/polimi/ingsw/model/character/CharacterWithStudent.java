@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.EVENT;
 import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 public class CharacterWithStudent extends Character implements CanAcceptStudent, CanRemoveStudent {
     private ArrayList<ColorS> students;
     private int maxStudents;
-    protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**
      * Creates a new CharacterWithStudent object
@@ -33,12 +33,17 @@ public class CharacterWithStudent extends Character implements CanAcceptStudent,
     }
 
     /**
+     * Method addListener is used in order to register an event listener
+     * @param expertBoard - event listener that is used for receiving the events
+     */
+
+    /**
      * Adds a Student
      * @param s the Color of the Student being added
      */
     public void add(ColorS s){
         students.add(s);
-        getListener().firePropertyChange(String.valueOf(EVENT.CHANGE_CHARACTER_S), null, this);
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_CHARACTER_S), null, this);
     }
 
 

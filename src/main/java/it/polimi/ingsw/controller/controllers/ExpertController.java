@@ -227,7 +227,7 @@ public class ExpertController extends Controller {
                 lobby.sendMessageToAll(new ReplaceCharacter(virtualChar, indexChar));
                 break;
             case REPLACE_CHARACTER_S:
-                int indexCharacter = (int) evt.getNewValue();
+                int indexCharacter = (int) evt.getOldValue();
                 VirtualCharacterWithStudents character = (VirtualCharacterWithStudents) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(indexCharacter, character);
                 lobby.sendMessageToAll(new ReplaceCharacter(character, indexCharacter));
