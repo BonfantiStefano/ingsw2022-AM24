@@ -22,6 +22,10 @@ public class Cloud implements CanAcceptStudent, CanRemoveStudent{
         this.students = new ArrayList<>();
     }
 
+    /**
+     * Method addListener is used in order to register an event listener
+     * @param gameBoard - event listener that is used for receiving the events
+     */
     public void addListener(PropertyChangeListener gameBoard){
         listener.addPropertyChangeListener(gameBoard);
     }

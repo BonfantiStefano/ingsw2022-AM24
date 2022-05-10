@@ -169,6 +169,9 @@ public class VirtualView {
         return mnPos;
     }
 
+    /** Method setVirtualPlayers is intended to be called whenever there is a change of players.
+     * @param virtualPlayers - changed players
+     */
     public void setVirtualPlayers(ArrayList<VirtualPlayer> virtualPlayers) {
         this.virtualPlayers = virtualPlayers;
     }

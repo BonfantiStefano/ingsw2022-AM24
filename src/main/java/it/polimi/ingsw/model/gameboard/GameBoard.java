@@ -71,6 +71,11 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         clouds.forEach(cloud -> cloud.addListener(this));
     }
 
+    /**
+     * Method addListener is used in order to register an event listener.
+     * This method is also used to initialize the VirtualView at the beginning of the game.
+     * @param controller - event listener that is used for receiving the events
+     */
     public void addListener(PropertyChangeListener controller){
         listener.addPropertyChangeListener(controller);
         listener.firePropertyChange(String.valueOf(EVENT.CREATE_WORLD), null, world.createVirtualWorld());
@@ -609,7 +614,10 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         return virtualClouds;
     }
 
-
+    /**
+     * Method createVirtualPlayers is used to create a simplified representation of the players
+     * @return virtualPlayers - a simplified representation of the Players used in VirtualView
+     */
     public ArrayList<VirtualPlayer> createVirtualPlayers(){
         ArrayList<VirtualPlayer> virtualPlayers = new ArrayList<>();
         players.forEach(player -> virtualPlayers.add(new VirtualPlayer(player)));

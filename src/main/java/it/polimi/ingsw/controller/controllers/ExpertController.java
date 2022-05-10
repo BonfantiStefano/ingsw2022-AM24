@@ -131,7 +131,7 @@ public class ExpertController extends Controller {
             int noEntry = ((CharacterWithNoEntry) activeCharacter).getNumNoEntry();
             if (noEntry != 0) {
                 getModel().getIslandByIndex(m.getIslandIndex()).setNumNoEntry(1);
-                getModel().removeNoEntry();
+                ((CharacterWithNoEntry) getModel().getActiveCharacter()).removeNoEntry();
             }
         }
     }

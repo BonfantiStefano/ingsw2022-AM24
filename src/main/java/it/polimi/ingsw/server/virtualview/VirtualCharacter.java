@@ -18,14 +18,26 @@ public class VirtualCharacter {
         this.alreadyPlayed = character.isAlreadyPlayed();
     }
 
+    /**
+     * Method isAlreadyPlayed returns if the Character card has been already used
+     * @return alreadyPlayed of type boolean - true if the card has been already played, false otherwise
+     */
     public boolean isAlreadyPlayed() {
         return alreadyPlayed;
     }
 
+    /**
+     * Method getDescription returns the description of the virtual Character card
+     * @return description - the virtual card's description
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Method getCost returns the cost of the virtual Character card
+     * @return cost - the virtual card's cost
+     */
     public int getCost() {
         return cost;
     }
