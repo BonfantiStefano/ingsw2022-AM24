@@ -11,9 +11,7 @@ import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.server.answer.*;
 import it.polimi.ingsw.server.answer.Error;
-import it.polimi.ingsw.server.answer.Update.Update;
 
-import javax.naming.AuthenticationNotSupportedException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;

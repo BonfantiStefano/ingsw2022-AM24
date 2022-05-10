@@ -13,6 +13,10 @@ public class ServerMain {
     private static final int MIN_PORT = 1024;
     private static final int MAX_PORT = 65535;
 
+    /**
+     * Method main is used to start the server side.
+     * @param args of type String[]
+     */
     public static void main(String[] args) {
         int port;
         Scanner scanner = new Scanner(System.in);

@@ -42,8 +42,8 @@ public class SocketClientHandler implements Runnable{
         this.pingController = new Thread(() -> {
             while (active){
                 try{
-                    //Modificare il valore
-                    Thread.sleep(PING_PERIOD*PING_PERIOD);
+                    //Forse si può sostituire con schedule, provare a cercare se funziona e nel caso aggiornare/chiedere a i prof.
+                    Thread.sleep(PING_PERIOD);
                     sendMessage(new Ping());
                 }catch (InterruptedException e){
                     e.printStackTrace();
@@ -99,7 +99,6 @@ public class SocketClientHandler implements Runnable{
     public void startTimer(){
         timer = new Thread(() -> {
             try{
-                //Correct the value
                 Thread.sleep(5*PING_PERIOD*10000);
                 System.out.println("Timeout expires");
                 handleClientDisconnection(true);
@@ -149,27 +148,6 @@ public class SocketClientHandler implements Runnable{
             System.out.println("Exception during the closure of the stream");
             e.printStackTrace();
         }
-        //Questi in teoria si possono togliere
-        /*finally {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                //Vedere se è necessario perchè l'outputStream dovrebbe chiudere anche il socket
-                e.printStackTrace();
-            }
-        }
-        */
-        /*
-        try {
-            socket.close();
-            System.out.println("The socket has been closed");
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println(e.getMessage());
-            System.exit(0);
-        }
-
-         */
     }
 
     /**
