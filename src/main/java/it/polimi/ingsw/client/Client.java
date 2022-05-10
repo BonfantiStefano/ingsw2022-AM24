@@ -105,6 +105,7 @@ public class Client {
         JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
         switch (jsonObject.get("type").getAsString()) {
             case "Welcome" :
+                cli.setW(gson.fromJson(jsonString, Welcome.class));
                 return gson.fromJson(jsonString, Welcome.class);
             case "Error" :
                 return gson.fromJson(jsonString, Error.class);

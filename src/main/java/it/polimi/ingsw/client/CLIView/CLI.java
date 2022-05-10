@@ -28,6 +28,7 @@ public class CLI{
     //TODO add handle disconnection
     private final VirtualView virtualView;
     private final Client client;
+    private Welcome w;
 
     private PrintStream output;
     private final Scanner input;
@@ -41,14 +42,19 @@ public class CLI{
         input = new Scanner(System.in);
         virtualView = new VirtualView();
         this.client = client;
+        w = null;
     }
 
     /**
      * Handles the continuous loop
      */
-    public void run(){
+    public void run() {
         //TODO add welcome input;
-        getInfo(new Welcome(new ArrayList<>()));
+        try {
+            while (w == null)
+                Thread.sleep(1000);
+        }catch (InterruptedException ingored){}
+        getInfo();
         input.nextLine();
         while(true){
             loop();
@@ -62,23 +68,6 @@ public class CLI{
         String s = input.nextLine();
         parseInput(s);
     }
-/*
-    /**
-     * Operations performed on CLI startup
-
-    public void init(){
-        new Thread(() -> {
-            input = new Scanner(System.in);
-            while (true)
-                while(input.hasNextLine()) {
-                    try {
-                        String s = input.nextLine();
-                        parseInput(s);
-                    } catch (NoSuchElementException ignored) {}
-                }
-        }).start();
-    }
-    */
 
     /**
      * Handles all Updates calling the respective visitor method
@@ -177,13 +166,14 @@ public class CLI{
 
     /**
      * Ask the Player whether they want to create a Lobby or Join one
-     * @param w Welcome message containing all available Lobbies
      */
-    private void getInfo(Welcome w) {
+    private void getInfo() {
         //TODO set lobbies to w.getLobbies()
-        ArrayList<Lobby> lobbies = new ArrayList<>();
+        ArrayList<VirtualLobby> lobbies = new ArrayList<>();
+        if(w!=null)
+            lobbies = w.getLobbies();
         System.out.println("Here's the list of available lobbies:");
-        for (Lobby l : lobbies) {
+        for (VirtualLobby l : lobbies) {
             System.out.println(lobbies.indexOf(l) + ":");
             System.out.println(l.isMode() ? "Expert Mode" : "Normal Mode");
             System.out.println("Num Players: " + l.getNumPlayers());
@@ -200,7 +190,7 @@ public class CLI{
             int index;
             System.out.println("Insert the Lobby's number: ");
             index = input.nextInt();
-
+            input.nextLine();
             String nickname;
             do {
                 System.out.println("Choose your nickname: ");
@@ -215,7 +205,8 @@ public class CLI{
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
                 mageIndex = input.nextInt();
-                if (lobbies.get(index).getMages().contains(Mage.values()[mageIndex])) {
+                input.nextLine();
+                if (lobbies.get(index).getMages().contains(Mage.values()[mageIndex-1])) {
                     System.out.println("Mage already in use!");
                     mageIndex = -1;
                 }
@@ -225,13 +216,14 @@ public class CLI{
             do {
                 System.out.println("Choose your TowerColor (1,2,3):");
                 towerIndex = input.nextInt();
-                if (lobbies.get(index).getColorTowers().contains(ColorT.values()[towerIndex])) {
+                input.nextLine();
+                if (lobbies.get(index).getTowers().contains(ColorT.values()[towerIndex-1])) {
                     System.out.println("Tower Color already in use!");
                     towerIndex = -1;
                 }
             } while (towerIndex < 0 || towerIndex > 4);
 
-            Join msg = new Join(nickname, Mage.values()[mageIndex], ColorT.values()[towerIndex], index);
+            Join msg = new Join(nickname, Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1], index);
             client.sendMessage(toJson(msg));
         }
         else{
@@ -239,6 +231,7 @@ public class CLI{
             do {
                 System.out.println("How many other Players do you want to play with? (2/3)");
                 numPlayers = input.nextInt();
+                input.nextLine();
             }while(numPlayers<2 || numPlayers>3);
             input.nextLine();
             String expert;
@@ -683,5 +676,9 @@ public class CLI{
                 lobby.getTowers().forEach(System.out::println);
             }
         }
+    }
+
+    public void setW(Welcome w) {
+        this.w = w;
     }
 }

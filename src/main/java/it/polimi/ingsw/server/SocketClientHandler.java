@@ -100,7 +100,7 @@ public class SocketClientHandler implements Runnable{
         timer = new Thread(() -> {
             try{
                 //Correct the value
-                Thread.sleep(5*PING_PERIOD);
+                Thread.sleep(5*PING_PERIOD*10000);
                 System.out.println("Timeout expires");
                 handleClientDisconnection(true);
             } catch (InterruptedException e){
