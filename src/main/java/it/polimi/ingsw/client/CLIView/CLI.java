@@ -10,7 +10,6 @@ import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.CharacterDescription;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
-import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.answer.Update.*;
 import it.polimi.ingsw.server.answer.Welcome;
 import it.polimi.ingsw.server.virtualview.*;
@@ -24,11 +23,11 @@ import java.util.regex.Pattern;
 /**
  * Class CLI represents the terminal UI
  */
-public class CLI{
+public class CLI implements Runnable{
     //TODO add handle disconnection
     private final VirtualView virtualView;
     private final Client client;
-    private Welcome w;
+    private Welcome welcome;
 
     private PrintStream output;
     private final Scanner input;
@@ -42,31 +41,18 @@ public class CLI{
         input = new Scanner(System.in);
         virtualView = new VirtualView();
         this.client = client;
-        w = null;
+        welcome = null;
     }
 
     /**
      * Handles the continuous loop
      */
     public void run() {
-        //TODO add welcome input;
-        try {
-            while (w == null)
-                Thread.sleep(1000);
-        }catch (InterruptedException ingored){}
         getInfo();
-        input.nextLine();
-        while(true){
-            loop();
+        while(client.isActive()) {
+            String s = input.nextLine();
+            parseInput(s);
         }
-    }
-
-    /**
-     * Operations repeated until the game ends
-     */
-    public void loop(){
-        String s = input.nextLine();
-        parseInput(s);
     }
 
     /**
@@ -170,15 +156,9 @@ public class CLI{
     private void getInfo() {
         //TODO set lobbies to w.getLobbies()
         ArrayList<VirtualLobby> lobbies = new ArrayList<>();
-        if(w!=null)
-            lobbies = w.getLobbies();
-        System.out.println("Here's the list of available lobbies:");
-        for (VirtualLobby l : lobbies) {
-            System.out.println(lobbies.indexOf(l) + ":");
-            System.out.println(l.isMode() ? "Expert Mode" : "Normal Mode");
-            System.out.println("Num Players: " + l.getNumPlayers());
-        }
-
+        if(welcome!=null)
+            lobbies = welcome.getLobbies();
+        printLobbies(welcome);
         String answer;
         do {
             System.out.println("Do you want to Join a Lobby? (y/n)");
@@ -678,7 +658,7 @@ public class CLI{
         }
     }
 
-    public void setW(Welcome w) {
-        this.w = w;
+    public void setWelcome(Welcome welcome) {
+        this.welcome = welcome;
     }
 }

@@ -1,22 +1,15 @@
 package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.client.request.*;
-import it.polimi.ingsw.model.ColorS;
-import it.polimi.ingsw.model.ColorT;
-import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.server.answer.*;
 import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Update.*;
-import it.polimi.ingsw.server.virtualview.VirtualView;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -29,7 +22,7 @@ public class Client {
     private boolean active;
     private final CLI cli;
     private Thread timer;
-    private static final int TIMEOUT = 20000;
+    private static final int TIMEOUT = 50000;
 
     public static void main(String[] args) {
         Scanner initialScanner = new Scanner(System.in);
@@ -50,7 +43,7 @@ public class Client {
 
     public void startClient(String ip, int port) {
         active = true;
-        //startTimer();
+        startTimer();
         try {
             //creazione del socket
             try (Socket socket = new Socket(ip, port)) {
@@ -65,12 +58,9 @@ public class Client {
                     System.exit(0);
                 }
 
-                //Avvio del thread che si occupa della lettura dei messaggi che gli invia il server e del loro smistamento
+                //Avvio del metodo che si occupa della lettura dei messaggi che gli invia il server e del loro smistamento
                 System.out.println("Stream created");
                 startServerReader();
-                cli.run();
-                //Lettura dell'input da tastiera, traduzione in json e invio del messaggio
-
             } catch (NoSuchElementException | IllegalStateException e) {
                 System.out.println("Connection closed");
             }
@@ -91,7 +81,7 @@ public class Client {
 
     public void handleClientDisconnection() {
         active = false;
-        //stopTimer();
+        stopTimer();
         try {
             os.close();
             is.close();
@@ -105,14 +95,16 @@ public class Client {
         JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
         switch (jsonObject.get("type").getAsString()) {
             case "Welcome" :
-                cli.setW(gson.fromJson(jsonString, Welcome.class));
+                cli.setWelcome(gson.fromJson(jsonString, Welcome.class));
+                //TODO far partire questi metodi solo la prima volta
+                new Thread(cli).start();
                 return gson.fromJson(jsonString, Welcome.class);
             case "Error" :
                 return gson.fromJson(jsonString, Error.class);
             case "Information" :
                 return gson.fromJson(jsonString, Information.class);
             case "Ping" :
-                sendMessage("Pong");
+                sendMessage(cli.toJson(new Pong()));
                 return null;
             case "NotifyDisconnection" :
                 //Dopo si toglie la system out
@@ -146,75 +138,33 @@ public class Client {
                 return null;
         }
     }
-    /*
-    public String jsonFromInput(String s){
-         switch (s){
-             case "Join" :
-                 return toJson(new Join("Carlo", Mage.MAGE1, ColorT.BLACK, 0));
-             case "Jo1" :
-                 return toJson(new Join("Alessia", Mage.MAGE2, ColorT.GREY, 0));
-             case "Jo1.1" :
-                 return toJson(new Join("Emily", Mage.MAGE3, ColorT.WHITE, 0));
-             case "Jo2" :
-                 return toJson(new Join("Giulia", Mage.MAGE1, ColorT.BLACK, 1));
-             case "MoveMN" :
-                 return toJson(new MoveMN(5));
-             case "MoveToIsland" :
-                 return toJson(new MoveToIsland(ColorS.RED, 1));
-             case "EntranceToHall" :
-                 return toJson(new EntranceToHall(ColorS.BLUE));
-             case "ChooseCloud" :
-                 return toJson(new ChooseCloud(1));
-             case "GameParams" :
-                 return toJson(new GameParams(3, true, "Carlo",Mage.MAGE1, ColorT.BLACK));
-             case "gp" :
-                 return toJson(new GameParams(75, true, "Carlo",Mage.MAGE1, ColorT.BLACK));
-             case "Quit" :
-                 return toJson(new Disconnect());
-             default : System.out.println("Invalid String");
-                 return null;
-        }
-    }
-     */
 
     public void startServerReader() {
-        new Thread(() -> {
-            while (active) {
-                try {
-                    String s = (String) is.readObject();
-                    /*
-                    if(s!= null) {
-                        stopTimer();
-                        startTimer();
-                    }
-
-                     */
-                    //metodo primordiale per gestire ping e disconnessioni, poi dovrò mettere un metodo che mi fa il de-parsing della stringa
-                    //e in base al risulato vedere come comportarmi
-                        /*if(s.equals("{\"type\":\"Ping\"}")) {
-                            sendMessage(s)
-                        } else */
-                    if (s.equals("{\"error\":\"You have been disconnected, you can rejoin the game in the future\",\"type\":\"Error\"}")) {
+        while (active) {
+            try {
+                String s = (String) is.readObject();
+                if(s!= null) {
+                    //questo if poi andrà rimosso, utile per debuggare.
+                    if (!s.equals("{\"type\":\"Ping\"}")) {
                         System.out.println(s);
-                        handleClientDisconnection();
                     }
+                    stopTimer();
+                    startTimer();
                     Answer a = parseMessage(s);
                     //TODO handle all other messages
-                    if(a instanceof Update)
-                        cli.handleMessage((Update)a);
-                    System.out.println(s);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    System.out.println("Socket chiuso, al posto di e.printStackTrace");
-                    //e.printStackTrace();
-                    handleClientDisconnection();
+                    if (a instanceof Update)
+                        cli.handleMessage((Update) a);
                 }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                System.out.println("Socket chiuso, al posto di e.printStackTrace");
+                //e.printStackTrace();
+                handleClientDisconnection();
             }
-        }).start();
+        }
     }
 
-    /*
     //Utile se vogliamo implementare un timer che ci dice che il server non è raggiungibile
     public void startTimer(){
         timer = new Thread(() -> {
@@ -235,5 +185,8 @@ public class Client {
             timer = null;
         }
     }
-    */
+
+    public boolean isActive() {
+        return active;
+    }
 }
