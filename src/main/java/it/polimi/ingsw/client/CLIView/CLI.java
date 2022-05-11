@@ -25,9 +25,10 @@ import java.util.regex.Pattern;
  */
 public class CLI implements Runnable{
     //TODO add handle disconnection
-    private final VirtualView virtualView;
+    private VirtualView virtualView;
     private final Client client;
     private Welcome welcome;
+    private boolean gameActive;
 
     private PrintStream output;
     private final Scanner input;
@@ -42,6 +43,8 @@ public class CLI implements Runnable{
         virtualView = new VirtualView();
         this.client = client;
         welcome = null;
+        //TODO implement set gameActive based on messages from Server
+        gameActive = true;
     }
 
     /**
@@ -59,10 +62,11 @@ public class CLI implements Runnable{
      * Handles all Updates calling the respective visitor method
      * @param a the Update received
      */
-    public void handleMessage(Update a){
-        clearScreen();
+    public synchronized void handleMessage(Update a){
+        //clearScreen();
         a.accept(this);
-        printView();
+        if(gameActive)
+            printView();
     }
 
     /**
@@ -111,7 +115,7 @@ public class CLI implements Runnable{
         //TODO check all substring indexes
         switch (r){
             case DISCONNECT: return new Disconnect();
-            case MOVE_MN: return new MoveMN(Integer.parseInt(s.substring(8))-1);
+            case MOVE_MN: return new MoveMN(Integer.parseInt(s.substring(8)));
             case ENTR_HALL: return new EntranceToHall(colorByString(s.substring(5)));
             case ONE_COLOR: return new ChooseColor(colorByString(s));
             case PLAY_CHAR:
@@ -142,20 +146,24 @@ public class CLI implements Runnable{
     /**
      * Prints elements contained in the VirtualView
      */
-    private void printView() {
+    private synchronized void printView() {
         ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
         drawIslands(virtualWorld);
         drawClouds(virtualView.getVirtualClouds());
-        //drawCharacters(virtualView.getVirtualCharacters());
-        for (VirtualPlayer vp : virtualView.getVirtualPlayers())
+        if(virtualView.getVirtualCharacters().size()>0)
+            drawCharacters(virtualView.getVirtualCharacters());
+        for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {
             drawSchoolBoard(vp.getVirtualBoard(), vp.getNickname(), virtualView.getVirtualProfs());
+            if(virtualView.getVirtualCharacters().size()!=0)
+                System.out.println("Player: "+ vp.getNickname()+"has "+ vp.getVirtualCoins()+" coins.");
+        }
+
     }
 
     /**
      * Ask the Player whether they want to create a Lobby or Join one
      */
     private void getInfo() {
-        //TODO set lobbies to w.getLobbies()
         clearScreen();
         ArrayList<VirtualLobby> lobbies = new ArrayList<>();
         if(welcome!=null) {
@@ -210,7 +218,7 @@ public class CLI implements Runnable{
             client.sendMessage(toJson(msg));
         }
         else{
-            System.out.println("Creatring a lobby!");
+            System.out.println("Creating a lobby!");
             int numPlayers;
             do {
                 System.out.println("How many Players will the Game have? (2/3)");
@@ -261,7 +269,7 @@ public class CLI implements Runnable{
      * @param profs the HashMap containing all Profs
      */
     public void drawSchoolBoard(VirtualSchoolBoard schoolBoard, String nickname, HashMap<ColorS, VirtualPlayer> profs){
-        //TODO add nickname parameter
+        //TODO fix alignment
         String appendix = "'s SchoolBoard";
         ArrayList<ColorS> entrance = schoolBoard.getEntrance();
         HashMap<ColorS, Integer> hall = (HashMap<ColorS, Integer>) schoolBoard.getHall();
@@ -274,10 +282,11 @@ public class CLI implements Runnable{
         firstLine(currLine, nickname+appendix, xSize);
         int entrIndex = 0, towIndex = 0;
 
-        currLine = new StringBuilder();
-        lines.add(currLine);
+
 
         for(ColorS c: ColorS.values()) {
+            currLine = new StringBuilder();
+            lines.add(currLine);
             //for every row
             currLine.append(BOX.VERT).append(" ");
             for (int i = 1; i < 3; i++) {
@@ -293,14 +302,16 @@ public class CLI implements Runnable{
                 currLine.append(getChar(c)).append(" ");
             }
 
-            currLine.append(" ".repeat(Math.max(0, 10 - hall.get(c))));
+            currLine.append("  ".repeat(Math.max(0, 10 - hall.get(c))));
 
             currLine.append(BOX.VERT);
 
-            if(profs.get(c).getNickname().equals(nickname))
-                currLine.append(getChar(c));
+            if(profs!=null&&profs.get(c)!=null) {
+                if (profs.get(c).getNickname().equals(nickname))
+                    currLine.append(getChar(c));
+            }
             else
-                currLine.append(" ");
+                currLine.append("  ");
 
             currLine.append(" ").append(BOX.VERT).append(" ");
 
@@ -429,7 +440,7 @@ public class CLI implements Runnable{
      * @param islands ArrayList containing all the VirtualIslands
      */
     public void drawIslands(ArrayList<VirtualIsland> islands){
-        int ySize = 5, xSize = 17;
+        int xSize = 17;
         int numIslands = islands.size();
         ArrayList<StringBuilder> lines = new ArrayList<>();
 
@@ -437,7 +448,7 @@ public class CLI implements Runnable{
         StringBuilder currLine = new StringBuilder();
         lines.add(currLine);
         for(VirtualIsland i:islands)
-            firstLine(currLine,"Island no. "+ (islands.indexOf(i)+1), xSize);
+            firstLine(currLine,"Island no. "+ (islands.indexOf(i)+1) + (islands.indexOf(i)==virtualView.getMnPos()?BOX.HORIZ+"MN":""), xSize);
 
         currLine = new StringBuilder();
         lines.add(currLine);
@@ -471,6 +482,7 @@ public class CLI implements Runnable{
         }
 
         lastLine(xSize, numIslands, lines);
+        lines.forEach(System.out::println);
     }
 
     /**
@@ -501,7 +513,6 @@ public class CLI implements Runnable{
             currLine.append(BOX.HORIZ.toString().repeat(xSize));
             currLine.append(BOX.BOT_RIGHT);
         }
-        lines.forEach(System.out::println);
     }
 
     /**
@@ -573,7 +584,9 @@ public class CLI implements Runnable{
 
         lastLine(xSize, numAssistants, lines);
     }
-
+    public void visit(FullView u){
+        virtualView = u.getVirtualView();
+    }
     public void visit(AddPlayer u){
         virtualView.addVirtualPlayer(u.getPlayer());
     }
@@ -662,5 +675,9 @@ public class CLI implements Runnable{
 
     public void setWelcome(Welcome welcome) {
         this.welcome = welcome;
+    }
+
+    public void setGameActive(boolean gameActive) {
+        this.gameActive = gameActive;
     }
 }

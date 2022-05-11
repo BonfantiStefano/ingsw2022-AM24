@@ -129,11 +129,13 @@ public class Controller implements PropertyChangeListener {
                 gameStarted = true;
                 lobby.sendMessageToAll(new Information("Game Started!"));
             }
+            lobby.sendMessageToAll(new FullView(virtualView));
         }
         //if the Player had disconnected update his status as connected
         else if(!availableNickname && !model.getPlayerByNickname(messageSender).isConnected()) {
             model.setConnected(messageSender, true);
             lobby.sendMessage(messageSender, new Information("You have rejoined the Game!"));
+            lobby.sendMessageToAll(new FullView(virtualView));
         }
         else if(!availableNickname)
             message+=ERRORS.NICKNAME_TAKEN;
@@ -443,6 +445,8 @@ public class Controller implements PropertyChangeListener {
                 for(ColorS c : ColorS.values()){
                     if(modelProfs.get(c) != null)
                         virtualProfs.put(c, new VirtualPlayer(modelProfs.get(c)));
+                    else
+                        virtualProfs.put(c,null);
                 }
                 virtualView.setVirtualProfs(virtualProfs);
                 lobby.sendMessageToAll(new UpdateProfs(virtualProfs));

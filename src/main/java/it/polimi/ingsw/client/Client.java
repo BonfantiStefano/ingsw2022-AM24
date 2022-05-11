@@ -161,6 +161,8 @@ public class Client {
                 return gson.fromJson(jsonString, UpdateProfs.class);
             case "UpdateWorld":
                 return gson.fromJson(jsonString, UpdateWorld.class);
+            case "FullView":
+                return gson.fromJson(jsonString, FullView.class);
             default : System.out.println("Invalid message");
                 return null;
         }
@@ -182,8 +184,9 @@ public class Client {
                     startTimer();
                     Answer a = parseMessage(s);
                     //TODO handle all other messages
-                    if (a instanceof Update)
-                        cli.handleMessage((Update) a);
+                    if (a instanceof Update) {
+                        new Thread(() ->cli.handleMessage((Update) a)).start();
+                    }
                 }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

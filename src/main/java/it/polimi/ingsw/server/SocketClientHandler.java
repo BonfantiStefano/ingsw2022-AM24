@@ -128,6 +128,7 @@ public class SocketClientHandler implements Runnable{
         try {
             outputStream.reset();
             outputStream.writeObject(toJson(serverAnswer));
+            System.out.println("Sending : "+ toJson(serverAnswer));
             outputStream.flush();
         } catch (IOException e) {
             if(/*socket != null && */!socket.isClosed()) {
