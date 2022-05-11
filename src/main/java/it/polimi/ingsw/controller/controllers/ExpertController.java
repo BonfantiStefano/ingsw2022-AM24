@@ -202,6 +202,10 @@ public class ExpertController extends Controller {
         return true;
     }
 
+    /**
+     * Method getModel returns the expert gameBoard
+     * @return expert gameBoard
+     */
     public ExpertModel getModel() {
         return ((ExpertModel) super.getModel());
     }

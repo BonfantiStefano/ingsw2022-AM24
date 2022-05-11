@@ -372,5 +372,4 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         characters.get(index).addListener(this);
     }
 
-
 }

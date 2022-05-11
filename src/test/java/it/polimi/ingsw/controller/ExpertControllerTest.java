@@ -518,7 +518,6 @@ public class ExpertControllerTest {
     }
 
 
-
     /** Method createCharacter for creating different Character cards used in the tests */
     public Character createCharacter ( int charNum){
 
