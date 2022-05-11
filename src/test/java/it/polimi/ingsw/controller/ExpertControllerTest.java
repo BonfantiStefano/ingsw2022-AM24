@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class ExpertControllerTest {
 
-    private ExpertController expertController, expController;
+    private ExpertController expertController, expController, c;
 
     private ExpertGameBoard egb;
     private int mnPos;
@@ -391,9 +391,6 @@ public class ExpertControllerTest {
             modelLeo.getMyBoard().add(ColorS.BLUE);
         }
         assertEquals(7, virtualLeo.getVirtualBoard().getEntrance().size());
-
-        assertEquals("Leo", gameBoard.getActivePlayer().getNickname());
-        assertNotNull(gameBoard.getActivePlayer());
         EntranceToHall messageHall = new EntranceToHall(ColorS.BLUE);
         for(int i = 0; i < 3; i++){
             expController.handleMessage(messageHall, "Leo");
@@ -401,9 +398,10 @@ public class ExpertControllerTest {
         //now Leo has 2 coins, 3 blue in hall
         assertEquals(2, view.getVirtualPlayers().get(0).getVirtualCoins());
         assertEquals(3, virtualLeo.getVirtualBoard().getHall().get(ColorS.BLUE));
-        //now Leo has 3 coins
+        //now Leo has 4 coins
         modelLeo.setCoins(1);
-        assertEquals(view.getVirtualPlayers().get(0), view.getVirtualPlayers().get(0));
+        modelLeo.setCoins(1);
+        assertEquals(4, view.getVirtualPlayers().get(0).getVirtualCoins());
 
         //---------CHARACTER_ACTION--------------------------
         int initCoins = gameBoard.getPlayerByNickname("Leo").getCoins();
@@ -470,7 +468,56 @@ public class ExpertControllerTest {
         assertEquals(numStudents + 1, gameBoard.getActivePlayer().getMyBoard().getHall(studentsOnTheCard.get(0)));
         assertEquals(numVirtualStudents + 1, view.getVirtualPlayers().get(0).getVirtualBoard().getHall().get(studentsOnTheCard.get(0)));
 
+        //---------CHARACTER WITHOUT NE / STUDENTS--------------------------
+        //char 3
+        Character char3 = createCharacter(3);
+        gameBoard.set(0, char3);
+        view.getVirtualCharacters().set(0, new VirtualCharacter(char3));
+        assertEquals("Leo", view.getVirtualProfs().get(ColorS.BLUE).getNickname());
+        gameBoard.getIslandByIndex(5).add(ColorS.BLUE);
+        gameBoard.getIslandByIndex(5).add(ColorS.BLUE);
+        gameBoard.getIslandByIndex(5).add(ColorS.BLUE);
+        assertEquals(0, view.getVirtualWorld().get(5).getTowers().size());
+
+        gameBoard.setActiveCharacter(char3);
+
+        ChooseIsland messageChooseIsland = new ChooseIsland(5);
+        expController.handleCharacter(messageChooseIsland, "Leo");
+
+        assertEquals(1, view.getVirtualWorld().get(5).getTowers().size());
+        assertEquals(view.getVirtualWorld().get(5).getTowerColor().get(), gameBoard.getPlayerByNickname("Leo").getColorTower());
     }
+
+    /**
+     * Method test_notEnoughCoins checks that a Character can't be used if the player hasn't enough coins
+     */
+    @Test
+    public void test_notEnoughCoins(){
+        Lobby lobby = new Lobby();
+        c = new ExpertController(lobby, new GameParams(2, true, "Leo", Mage.MAGE1, ColorT.BLACK));
+        Join join = new Join("Lisa", Mage.MAGE2, ColorT.WHITE, 1);
+        c.handleMessage(join, "Lisa");
+
+        ExpertGameBoard gameBoard = (ExpertGameBoard) c.getModel();
+        VirtualView view = c.getVirtualView();
+
+        c.handleMessage(new ChooseAssistant(2), "Leo");
+        c.handleMessage(new ChooseAssistant(6), "Lisa");
+
+        gameBoard.getPlayerByNickname("Leo").setCoins(-1);
+        assertEquals(0, view.getVirtualPlayers().get(0).getVirtualCoins());
+
+        Character characterplayed = gameBoard.getCharacters().get(0);
+        String desc = characterplayed.getDescription();
+        PlayCharacter messageCharacter = new PlayCharacter(Arrays.stream(CharacterDescription.values()).
+                filter(c->c.getDesc().equals(desc)).findFirst().get());
+        c.handleCharacter(messageCharacter, "Leo");
+
+        assertNull(gameBoard.getActiveCharacter());
+
+    }
+
+
 
     /** Method createCharacter for creating different Character cards used in the tests */
     public Character createCharacter ( int charNum){

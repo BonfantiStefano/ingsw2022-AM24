@@ -105,7 +105,7 @@ public class ExpertController extends Controller {
 
     public void visit(ChooseIsland m) {
         if (filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR3.getDesc())) {
-            if (m.getIslandIndex() < 0 || m.getIslandIndex() >= getModel().getSizeWorld()) {
+            if (m.getIslandIndex() >= 0 && m.getIslandIndex() < getModel().getSizeWorld()) {
                 getModel().checkIsland(getModel().getIslandByIndex(m.getIslandIndex()));
                 Optional<Player> winner = getModel().checkWin();
                 winner.ifPresentOrElse(w -> {
@@ -120,11 +120,6 @@ public class ExpertController extends Controller {
                             }
                         }
                 );
-                int noEntry = ((CharacterWithNoEntry) activeCharacter).getNumNoEntry();
-                if (noEntry != 0) {
-                    getModel().getIslandByIndex(m.getIslandIndex()).setNumNoEntry(1);
-                    getModel().removeNoEntry();
-                }
             }
         }
         else if (filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR5.getDesc())) {

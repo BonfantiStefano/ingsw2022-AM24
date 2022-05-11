@@ -364,6 +364,9 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         return virtualCharacters;
     }
 
+    /**
+    * Method set is used for replace one of the available Character cards
+     */
     public void set(int index, Character c){
         characters.set(index, c);
         characters.get(index).addListener(this);
