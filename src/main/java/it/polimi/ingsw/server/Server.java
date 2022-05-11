@@ -17,7 +17,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 //Not final, work in progress
-//TODO implementare metodo per gestire il caso in cui non riesce a connettersi a nessun client e quindi deve spegnersi, tutte le lobby le eliminiamo
+//TODO implementare metodo per gestire il caso in cui non riesce a connettersi a nessun client e quindi deve spegnersi,
+// tutte le lobby le eliminiamo
 /**
  * Class Server used to manage new connecting clients, the forwarding of the messages from the socket that handle the client to the
  * right lobby.

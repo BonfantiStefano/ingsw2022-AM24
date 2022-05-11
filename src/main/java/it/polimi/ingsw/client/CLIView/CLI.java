@@ -645,7 +645,7 @@ public class CLI implements Runnable{
         } else {
             System.out.println("Here's the list of available lobbies:");
             for (VirtualLobby lobby : lobbies) {
-                System.out.println(lobbies.indexOf(lobby) + ":");
+                System.out.println("Lobby " + lobby.getLobbyIndex() + ":");
                 System.out.println(lobby.isMode() ? "Expert Mode" : "Normal Mode");
                 System.out.println("Num Players: " + lobby.getNumPlayers());
                 System.out.println("NickName taken: ");

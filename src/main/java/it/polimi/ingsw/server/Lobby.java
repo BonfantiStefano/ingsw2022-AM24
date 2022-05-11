@@ -34,9 +34,11 @@ public class Lobby {
     private ArrayList<ColorT> towers;
     private boolean mode;
     private GameStatus gameStatus;
+    private Thread timerPause;
+    private static final int WAITING_TIME = 50000;
     //private VirtualView virtualView;
 
-    //metodo inutile usato solo perché altrimenti per i test dell'expert controller dovrei creare tutti i parametri, poi
+    //metodo inutile usato solo perché altrimenti per i test dell' expert controller dovrei creare tutti i parametri, poi
     //lo cambierò.
     /**
      * Constructor Lobby creates a new empty Lobby instance.
@@ -120,9 +122,9 @@ public class Lobby {
                 mages.add(join.getMage());
                 towers.add(join.getColorT());
                 clientsId.add(idClients);
-                controller.handleMessage(join, mapIdNickname.get(idClients));
                 socketClientHandler.sendMessage(new Information("You have joined the game"));
                 sendMessageToOthers(join.getNickname(), new Information(join.getNickname() + " entered the lobby"));
+                controller.handleMessage(join, mapIdNickname.get(idClients));
                 if(clientsId.size() == numPlayers) {
                     gameStatus = GameStatus.PLAYING;
                 }
@@ -145,8 +147,10 @@ public class Lobby {
         if(mapNicknameId.containsKey(join.getNickname()) && disconnectedClientsId.contains(mapNicknameId.get(join.getNickname()))
                 && gameStatus != GameStatus.ENDED) {
             int oldId = mapNicknameId.get(join.getNickname());
+            //Notification of the re-connection to the players
             socketClientHandler.sendMessage(new Information("Welcome back " + join.getNickname()));
             sendMessageToOthers(join.getNickname(), new Information(join.getNickname() + " re-connected"));
+            //Handles of the re-connection
             mapNicknameId.replace(join.getNickname(), clientId);
             mapIdNickname.remove(oldId);
             mapIdNickname.put(clientId, join.getNickname());
@@ -157,12 +161,20 @@ public class Lobby {
             clientsId.add(clientId);
             controller.handleMessage(join, join.getNickname());
             System.out.println(mapIdNickname.toString());
+            //If the game was in pause the timer is stopped and the game can continue
+            if(gameStatus == GameStatus.PAUSE) {
+                stopTimer();
+                gameStatus = GameStatus.PLAYING;
+            }
             return oldId;
         }
         //forse si può mettere che se uno prova a riconnettersi dopo che la partita è finita può dirgli che la partita è finita
         return -1;
     }
 
+    //Forse va sincronizzato questo metodo, o forse è meglio la handleJoin nel server, così non si possono verificare casi in cui uno si
+    //disconnette mentre l' altro si riconnette (magari si hanno rallentamenti quando ho molte lobby, potrei però bloccare solo la lobby che
+    // mi serve così non creo rallentamenti)
     //TODO implementare che quando ho un solo player e si disconnette elimino la lobby, negli altri casi viene sempre messo in pausa e continuano gli
     //altri a meno che me ne rimane uno solo e in quel caso dopo aver aspettato un certo intervallo di tempo chiudo la lobby
     /**
@@ -171,18 +183,20 @@ public class Lobby {
      */
     public void handleDisconnection(int clientId) {
         disconnectedClientsId.add(clientId);
-        if(disconnectedClientsId.size() == 1 && clientsId.size() == 1 && gameStatus != GameStatus.ENDED) {
+        if((disconnectedClientsId.size() == 1 && clientsId.size() == 1 && gameStatus == GameStatus.SETUP) ||
+                (disconnectedClientsId.size() == numPlayers && gameStatus == GameStatus.PAUSE)) {
             System.out.println("The lobby must be closed");
             //Togliere commento delle istruzioni sotto solo quando avremo finito altrimenti mi sarà difficile fare il debug
-            //gameStatus = GameStatus.ENDED;
+            gameStatus = GameStatus.ENDED;
+            //dobbiamo comunicarlo anche al controller che la partita è finita??
         } else {
             controller.handleMessage(new Disconnect(), mapIdNickname.get(clientId));
-        } /* Mettere questo: (capire dove va messo perché devo disconnettere il player ma poi deve andare in pausa e quindi non accettare
-        i messaggi del player connesso e aspettare che si faccia un checkReconnection che va a buon fine)
             if(clientsId.size() - disconnectedClientsId.size() == 1 && gameStatus == GameStatus.PLAYING) {
-            //inserire timer e poi nel caso far finire la partita, mi basta mettere gameStatus a Ended e poi inviare all'unico
-            //player attivo un messaggio che gli dice che ha vinto poiché gli altri giocatori sono stati disconnessi
-        }*/
+                gameStatus = GameStatus.PAUSE;
+                startTimer();
+                System.out.println("The lobby is in pause, waiting a re-connection");
+            }
+        }
     }
 
     /**
@@ -242,8 +256,12 @@ public class Lobby {
     public void handleMessage(Request request, int clientId) {
         if(clientsId.size() == numPlayers && gameStatus == GameStatus.PLAYING) {
             controller.handleMessage(request, mapIdNickname.get(clientId));
-        } else {
+        } else if(gameStatus == GameStatus.SETUP){
             mapIdSocket.get(clientId).sendMessage(new Error("Error: the game is not started"));
+        } else if(gameStatus == GameStatus.PAUSE){
+            mapIdSocket.get(clientId).sendMessage(new Error("Error: the game is in pause, please wait the re-connection of a player"));
+        } else {
+            mapIdSocket.get(clientId).sendMessage(new Error("Error: the game is finished"));
         }
     }
 
@@ -308,4 +326,36 @@ public class Lobby {
         return mode;
     }
 
+    /**
+     * Method startTimer starts the timer that waits the reconnection of a player.
+     */
+    public void startTimer(){
+        timerPause = new Thread(() -> {
+            try{
+                Thread.sleep(WAITING_TIME);
+                System.out.println("Timeout expires");
+                gameStatus = GameStatus.ENDED;
+                int activePlayer;
+                for(Integer clientId : clientsId) {
+                    if(!disconnectedClientsId.contains(clientId)) {
+                        sendMessage(mapIdNickname.get(clientId), new Information("You are the only connected player, you won!"));
+                    }
+                }
+            } catch (InterruptedException e){
+                System.out.println("The timeout timer has been stopped");
+
+            }
+        });
+        timerPause.start();
+    }
+
+    /**
+     * Method used to stop the timer
+     */
+    public void stopTimer(){
+        if (timerPause != null && timerPause.isAlive()){
+            timerPause.interrupt();
+            timerPause = null;
+        }
+    }
 }

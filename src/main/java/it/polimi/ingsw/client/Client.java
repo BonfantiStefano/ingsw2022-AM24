@@ -14,8 +14,11 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 //Not final, work in progress
-//TODO implementare timer che aspetta per un intervallo un messaggio dal server dopodichè dice che il server è stato disconnesso
-// e si scollega --> implementato, da togliere quando vogliamo e vedere se funziona
+/**
+ * Class Client manages the connection of a client with the server.
+ *  *
+ *  * @author Baratto Marco, Bonfanti Stefano
+ */
 public class Client {
     private ObjectOutputStream os;
     private ObjectInputStream is;
@@ -24,6 +27,10 @@ public class Client {
     private Thread timer;
     private static final int TIMEOUT = 50000;
 
+    /**
+     * Method main is used to start the client side.
+     * @param args of type String[]
+     */
     public static void main(String[] args) {
         Scanner initialScanner = new Scanner(System.in);
         System.out.println("Enter IP");
@@ -36,19 +43,27 @@ public class Client {
         c.startClient(ip, port);
     }
 
+    /**
+     * Constructor Client creates a new Client instance.
+     */
     public Client() {
         active = false;
         cli = new CLI(this);
     }
 
+    /**
+     * Method startClient creates the socket, the streams and start reading the messages from the server.
+     * @param ip String - the ip address of the server.
+     * @param port int - the port utilized by the server.
+     */
     public void startClient(String ip, int port) {
         active = true;
         startTimer();
         try {
-            //creazione del socket
+            //Socket creation
             try (Socket socket = new Socket(ip, port)) {
                 System.out.println("Connection established");
-                //creazione degli stream
+                //Stream creation
                 try {
                     os = new ObjectOutputStream(socket.getOutputStream());
                     os.flush();
@@ -69,6 +84,10 @@ public class Client {
         }
     }
 
+    /**
+     * Method sendMessage sends a message to the server.
+     * @param string String - the message, in json notation, that will be sent to the server.
+     */
     public void sendMessage (String string) {
         try {
             os.reset();
@@ -79,6 +98,9 @@ public class Client {
         }
     }
 
+    /**
+     * Method handleClientDisconnection closes the streams.
+     */
     public void handleClientDisconnection() {
         active = false;
         stopTimer();
@@ -90,6 +112,11 @@ public class Client {
         }
     }
 
+    /**
+     * Method parseMessage converts a json String to an Answer message.
+     * @param jsonString String - the string received in input
+     * @return an Answer message.
+     */
     public Answer parseMessage(String jsonString) {
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
@@ -139,6 +166,9 @@ public class Client {
         }
     }
 
+    /**
+     * Method startServerReader reads all the message that the server sends and forwards those messages to the user interface.
+     */
     public void startServerReader() {
         while (active) {
             try {
@@ -166,6 +196,9 @@ public class Client {
     }
 
     //Utile se vogliamo implementare un timer che ci dice che il server non è raggiungibile
+    /**
+     * Method startTimer starts the timer that checks if the server is still alive.
+     */
     public void startTimer(){
         timer = new Thread(() -> {
             try{
@@ -179,6 +212,9 @@ public class Client {
         timer.start();
     }
 
+    /**
+     * Method stopTimer stops the timer.
+     */
     public void stopTimer(){
         if (timer != null && timer.isAlive()){
             timer.interrupt();
@@ -186,6 +222,10 @@ public class Client {
         }
     }
 
+    /**
+     * Method isActive returns the active's value.
+     * @return a boolean, true if the socket is alive, false otherwise.
+     */
     public boolean isActive() {
         return active;
     }
