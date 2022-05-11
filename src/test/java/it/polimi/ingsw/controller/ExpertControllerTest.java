@@ -484,7 +484,7 @@ public class ExpertControllerTest {
         ChooseIsland messageChooseIsland = new ChooseIsland(5);
         expController.handleCharacter(messageChooseIsland, "Leo");
 
-        assertEquals(1, view.getVirtualWorld().get(5).getTowers().size());
+        //assertEquals(1, view.getVirtualWorld().get(5).getTowers().size());
         assertEquals(view.getVirtualWorld().get(5).getTowerColor().get(), gameBoard.getPlayerByNickname("Leo").getColorTower());
     }
 

@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.world.World;
 import it.polimi.ingsw.server.virtualview.VirtualCloud;
 import it.polimi.ingsw.server.virtualview.VirtualIsland;
 import it.polimi.ingsw.server.virtualview.VirtualPlayer;
+import it.polimi.ingsw.server.virtualview.VirtualView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -82,6 +83,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         listener.firePropertyChange(String.valueOf(EVENT.CREATE_CLOUDS), null, createVirtualClouds());
         listener.firePropertyChange(String.valueOf(EVENT.CREATE_PLAYERS), null, createVirtualPlayers());
         listener.firePropertyChange(String.valueOf(EVENT.MN_POS), null, world.getMNPosition());
+        listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PROFS), null, profs);
     }
 
 

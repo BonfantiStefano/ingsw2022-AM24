@@ -62,6 +62,7 @@ public class CLI implements Runnable{
     public void handleMessage(Update a){
         clearScreen();
         a.accept(this);
+        printView();
     }
 
     /**
@@ -143,9 +144,9 @@ public class CLI implements Runnable{
      */
     private void printView() {
         ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
-        drawIslands((ArrayList<VirtualIsland>) virtualWorld.subList(0, virtualWorld.size() / 2));
-        drawIslands((ArrayList<VirtualIsland>) virtualWorld.subList(virtualWorld.size() / 2 + 1, virtualWorld.size() - 1));
-        drawCharacters(virtualView.getVirtualCharacters());
+        drawIslands(virtualWorld);
+        drawClouds(virtualView.getVirtualClouds());
+        //drawCharacters(virtualView.getVirtualCharacters());
         for (VirtualPlayer vp : virtualView.getVirtualPlayers())
             drawSchoolBoard(vp.getVirtualBoard(), vp.getNickname(), virtualView.getVirtualProfs());
     }
@@ -155,22 +156,26 @@ public class CLI implements Runnable{
      */
     private void getInfo() {
         //TODO set lobbies to w.getLobbies()
+        clearScreen();
         ArrayList<VirtualLobby> lobbies = new ArrayList<>();
-        if(welcome!=null)
-            lobbies = welcome.getLobbies();
-        printLobbies(welcome);
+        if(welcome!=null) {
+            printLobbies(welcome);
+            lobbies=welcome.getLobbies();
+        }
         String answer;
         do {
             System.out.println("Do you want to Join a Lobby? (y/n)");
             answer = input.nextLine();
-        } while (!answer.equals("y") && !answer.equals("n"));
+        } while ((!answer.equals("y") && !answer.equals("n"))||(answer.equals("y")&&lobbies.size()==0));
 
         if (answer.equals("y")) {
             //TODO check the value of the lobby's index
             int index;
-            System.out.println("Insert the Lobby's number: ");
-            index = input.nextInt();
-            input.nextLine();
+            do {
+                System.out.println("Insert the Lobby's number: ");
+                index = Integer.parseInt(input.nextLine());
+            }while(index<0||index> lobbies.size()-1);
+
             String nickname;
             do {
                 System.out.println("Choose your nickname: ");
@@ -184,8 +189,7 @@ public class CLI implements Runnable{
             int mageIndex;
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
-                mageIndex = input.nextInt();
-                input.nextLine();
+                mageIndex = Integer.parseInt(input.nextLine());
                 if (lobbies.get(index).getMages().contains(Mage.values()[mageIndex-1])) {
                     System.out.println("Mage already in use!");
                     mageIndex = -1;
@@ -194,26 +198,24 @@ public class CLI implements Runnable{
             //TODO print also the color of the tower
             int towerIndex;
             do {
-                System.out.println("Choose your TowerColor (1,2,3):");
-                towerIndex = input.nextInt();
-                input.nextLine();
+                System.out.println("Choose your TowerColor (1,2"+ (lobbies.get(index).getNumPlayers()==2 ? ")":",3)")+":");
+                towerIndex = Integer.parseInt(input.nextLine());
                 if (lobbies.get(index).getTowers().contains(ColorT.values()[towerIndex-1])) {
                     System.out.println("Tower Color already in use!");
                     towerIndex = -1;
                 }
-            } while (towerIndex < 0 || towerIndex > 4);
+            } while ((towerIndex < 0 || towerIndex > 4)||(towerIndex==3&&lobbies.get(index).getNumPlayers()==2));
 
             Join msg = new Join(nickname, Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1], index);
             client.sendMessage(toJson(msg));
         }
         else{
+            System.out.println("Creatring a lobby!");
             int numPlayers;
             do {
-                System.out.println("How many other Players do you want to play with? (2/3)");
-                numPlayers = input.nextInt();
-                input.nextLine();
+                System.out.println("How many Players will the Game have? (2/3)");
+                numPlayers = Integer.parseInt(input.nextLine());
             }while(numPlayers<2 || numPlayers>3);
-            input.nextLine();
             String expert;
             do{
                 System.out.println("Do you want to create an Expert Game? (y/n)");
@@ -229,13 +231,13 @@ public class CLI implements Runnable{
             int mageIndex;
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
-                mageIndex = input.nextInt();
+                mageIndex = Integer.parseInt(input.nextLine());
             } while (mageIndex < 0 || mageIndex > 4);
 
             int towerIndex;
             do {
-                System.out.println("Choose your TowerColor (1,2,3):");
-                towerIndex = input.nextInt();
+                System.out.println("Choose your TowerColor (1,2"+ (numPlayers==2 ? ")":",3)")+":");
+                towerIndex = Integer.parseInt(input.nextLine());
             } while (towerIndex < 0 || towerIndex > 4);
 
             GameParams msg = new GameParams(numPlayers, expert.equals("y"), nickname,Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1]);
@@ -265,7 +267,7 @@ public class CLI implements Runnable{
         HashMap<ColorS, Integer> hall = (HashMap<ColorS, Integer>) schoolBoard.getHall();
         ArrayList<ColorT> towers = schoolBoard.getTowers();
         ArrayList<StringBuilder> lines = new ArrayList<>();
-        final int xSize=40, ySize=7;
+        final int xSize=40;
 
         StringBuilder currLine = new StringBuilder();
         lines.add(currLine);
