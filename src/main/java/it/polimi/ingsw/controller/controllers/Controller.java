@@ -451,7 +451,6 @@ public class Controller implements PropertyChangeListener {
                 lobby.sendMessageToAll(new UpdateMN(mnPos));
                 break;
         }
-
     }
 
     public VirtualView getVirtualView() {
