@@ -77,6 +77,7 @@ public class TurnController {
             case RESET_ROUND:
                 resetRound();
                 return PHASE.PLANNING;
+            default: return currentPhase;
         }
         return currentPhase;
     }

@@ -161,6 +161,12 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         }
         return null;
     }
+    /**
+     * Method getFirstPlayer is used for sorting players by their card value that determines the turn order
+     * and returns the first player of the next round
+     * @return first of type int - the first player of the next round
+     */
+    @Override
     public int getFirstPlayer() {
         ArrayList<Player> sortedPlayers = new ArrayList<>();
         for(Player p : players) {
@@ -174,30 +180,13 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         return !sortedPlayers.isEmpty() ? players.indexOf(sortedPlayers.get(0)) : 0;
     }
 
-    /**
-     * Method getFirstPlayer is used for sorting players by their card value that determines the turn order
-     * and returns the first player of the next round
-     * @return first of type int - the first player of the next round
-     */
-    /*
-    public int getFirstPlayer(){
-        int first = -1;
-        ArrayList<Player> sortedPlayers = new ArrayList<>(players);
-
-        Collections.sort(sortedPlayers.stream().filter( p -> p.getLastAssistant()!= null).collect(Collectors.toList()), (p1, p2) -> {
-            return p1.getLastAssistant().compareTo(p2.getLastAssistant());
-        });
-        first = players.indexOf(sortedPlayers.get(0));
-        return first;
-    }
-
-     */
 
 
     /**
      * Method getSortedPlayers returns the list containing sorted players
      * @return sortedPlayers of type ArrayList<Player> - the sorted players
      */
+    @Override
     public ArrayList<Player> getSortedPlayers(){
         ArrayList<Player> sortedPlayers = new ArrayList<>();
         if(lastAssistants.isEmpty()) {
@@ -213,6 +202,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
     }
 
     /** Method nextPlayer skips to the next player and sets him as Active player */
+    @Override
     public void nextPlayer(){
         Player nextPlayer;
         Player activePlayer = getActivePlayer();
@@ -240,6 +230,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      * @param color of type ColorT
      * @param mage of type Mage
      */
+    @Override
     public void addPlayer(String nickname, ColorT color, Mage mage) {
         int numS = numPlayers==3? NS : NUM_STUDENTS;
         int numT = numPlayers==3? NT : NUM_TOWERS;
@@ -266,6 +257,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      * Method getActivePlayer returns the active player in this round
      * @return activePlayer of type Player
      */
+    @Override
     public Player getActivePlayer() {
         return activePlayer;
     }
@@ -316,6 +308,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      * @param to of type CanAcceptStudent - place where the student is shifted
      * @throws NoSuchStudentException - if there is no students of the selected color to be removed
      */
+    @Override
     public void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to) throws NoSuchStudentException {
         from.remove(s);
         to.add(s);
@@ -327,6 +320,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      * @param numMNSteps int - number of steps that Mother Nature want to do.
      * @throws InvalidMNStepsException - if Mother Nature can't make the indicated number of steps.
      */
+    @Override
     //Checks that the numMNSteps is between 1 and 7 are done by the controller.
     public void moveMN(int numMNSteps) throws InvalidMNStepsException {
         int oldWoldSize = world.getSize();
@@ -379,6 +373,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
     /**
      * Fills Clouds with the correct Number of Students
      */
+    @Override
     public void newClouds() {
         int numStudents = numPlayers%2==0 ? 3 : 4; // 2 or 4 Players -> 3 Students, 3 Players -> 4 Students per Cloud
         for(Cloud c: clouds)
@@ -396,6 +391,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      * @param nickname the Player's nickname
      * @param status the connection status
      */
+    @Override
     public void setConnected(String nickname, boolean status){
         players.stream().filter(p -> p.getNickname().equals(nickname)).findFirst().ifPresent(p -> p.setConnected(status));
     }
@@ -403,6 +399,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
     /**
      * Resets the Model to be ready for the next round
      */
+    @Override
     public void resetRound(){
         newClouds();
         for(Player p : players) {
@@ -418,6 +415,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      * @param i the Cloud's index
      * @return the selected Cloud
      */
+    @Override
     public Cloud getCloudByIndex(int i){
         return clouds.get(i);
     }
@@ -477,6 +475,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      * has the same towers on the World and the same number of profs.
      * @return Optional<Player> the winner of the game, if presents.
      */
+    @Override
     //Remember that there are two different case of null return value: if the first condition is verified the game ends in a draw, otherwise
     //there the game must continue.
     public Optional<Player> checkWin() {
@@ -525,6 +524,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      * Method getSchoolBoard returns the active player's School Board
      * @return SchoolBoard
      */
+    @Override
     public SchoolBoard getSchoolBoard(){
         return activePlayer.getMyBoard();
     }
@@ -533,6 +533,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      * Method getSizeWorld returns the size of the World.
      * @return an Integer, that represents the number of the Islands.
      */
+    @Override
     public int getSizeWorld() {
         return world.getSize();
     }
@@ -541,6 +542,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      * Method getGameMustEnd returns if the game must end at the finish of the round.
      * @return boolean - the value of GameMustEnd.
      */
+    @Override
     public boolean getGameMustEnd() {
         return gameMustEnd;
     }
@@ -551,6 +553,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      * @throws PlaceFullException - if there is no space for the students of the selected color in the hall
      * @throws NoSuchStudentException - if the entrance is empty
      */
+    @Override
     public void entranceToHall(ColorS s) throws PlaceFullException, NoSuchStudentException {
         activePlayer.getMyBoard().entranceToHall(s);
         checkProfs();
@@ -561,6 +564,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
      * @param index int - The index of the Island.
      * @return an Island - the Island of the world corresponding to the index.
      */
+    @Override
     public Island getIslandByIndex(int index) {
         return world.getIslandByIndex(index);
     }

@@ -187,6 +187,8 @@ public class Client {
                     if (a instanceof Update) {
                         new Thread(() ->cli.handleMessage((Update) a)).start();
                     }
+                    else if(a instanceof Information)
+                        cli.setLastInfo(((Information) a).getString());
                 }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

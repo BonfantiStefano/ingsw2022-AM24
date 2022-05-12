@@ -323,7 +323,7 @@ public class Controller implements PropertyChangeListener {
      * @param m Request message sent by a Client
      * @param nickname the nickname of the Player associated with the Client
      */
-    private void handleCharacter(Request m, String nickname){
+    public void handleCharacter(Request m, String nickname){
         lobby.sendMessage(nickname, new Error("You're not playing in expert mode!"));
     }
 
@@ -450,6 +450,9 @@ public class Controller implements PropertyChangeListener {
                 virtualView.setMnPos(mnPos);
                 lobby.sendMessageToAll(new UpdateMN(mnPos));
                 break;
+            default:
+                //in case an undefined event is thrown the whole view will be sent
+                lobby.sendMessageToAll(new FullView(virtualView));
         }
     }
 
