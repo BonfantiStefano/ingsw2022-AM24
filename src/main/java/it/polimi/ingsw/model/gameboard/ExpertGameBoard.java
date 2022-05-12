@@ -33,7 +33,6 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     private ArrayList<Character> characters;
     private CharacterFactory factory;
     int coins;
-    protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**Constructor ExpertGameBoard creates a new empty ExpertGameBoard instance with 20 coins.*/
     public ExpertGameBoard(int numPlayers){
@@ -50,9 +49,9 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * Method addListener is used in order to register an event listener
      * @param expertController - event listener that is used for receiving the events
      */
+    @Override
     public void addListener(PropertyChangeListener expertController){
         super.addListener(expertController);
-        listener.addPropertyChangeListener(expertController);
         characters.forEach(character -> character.addListener(this));
         listener.firePropertyChange(String.valueOf(EVENT.CREATE_CHARACTERS), null, createVirtualCharacters());
     }
@@ -65,6 +64,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * @param color of type ColorT
      * @param mage of type Mage
      */
+    @Override
     public void addPlayer(String nickname, ColorT color, Mage mage) {
         super.addPlayer(nickname, color, mage);
         getPlayerByNickname(nickname).setCoins(1);
@@ -79,6 +79,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * @throws PlaceFullException - if there is no space for the students of the selected color in the hall
      * @throws NoSuchStudentException - if the entrance is empty
      */
+    @Override
     public void entranceToHall(ColorS s) throws PlaceFullException, NoSuchStudentException {
         boolean result = false;
         result = activePlayer.getMyBoard().entranceToHall(s);
@@ -95,6 +96,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * @param s the color of the Student being moved
      * @throws NoSuchStudentException if there is no students of the selected color in the hall
      */
+    @Override
     public void hallToEntrance(ColorS s) throws NoSuchStudentException {
         activePlayer.getMyBoard().hallToEntrance(s);
         checkProfs();
@@ -105,6 +107,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * @param s the color of the Student being added
      * @throws PlaceFullException - if there is no space for the students of the selected color in the hall
      */
+    @Override
     public void addToHall(ColorS s) throws PlaceFullException {
         if(activePlayer.getMyBoard().addToHall(s)){
             activePlayer.setCoins(1);
@@ -122,6 +125,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * @throws NoSuchStudentException if there is no students of the selected color in the hall
      * @throws NoSuchStudentException if there is no students of the selected color in the entrance
      */
+    @Override
     public void switchStudents(ColorS hallS, ColorS entranceS) throws PlaceFullException, NoSuchStudentException {
         if(activePlayer.getMyBoard().entranceToHall(entranceS)){
             if(coins > 0) {
@@ -139,6 +143,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * If any player has fewer than three students of that color, all the students of that color are put back in the bag
      * @param s the Student being removed
      */
+    @Override
     public void removeHall(ColorS s){
         int num;
         for(Player p : getPlayers()){
@@ -165,6 +170,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * @param c of type Character - the picked Character card
      * @throws NotEnoughCoinsException - if the player hasn't enough coins to play the picked Character card
      */
+    @Override
     public void playCharacter(Character c) throws NotEnoughCoinsException {
         Character characterToPlay = findChar(c);
         if(activePlayer.getCoins() >= characterToPlay.getCost()) {
@@ -192,6 +198,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * Method checkIsland is utilized by the character whose effect is to calculate the influence on an Island as if Mother Nature were there.
      * @param island Island - the Island on which the influence has to be calculated.
      */
+    @Override
     public void checkIsland(Island island) {
         if(world.checkEntry(island)) {
             Optional<Player> nextOwner = world.checkConquest(world.getInfluenceIsland(island, profs, players), players, island);
@@ -207,6 +214,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * Method getCharacters returns the Character cards.
      * @return characters of type ArrayList<Character>
      */
+    @Override
     public ArrayList<Character> getCharacters() {
         return characters;
     }
@@ -216,6 +224,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * by the active Player
      * @return activeCharacter of type Character
      */
+    @Override
     public Character getActiveCharacter() {
         return activeCharacter;
     }
@@ -263,6 +272,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * @param numMNSteps int - number of steps that Mother Nature want to do.
      * @throws InvalidMNStepsException - if Mother Nature can't make the indicated number of steps
      */
+    @Override
     public void moveMN(int numMNSteps) throws InvalidMNStepsException {
         int initSize = world.getSize();
         if(numMNSteps > activePlayer.getMNSteps()) {
@@ -282,6 +292,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * Adds a new Student to the Character after it's played
      * @throws ClassCastException if the activeCharacter isn't
      */
+    @Override
     public void resetCharacterStudent() throws ClassCastException {
         CharacterWithStudent c = (CharacterWithStudent) activeCharacter;
         c.add(container.draw());
@@ -290,6 +301,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     /**
      * Adds a NoEntry tile on the CharacterWithNoEntry
      */
+    @Override
     public void resetNoEntryCharacter(){
         CharacterWithNoEntry c = (CharacterWithNoEntry) findChar(new Character(CharacterDescription.CHAR5.getCost(), CharacterDescription.CHAR5.getDesc()));
         if(c!=null)
@@ -299,6 +311,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     /**
      * Removes a NoEntry tile on the CharacterWithNoEntry
      */
+    @Override
     public void removeNoEntry() {
         CharacterWithNoEntry c = (CharacterWithNoEntry) findChar(new Character(CharacterDescription.CHAR5.getCost(), CharacterDescription.CHAR5.getDesc()));
         if(c!=null)
@@ -309,6 +322,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * Method setBannedColor invokes setBannedColorS method of class World
      * @param color of type ColorS - The color used in getInfluenceIsland.
      */
+    @Override
     public void setBannedColor(ColorS color){
         world.setBannedColorS(color);
     }
@@ -326,6 +340,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * communicates to the controller the received events.
      * @param evt - the received event
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt){
         super.propertyChange(evt);
         EVENT event = EVENT.valueOf(evt.getPropertyName());

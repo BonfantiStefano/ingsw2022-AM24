@@ -51,6 +51,7 @@ public class ExpertController extends Controller {
      * new ExpertGameBoard instance.
      * @param m - the number of players and first player's info
      */
+    @Override
     public void createModel(GameParams m){
         numPlayers = m.getNumPlayers();
         model = new ExpertGameBoard(m.getNumPlayers());
@@ -67,12 +68,14 @@ public class ExpertController extends Controller {
      * @param m Request message sent by a Client
      * @param nickname the nickname of the Player associated with the Client
      */
+    @Override
     public void handleCharacter(Request m, String nickname){
         setMessageSender(nickname);
         activeCharacter = getModel().getActiveCharacter();
         m.accept(this);
     }
 
+    @Override
     public void visit(PlayCharacter msg){
         if(activeCharacter == null){
             try {
@@ -85,7 +88,7 @@ public class ExpertController extends Controller {
             }
         }
     }
-
+    @Override
     public void visit(SpecialMoveIsland m){
         if(filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR1.getDesc())) {
             if (m.getIslandIndex() < 0 || m.getIslandIndex() >= getModel().getSizeWorld()) {
@@ -100,7 +103,7 @@ public class ExpertController extends Controller {
             }
         }
     }
-
+    @Override
     public void visit(ChooseIsland m) {
         if (filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR3.getDesc())) {
             if (m.getIslandIndex() >= 0 && m.getIslandIndex() < getModel().getSizeWorld()) {
@@ -128,7 +131,7 @@ public class ExpertController extends Controller {
             }
         }
     }
-
+    @Override
     public void visit(ChooseColor m) {
         if(filter()) {
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR9.getDesc()))
@@ -151,7 +154,7 @@ public class ExpertController extends Controller {
             }
         }
     }
-
+    @Override
     public void visit(ChooseTwoColors m) {
         if(filter()) {
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR10.getDesc())) {
@@ -204,6 +207,7 @@ public class ExpertController extends Controller {
      * Method getModel returns the expert gameBoard
      * @return expert gameBoard
      */
+    @Override
     public ExpertModel getModel() {
         return ((ExpertModel) super.getModel());
     }
@@ -212,6 +216,7 @@ public class ExpertController extends Controller {
      * Method propertyChange updates the virtual view according to the events received by the model
      * @param evt - received event
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt){
         super.propertyChange(evt);
         EVENT event = EVENT.valueOf(evt.getPropertyName());
