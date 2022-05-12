@@ -19,6 +19,7 @@ import java.io.PrintStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Class CLI represents the terminal UI
@@ -29,6 +30,7 @@ public class CLI implements Runnable{
     private final Client client;
     private Welcome welcome;
     private boolean gameActive;
+    private String lastInfo;
 
     private PrintStream output;
     private final Scanner input;
@@ -45,6 +47,7 @@ public class CLI implements Runnable{
         welcome = null;
         //TODO implement set gameActive based on messages from Server
         gameActive = true;
+        lastInfo="";
     }
 
     /**
@@ -63,7 +66,7 @@ public class CLI implements Runnable{
      * @param a the Update received
      */
     public synchronized void handleMessage(Update a){
-        //clearScreen();
+        clearScreen();
         a.accept(this);
         if(gameActive)
             printView();
@@ -147,7 +150,14 @@ public class CLI implements Runnable{
      * Prints elements contained in the VirtualView
      */
     private synchronized void printView() {
+        clearScreen();
         ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
+        /*
+        ArrayList<VirtualIsland> firstHalf = new ArrayList<>(virtualWorld.subList(0, virtualWorld.size() / 2));
+        ArrayList<VirtualIsland> secondHalf = new ArrayList<>(virtualWorld.subList(virtualWorld.size()/2+1, virtualWorld.size()-1));
+        drawIslands(firstHalf);
+        drawIslands(secondHalf);
+         */
         drawIslands(virtualWorld);
         drawClouds(virtualView.getVirtualClouds());
         if(virtualView.getVirtualCharacters().size()>0)
@@ -155,8 +165,9 @@ public class CLI implements Runnable{
         for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {
             drawSchoolBoard(vp.getVirtualBoard(), vp.getNickname(), virtualView.getVirtualProfs());
             if(virtualView.getVirtualCharacters().size()!=0)
-                System.out.println("Player: "+ vp.getNickname()+"has "+ vp.getVirtualCoins()+" coins.");
+                System.out.println("Player: "+ vp.getNickname()+" has "+ vp.getVirtualCoins()+" coins.");
         }
+        System.out.println(lastInfo);
 
     }
 
@@ -679,5 +690,9 @@ public class CLI implements Runnable{
 
     public void setGameActive(boolean gameActive) {
         this.gameActive = gameActive;
+    }
+
+    public void setLastInfo(String lastInfo) {
+        this.lastInfo = lastInfo;
     }
 }
