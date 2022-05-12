@@ -4,6 +4,8 @@ package it.polimi.ingsw.model;
  * All the possible update events
  */
 public enum EVENT {
+    CHANGE_WORLD,
+    CHANGE_MN_POS,
     CREATE_WORLD,
     CREATE_CLOUDS,
     CREATE_PLAYERS,

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.world;
 
 import it.polimi.ingsw.model.ColorS;
+import it.polimi.ingsw.model.EVENT;
 import it.polimi.ingsw.model.HasStrategy;
 import it.polimi.ingsw.model.world.influence.InfluenceStrategy;
 import it.polimi.ingsw.model.player.Player;
@@ -166,14 +167,18 @@ public class World implements HasStrategy<InfluenceStrategy> {
             Island newIsland = join(islands.get(Math.min((indexIsland+1) % getSize(), indexIsland)), islands.get(Math.max((indexIsland+1) % getSize(), indexIsland)));
             checkJoin(newIsland);
             indexIsland = islands.indexOf(newIsland);
+            listener.firePropertyChange(String.valueOf(EVENT.CHANGE_WORLD), null, createVirtualWorld());
         }
         int indexPreviousIsland = (indexIsland-1) % getSize() < 0 ? (indexIsland-1) % getSize() + getSize() : (indexIsland-1) % getSize();
         if(!islands.get(indexPreviousIsland).getTowerColor().equals(Optional.empty()) &&
                 !i.getTowerColor().equals(Optional.empty()) && islands.get(indexPreviousIsland).getTowerColor().equals(i.getTowerColor()) && getSize()>3) {
             Island newIsland = join(islands.get(Math.min(indexPreviousIsland, indexIsland)), islands.get(Math.max(indexPreviousIsland, indexIsland)));
             checkJoin(newIsland);
+            listener.firePropertyChange(String.valueOf(EVENT.CHANGE_WORLD), null, createVirtualWorld());
         }
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_MN_POS), null, posMN);
     }
+
 
     /**
      * Method setBannedColorS sets the color that is used by the method getInfluenceIsland.

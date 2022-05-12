@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.client.request.*;
+import it.polimi.ingsw.controller.controllers.Controller;
 import it.polimi.ingsw.controller.controllers.ExpertController;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.exceptions.InvalidMNStepsException;
@@ -10,6 +11,7 @@ import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
+import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.PlayerInterface;
@@ -392,6 +394,11 @@ public class ExpertControllerTest {
         }
         assertEquals(7, virtualLeo.getVirtualBoard().getEntrance().size());
         EntranceToHall messageHall = new EntranceToHall(ColorS.BLUE);
+
+        //invalid message
+        SpecialMoveIsland invalidMessage = new SpecialMoveIsland(ColorS.GREEN, 17);
+        expController.handleMessage(invalidMessage, "Leo");
+        //valid messages
         for(int i = 0; i < 3; i++){
             expController.handleMessage(messageHall, "Leo");
         }
@@ -468,33 +475,13 @@ public class ExpertControllerTest {
         assertEquals(numStudents + 1, gameBoard.getActivePlayer().getMyBoard().getHall(studentsOnTheCard.get(0)));
         assertEquals(numVirtualStudents + 1, view.getVirtualPlayers().get(0).getVirtualBoard().getHall().get(studentsOnTheCard.get(0)));
 
-        //---------CHARACTER WITHOUT NE / STUDENTS--------------------------
-        //char 3
-        Character char3 = createCharacter(3);
-        gameBoard.set(0, char3);
-        view.getVirtualCharacters().set(0, new VirtualCharacter(char3));
-        assertEquals("Leo", view.getVirtualProfs().get(ColorS.BLUE).getNickname());
-        gameBoard.getIslandByIndex(5).add(ColorS.BLUE);
-        gameBoard.getIslandByIndex(5).add(ColorS.BLUE);
-        gameBoard.getIslandByIndex(5).add(ColorS.BLUE);
-
-        //TODO fix assertion
-        //assertEquals(0, view.getVirtualWorld().get(5).getTowers().size());
-
-        gameBoard.setActiveCharacter(char3);
-
-        ChooseIsland messageChooseIsland = new ChooseIsland(5);
-        expController.handleCharacter(messageChooseIsland, "Leo");
-        //TODO fix assertion
-        //assertEquals(1, view.getVirtualWorld().get(5).getTowers().size());
-        //assertEquals(view.getVirtualWorld().get(5).getTowerColor().get(), gameBoard.getPlayerByNickname("Leo").getColorTower());
     }
 
     /**
-     * Method test_notEnoughCoins checks that a Character can't be used if the player hasn't enough coins
+     * Method testListeners checks if view update itself each time an update event is emitted.
      */
     @Test
-    public void test_notEnoughCoins(){
+    public void test_Listeners(){
         Lobby lobby = new Lobby();
         c = new ExpertController(lobby, new GameParams(2, true, "Leo", Mage.MAGE1, ColorT.BLACK));
         Join join = new Join("Lisa", Mage.MAGE2, ColorT.WHITE, 1);
@@ -516,6 +503,184 @@ public class ExpertControllerTest {
         c.handleCharacter(messageCharacter, "Leo");
 
         assertNull(gameBoard.getActiveCharacter());
+
+        gameBoard.getPlayerByNickname("Leo").setCoins(4);
+        assertEquals(4, view.getVirtualPlayers().get(0).getVirtualCoins());
+
+        gameBoard.getPlayerByNickname("Leo").getMyBoard().getEntrance().removeAll(gameBoard.getPlayerByNickname("Leo").getMyBoard().getEntrance());
+        for(int i = 0; i < 7; i++){
+            gameBoard.getPlayerByNickname("Leo").getMyBoard().add(ColorS.BLUE);
+        }
+        assertEquals(7, view.getVirtualPlayers().get(0).getVirtualBoard().getEntrance().size());
+        EntranceToHall messageHall = new EntranceToHall(ColorS.BLUE);
+        for(int i = 0; i < 3; i++){
+            c.handleMessage(messageHall, "Leo");
+        }
+
+        //---------CHARACTER WITHOUT NE / STUDENTS--------------------------
+        //char 3
+        Character char3 = createCharacter(3);
+        gameBoard.set(0, char3);
+        view.getVirtualCharacters().set(0, new VirtualCharacter(char3));
+        assertEquals("Leo", view.getVirtualProfs().get(ColorS.BLUE).getNickname());
+        gameBoard.getIslandByIndex(5).add(ColorS.BLUE);
+        gameBoard.getIslandByIndex(5).add(ColorS.BLUE);
+        gameBoard.getIslandByIndex(5).add(ColorS.BLUE);
+        assertEquals(0, view.getVirtualWorld().get(5).getTowers().size());
+
+        gameBoard.setActiveCharacter(char3);
+
+        ChooseIsland messageChooseIsland = new ChooseIsland(5);
+        c.handleCharacter(messageChooseIsland, "Leo");
+
+        assertEquals(1, view.getVirtualWorld().get(5).getTowers().size());
+        assertEquals(view.getVirtualWorld().get(5).getTowerColor().get(), gameBoard.getPlayerByNickname("Leo").getColorTower());
+
+    }
+
+    @Test
+    public void test_Partita(){
+        Lobby lobby = new Lobby();
+        expController = new ExpertController(lobby, new GameParams(3, true, "Leo", Mage.MAGE1, ColorT.BLACK));
+        Join join = new Join("Lisa", Mage.MAGE2, ColorT.WHITE, 1);
+        expController.handleMessage(join, "Lisa");
+        Join join_message = new Join("Alice", Mage.MAGE3, ColorT.GREY, 2);
+        expController.handleMessage(join_message, "Alice");
+        ExpertGameBoard gameBoard = (ExpertGameBoard) expController.getModel();
+        VirtualView view = expController.getVirtualView();
+
+        expController.handleMessage(new ChooseAssistant(2), "Leo");
+        expController.handleMessage(new ChooseAssistant(6), "Lisa");
+        expController.handleMessage(new ChooseAssistant(10), "Alice");
+
+        // remove students from players' entrance
+        ArrayList<ColorS> entranceLeo = gameBoard.getPlayerByNickname("Leo").getMyBoard().getEntrance();
+        gameBoard.getPlayerByNickname("Leo").getMyBoard().getEntrance().removeAll(entranceLeo);
+
+        ArrayList<ColorS> entranceLisa = gameBoard.getPlayerByNickname("Lisa").getMyBoard().getEntrance();
+        gameBoard.getPlayerByNickname("Lisa").getMyBoard().getEntrance().removeAll(entranceLisa);
+
+        ArrayList<ColorS> entranceAlice = gameBoard.getPlayerByNickname("Alice").getMyBoard().getEntrance();
+        gameBoard.getPlayerByNickname("Alice").getMyBoard().getEntrance().removeAll(entranceAlice);
+
+        for(VirtualPlayer p : view.getVirtualPlayers()){
+            assertEquals(0, p.getVirtualBoard().getEntrance().size());
+        }
+
+        int mnPos = gameBoard.getWorld().getMNPosition();
+
+        // 6 consecutive islands have at least 2 red students
+        for(int i = 0; i < 6; i++){
+            int indexIsland = (mnPos + i) % gameBoard.getWorld().getSize();
+            gameBoard.getIslandByIndex(indexIsland).add(ColorS.RED);
+            gameBoard.getIslandByIndex(indexIsland).add(ColorS.RED);
+        }
+
+        //entrance:
+        // Leo 7 red, Lisa 7 yellow, Alice 7 blue
+        for(int i = 0; i < 7; i++){
+            gameBoard.getPlayerByNickname("Leo").getMyBoard().add(ColorS.RED);
+            gameBoard.getPlayerByNickname("Lisa").getMyBoard().add(ColorS.YELLOW);
+            gameBoard.getPlayerByNickname("Alice").getMyBoard().add(ColorS.BLUE);
+        }
+
+        for(VirtualPlayer p : view.getVirtualPlayers()){
+            assertEquals(7, p.getVirtualBoard().getEntrance().size());
+        }
+
+        //----------------Leo's turn----------------------------
+
+        //MOVE STUDENTS PHASE =>  move 3 red in hall
+        for (int i = 0; i < 3; i++){
+            EntranceToHall messageHall = new EntranceToHall(ColorS.RED);
+            expController.handleMessage(messageHall, "Leo");
+        }
+        assertEquals("Leo", view.getVirtualProfs().get(ColorS.RED).getNickname());
+
+        //MOVE_MN PHASE
+        assertEquals(view.getMnPos(), gameBoard.getWorld().getMNPosition());
+        MoveMN messageMN = new MoveMN(1);
+        expController.handleMessage(messageMN, "Leo");
+        assertEquals(view.getMnPos(), gameBoard.getWorld().getMNPosition());
+
+        assertEquals(ColorT.BLACK, view.getVirtualWorld().get(view.getMnPos()).getTowerColor().get());
+
+        //CHARACTER: char 3
+        Character char3 = createCharacter(3);
+        gameBoard.set(0, char3);
+        view.getVirtualCharacters().set(0, new VirtualCharacter(char3));
+        int index = view.getMnPos() == 0 ? view.getVirtualWorld().size() -1 : view.getMnPos() - 1;
+        assertEquals(0, view.getVirtualWorld().get(index).getTowers().size());
+
+        gameBoard.setActiveCharacter(char3);
+
+        ChooseIsland messageChooseIsland = new ChooseIsland(index);
+        expController.handleCharacter(messageChooseIsland, "Leo");
+
+        assertEquals(2, view.getVirtualWorld().get(view.getMnPos()).getTowers().size());
+        assertEquals(view.getVirtualWorld().get(view.getMnPos()).getTowerColor().get(), gameBoard.getPlayerByNickname("Leo").getColorTower());
+
+        assertEquals(11, gameBoard.getWorld().getSize());
+        assertEquals(11, view.getVirtualWorld().size());
+
+        assertEquals(view.getMnPos(), gameBoard.getWorld().getMNPosition());
+
+        //CHOOSE_CLOUD
+        int sizeEntranceOld = view.getVirtualPlayers().get(0).getVirtualBoard().getEntrance().size();
+        ChooseCloud messageCloud = new ChooseCloud(1);
+        expController.handleMessage(messageCloud, "Leo");
+        int sizeEntranceNew = view.getVirtualPlayers().get(0).getVirtualBoard().getEntrance().size();
+        assertEquals(sizeEntranceNew , sizeEntranceOld + 4);
+
+
+        //----------------Lisa's turn------------------------------------------------
+        //MOVE STUDENTS PHASE =>  move 3 yellow in hall
+        for (int i = 0; i < 3; i++){
+            EntranceToHall messageHall = new EntranceToHall(ColorS.YELLOW);
+            expController.handleMessage(messageHall, "Lisa");
+        }
+        assertEquals("Lisa", view.getVirtualProfs().get(ColorS.YELLOW).getNickname());
+
+        //MOVE_MN PHASE
+        assertEquals(view.getMnPos(), gameBoard.getWorld().getMNPosition());
+        MoveMN message_mn = new MoveMN(1);
+        expController.handleMessage(message_mn, "Lisa");
+        assertEquals(view.getMnPos(), gameBoard.getWorld().getMNPosition());
+        assertEquals(ColorT.BLACK, view.getVirtualWorld().get(view.getMnPos()).getTowerColor().get());
+
+        assertEquals(10, gameBoard.getWorld().getSize());
+        assertEquals(10, view.getVirtualWorld().size());
+        assertEquals(3, view.getVirtualWorld().get(view.getMnPos()).getTowers().size());
+
+        //CHOOSE_CLOUD PHASE
+        int sizeOld = view.getVirtualPlayers().get(1).getVirtualBoard().getEntrance().size();
+        ChooseCloud message_cloud = new ChooseCloud(0);
+        expController.handleMessage(message_cloud, "Lisa");
+        int sizeNew = view.getVirtualPlayers().get(1).getVirtualBoard().getEntrance().size();
+        assertEquals(sizeNew , sizeOld + 4);
+
+        //char 3
+        Character char_3 = createCharacter(3);
+        gameBoard.set(0, char_3);
+        view.getVirtualCharacters().set(0, new VirtualCharacter(char_3));
+        int index_island = (view.getMnPos() + 1)%gameBoard.getWorld().getSize();
+        assertEquals(0, view.getVirtualWorld().get(index_island).getTowers().size());
+        gameBoard.getPlayerByNickname("Lisa").setCoins(2);
+        assertEquals(4, view.getVirtualPlayers().get(1).getVirtualCoins());
+
+        gameBoard.setActiveCharacter(char_3);
+
+        ChooseIsland messageChoose_Island = new ChooseIsland(index_island);
+        expController.handleCharacter(messageChoose_Island, "Lisa");
+
+        assertEquals(4, view.getVirtualWorld().get(view.getMnPos()).getTowers().size());
+        assertEquals(9, view.getVirtualWorld().size());
+
+        //TODO phase: planning, active Player: Lisa
+        // instead of phase: move students, active Player: Alice
+        System.out.println(expController.getPhase());
+        System.out.println(gameBoard.getActivePlayer().getNickname());
+
 
     }
 

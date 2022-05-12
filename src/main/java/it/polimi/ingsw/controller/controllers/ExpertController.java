@@ -16,9 +16,7 @@ import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Information;
-import it.polimi.ingsw.server.answer.Update.CreateCharacters;
-import it.polimi.ingsw.server.answer.Update.ReplaceCharacter;
-import it.polimi.ingsw.server.answer.Update.UpdateCoins;
+import it.polimi.ingsw.server.answer.Update.*;
 import it.polimi.ingsw.server.virtualview.*;
 
 import java.beans.PropertyChangeEvent;
@@ -246,6 +244,16 @@ public class ExpertController extends Controller {
                 int coins = (int) evt.getNewValue();
                 getVirtualView().setVirtualCoins(coins);
                 lobby.sendMessageToAll(new UpdateCoins(coins));
+                break;
+            case MN_POS:
+                int pos = (int) evt.getNewValue();
+                virtualView.setMnPos(pos);
+                lobby.sendMessageToAll(new UpdateMN(pos));
+                break;
+            case CREATE_WORLD:
+                ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
+                virtualView.setVirtualWorld(virtualWorld);
+                lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
                 break;
         }
     }

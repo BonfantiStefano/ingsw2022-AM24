@@ -316,5 +316,6 @@ class ControllerTest {
         int numIslandsAfter = view.getVirtualWorld().size();
         assertEquals(numIslandsBefore - 1, numIslandsAfter);
         assertEquals(2, gameBoard.getWorld().getIslandByIndex(pos_MN).getNumSubIsland());
+        assertEquals(2, view.getVirtualWorld().get(pos_MN).getNumSubIsland());
     }
 }

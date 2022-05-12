@@ -337,10 +337,11 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         Island island = world.moveMN(numMNSteps);
         checkIsland(island);
         int newWorldSize = world.getSize();
-        if(newWorldSize != oldWoldSize)
+        if(newWorldSize != oldWoldSize){
             listener.firePropertyChange(String.valueOf(EVENT.CREATE_WORLD), null, world.createVirtualWorld());
-        int mnPos = world.getMNPosition();
-        listener.firePropertyChange(String.valueOf(EVENT.MN_POS), null, mnPos);
+            listener.firePropertyChange(String.valueOf(EVENT.MN_POS), null, world.getMNPosition());
+        }
+
     }
 
     /**
@@ -602,6 +603,14 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
                 int indexCloud = clouds.indexOf(modelCloud);
                 VirtualCloud virtualCloud = new VirtualCloud(modelCloud);
                 listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CLOUD), indexCloud, virtualCloud);
+                break;
+            case CHANGE_MN_POS:
+                int pos = (int) evt.getNewValue();
+                listener.firePropertyChange(String.valueOf(EVENT.MN_POS), null, pos);
+                break;
+            case CHANGE_WORLD:
+                ArrayList<VirtualIsland> islands = (ArrayList<VirtualIsland>) evt.getNewValue();
+                listener.firePropertyChange(String.valueOf(EVENT.CREATE_WORLD), null, islands);
                 break;
         }
     }

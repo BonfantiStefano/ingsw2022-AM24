@@ -264,12 +264,18 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * @throws InvalidMNStepsException - if Mother Nature can't make the indicated number of steps
      */
     public void moveMN(int numMNSteps) throws InvalidMNStepsException {
+        int initSize = world.getSize();
         if(numMNSteps > activePlayer.getMNSteps()) {
             throw new InvalidMNStepsException();
         }
         Island island = world.moveMN(numMNSteps);
-
         checkIsland(island);
+        int finalSize = world.getSize();
+        if(initSize != finalSize){
+            listener.firePropertyChange(String.valueOf(EVENT.CREATE_WORLD), null, world.createVirtualWorld());
+        }
+        listener.firePropertyChange(String.valueOf(EVENT.MN_POS), null, world.getMNPosition());
+
     }
 
     /**
