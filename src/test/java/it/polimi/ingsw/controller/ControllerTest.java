@@ -131,9 +131,9 @@ class ControllerTest {
         assertEquals(PHASE.MOVE_MN, c.getPhase());
         c.handleMessage(new MoveMN(1), "player2");
         assertEquals(PHASE.CHOOSE_CLOUD, c.getPhase());
-        //TODO
-        //c.handleMessage(new ChooseCloud(1), "player2");
-        //assertEquals(PHASE.PLANNING, c.getPhase());
+
+        c.handleMessage(new ChooseCloud(1), "player2");
+        assertEquals(PHASE.PLANNING, c.getPhase());
     }
 
     /**

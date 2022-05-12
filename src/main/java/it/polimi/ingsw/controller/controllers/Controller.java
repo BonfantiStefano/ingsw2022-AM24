@@ -261,6 +261,7 @@ public class Controller implements PropertyChangeListener {
                 } else {
                     model.resetRound();
                     havePlayed = 0;
+                    haveChosenAssistant = 0;
                 }
                 nextPhase();
             }
