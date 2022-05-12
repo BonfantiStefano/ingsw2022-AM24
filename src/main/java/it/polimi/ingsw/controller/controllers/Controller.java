@@ -238,11 +238,9 @@ public class Controller implements PropertyChangeListener {
                     lobby.sendMessage(activePlayer, new Information("Choose a Cloud!"));
             case RESET_TURN -> {
                 //if all Players have played their turn notify the TurnController
-                if (havePlayed % numPlayers == 1)
+                havePlayed++;
+                if(havePlayed==numPlayers)
                     turnController.setAllPlayedCheck(true);
-                    //if there's still Players that must do their turn
-                else
-                    havePlayed++;
                 //the turn has ended so the next Player by default is regarded as connected
                 turnController.setPlayerConnected(true);
                 nextPhase();
@@ -315,15 +313,11 @@ public class Controller implements PropertyChangeListener {
      * Increase the number of Players that have chosen their Assistant, if everyone has done so notifies the TurnController
      * and resets the counter
      */
-    public void increaseHaveChosenAssistant(){
-        if(haveChosenAssistant % numPlayers == 1) {
+    public void increaseHaveChosenAssistant() {
+        haveChosenAssistant++;
+        if (haveChosenAssistant == numPlayers)
             turnController.setChooseAssistantsCheck(true);
-            haveChosenAssistant = 0;
-        }
-        else
-            haveChosenAssistant++;
     }
-
     /**
      * Handles all Requests regarding Characters
      * @param m Request message sent by a Client

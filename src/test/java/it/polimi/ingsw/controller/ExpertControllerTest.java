@@ -538,8 +538,11 @@ public class ExpertControllerTest {
 
     }
 
+    /**
+     * Method test_Game checks the whole match
+     */
     @Test
-    public void test_Partita(){
+    public void test_Game(){
         Lobby lobby = new Lobby();
         expController = new ExpertController(lobby, new GameParams(3, true, "Leo", Mage.MAGE1, ColorT.BLACK));
         Join join = new Join("Lisa", Mage.MAGE2, ColorT.WHITE, 1);
@@ -551,7 +554,7 @@ public class ExpertControllerTest {
 
         expController.handleMessage(new ChooseAssistant(2), "Leo");
         expController.handleMessage(new ChooseAssistant(6), "Lisa");
-        expController.handleMessage(new ChooseAssistant(10), "Alice");
+        expController.handleMessage(new ChooseAssistant(9), "Alice");
 
         // remove students from players' entrance
         ArrayList<ColorS> entranceLeo = gameBoard.getPlayerByNickname("Leo").getMyBoard().getEntrance();
@@ -676,12 +679,44 @@ public class ExpertControllerTest {
         assertEquals(4, view.getVirtualWorld().get(view.getMnPos()).getTowers().size());
         assertEquals(9, view.getVirtualWorld().size());
 
-        //TODO phase: planning, active Player: Lisa
-        // instead of phase: move students, active Player: Alice
-        System.out.println(expController.getPhase());
-        System.out.println(gameBoard.getActivePlayer().getNickname());
+        //--------Alice's turn---------------------
+        //MOVE STUDENTS PHASE =>  move 3 blue in hall
+        for (int i = 0; i < 3; i++){
+            EntranceToHall messageHall = new EntranceToHall(ColorS.BLUE);
+            expController.handleMessage(messageHall, "Alice");
+        }
 
+        //MOVE_MN PHASE
+        assertEquals(view.getMnPos(), gameBoard.getWorld().getMNPosition());
+        MoveMN message_MN = new MoveMN(1);
+        expController.handleMessage(message_MN, "Alice");
+        assertEquals(view.getMnPos(), gameBoard.getWorld().getMNPosition());
+        assertEquals(ColorT.BLACK, view.getVirtualWorld().get(view.getMnPos()).getTowerColor().get());
+        assertEquals(8, view.getVirtualWorld().size());
 
+        //char 3
+        Character charThree = createCharacter(3);
+        gameBoard.set(0, charThree);
+        view.getVirtualCharacters().set(0, new VirtualCharacter(charThree));
+        int index_= (view.getMnPos() + 1)%gameBoard.getWorld().getSize();
+        assertEquals(0, view.getVirtualWorld().get(index_).getTowers().size());
+        gameBoard.getPlayerByNickname("Alice").setCoins(4);
+
+        gameBoard.setActiveCharacter(char_3);
+
+        ChooseIsland messageChoose_island = new ChooseIsland(index_);
+        expController.handleCharacter(messageChoose_island, "Alice");
+
+        assertEquals(0, view.getVirtualPlayers().get(0).getVirtualBoard().getTowers().size());
+
+        //CHOOSE_CLOUD PHASE
+        int old_ = view.getVirtualPlayers().get(2).getVirtualBoard().getEntrance().size();
+        ChooseCloud message_Cloud = new ChooseCloud(2);
+        expController.handleMessage(message_Cloud, "Alice");
+        int new_ = view.getVirtualPlayers().get(2).getVirtualBoard().getEntrance().size();
+        assertEquals(new_ , old_ + 4);
+
+        assertEquals(PHASE.GAME_WON, expController.getPhase());
     }
 
 
