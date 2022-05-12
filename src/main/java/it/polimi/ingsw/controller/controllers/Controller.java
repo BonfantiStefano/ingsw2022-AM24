@@ -456,6 +456,7 @@ public class Controller implements PropertyChangeListener {
         }
     }
 
+
     public VirtualView getVirtualView() {
         return virtualView;
     }

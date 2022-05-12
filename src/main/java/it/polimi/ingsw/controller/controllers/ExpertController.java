@@ -60,7 +60,6 @@ public class ExpertController extends Controller {
         model.addListener(this);
     }
 
-
     /**
      * Method handleCharacter handles the choice of a Character card :
      * it triggers the correct method relying on the description of the received card.

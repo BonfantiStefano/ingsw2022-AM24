@@ -136,7 +136,6 @@ class ControllerTest {
         //assertEquals(PHASE.PLANNING, c.getPhase());
     }
 
-
     /**
      * Send incorrect messages
      * NOT FINAL
