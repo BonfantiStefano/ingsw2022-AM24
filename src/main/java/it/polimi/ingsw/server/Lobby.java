@@ -164,6 +164,7 @@ public class Lobby {
             //If the game was in pause the timer is stopped and the game can continue
             if(gameStatus == GameStatus.PAUSE) {
                 stopTimer();
+                sendMessageToAll(new Information("Game continue"));
                 gameStatus = GameStatus.PLAYING;
             }
             return oldId;
@@ -175,8 +176,6 @@ public class Lobby {
     //Forse va sincronizzato questo metodo, o forse è meglio la handleJoin nel server, così non si possono verificare casi in cui uno si
     //disconnette mentre l' altro si riconnette (magari si hanno rallentamenti quando ho molte lobby, potrei però bloccare solo la lobby che
     // mi serve così non creo rallentamenti)
-    //TODO implementare che quando ho un solo player e si disconnette elimino la lobby, negli altri casi viene sempre messo in pausa e continuano gli
-    //altri a meno che me ne rimane uno solo e in quel caso dopo aver aspettato un certo intervallo di tempo chiudo la lobby
     /**
      * Method handleDisconnection is used to disconnect a player from the lobby.
      * @param clientId int - the client's id of the player who has to be disconnected.
@@ -188,7 +187,7 @@ public class Lobby {
             System.out.println("The lobby must be closed");
             //Togliere commento delle istruzioni sotto solo quando avremo finito altrimenti mi sarà difficile fare il debug
             gameStatus = GameStatus.ENDED;
-            //dobbiamo comunicarlo anche al controller che la partita è finita??
+            //dobbiamo comunicarlo anche al controller che la partita è finita?
         } else {
             controller.handleMessage(new Disconnect(), mapIdNickname.get(clientId));
             if(clientsId.size() - disconnectedClientsId.size() == 1 && gameStatus == GameStatus.PLAYING) {
@@ -335,7 +334,6 @@ public class Lobby {
                 Thread.sleep(WAITING_TIME);
                 System.out.println("Timeout expires");
                 gameStatus = GameStatus.ENDED;
-                int activePlayer;
                 for(Integer clientId : clientsId) {
                     if(!disconnectedClientsId.contains(clientId)) {
                         sendMessage(mapIdNickname.get(clientId), new Information("You are the only connected player, you won!"));

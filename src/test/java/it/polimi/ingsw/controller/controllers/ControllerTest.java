@@ -1,6 +1,7 @@
-package it.polimi.ingsw.controller;
+package it.polimi.ingsw.controller.controllers;
 
 import it.polimi.ingsw.client.request.*;
+import it.polimi.ingsw.controller.PHASE;
 import it.polimi.ingsw.controller.controllers.Controller;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.model.ColorS;
@@ -14,6 +15,7 @@ import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.virtualview.VirtualIsland;
 import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 import it.polimi.ingsw.server.virtualview.VirtualView;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -81,7 +83,7 @@ class ControllerTest {
     void completeTurn() {
         addSecondPlayer();
         chooseAssistants();
-        assertEquals(PHASE.MOVE_STUDENTS, c.getPhase());
+        Assertions.assertEquals(PHASE.MOVE_STUDENTS, c.getPhase());
         ArrayList<ColorS> entrance = new ArrayList<>(c.getModel().getPlayerByNickname("test").getMyBoard().getEntrance());
         int i = 0;
         for (ColorS color : entrance) {

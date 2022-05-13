@@ -199,7 +199,9 @@ public class CLI implements Runnable{
             do {
                 System.out.println("Choose your nickname: ");
                 nickname = input.nextLine();
-                if (lobbies.get(index).getNicknames().contains(nickname)) {
+                if(getLobbyByIndex(lobbies, index) == null) {
+                    System.out.println("Invalid lobby index!");
+                } else if (getLobbyByIndex(lobbies, index).getNicknames().contains(nickname)) {
                     System.out.println("Nickname already in use!");
                     nickname = null;
                 }
@@ -209,7 +211,7 @@ public class CLI implements Runnable{
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
                 mageIndex = Integer.parseInt(input.nextLine());
-                if (lobbies.get(index).getMages().contains(Mage.values()[mageIndex-1])) {
+                if (getLobbyByIndex(lobbies, index).getMages().contains(Mage.values()[mageIndex-1])) {
                     System.out.println("Mage already in use!");
                     mageIndex = -1;
                 }
@@ -219,7 +221,7 @@ public class CLI implements Runnable{
             do {
                 System.out.println("Choose your TowerColor (1,2"+ (lobbies.get(index).getNumPlayers()==2 ? ")":",3)")+":");
                 towerIndex = Integer.parseInt(input.nextLine());
-                if (lobbies.get(index).getTowers().contains(ColorT.values()[towerIndex-1])) {
+                if (getLobbyByIndex(lobbies, index).getTowers().contains(ColorT.values()[towerIndex-1])) {
                     System.out.println("Tower Color already in use!");
                     towerIndex = -1;
                 }
@@ -694,5 +696,13 @@ public class CLI implements Runnable{
 
     public void setLastInfo(String lastInfo) {
         this.lastInfo = lastInfo;
+    }
+
+    private VirtualLobby getLobbyByIndex(ArrayList<VirtualLobby> lobbies, int index) {
+        for(VirtualLobby lobby : lobbies) {
+            if(lobby.getLobbyIndex() == index)
+                return lobby;
+        }
+        return null;
     }
 }
