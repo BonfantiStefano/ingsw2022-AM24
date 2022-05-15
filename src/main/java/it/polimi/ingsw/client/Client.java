@@ -185,7 +185,7 @@ public class Client {
                     Answer a = parseMessage(s);
                     //TODO handle all other messages
                     if (a instanceof Update) {
-                        new Thread(() ->cli.handleMessage((Update) a)).start();
+                        new Thread(() -> cli.handleMessage((Update) a)).start();
                     }
                     else if(a instanceof Information)
                         cli.setLastInfo(((Information) a).getString());

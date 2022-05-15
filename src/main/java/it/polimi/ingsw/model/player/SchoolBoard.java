@@ -66,8 +66,8 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
             throw new NoSuchStudentException();
         }
         else{
-            boolean result = addToHall(s);
             entrance.remove(s);
+            boolean result = addToHall(s);
             return result;
         }
     }
