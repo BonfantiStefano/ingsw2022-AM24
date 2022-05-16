@@ -7,11 +7,15 @@ import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.server.answer.*;
 import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Update.*;
+import org.sonatype.aether.util.graph.selector.AndDependencySelector;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.BlockingQueue;
 
 //Not final, work in progress
 /**
@@ -27,6 +31,7 @@ public class Client {
     private Thread timer;
     private static final int TIMEOUT = 50000;
     private boolean isStarted = false;
+    private final BlockingQueue<Answer> messagesQueue;
 
     /**
      * Method main is used to start the client side.
@@ -50,6 +55,7 @@ public class Client {
     public Client() {
         active = false;
         cli = new CLI(this);
+        messagesQueue = new ArrayBlockingQueue<>(25);
     }
 
     /**
@@ -76,7 +82,20 @@ public class Client {
 
                 //Avvio del metodo che si occupa della lettura dei messaggi che gli invia il server e del loro smistamento
                 System.out.println("Stream created");
+
+                new Thread(()->{
+                    try {
+                        while (messagesQueue!=null) {
+                            Answer u = messagesQueue.take();
+                            cli.handleMessage(u);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+
                 startServerReader();
+
             } catch (NoSuchElementException | IllegalStateException e) {
                 System.out.println("Connection closed");
             }
@@ -123,8 +142,6 @@ public class Client {
         JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
         switch (jsonObject.get("type").getAsString()) {
             case "Welcome" :
-                cli.setWelcome(gson.fromJson(jsonString, Welcome.class));
-                //TODO far partire questi metodi solo la prima volta
                 if(!isStarted) {
                     new Thread(cli).start();
                     isStarted = true;
@@ -188,11 +205,9 @@ public class Client {
                     startTimer();
                     Answer a = parseMessage(s);
                     //TODO handle all other messages
-                    if (a instanceof Update) {
-                        new Thread(() -> cli.handleMessage((Update) a)).start();
+                    if (a!=null) {
+                        messagesQueue.add(a);
                     }
-                    else if(a instanceof Information)
-                        cli.setLastInfo(((Information) a).getString());
                 }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

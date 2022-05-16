@@ -1,5 +1,6 @@
 package it.polimi.ingsw.server.answer;
 
+import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.virtualview.VirtualLobby;
 
@@ -14,5 +15,10 @@ public class Welcome implements Answer{
 
     public ArrayList<VirtualLobby> getLobbies() {
         return lobbies;
+    }
+
+    @Override
+    public void accept(CLI c) {
+        c.visit(this);
     }
 }

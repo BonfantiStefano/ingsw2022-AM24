@@ -10,12 +10,12 @@ import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.CharacterDescription;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
+import it.polimi.ingsw.server.answer.*;
+import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Update.*;
-import it.polimi.ingsw.server.answer.Welcome;
 import it.polimi.ingsw.server.virtualview.*;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,7 +29,8 @@ public class CLI implements Runnable{
     private final Client client;
     private Welcome welcome;
     private boolean gameActive;
-    private String lastInfo;
+    private ArrayList<String> lastInfo;
+    private boolean inLobby;
 
     private final Scanner input;
 
@@ -44,7 +45,8 @@ public class CLI implements Runnable{
         welcome = null;
         //TODO implement set gameActive based on messages from Server
         gameActive = true;
-        lastInfo="";
+        lastInfo= new ArrayList<>();
+        inLobby=false;
     }
 
     /**
@@ -52,6 +54,7 @@ public class CLI implements Runnable{
      */
     public void run() {
         getInfo();
+
         while(client.isActive()) {
             String s = input.nextLine();
             parseInput(s);
@@ -62,10 +65,9 @@ public class CLI implements Runnable{
      * Handles all Updates calling the respective visitor method
      * @param a the Update received
      */
-    public synchronized void handleMessage(Update a){
-        clearScreen();
+    public void handleMessage(Answer a){
         a.accept(this);
-        if(gameActive)
+        if(gameActive&&(a instanceof Update))
             printView();
     }
 
@@ -148,25 +150,40 @@ public class CLI implements Runnable{
      * Prints elements contained in the VirtualView
      */
     private synchronized void printView() {
-        clearScreen();
-        ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
+        if(gameActive) {
+            if(System.getProperty("os.name").contains("Windows")){
+                try {
+                    new ProcessBuilder("cmd.exe", "/c", "chcp 65001").inheritIO().start().waitFor();
+                } catch (InterruptedException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            clearScreen();
+            ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
 
-        ArrayList<VirtualIsland> firstHalf = new ArrayList<>(virtualWorld.subList(0, virtualWorld.size() / 2));
-        ArrayList<VirtualIsland> secondHalf = new ArrayList<>(virtualWorld.subList(virtualWorld.size()/2, virtualWorld.size()));
-        drawIslands(firstHalf);
-        drawIslands(secondHalf);
+            ArrayList<VirtualIsland> firstHalf = new ArrayList<>(virtualWorld.subList(0, virtualWorld.size() / 2));
+            ArrayList<VirtualIsland> secondHalf = new ArrayList<>(virtualWorld.subList(virtualWorld.size() / 2, virtualWorld.size()));
+            drawIslands(firstHalf);
+            drawIslands(secondHalf);
 
-        //drawIslands(virtualWorld);
-        drawClouds(virtualView.getVirtualClouds());
-        if(virtualView.getVirtualCharacters().size()>0)
-            drawCharacters(virtualView.getVirtualCharacters());
-        for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {
-            drawSchoolBoard(vp.getVirtualBoard(), vp.getNickname(), virtualView.getVirtualProfs());
-            if(virtualView.getVirtualCharacters().size()!=0)
-                System.out.println("Player: "+ vp.getNickname()+" has "+ vp.getVirtualCoins()+" coins.");
+            //drawIslands(virtualWorld);
+            drawClouds(virtualView.getVirtualClouds());
+            if (virtualView.getVirtualCharacters().size() > 0)
+                drawCharacters(virtualView.getVirtualCharacters());
+            for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {
+                drawSchoolBoard(vp.getVirtualBoard(), vp.getNickname(), virtualView.getVirtualProfs());
+
+                if (vp.getVirtualLastAssistant() != null) {
+                    System.out.print(vp.getNickname() + "'s last assistant played: ");
+                    System.out.println("Turn: " + vp.getVirtualLastAssistant().getTurn() + " Steps: " + vp.getVirtualLastAssistant().getMNsteps());
+                }
+
+                if (virtualView.getVirtualCharacters().size() != 0) {
+                    System.out.println("Player: " + vp.getNickname() + " has " + vp.getVirtualCoins() + " coins.");
+                }
+            }
+            lastInfo.forEach(System.out::println);
         }
-        System.out.println(lastInfo);
-
     }
 
     /**
@@ -272,7 +289,6 @@ public class CLI implements Runnable{
     public void update(Update u){
         u.accept(this);
         printView();
-        lastInfo="";
     }
 
     /**
@@ -515,7 +531,7 @@ public class CLI implements Runnable{
 
     /**
      * Builds the drawing's last line
-     * @param lines ArrayList containing all other lines
+     * @param lines ArrayList containing all lines
      * @param repeat how many boxes are in this line
      * @param xSize the drawing's X dimension
      */
@@ -599,6 +615,7 @@ public class CLI implements Runnable{
 
         lastLine(xSize, numAssistants, lines);
     }
+
     public void visit(FullView u){
         virtualView = u.getVirtualView();
     }
@@ -633,6 +650,10 @@ public class CLI implements Runnable{
     public void visit(UpdateProfs u){
         virtualView.setVirtualProfs(u.getProfs());
     }
+    public void visit(Information i){ lastInfo.add(i.getString()); }
+    public void visit(Error e){System.out.println(e.getString());}
+    public void visit(NotifyDisconnection e){System.out.println(e.getString());}
+    public void visit(Welcome w){welcome = w;}
 
     /**
      * Gets the color corresponding to the user's string
@@ -656,7 +677,7 @@ public class CLI implements Runnable{
     public static void clearScreen() {
         try{
             if(System.getProperty("os.name").contains("Windows")){
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+                new ProcessBuilder("cmd.exe", "/c", "cls").inheritIO().start().waitFor();
             }
             else
                 Runtime.getRuntime().exec("clear");
@@ -675,6 +696,7 @@ public class CLI implements Runnable{
         } else {
             System.out.println("Here's the list of available lobbies:");
             for (VirtualLobby lobby : lobbies) {
+                System.out.println(BOX.HORIZ.toString().repeat(10));
                 System.out.println("Lobby " + lobby.getLobbyIndex() + ":");
                 System.out.println(lobby.isMode() ? "Expert Mode" : "Normal Mode");
                 System.out.println("Num Players: " + lobby.getNumPlayers());
@@ -685,20 +707,9 @@ public class CLI implements Runnable{
                 lobby.getMages().forEach(System.out::println);
                 System.out.println("Tower's Color already chosen: ");
                 lobby.getTowers().forEach(System.out::println);
+                System.out.println(BOX.HORIZ.toString().repeat(10));
             }
         }
-    }
-
-    public void setWelcome(Welcome welcome) {
-        this.welcome = welcome;
-    }
-
-    public void setGameActive(boolean gameActive) {
-        this.gameActive = gameActive;
-    }
-
-    public void setLastInfo(String lastInfo) {
-        this.lastInfo = lastInfo;
     }
 
     private VirtualLobby getLobbyByIndex(ArrayList<VirtualLobby> lobbies, int index) {

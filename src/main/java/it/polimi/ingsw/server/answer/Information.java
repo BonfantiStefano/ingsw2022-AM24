@@ -1,5 +1,7 @@
 package it.polimi.ingsw.server.answer;
 
+import it.polimi.ingsw.client.CLIView.CLI;
+
 public class Information implements AnswerWithString{
     private String string;
 
@@ -10,5 +12,10 @@ public class Information implements AnswerWithString{
     @Override
     public String getString() {
         return string;
+    }
+
+    @Override
+    public void accept(CLI c) {
+        c.visit(this);
     }
 }

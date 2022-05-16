@@ -4,5 +4,5 @@ import it.polimi.ingsw.server.answer.Answer;
 
 public interface AnswerWithString extends Answer {
 
-    public String getString();
+    String getString();
 }

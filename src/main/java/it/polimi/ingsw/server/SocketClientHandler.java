@@ -115,7 +115,7 @@ public class SocketClientHandler implements Runnable{
      * Method sendMessage sends a message to the client on the output stream.
      * @param serverAnswer Answer - the message that will be sent to the client.
      */
-    public synchronized void sendMessage(Answer serverAnswer) {
+    public synchronized void sendMessage(Object serverAnswer) {
         try {
             outputStream.reset();
             outputStream.writeObject(toJson(serverAnswer));
@@ -144,7 +144,7 @@ public class SocketClientHandler implements Runnable{
      * @param answer Answer - the message that has to be transformed.
      * @return a String that is the json codify of the message.
      */
-    public String toJson(Answer answer){
+    public String toJson(Object answer){
         Gson gson = new Gson();
         JsonElement jsonElement;
         jsonElement = gson.toJsonTree(answer);
