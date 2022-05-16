@@ -676,6 +676,7 @@ public class CLI implements Runnable{
                 System.out.println("Lobby " + lobby.getLobbyIndex() + ":");
                 System.out.println(lobby.isMode() ? "Expert Mode" : "Normal Mode");
                 System.out.println("Num Players: " + lobby.getNumPlayers());
+                System.out.println("Lobby status: " + lobby.getGameStatus());
                 System.out.println("NickName taken: ");
                 lobby.getNicknames().forEach(System.out::println);
                 System.out.println("Mage already chosen: ");

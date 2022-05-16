@@ -38,7 +38,7 @@ public class ServerMain {
                 try {
                     port = scanner.nextInt();
                 } catch (InputMismatchException e) {
-                    System.out.println("Numeric format requested");
+                    System.out.println("Numeric format requested, server starts on the default port");
                     port = DEFAULT_PORT;
                 }
             }

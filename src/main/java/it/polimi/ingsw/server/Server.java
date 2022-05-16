@@ -17,8 +17,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 //Not final, work in progress
-//TODO implementare metodo per gestire il caso in cui non riesce a connettersi a nessun client e quindi deve spegnersi,
-// tutte le lobby le eliminiamo
 /**
  * Class Server used to manage new connecting clients, the forwarding of the messages from the socket that handle the client to the
  * right lobby.
@@ -54,10 +52,10 @@ public class Server {
                     //Until the server is stopped, he keeps accepting new connections from clients who connect to its socket
                     try {
                         Socket clientSocket = serverSocket.accept();
-                        System.out.println("A client is connected for the server");
                         SocketClientHandler socketClientHandler = new SocketClientHandler(clientSocket, this, idClients);
                         mapIdSocket.put(idClients, socketClientHandler);
                         executorService.submit(socketClientHandler);
+                        System.out.println("Socket " + idClients + " aperto");
                         idClients++;
                     } catch (IOException e) {
                         System.out.println("An exception caused the server to stop working.");
@@ -101,14 +99,13 @@ public class Server {
             }
         } else if(join.getIndex() >= 0 && join.getIndex() < lobbies.size()) {
             //Standard case when a player want to join an available lobby
-            System.out.println("Provo ad aggiungere il player alla lobby");
             boolean ris = lobbies.get(join.getIndex()).addPlayer(join, mapIdSocket.get(clientId), clientId);
             if (ris) {
                 mapIdLobby.put(clientId, lobbies.get(join.getIndex()));
-                System.out.println("Il player è stato aggiunto correttamente");
             }
         } else {
             sendMessage(clientId, new Error("Error: invalid lobby index, please retry"));
+            //Capire se serve fare questo, poichè alcuni controlli li faccio già lato client
             sendMessage(clientId, getLobbies());
         }
     }
@@ -138,8 +135,16 @@ public class Server {
             Lobby lobby = new Lobby(gameParams, mapIdSocket.get(clientId), clientId);
             lobbies.add(lobby);
             mapIdLobby.put(clientId, lobby);
-            System.out.println("La lobby è stata creata correttamente");
             sendMessage(clientId, new Information("The lobby has been created"));
+            sendMessageToAll(getLobbies());
+        }
+    }
+
+    private void sendMessageToAll(Answer lobbies) {
+        for(Integer clientId : mapIdSocket.keySet()) {
+            if(!mapIdLobby.containsKey(clientId)) {
+                sendMessage(clientId, lobbies);
+            }
         }
     }
 
@@ -150,9 +155,9 @@ public class Server {
     public Answer getLobbies() {
         ArrayList<VirtualLobby> virtualLobbies = new ArrayList<>();
         for(Lobby lobby : lobbies) {
-            if(lobby.getGameStatus().equals(GameStatus.SETUP)) {
+            if(!lobby.getGameStatus().equals(GameStatus.ENDED)) {
                 virtualLobbies.add(new VirtualLobby(lobby.getNicknames(), lobby.getMages(), lobby.getColorTowers(),
-                        lobby.getNumPlayers(), lobby.isMode(), lobbies.indexOf(lobby)));
+                        lobby.getNumPlayers(), lobby.isMode(), lobbies.indexOf(lobby), lobby.getGameStatus()));
             }
         }
         return new Welcome(virtualLobbies);

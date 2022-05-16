@@ -122,9 +122,9 @@ public class Lobby {
                 mages.add(join.getMage());
                 towers.add(join.getColorT());
                 clientsId.add(idClients);
+                controller.handleMessage(join, mapIdNickname.get(idClients));
                 socketClientHandler.sendMessage(new Information("You have joined the game"));
                 sendMessageToOthers(join.getNickname(), new Information(join.getNickname() + " entered the lobby"));
-                controller.handleMessage(join, mapIdNickname.get(idClients));
                 if(clientsId.size() == numPlayers) {
                     gameStatus = GameStatus.PLAYING;
                 }
@@ -160,7 +160,6 @@ public class Lobby {
             clientsId.remove((Integer) oldId);
             clientsId.add(clientId);
             controller.handleMessage(join, join.getNickname());
-            System.out.println(mapIdNickname.toString());
             //If the game was in pause the timer is stopped and the game can continue
             if(gameStatus == GameStatus.PAUSE) {
                 stopTimer();
@@ -339,9 +338,7 @@ public class Lobby {
                         sendMessage(mapIdNickname.get(clientId), new Information("You are the only connected player, you won!"));
                     }
                 }
-            } catch (InterruptedException e){
-                System.out.println("The timeout timer has been stopped");
-
+            } catch (InterruptedException ignored){
             }
         });
         timerPause.start();

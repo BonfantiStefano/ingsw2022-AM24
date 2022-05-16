@@ -45,9 +45,7 @@ public class SocketClientHandler implements Runnable{
                     //Forse si può sostituire con schedule, provare a cercare se funziona e nel caso aggiornare/chiedere a i prof.
                     Thread.sleep(PING_PERIOD);
                     sendMessage(new Ping());
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                    System.out.println(e.getMessage());
+                }catch (InterruptedException ignored){
                 }
             }
         });
@@ -55,9 +53,7 @@ public class SocketClientHandler implements Runnable{
             outputStream = new ObjectOutputStream(this.socket.getOutputStream());
             outputStream.flush();
             inputStream = new ObjectInputStream(this.socket.getInputStream());
-            System.out.println("Ho creato gli stream");
         } catch (IOException e) {
-            e.printStackTrace();
             System.out.println("Error during initialization of the client!");
             System.exit(0);
         }
@@ -68,7 +64,6 @@ public class SocketClientHandler implements Runnable{
      */
     @Override
     public void run() {
-        System.out.println("Il socketClientHandler è partito");
         active = true;
         pingController.start();
         startTimer();
@@ -78,7 +73,6 @@ public class SocketClientHandler implements Runnable{
             try {
                 jsonString = (String) inputStream.readObject();
                 if(jsonString != null) {
-                    System.out.println(jsonString);
                     Request message = parseMessage(jsonString);
                     if (message != null) {
                         server.forwardMessage(message, clientID);
@@ -100,11 +94,8 @@ public class SocketClientHandler implements Runnable{
         timer = new Thread(() -> {
             try{
                 Thread.sleep(5*PING_PERIOD);
-                System.out.println("Timeout expires");
                 handleClientDisconnection(true);
-            } catch (InterruptedException e){
-                System.out.println("The timeout timer has been stopped");
-
+            } catch (InterruptedException ignored){
             }
         });
         timer.start();
@@ -143,10 +134,8 @@ public class SocketClientHandler implements Runnable{
         try {
             //outputStream.close();
             socket.close();
-            System.out.println("The streams have been closed");
         } catch (IOException e) {
-            System.out.println("Exception during the closure of the stream");
-            e.printStackTrace();
+            System.out.println("Exception during the closure of the stream of socket " + clientID);
         }
     }
 
@@ -168,9 +157,7 @@ public class SocketClientHandler implements Runnable{
      * Method handleClientDisconnection handles the disconnection of the client, stopping the timers and closing the socket.
      */
     private void handleClientDisconnection(boolean timeout){
-        System.out.println("Trying to stopping the timer");
         stopTimer();
-        System.out.println("Trying to set active to false");
         this.active = false;
         pingController.interrupt();
         if(timeout) {
@@ -180,6 +167,7 @@ public class SocketClientHandler implements Runnable{
         if(/*socket != null &&*/ !socket.isClosed()) {
             closeSocket();
         }
+        System.out.println("Socket " + clientID + " chiuso");
     }
 
     /**

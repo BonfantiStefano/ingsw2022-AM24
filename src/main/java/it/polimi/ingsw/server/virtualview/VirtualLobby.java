@@ -2,6 +2,7 @@ package it.polimi.ingsw.server.virtualview;
 
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
+import it.polimi.ingsw.server.GameStatus;
 
 import java.util.ArrayList;
 
@@ -12,16 +13,18 @@ public class VirtualLobby {
     private ArrayList<Mage> mages;
     private ArrayList<ColorT> towers;
     private boolean mode;
+    private GameStatus gameStatus;
     private int lobbyIndex;
 
     /**Constructor VirtualLobby creates a new VirtualLobby instance.*/
-    public VirtualLobby(ArrayList<String> nicknames, ArrayList<Mage> mages, ArrayList<ColorT> towers, int numPlayers, boolean mode, int lobbyIndex) {
+    public VirtualLobby(ArrayList<String> nicknames, ArrayList<Mage> mages, ArrayList<ColorT> towers, int numPlayers, boolean mode, int lobbyIndex, GameStatus gameStatus) {
         this.nicknames = nicknames;
         this.numPlayers = numPlayers;
         this.mages = mages;
         this.towers = towers;
         this.mode = mode;
         this.lobbyIndex = lobbyIndex;
+        this.gameStatus = gameStatus;
     }
 
     /**
@@ -70,5 +73,13 @@ public class VirtualLobby {
      */
     public boolean isMode() {
         return mode;
+    }
+
+    /**
+     * Method getGameStatus returns the status of the game.
+     * @return a GameStatus value.
+     */
+    public GameStatus getGameStatus() {
+        return gameStatus;
     }
 }

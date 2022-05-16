@@ -122,7 +122,6 @@ public class Controller implements PropertyChangeListener {
         //check if another player can join and his nickname is available
         if(availableNickname && availableMage && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
             model.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
-            lobby.sendMessage(messageSender, new Information("Accepted!"));
             if(model.getPlayers().size() == numPlayers) {
                 //all players have connected
                 turnController.setGameStarted(true);
@@ -134,7 +133,6 @@ public class Controller implements PropertyChangeListener {
         //if the Player had disconnected update his status as connected
         else if(!availableNickname && !model.getPlayerByNickname(messageSender).isConnected()) {
             model.setConnected(messageSender, true);
-            lobby.sendMessage(messageSender, new Information("You have rejoined the Game!"));
             lobby.sendMessageToAll(new FullView(virtualView));
         }
         else if(!availableNickname)

@@ -26,6 +26,7 @@ public class Client {
     private final CLI cli;
     private Thread timer;
     private static final int TIMEOUT = 50000;
+    private boolean isStarted = false;
 
     /**
      * Method main is used to start the client side.
@@ -124,8 +125,11 @@ public class Client {
             case "Welcome" :
                 cli.setWelcome(gson.fromJson(jsonString, Welcome.class));
                 //TODO far partire questi metodi solo la prima volta
-                new Thread(cli).start();
-                return gson.fromJson(jsonString, Welcome.class);
+                if(!isStarted) {
+                    new Thread(cli).start();
+                    isStarted = true;
+                    return gson.fromJson(jsonString, Welcome.class);
+                }
             case "Error" :
                 return gson.fromJson(jsonString, Error.class);
             case "Information" :

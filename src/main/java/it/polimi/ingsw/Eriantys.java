@@ -23,6 +23,7 @@ public class Eriantys {
         System.out.println("Type the number of the desired option!");
         Scanner scanner = new Scanner(System.in);
         int input = 0;
+        int client = 0;
         try {
             input = scanner.nextInt();
         } catch (InputMismatchException e) {
@@ -31,8 +32,22 @@ public class Eriantys {
         }
         switch (input) {
             case 0 -> ServerMain.main(null);
-            case 1 -> Client.main(null);
-            default -> System.err.println("Invalid argument, please run the executable again with one of these options:\n1.server\n2.client");
+            case 1 -> {
+                System.out.println("0. CLI\n1. GUI");
+                System.out.println("Type the number of the desired option!");
+                try {
+                    client = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.err.println("Numeric format requested, application will now close...");
+                    System.exit(-1);
+                }
+                switch (client) {
+                    case 0 -> Client.main(null);
+                    case 1 -> System.out.println("GUI non disponibile");//Gui.start();
+                    default -> System.err.println("Invalid argument, please run the executable again");
+                }
+            }
+            default -> System.err.println("Invalid argument, please run the executable again with one of these options:\n0.server\n1.client");
         }
     }
 }
