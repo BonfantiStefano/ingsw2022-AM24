@@ -19,7 +19,6 @@ import java.io.PrintStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Class CLI represents the terminal UI
@@ -32,7 +31,6 @@ public class CLI implements Runnable{
     private boolean gameActive;
     private String lastInfo;
 
-    private PrintStream output;
     private final Scanner input;
 
     /**
@@ -40,7 +38,6 @@ public class CLI implements Runnable{
      * @param client the Client creating the UI
      */
     public CLI(Client client) {
-        output = new PrintStream(System.out);
         input = new Scanner(System.in);
         virtualView = new VirtualView();
         this.client = client;
@@ -130,6 +127,7 @@ public class CLI implements Runnable{
             case TO_ISLAND:
                 ColorS colorS = colorByString(s.substring(5));
                 int in = Integer.parseInt(s.split(" ")[3])-1;
+                //TODO check if input.nextLine() is needed here
                 return new MoveToIsland(colorS, in);
             case CHOOSE_CLOUD: return new ChooseCloud(Integer.parseInt(s.substring(6))-1);
             case TWO_COLORS:
@@ -152,13 +150,13 @@ public class CLI implements Runnable{
     private synchronized void printView() {
         clearScreen();
         ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
-        /*
+
         ArrayList<VirtualIsland> firstHalf = new ArrayList<>(virtualWorld.subList(0, virtualWorld.size() / 2));
-        ArrayList<VirtualIsland> secondHalf = new ArrayList<>(virtualWorld.subList(virtualWorld.size()/2+1, virtualWorld.size()-1));
+        ArrayList<VirtualIsland> secondHalf = new ArrayList<>(virtualWorld.subList(virtualWorld.size()/2, virtualWorld.size()));
         drawIslands(firstHalf);
         drawIslands(secondHalf);
-         */
-        drawIslands(virtualWorld);
+
+        //drawIslands(virtualWorld);
         drawClouds(virtualView.getVirtualClouds());
         if(virtualView.getVirtualCharacters().size()>0)
             drawCharacters(virtualView.getVirtualCharacters());
@@ -274,6 +272,7 @@ public class CLI implements Runnable{
     public void update(Update u){
         u.accept(this);
         printView();
+        lastInfo="";
     }
 
     /**
@@ -282,13 +281,12 @@ public class CLI implements Runnable{
      * @param profs the HashMap containing all Profs
      */
     public void drawSchoolBoard(VirtualSchoolBoard schoolBoard, String nickname, HashMap<ColorS, VirtualPlayer> profs){
-        //TODO fix alignment
         String appendix = "'s SchoolBoard";
         ArrayList<ColorS> entrance = schoolBoard.getEntrance();
         HashMap<ColorS, Integer> hall = (HashMap<ColorS, Integer>) schoolBoard.getHall();
         ArrayList<ColorT> towers = schoolBoard.getTowers();
         ArrayList<StringBuilder> lines = new ArrayList<>();
-        final int xSize=40;
+        final int xSize=37;
 
         StringBuilder currLine = new StringBuilder();
         lines.add(currLine);
@@ -317,16 +315,19 @@ public class CLI implements Runnable{
 
             currLine.append("  ".repeat(Math.max(0, 10 - hall.get(c))));
 
-            currLine.append(BOX.VERT);
+            currLine.append(BOX.VERT).append(" ");
 
             if(profs!=null&&profs.get(c)!=null) {
                 if (profs.get(c).getNickname().equals(nickname))
-                    currLine.append(getChar(c));
+                    currLine.append(getChar(c)).append(" ");
+                else
+                    currLine.append("  ");
             }
             else
                 currLine.append("  ");
 
-            currLine.append(" ").append(BOX.VERT).append(" ");
+            //currLine.append(" ").append(BOX.VERT).append(" ");
+            currLine.append(BOX.VERT).append(" ");
 
             for(int w = 0; w<2;w++){
                 if(towIndex<towers.size()) {
@@ -337,7 +338,7 @@ public class CLI implements Runnable{
                     currLine.append("  ");
             }
 
-            currLine.append(" ").append(BOX.VERT);
+            currLine.append(BOX.VERT);
 
        }
         lastLine(xSize,1,lines);
@@ -453,6 +454,7 @@ public class CLI implements Runnable{
      * @param islands ArrayList containing all the VirtualIslands
      */
     public void drawIslands(ArrayList<VirtualIsland> islands){
+        ArrayList<VirtualIsland> allIslands = virtualView.getVirtualWorld();
         int xSize = 17;
         int numIslands = islands.size();
         ArrayList<StringBuilder> lines = new ArrayList<>();
@@ -461,7 +463,7 @@ public class CLI implements Runnable{
         StringBuilder currLine = new StringBuilder();
         lines.add(currLine);
         for(VirtualIsland i:islands)
-            firstLine(currLine,"Island no. "+ (islands.indexOf(i)+1) + (islands.indexOf(i)==virtualView.getMnPos()?BOX.HORIZ+"MN":""), xSize);
+            firstLine(currLine,"Island no. "+ (allIslands.indexOf(i)+1) + (allIslands.indexOf(i)==virtualView.getMnPos()?BOX.HORIZ+"MN":""), xSize);
 
         currLine = new StringBuilder();
         lines.add(currLine);
