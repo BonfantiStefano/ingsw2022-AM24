@@ -654,7 +654,8 @@ public class CLI implements Runnable{
     public void visit(UpdateProfs u){
         virtualView.setVirtualProfs(u.getProfs());
     }
-    public void visit(Information i){ lastInfo.add(i.getString()); }
+    public void visit(Information i){ lastInfo.add(i.getString());
+    printView();}
     public void visit(Error e){System.out.println(e.getString());}
     public void visit(NotifyDisconnection e){System.out.println(e.getString());}
     public void visit(Welcome w){welcome = w;}

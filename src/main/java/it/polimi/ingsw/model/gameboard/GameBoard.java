@@ -410,6 +410,15 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         world.resetStrategy();
     }
 
+    public void resetTurn(){
+        for(Player p : players) {
+            p.setPlaying(false);
+            p.resetStrategy();
+        }
+        resetStrategy();
+        world.resetStrategy();
+    }
+
     /**
      * Gets the selected Cloud
      * @param i the Cloud's index

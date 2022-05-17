@@ -241,6 +241,7 @@ public class Controller implements PropertyChangeListener {
                     turnController.setAllPlayedCheck(true);
                 //the turn has ended so the next Player by default is regarded as connected
                 turnController.setPlayerConnected(true);
+                model.resetTurn();
                 nextPhase();
             }
             case RESET_ROUND -> {

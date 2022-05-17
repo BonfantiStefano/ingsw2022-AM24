@@ -47,6 +47,8 @@ public interface Model {
 
     void resetRound();
 
+    void resetTurn();
+
     void moveStudent(ColorS s, CanRemoveStudent from, CanAcceptStudent to) throws NoSuchStudentException;
 
     int getSizeWorld();
