@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
+import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.player.SchoolBoard;
 import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.server.virtualview.*;
@@ -19,24 +20,29 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 class CLITest {
-    /*
-    CLI c = new CLI();
+    CLI c = new CLI(new Client());
 
-
+/*
     @Test
     void schoolBoard(){
+        SchoolBoard s = new SchoolBoard(ColorT.WHITE,5);
+
         ArrayList<ColorS> entrance = new ArrayList<>();
         for(int i =0; i<5;i++)
             entrance.add(ColorS.BLUE);
+        s.getEntrance().addAll(entrance);
         HashMap<ColorS,Integer> hall = new HashMap<>();
-        ArrayList<ColorS> profs = new ArrayList<>();
+        HashMap<ColorS, VirtualPlayer> profs = new HashMap<>();
         for(ColorS c:ColorS.values()) {
             hall.put(c, 8);
-            profs.add(c);
+            profs.put(c, new VirtualPlayer(new Player("test",ColorT.WHITE,Mage.MAGE1,5)));
         }
+        s.getHall().putAll(hall);
         ArrayList<ColorT> tow = new ArrayList<>();
         for(int i=0;i<5;i++)
             tow.add(ColorT.WHITE);
+
+        c.drawSchoolBoard(new VirtualSchoolBoard(s), "test", profs);
 
     }
 
@@ -105,6 +111,8 @@ class CLITest {
         c.printAssistants(assistants);
     }
 
+
  */
+
 }
 

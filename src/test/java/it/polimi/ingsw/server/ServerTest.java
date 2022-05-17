@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 class ServerTest {
-
+    /*
     private Lobby lobby;
     private Server server;
     private ServerMain serverMain;
@@ -53,4 +53,6 @@ class ServerTest {
         System.out.println(gson.fromJson((s), UpdateProfs.class));
 
     }
+
+     */
 }
