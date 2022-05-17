@@ -122,9 +122,9 @@ public class Lobby {
                 mages.add(join.getMage());
                 towers.add(join.getColorT());
                 clientsId.add(idClients);
-                controller.handleMessage(join, mapIdNickname.get(idClients));
                 socketClientHandler.sendMessage(new Information("You have joined the game"));
                 sendMessageToOthers(join.getNickname(), new Information(join.getNickname() + " entered the lobby"));
+                controller.handleMessage(join, mapIdNickname.get(idClients));
                 if(clientsId.size() == numPlayers) {
                     gameStatus = GameStatus.PLAYING;
                 }

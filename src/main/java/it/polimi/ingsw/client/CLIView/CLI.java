@@ -141,7 +141,7 @@ public class CLI implements Runnable{
                 ColorS color = colorByString(s.split(" ")[1]);
                 int i = Integer.parseInt(s.split(" ")[3]);
                 return new SpecialMoveIsland(color, i);
-            }
+        }
 
         return null;
     }
@@ -208,7 +208,11 @@ public class CLI implements Runnable{
             do {
                 System.out.println("Insert the Lobby's number: ");
                 index = Integer.parseInt(input.nextLine());
-            }while(index<0||index> lobbies.size()-1);
+                if(getLobbyByIndex(lobbies, index) == null) {
+                    System.out.println("Invalid lobby index!");
+                    index = -1;
+                }
+            }while(index<0);
 
             String nickname;
             do {
@@ -356,7 +360,7 @@ public class CLI implements Runnable{
 
             currLine.append(BOX.VERT);
 
-       }
+        }
         lastLine(xSize,1,lines);
 
         lines.forEach(System.out::println);
@@ -582,7 +586,7 @@ public class CLI implements Runnable{
             currLine.append(BOX.BOT_LEFT);
             currLine.append(BOX.HORIZ.toString().repeat(xSize));
             currLine.append(BOX.BOT_RIGHT);
-            }
+        }
         lines.add(currLine);
         lines.forEach(System.out::println);
     }
