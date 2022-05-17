@@ -208,7 +208,7 @@ public class CLI implements Runnable{
             do {
                 System.out.println("Insert the Lobby's number: ");
                 index = Integer.parseInt(input.nextLine());
-                if(getLobbyByIndex(lobbies, index) == null) {
+                if(getLobbyByIndex(lobbies, index) == -1) {
                     System.out.println("Invalid lobby index!");
                     index = -1;
                 }
@@ -218,9 +218,7 @@ public class CLI implements Runnable{
             do {
                 System.out.println("Choose your nickname: ");
                 nickname = input.nextLine();
-                if(getLobbyByIndex(lobbies, index) == null) {
-                    System.out.println("Invalid lobby index!");
-                } else if (getLobbyByIndex(lobbies, index).getNicknames().contains(nickname)) {
+                if (lobbies.get(getLobbyByIndex(lobbies, index)).getNicknames().contains(nickname)) {
                     System.out.println("Nickname already in use!");
                     nickname = null;
                 }
@@ -230,7 +228,7 @@ public class CLI implements Runnable{
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
                 mageIndex = Integer.parseInt(input.nextLine());
-                if (getLobbyByIndex(lobbies, index).getMages().contains(Mage.values()[mageIndex-1])) {
+                if (lobbies.get(getLobbyByIndex(lobbies, index)).getMages().contains(Mage.values()[mageIndex-1])) {
                     System.out.println("Mage already in use!");
                     mageIndex = -1;
                 }
@@ -238,13 +236,13 @@ public class CLI implements Runnable{
             //TODO print also the color of the tower
             int towerIndex;
             do {
-                System.out.println("Choose your TowerColor (1,2"+ (lobbies.get(index).getNumPlayers()==2 ? ")":",3)")+":");
+                System.out.println("Choose your TowerColor (1,2"+ (lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2 ? ")":",3)")+":");
                 towerIndex = Integer.parseInt(input.nextLine());
-                if (getLobbyByIndex(lobbies, index).getTowers().contains(ColorT.values()[towerIndex-1])) {
+                if (lobbies.get(getLobbyByIndex(lobbies, index)).getTowers().contains(ColorT.values()[towerIndex-1])) {
                     System.out.println("Tower Color already in use!");
                     towerIndex = -1;
                 }
-            } while ((towerIndex < 0 || towerIndex > 4)||(towerIndex==3&&lobbies.get(index).getNumPlayers()==2));
+            } while ((towerIndex < 0 || towerIndex > 4)||(towerIndex==3&&lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2));
 
             Join msg = new Join(nickname, Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1], index);
             client.sendMessage(toJson(msg));
@@ -717,11 +715,11 @@ public class CLI implements Runnable{
         }
     }
 
-    private VirtualLobby getLobbyByIndex(ArrayList<VirtualLobby> lobbies, int index) {
+    private int getLobbyByIndex(ArrayList<VirtualLobby> lobbies, int index) {
         for(VirtualLobby lobby : lobbies) {
             if(lobby.getLobbyIndex() == index)
-                return lobby;
+                return lobbies.indexOf(lobby);
         }
-        return null;
+        return -1;
     }
 }
