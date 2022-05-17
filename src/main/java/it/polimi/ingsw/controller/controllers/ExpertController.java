@@ -260,6 +260,14 @@ public class ExpertController extends Controller {
                 virtualView.setVirtualWorld(virtualWorld);
                 lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
                 break;
+            case ACTIVE_CHARACTER:
+                int activeVirtualCharacter = (int) evt.getNewValue();
+                virtualView.getVirtualCharacters().get(activeVirtualCharacter).setActive(true);
+                break;
+            case NO_ACTIVE_CHARACTER:
+                int activeVirtualChar = (int) evt.getNewValue();
+                virtualView.getVirtualCharacters().get(activeVirtualChar).setActive(false);
+                break;
         }
     }
 }

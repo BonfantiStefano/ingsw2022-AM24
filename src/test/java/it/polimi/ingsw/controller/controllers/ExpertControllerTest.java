@@ -143,6 +143,13 @@ public class ExpertControllerTest {
         expertController.handleCharacter(message2, egb.getActivePlayer().getNickname());
         assertEquals(egb.getActiveCharacter().getDescription(), availableChars.get(0).getDesc());
         assertEquals(egb.getActivePlayer().getCoins(), initCoins - initCost);
+
+        //the character in virtual view in active
+        VirtualView view = expertController.getVirtualView();
+        assertTrue(view.getVirtualCharacters().get(0).isActive());
+
+        expertController.getModel().resetTurn();
+        assertFalse(view.getVirtualCharacters().get(0).isActive());
         //System.out.println("active Character: "+ egb.getActiveCharacter().getDescription());
     }
 

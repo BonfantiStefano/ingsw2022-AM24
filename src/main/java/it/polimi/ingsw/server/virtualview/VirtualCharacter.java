@@ -10,12 +10,14 @@ public class VirtualCharacter {
     private final boolean alreadyPlayed;
     private final String description;
     private final int cost;
+    private boolean active;
 
     /**Constructor VirtualCharacter creates a new VirtualCharacter instance.*/
     public VirtualCharacter(Character character) {
         this.cost = character.getCost();
         this.description = character.getDescription();
         this.alreadyPlayed = character.isAlreadyPlayed();
+        this.active = false;
     }
 
     /**
@@ -40,5 +42,21 @@ public class VirtualCharacter {
      */
     public int getCost() {
         return cost;
+    }
+
+    /**
+     * Method setActive sets the Character card's state
+     * @param active - true if the Character is active, false otherwise
+     */
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    /**
+     * Method isActive returns true if Character card is active, false otherwise
+     * @return active - true if Character card is active, false otherwise
+     */
+    public boolean isActive() {
+        return active;
     }
 }

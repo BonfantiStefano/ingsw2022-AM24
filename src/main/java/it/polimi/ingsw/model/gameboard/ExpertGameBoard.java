@@ -179,6 +179,8 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
                 setActiveCharacter(characterToPlay);
                 coins += characterToPlay.isAlreadyPlayed()? characterToPlay.getCost():characterToPlay.getCost()-1;
                 listener.firePropertyChange(String.valueOf(EVENT.BOARD_COINS), null, coins);
+                int indexActiveCharacter = characters.indexOf(activeCharacter);
+                listener.firePropertyChange(String.valueOf(EVENT.ACTIVE_CHARACTER), null, indexActiveCharacter);
             }
         }
         else
@@ -235,8 +237,10 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      */
     public void setActiveCharacter(Character activeCharacter) {
         this.activeCharacter = activeCharacter;
-        if(activeCharacter!=null)
+        if(activeCharacter!=null){
             activeCharacter.play();
+        }
+
     }
 
     /**
@@ -245,6 +249,9 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     @Override
     public void resetTurn() {
         super.resetTurn();
+        int indexActiveCharacter = characters.indexOf(activeCharacter);
+        if(indexActiveCharacter != -1 )
+            listener.firePropertyChange(String.valueOf(EVENT.NO_ACTIVE_CHARACTER), null, indexActiveCharacter);
         setActiveCharacter(null);
     }
 
