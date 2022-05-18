@@ -2,3 +2,33 @@
     -fx-background-image:url('../graphics/EriantysLogo.jpg');
     -fx-background-size: cover;
 }
+.pane {
+    -fx-background-image: url('../graphics/Plancia.png');
+    -fx-background-size: contain;
+}
+.RED{
+    -fx-fill: red;
+}
+.BLUE{
+    -fx-fill: blue;
+}
+.GREEN{
+    -fx-fill: green;
+}
+.YELLOW{
+    -fx-fill: yellow;
+}
+.PINK{
+    -fx-fill: pink;
+}
+.island{
+    -fx-fill: brown;
+}
+.islandPanel{
+    -fx-border-color: red;
+
+    -fx-alignment: CENTER;
+}
+.InIsland{
+
+}

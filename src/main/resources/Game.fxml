@@ -158,7 +158,7 @@
                 </ImageView>
                 <ImageView fx:id="prof3b" fitHeight="30.0" fitWidth="30.0" layoutX="536.0" layoutY="620.0" pickOnBounds="true" preserveRatio="true" visible="false">
                     <image>
-                        <Image url="@graphics/bluProf.png" />
+                        <Image url="@graphics/blueProf.png" />
                     </image>
                 </ImageView>
                 <ImageView fitHeight="248.0" fitWidth="461.0" layoutX="-130.0" layoutY="145.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" rotate="90.0">
@@ -266,7 +266,7 @@
                 </ImageView>
                 <ImageView fx:id="prof2b" fitHeight="30.0" fitWidth="30.0" layoutX="708.0" layoutY="338.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="302.0" AnchorPane.leftAnchor="705.0">
                     <image>
-                        <Image url="@graphics/bluProf.png" />
+                        <Image url="@graphics/blueProf.png" />
                     </image>
                 </ImageView>
                 <GridPane layoutX="26.0" layoutY="28.0" prefHeight="52.0" prefWidth="160.0">
@@ -456,7 +456,7 @@
                 </ImageView>
                 <ImageView fx:id="prof1b" fitHeight="30.0" fitWidth="30.0" layoutX="25.0" layoutY="338.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="300.0">
                     <image>
-                        <Image url="@graphics/bluProf.png" />
+                        <Image url="@graphics/blueProf.png" />
                     </image>
                 </ImageView>
             </children>

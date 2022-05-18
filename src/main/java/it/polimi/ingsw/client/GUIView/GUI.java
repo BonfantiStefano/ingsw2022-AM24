@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.GUIView;
 
 import it.polimi.ingsw.client.GUIView.controllers.CONTROLLERS;
 import it.polimi.ingsw.client.GUIView.controllers.GUIController;
+import it.polimi.ingsw.client.GUIView.controllers.GameController;
 import it.polimi.ingsw.client.GUIView.controllers.LobbyController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -50,8 +51,8 @@ public class GUI extends Application {
     public void start(Stage stage) throws IOException {
         setup();
         this.window = stage;
-        window.setMinWidth(400);
-        window.setMinHeight(400);
+        window.setMinWidth(1000);
+        window.setMinHeight(800);
         window.setResizable(true);
         run();
     }
@@ -72,14 +73,16 @@ public class GUI extends Application {
             System.out.println("Warning: scenes setup failed");
             System.exit(0);
         }
-        currentScene = nameMapScene.get(CONTROLLERS.SETUP.toString());
+        currentScene = nameMapScene.get(CONTROLLERS.MAIN.toString());
     }
 
     private void run() {
-        window.setWidth(747);
-        window.setHeight(748);
+        window.setWidth(1500);
+        window.setHeight(1000);
         window.setTitle("Eriantys!");
         window.setScene(currentScene);
+        GameController g = (GameController) nameMapController.get(currentScene);
+        g.init();
         window.show();
     }
 

@@ -3,7 +3,8 @@ package it.polimi.ingsw.client.GUIView.controllers;
 public enum CONTROLLERS {
     SETUP("/setUpScene.fxml"),
     WELCOME("/Welcome.fxml"),
-    GAME("/Game.fxml");
+    GAME("/Game.fxml"),
+    MAIN("/MainScene.fxml");
 
     private final String path;
 
