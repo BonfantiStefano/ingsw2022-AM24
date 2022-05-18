@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="686.0" prefWidth="895.0" style="-fx-background-color: #71C4EE;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.GUIView.controllers.GameController">
+    <children>
+        <AnchorPane layoutX="2.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="666.0" prefWidth="892.0" style="-fx-background-color: #71C4EE;">
+            <children>
+                <ImageView fitHeight="248.0" fitWidth="461.0" layoutX="213.0" layoutY="467.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="-0.9683837890625">
+                    <image>
+                        <Image url="@graphics/Plancia.png" />
+                    </image>
+                </ImageView>
+                <GridPane layoutX="296.0" layoutY="487.0" prefHeight="160.0" prefWidth="220.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Circle fx:id="h3g1" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                        <Circle fx:id="h3g2" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" />
+                        <Circle fx:id="h3g3" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" />
+                        <Circle fx:id="h3g4" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" />
+                        <Circle fx:id="h3g5" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" />
+                        <Circle fx:id="h3g6" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="5" />
+                        <Circle fx:id="h3g7" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="6" />
+                        <Circle fx:id="h3g8" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="7" />
+                        <Circle fx:id="h3g9" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="8" />
+                        <Circle fx:id="h3g10" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="9" />
+                        <Circle fx:id="h3r1" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="1" />
+                        <Circle fx:id="h3r2" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Circle fx:id="h3r3" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Circle fx:id="h3r4" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <Circle fx:id="h3r5" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                        <Circle fx:id="h3r6" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                        <Circle fx:id="h3r7" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="6" GridPane.rowIndex="1" />
+                        <Circle fx:id="h3r8" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="7" GridPane.rowIndex="1" />
+                        <Circle fx:id="h3r9" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="8" GridPane.rowIndex="1" />
+                        <Circle fx:id="h3r10" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="9" GridPane.rowIndex="1" />
+                        <Circle fx:id="h3y1" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="2" />
+                        <Circle fx:id="h3y2" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Circle fx:id="h3y3" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Circle fx:id="h3y4" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <Circle fx:id="h3y5" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                        <Circle fx:id="h3y6" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                        <Circle fx:id="h3y7" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="6" GridPane.rowIndex="2" />
+                        <Circle fx:id="h3y8" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="7" GridPane.rowIndex="2" />
+                        <Circle fx:id="h3y9" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="8" GridPane.rowIndex="2" />
+                        <Circle fx:id="h3y10" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="9" GridPane.rowIndex="2" />
+                        <Circle fx:id="h3p1" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="3" />
+                        <Circle fx:id="h3p2" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Circle fx:id="h3p3" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <Circle fx:id="h3p4" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <Circle fx:id="h3p5" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                        <Circle fx:id="h3p6" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+                        <Circle fx:id="h3p7" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="6" GridPane.rowIndex="3" />
+                        <Circle fx:id="h3p8" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="7" GridPane.rowIndex="3" />
+                        <Circle fx:id="h3p9" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="8" GridPane.rowIndex="3" />
+                        <Circle fx:id="h3p10" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="9" GridPane.rowIndex="3" />
+                        <Circle fx:id="h3b1" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="4" />
+                        <Circle fx:id="h3b2" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Circle fx:id="h3b3" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <Circle fx:id="h3b4" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                        <Circle fx:id="h3b5" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                        <Circle fx:id="h3b6" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="4" />
+                        <Circle fx:id="h3b7" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="6" GridPane.rowIndex="4" />
+                        <Circle fx:id="h3b8" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="7" GridPane.rowIndex="4" />
+                        <Circle fx:id="h3b9" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="8" GridPane.rowIndex="4" />
+                        <Circle fx:id="h3b10" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="9" GridPane.rowIndex="4" />
+                    </children>
+                </GridPane>
+                <GridPane layoutX="584.0" layoutY="498.0" prefHeight="137.0" prefWidth="69.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="49.0" minWidth="10.0" prefWidth="49.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="46.0" minWidth="10.0" prefWidth="45.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Circle fx:id="t3_1" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                        <Circle fx:id="t3_5" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" />
+                        <Circle fx:id="t3_2" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="1" />
+                        <Circle fx:id="t3_6" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Circle fx:id="t3_3" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="2" />
+                        <Circle fx:id="t3_7" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Circle fx:id="t3_4" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="3" />
+                        <Circle fx:id="t3_8" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    </children>
+                </GridPane>
+                <GridPane layoutX="229.0" layoutY="487.0" prefHeight="160.0" prefWidth="56.0" AnchorPane.bottomAnchor="17.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="27.0" minHeight="10.0" prefHeight="24.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="44.0" minHeight="10.0" prefHeight="36.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="39.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="39.0" minHeight="10.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Circle fx:id="e3_9" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" />
+                        <Circle fx:id="e3_8" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Circle fx:id="e3_4" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="1" />
+                        <Circle fx:id="e3_3" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="2" />
+                        <Circle fx:id="e3_7" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Circle fx:id="e3_2" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="3" />
+                        <Circle fx:id="e3_6" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Circle fx:id="e3_1" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="4" />
+                        <Circle fx:id="e3_5" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                    </children>
+                </GridPane>
+                <ImageView fx:id="prof3y" fitHeight="30.0" fitWidth="37.0" layoutX="534.0" layoutY="552.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@graphics/yellowProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="prof3g" fitHeight="36.0" fitWidth="30.0" layoutX="535.0" layoutY="493.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@graphics/greenProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="prof3p" fitHeight="29.0" fitWidth="30.0" layoutX="537.0" layoutY="583.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@graphics/pinkProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="prof3r" fitHeight="29.0" fitWidth="27.0" layoutX="536.0" layoutY="523.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@graphics/redProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="prof3b" fitHeight="30.0" fitWidth="30.0" layoutX="536.0" layoutY="620.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@graphics/bluProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="248.0" fitWidth="461.0" layoutX="-130.0" layoutY="145.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+                    <image>
+                        <Image url="@graphics/Plancia.png" />
+                    </image>
+                </ImageView>
+                <ImageView fitHeight="248.0" fitWidth="461.0" layoutX="553.0" layoutY="145.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" rotate="90.0" AnchorPane.rightAnchor="-122.0">
+                    <image>
+                        <Image url="@graphics/Plancia.png" />
+                    </image>
+                </ImageView>
+                <GridPane layoutX="25.0" layoutY="99.0" prefHeight="220.0" prefWidth="160.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Circle fx:id="h1b1" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                        <Circle fx:id="h1b2" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="1" />
+                        <Circle fx:id="h1b4" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="3" />
+                        <Circle fx:id="h1b3" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="2" />
+                        <Circle fx:id="h1b5" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="4" />
+                        <Circle fx:id="h1b6" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="5" />
+                        <Circle fx:id="h1b7" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="6" />
+                        <Circle fx:id="h1b8" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="7" />
+                        <Circle fx:id="h1b9" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="8" />
+                        <Circle fx:id="h1b10" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="9" />
+                        <Circle fx:id="h1p1" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" />
+                        <Circle fx:id="h1p2" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Circle fx:id="h1p3" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Circle fx:id="h1p4" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Circle fx:id="h1p5" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Circle fx:id="h1p6" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Circle fx:id="h1p7" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Circle fx:id="h1p8" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Circle fx:id="h1p9" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                        <Circle fx:id="h1p10" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <Circle fx:id="h1y1" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" />
+                        <Circle fx:id="h1y2" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Circle fx:id="h1y3" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Circle fx:id="h1y4" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <Circle fx:id="h1y5" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <Circle fx:id="h1y6" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <Circle fx:id="h1y7" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                        <Circle fx:id="h1y8" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                        <Circle fx:id="h1y9" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                        <Circle fx:id="h1y10" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                        <Circle fx:id="h1r1" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" />
+                        <Circle fx:id="h1r2" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <Circle fx:id="h1r3" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <Circle fx:id="h1r4" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <Circle fx:id="h1r5" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                        <Circle fx:id="h1r6" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                        <Circle fx:id="h1r7" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+                        <Circle fx:id="h1r8" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="7" />
+                        <Circle fx:id="h1r9" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="8" />
+                        <Circle fx:id="h1r10" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="9" />
+                        <Circle fx:id="h1g1" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" />
+                        <Circle fx:id="h1g2" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                        <Circle fx:id="h1g3" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                        <Circle fx:id="h1g4" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                        <Circle fx:id="h1g5" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                        <Circle fx:id="h1g6" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                        <Circle fx:id="h1g7" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="6" />
+                        <Circle fx:id="h1g8" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="7" />
+                        <Circle fx:id="h1g9" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="8" />
+                        <Circle fx:id="h1g10" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="9" />
+                    </children>
+                </GridPane>
+                <ImageView fx:id="prof1g" fitHeight="36.0" fitWidth="30.0" layoutX="144.0" layoutY="335.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@graphics/greenProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="prof1r" fitHeight="29.0" fitWidth="27.0" layoutX="117.0" layoutY="335.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@graphics/redProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="prof1y" fitHeight="39.0" fitWidth="31.0" layoutX="85.0" layoutY="335.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@graphics/yellowProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="prof1p" fitHeight="29.0" fitWidth="30.0" layoutX="58.0" layoutY="335.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@graphics/pinkProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="prof2b" fitHeight="30.0" fitWidth="30.0" layoutX="708.0" layoutY="338.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="302.0" AnchorPane.leftAnchor="705.0">
+                    <image>
+                        <Image url="@graphics/bluProf.png" />
+                    </image>
+                </ImageView>
+                <GridPane layoutX="26.0" layoutY="28.0" prefHeight="52.0" prefWidth="160.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Circle fx:id="e1_1" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                        <Circle fx:id="e1_5" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="1" />
+                        <Circle fx:id="e1_2" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" />
+                        <Circle fx:id="e1_6" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Circle fx:id="e1_3" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" />
+                        <Circle fx:id="e1_7" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Circle fx:id="e1_4" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" />
+                        <Circle fx:id="e1_8" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <Circle fx:id="e1_9" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                    </children>
+                </GridPane>
+                <GridPane layoutX="703.0" layoutY="99.0" prefHeight="220.0" prefWidth="160.0" AnchorPane.bottomAnchor="347.0" AnchorPane.rightAnchor="24.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Circle fx:id="h2b1" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                        <Circle fx:id="h2b2" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="1" />
+                        <Circle fx:id="h2b4" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="3" />
+                        <Circle fx:id="h2b3" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="2" />
+                        <Circle fx:id="h2b5" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="4" />
+                        <Circle fx:id="h2b6" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="5" />
+                        <Circle fx:id="h2b7" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="6" />
+                        <Circle fx:id="h2b8" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="7" />
+                        <Circle fx:id="h2b9" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="8" />
+                        <Circle fx:id="h2b10" fill="DODGERBLUE" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="9" />
+                        <Circle fx:id="h2p1" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" />
+                        <Circle fx:id="h2p2" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Circle fx:id="h2p3" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Circle fx:id="h2p4" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Circle fx:id="h2p5" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Circle fx:id="h2p6" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Circle fx:id="h2p7" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Circle fx:id="h2p8" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Circle fx:id="h2p9" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                        <Circle fx:id="h2p10" fill="#ff0389" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <Circle fx:id="h2y1" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" />
+                        <Circle fx:id="h2y2" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Circle fx:id="h2y3" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                        <Circle fx:id="h2y4" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <Circle fx:id="h2y5" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                        <Circle fx:id="h2y6" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+                        <Circle fx:id="h2y7" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                        <Circle fx:id="h2y8" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="7" />
+                        <Circle fx:id="h2y9" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                        <Circle fx:id="h2y10" fill="#f7ff03" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="9" />
+                        <Circle fx:id="h2r1" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" />
+                        <Circle fx:id="h2r2" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <Circle fx:id="h2r3" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <Circle fx:id="h2r4" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <Circle fx:id="h2r5" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                        <Circle fx:id="h2r6" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+                        <Circle fx:id="h2r7" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="6" />
+                        <Circle fx:id="h2r8" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="7" />
+                        <Circle fx:id="h2r9" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="8" />
+                        <Circle fx:id="h2r10" fill="#d41702" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="9" />
+                        <Circle fx:id="h2g1" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" />
+                        <Circle fx:id="h2g2" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                        <Circle fx:id="h2g3" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+                        <Circle fx:id="h2g4" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+                        <Circle fx:id="h2g5" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="4" />
+                        <Circle fx:id="h2g6" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+                        <Circle fx:id="h2g7" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="6" />
+                        <Circle fx:id="h2g8" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="7" />
+                        <Circle fx:id="h2g9" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="8" />
+                        <Circle fx:id="h2910" fill="#02d414" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="9" />
+                    </children>
+                </GridPane>
+                <GridPane layoutX="749.0" layoutY="347.0" prefHeight="137.0" prefWidth="69.0" rotate="-90.0" AnchorPane.bottomAnchor="182.0" AnchorPane.rightAnchor="74.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="49.0" minWidth="10.0" prefWidth="49.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="46.0" minWidth="10.0" prefWidth="45.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Circle fx:id="t2_5" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                        <Circle fx:id="t2_1" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" />
+                        <Circle fx:id="t2_6" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="1" />
+                        <Circle fx:id="t2_2" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Circle fx:id="t2_7" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="2" />
+                        <Circle fx:id="t2_3" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Circle fx:id="t2_8" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="3" />
+                        <Circle fx:id="t2_4" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    </children>
+                </GridPane>
+                <GridPane layoutX="695.0" layoutY="35.0" prefHeight="52.0" prefWidth="160.0" AnchorPane.bottomAnchor="585.0" AnchorPane.rightAnchor="23.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Circle fx:id="e2_1" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                        <Circle fx:id="e2_5" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="1" />
+                        <Circle fx:id="e2_2" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" />
+                        <Circle fx:id="e2_6" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Circle fx:id="e2_3" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" />
+                        <Circle fx:id="e2_7" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Circle fx:id="e2_4" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" />
+                        <Circle fx:id="e2_8" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <Circle fx:id="e2_9" fill="#454945" radius="10.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                    </children>
+                </GridPane>
+                <GridPane layoutX="66.0" layoutY="347.0" prefHeight="137.0" prefWidth="69.0" rotate="-90.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="49.0" minWidth="10.0" prefWidth="49.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="46.0" minWidth="10.0" prefWidth="45.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Circle fx:id="t1_5" fill="#eff2f0" radius="15.0" rotate="-29.7" stroke="BLACK" strokeType="INSIDE" visible="false" />
+                        <Circle fx:id="t1_1" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" />
+                        <Circle fx:id="t1_6" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="1" />
+                        <Circle fx:id="t1_2" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Circle fx:id="t1_7" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="2" />
+                        <Circle fx:id="t1_3" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Circle fx:id="t1_8" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.rowIndex="3" />
+                        <Circle fx:id="t1_4" fill="#eff2f0" radius="15.0" stroke="BLACK" strokeType="INSIDE" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    </children>
+                </GridPane>
+                <ImageView fx:id="prof2g" fitHeight="36.0" fitWidth="30.0" layoutX="829.0" layoutY="335.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@graphics/greenProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="prof2r" fitHeight="29.0" fitWidth="27.0" layoutX="802.0" layoutY="335.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@graphics/redProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="prof2y" fitHeight="30.0" fitWidth="31.0" layoutX="768.0" layoutY="335.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                    <image>
+                        <Image url="@graphics/yellowProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="prof2p" fitHeight="29.0" fitWidth="30.0" layoutX="737.0" layoutY="338.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="302.0" AnchorPane.rightAnchor="128.0">
+                    <image>
+                        <Image url="@graphics/pinkProf.png" />
+                    </image>
+                </ImageView>
+                <ImageView fx:id="prof1b" fitHeight="30.0" fitWidth="30.0" layoutX="25.0" layoutY="338.0" pickOnBounds="true" preserveRatio="true" visible="false" AnchorPane.bottomAnchor="300.0">
+                    <image>
+                        <Image url="@graphics/bluProf.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>

@@ -1,0 +1,4 @@
+.setUpBackGround {
+    -fx-background-image:url('../graphics/EriantysLogo.jpg');
+    -fx-background-size: cover;
+}

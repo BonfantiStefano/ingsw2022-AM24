@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="300" minWidth="400.0"
+            prefHeight="515.0" prefWidth="515.0" styleClass="setUpBackGround"
+            stylesheets="@css/application.css" xmlns="http://javafx.com/javafx/11.0.2"
+            fx:controller="it.polimi.ingsw.client.GUIView.controllers.SetUpController">
+   <bottom>
+      <Button alignment="CENTER" mnemonicParsing="false" onAction="#quitGame" prefHeight="19.0" prefWidth="68.0" text="QUIT" BorderPane.alignment="CENTER" />
+   </bottom>
+   <center>
+      <VBox alignment="CENTER" prefHeight="359.0" prefWidth="315.0" spacing="20.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="statusLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="405.0" styleClass="input-label" textFill="WHITE">
+               <font>
+                  <Font name="Arial Rounded MT Bold" size="16.0" />
+               </font>
+            </Label>
+            <Label fx:id="serverAddressLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="151.0" styleClass="input-label" text="Server Address" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="serverAddressField" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#getServer" prefHeight="26.0" prefWidth="457.0" text="localhost" />
+            <Label fx:id="serverPortLabel" alignment="CENTER" prefHeight="40.0" prefWidth="133.0" styleClass="input-label" text="Port" textFill="WHITE">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Label>
+            <TextField fx:id="serverPortField" alignment="CENTER" prefHeight="26.0" prefWidth="110.0" text="1234" />
+            <Button fx:id="connectButton" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#connect" prefHeight="38.0" prefWidth="86.0" text="CONNECT" />
+         </children>
+         <BorderPane.margin>
+            <Insets bottom="30.0" left="100.0" right="100.0" />
+         </BorderPane.margin>
+         <padding>
+            <Insets left="100.0" right="100.0" />
+         </padding>
+      </VBox>
+   </center>
+</BorderPane>
