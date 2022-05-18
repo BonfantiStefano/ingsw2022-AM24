@@ -29,7 +29,6 @@ public class Client {
     private Thread timer;
     private static final int TIMEOUT = 50000;
     private boolean isStarted = false;
-    private final BlockingQueue<Answer> messagesQueue;
 
     /**
      * Method main is used to start the client side.
@@ -53,7 +52,6 @@ public class Client {
     public Client() {
         active = false;
         cli = new CLI(this);
-        messagesQueue = new ArrayBlockingQueue<>(25);
     }
 
     /**
@@ -80,17 +78,6 @@ public class Client {
 
                 //Avvio del metodo che si occupa della lettura dei messaggi che gli invia il server e del loro smistamento
                 System.out.println("Stream created");
-
-                new Thread(()->{
-                    try {
-                        while (messagesQueue!=null) {
-                            Answer u = messagesQueue.take();
-                            cli.handleMessage(u);
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
 
                 startServerReader();
 
@@ -142,7 +129,6 @@ public class Client {
         switch (jsonObject.get("type").getAsString()) {
             case "Welcome" :
                 if(!isStarted) {
-                    new Thread(cli).start();
                     isStarted = true;
                     return gson.fromJson(jsonString, Welcome.class);
                 }
@@ -205,7 +191,7 @@ public class Client {
                     Answer a = parseMessage(s);
                     //TODO handle all other messages
                     if (a!=null) {
-                        messagesQueue.add(a);
+                        cli.addMessage(a);
                     }
                 }
             } catch (ClassNotFoundException e) {

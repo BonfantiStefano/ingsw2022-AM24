@@ -10,7 +10,7 @@ public enum Color {
     ANSI_YELLOW("\u001B[33m"),
     ANSI_BLUE("\u001B[34m"),
     ANSI_PURPLE("\u001B[35m"),
-    ANSI_BLACK("\u001b[30m"),
+    ANSI_BLACK("\u001b[30;47m"),
     ANSI_GREY("\u001b[37m");
 
     static final String RESET =

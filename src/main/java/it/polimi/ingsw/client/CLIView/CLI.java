@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.request.*;
+import it.polimi.ingsw.controller.ERRORS;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.CharacterDescription;
@@ -17,6 +18,8 @@ import it.polimi.ingsw.server.virtualview.*;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,8 +32,9 @@ public class CLI implements Runnable{
     private final Client client;
     private Welcome welcome;
     private boolean gameActive;
-    private ArrayList<String> lastInfo;
+    private String lastInfo;
     private boolean inLobby;
+    private final BlockingQueue<Answer> messagesQueue;
 
     private final Scanner input;
 
@@ -45,20 +49,36 @@ public class CLI implements Runnable{
         welcome = null;
         //TODO implement set gameActive based on messages from Server
         gameActive = true;
-        lastInfo= new ArrayList<>();
+        lastInfo="";
         inLobby=false;
+        messagesQueue = new ArrayBlockingQueue<>(20);
+
+        //start thread to handle all messages received sequentially
+        new Thread(()->{
+            try {
+                while (client.isActive()) {
+                    Answer u = messagesQueue.take();
+                    handleMessage(u);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
     }
 
     /**
      * Handles the continuous loop
      */
     public void run() {
-        getInfo();
-
         while(client.isActive()) {
             String s = input.nextLine();
             parseInput(s);
         }
+    }
+
+    public void addMessage(Answer a){
+        messagesQueue.add(a);
     }
 
     /**
@@ -76,6 +96,7 @@ public class CLI implements Runnable{
      * @param s the user's input
      */
     public void parseInput(String s){
+        //TODO add help and disconnect patterns
         Pattern pattern;
         Matcher matcher;
         for(REGEX r:REGEX.values()){
@@ -182,25 +203,27 @@ public class CLI implements Runnable{
                     System.out.println("Player: " + vp.getNickname() + " has " + vp.getVirtualCoins() + " coins.");
                 }
             }
-            lastInfo.forEach(System.out::println);
+            System.out.println(lastInfo);
         }
     }
 
     /**
      * Ask the Player whether they want to create a Lobby or Join one
      */
-    private void getInfo() {
+    public void getInfo() {
+        //TODO remove nickname check to allow players to rejoin a lobby
         clearScreen();
         ArrayList<VirtualLobby> lobbies = new ArrayList<>();
-        if(welcome!=null) {
+        if (welcome != null) {
             printLobbies(welcome);
-            lobbies=welcome.getLobbies();
+            lobbies = welcome.getLobbies();
         }
+
         String answer;
         do {
             System.out.println("Do you want to Join a Lobby? (y/n)");
             answer = input.nextLine();
-        } while ((!answer.equals("y") && !answer.equals("n"))||(answer.equals("y")&&lobbies.size()==0));
+        }while ((!answer.equals("y") && !answer.equals("n"))||(answer.equals("y")&&lobbies.size()==0));
 
         if (answer.equals("y")) {
             //TODO check the value of the lobby's index
@@ -361,7 +384,8 @@ public class CLI implements Runnable{
         }
         lastLine(xSize,1,lines);
 
-        lines.forEach(System.out::println);
+        lines.forEach(l->{if(!l.isEmpty())
+        System.out.println(l);});
     }
 
     /**
@@ -405,14 +429,12 @@ public class CLI implements Runnable{
         lines.add(new StringBuilder());
         lines.add(new StringBuilder());
 
-
         for(VirtualCharacter c:characters)
             firstLine(lines.get(0),"Character no. "+(characters.indexOf(c)+1),xSize);
 
         StringBuilder secondLine = lines.get(1);
         for(int j=0;j<3;j++){
-            //TODO insert bool isActive in character
-            boolean active = false;
+            boolean active = characters.get(j).isActive();
             secondLine.append(BOX.VERT);
             secondLine.append(" ");
 
@@ -422,14 +444,11 @@ public class CLI implements Runnable{
                 secondLine.append(" ".repeat(xSize - Color.ANSI_GREEN.toString().length()- " Active".length() -3));
             }
             else {
-                secondLine.append(Color.ANSI_BLACK).append(" Not Active");
+                secondLine.append(Color.ANSI_GREY).append(" Not Active");
                 secondLine.append(" ".repeat(xSize - Color.ANSI_BLACK.toString().length()- " Not Active".length() -3));
             }
             secondLine.append(Color.RESET);
-
-
             secondLine.append(BOX.VERT);
-
         }
 
         StringBuilder thirdLine = lines.get(2);
@@ -464,7 +483,8 @@ public class CLI implements Runnable{
 
         lastLine(xSize,characters.size(),lines);
 
-        lines.forEach(System.out::println);
+        lines.forEach(l->{if(!l.isEmpty())
+            System.out.println(l);});
     }
 
     /**
@@ -477,7 +497,6 @@ public class CLI implements Runnable{
         int numIslands = islands.size();
         ArrayList<StringBuilder> lines = new ArrayList<>();
 
-        //TODO add MN position
         StringBuilder currLine = new StringBuilder();
         lines.add(currLine);
         for(VirtualIsland i:islands)
@@ -515,7 +534,8 @@ public class CLI implements Runnable{
         }
 
         lastLine(xSize, numIslands, lines);
-        lines.forEach(System.out::println);
+        lines.forEach(l->{if(!l.isEmpty())
+            System.out.println(l);});
     }
 
     /**
@@ -586,7 +606,8 @@ public class CLI implements Runnable{
             currLine.append(BOX.BOT_RIGHT);
         }
         lines.add(currLine);
-        lines.forEach(System.out::println);
+        lines.forEach(l->{if(!l.isEmpty())
+            System.out.println(l);});
     }
 
 
@@ -652,11 +673,43 @@ public class CLI implements Runnable{
     public void visit(UpdateProfs u){
         virtualView.setVirtualProfs(u.getProfs());
     }
-    public void visit(Information i){ lastInfo.add(i.getString());
-    printView();}
-    public void visit(Error e){System.out.println(e.getString());}
-    public void visit(NotifyDisconnection e){System.out.println(e.getString());}
-    public void visit(Welcome w){welcome = w;}
+    public void visit(Information i){
+        String text = i.getString();
+        lastInfo=text;
+        if(text.equals("Game Started!")) {
+            gameActive=true;
+            new Thread(this).start();
+        }
+        else if(text.equals("The lobby has been created")||text.equals("You have joined the game"))
+            new Thread(this).start();
+        printView();
+    }
+
+    public void visit(Error e){
+        String text = e.getString();
+        System.out.println(text);
+
+        if(text!=null&&(text.equals(ERRORS.MAGE_TAKEN.toString())||text.equals(ERRORS.NICKNAME_TAKEN.toString())
+        ||text.equals(ERRORS.COLOR_TOWER_TAKEN.toString())||text.equals("Error: the lobby is full"))){
+            try{
+                wait(5000);
+            }catch (InterruptedException ignored){}
+            new Thread(this::getInfo).start();
+        }
+
+    }
+    public void visit(NotifyDisconnection e){
+        System.out.println(e.getString());
+    }
+
+    public void visit(Welcome w){
+        welcome = w;
+
+        if(!inLobby){
+            inLobby=true;
+            new Thread(this::getInfo).start();
+        }
+    }
 
     /**
      * Gets the color corresponding to the user's string

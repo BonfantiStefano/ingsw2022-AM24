@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.client.GUIView.GUI;
 import it.polimi.ingsw.server.ServerMain;
 
 import java.util.InputMismatchException;
@@ -43,7 +44,7 @@ public class Eriantys {
                 }
                 switch (client) {
                     case 0 -> Client.main(null);
-                    case 1 -> System.out.println("GUI non disponibile");//Gui.start();
+                    case 1 -> GUI.main(null);
                     default -> System.err.println("Invalid argument, please run the executable again");
                 }
             }

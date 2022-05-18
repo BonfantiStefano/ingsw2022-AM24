@@ -208,8 +208,12 @@ public class Controller implements PropertyChangeListener {
                 ArrayList<Player> sortedPlayers = model.getSortedPlayers();
                 //in this phase the next Player in order must choose his assistant
                 //if he's connected send him a message
-                if (sortedPlayers.get(haveChosenAssistant).isConnected())
-                    lobby.sendMessage(sortedPlayers.get(haveChosenAssistant).getNickname(), new Information("Choose your Assistant!"));
+                String name;
+                if (sortedPlayers.get(haveChosenAssistant).isConnected()) {
+                    name =sortedPlayers.get(haveChosenAssistant).getNickname();
+                    lobby.sendMessage(name, new Information("Choose your Assistant!"));
+                    lobby.sendMessageToOthers(name, new Information(name+" has to choose an Assistant"));
+                }
                 else
                     increaseHaveChosenAssistant();
             }
@@ -221,6 +225,7 @@ public class Controller implements PropertyChangeListener {
                 if (model.getActivePlayer().isConnected()) {
                     activePlayer = model.getActivePlayer().getNickname();
                     lobby.sendMessage(activePlayer, new Information("Select a Student and choose a destination three times!"));
+                    lobby.sendMessageToOthers(activePlayer, new Information(activePlayer+" is moving Students"));
                 }
                 //if the Player isn't connected notify the TurnController and ask the next phase
                 else {
@@ -228,12 +233,16 @@ public class Controller implements PropertyChangeListener {
                     nextPhase();
                 }
             }
-            case MOVE_MN ->
-                    //in this phase the Player must move MN
-                    lobby.sendMessage(activePlayer, new Information("Choose where you want to move MN!"));
-            case CHOOSE_CLOUD ->
-                    //in this phase the Player must choose a Cloud
-                    lobby.sendMessage(activePlayer, new Information("Choose a Cloud!"));
+            case MOVE_MN -> {
+                //in this phase the Player must move MN
+                lobby.sendMessage(activePlayer, new Information("Choose where you want to move MN!"));
+                lobby.sendMessageToOthers(activePlayer, new Information(activePlayer+ " is moving MN"));
+            }
+            case CHOOSE_CLOUD -> {
+                //in this phase the Player must choose a Cloud
+                lobby.sendMessage(activePlayer, new Information("Choose a Cloud!"));
+                lobby.sendMessageToOthers(activePlayer, new Information(activePlayer+ " is choosing a Cloud"));
+            }
             case RESET_TURN -> {
                 //if all Players have played their turn notify the TurnController
                 havePlayed++;
