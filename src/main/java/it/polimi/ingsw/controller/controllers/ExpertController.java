@@ -232,18 +232,18 @@ public class ExpertController extends Controller {
                 int indexCharacter = (int) evt.getOldValue();
                 VirtualCharacterWithStudents character = (VirtualCharacterWithStudents) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(indexCharacter, character);
-                lobby.sendMessageToAll(new ReplaceCharacter(character, indexCharacter));
+                lobby.sendMessageToAll(new ReplaceCharacterStudents(character, indexCharacter));
                 break;
             case REPLACE_CHARACTER_NE:
                 int indexC = (int) evt.getOldValue();
                 VirtualCharacterWithNoEntry VirtualC = (VirtualCharacterWithNoEntry) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(indexC, VirtualC);
-                lobby.sendMessageToAll(new ReplaceCharacter(VirtualC, indexC));
+                lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(VirtualC, indexC));
                 break;
             case CREATE_CHARACTERS:
                 ArrayList<VirtualCharacter> virtualCharacters = (ArrayList<VirtualCharacter>) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(virtualCharacters);
-                lobby.sendMessageToAll(new CreateCharacters(virtualCharacters));
+                sendFullView();
                 break;
             case BOARD_COINS:
                 int coins = (int) evt.getNewValue();
@@ -269,6 +269,20 @@ public class ExpertController extends Controller {
                 virtualView.getVirtualCharacters().get(activeVirtualChar).setActive(false);
                 break;
         }
+    }
+
+    @Override
+    public void sendFullView(){
+        super.sendFullView();
+        ArrayList<VirtualCharacter> virtualCharacters = virtualView.getVirtualCharacters();
+        virtualCharacters.forEach(c->{
+            if(c instanceof VirtualCharacterWithStudents cha)
+                lobby.sendMessageToAll(new ReplaceCharacterStudents(cha, virtualCharacters.indexOf(cha)));
+            else if(c instanceof VirtualCharacterWithNoEntry cha)
+                lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(cha, virtualCharacters.indexOf(cha)));
+            else
+                lobby.sendMessageToAll(new ReplaceCharacter(c, virtualCharacters.indexOf(c)));
+        });
     }
 }
 

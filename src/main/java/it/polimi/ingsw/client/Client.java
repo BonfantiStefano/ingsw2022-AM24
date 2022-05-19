@@ -148,6 +148,10 @@ public class Client {
                 return gson.fromJson(jsonString, CreateClouds.class);
             case "ReplaceCharacter":
                 return gson.fromJson(jsonString, ReplaceCharacter.class);
+            case "ReplaceCharacterStudents":
+                return gson.fromJson(jsonString,ReplaceCharacterStudents.class);
+            case "ReplaceCharacterWithNoEntry":
+                return gson.fromJson(jsonString,ReplaceCharacterWithNoEntry.class);
             case "ReplaceCloud":
                 return gson.fromJson(jsonString, ReplaceCloud.class);
             case "UpdateCoins":
@@ -164,7 +168,7 @@ public class Client {
                 return gson.fromJson(jsonString, UpdateWorld.class);
             case "FullView":
                 return gson.fromJson(jsonString, FullView.class);
-            default : System.out.println("Invalid message");
+            default : System.out.println("Invalid message: "+ jsonString);
                 return null;
         }
     }

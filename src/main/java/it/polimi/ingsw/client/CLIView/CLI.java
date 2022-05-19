@@ -33,6 +33,7 @@ public class CLI implements Runnable{
     private Welcome welcome;
     private boolean gameActive;
     private String lastInfo;
+    private String lastError;
     private boolean inLobby;
     private final BlockingQueue<Answer> messagesQueue;
 
@@ -50,6 +51,7 @@ public class CLI implements Runnable{
         //TODO implement set gameActive based on messages from Server
         gameActive = true;
         lastInfo="";
+        lastError="";
         inLobby=false;
         messagesQueue = new ArrayBlockingQueue<>(20);
 
@@ -57,9 +59,7 @@ public class CLI implements Runnable{
         new Thread(()->{
             try {
                 while (client.isActive()) {
-                    System.out.println("Devo prendere dalla coda");
                     Answer u = messagesQueue.take();
-                    System.out.println("Ho preso dalla coda");
                     handleMessage(u);
                 }
             } catch (InterruptedException e) {
@@ -80,7 +80,6 @@ public class CLI implements Runnable{
     }
 
     public void addMessage(Answer a){
-        System.out.println("Aggiungo alla coda");
         messagesQueue.add(a);
     }
 
@@ -192,8 +191,12 @@ public class CLI implements Runnable{
 
             //drawIslands(virtualWorld);
             drawClouds(virtualView.getVirtualClouds());
-            if (virtualView.getVirtualCharacters().size() > 0)
+            if (virtualView.getVirtualCharacters().size() > 0) {
                 drawCharacters(virtualView.getVirtualCharacters());
+                System.out.println("Characters Descriptions:");
+                virtualView.getVirtualCharacters().forEach(c->System.out.println(virtualView.getVirtualCharacters().indexOf(c)+": "+c.getDescription()));
+            }
+
             for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {
                 drawSchoolBoard(vp.getVirtualBoard(), vp.getNickname(), virtualView.getVirtualProfs());
 
@@ -207,6 +210,10 @@ public class CLI implements Runnable{
                 }
             }
             System.out.println(lastInfo);
+            if(messagesQueue.size()==0&&!lastError.isEmpty()){
+                System.out.println(lastError);
+                lastError="";
+            }
         }
     }
 
@@ -463,7 +470,7 @@ public class CLI implements Runnable{
             }
             else {
                 secondLine.append(Color.ANSI_GREY).append(" Not Active");
-                secondLine.append(" ".repeat(xSize - Color.ANSI_BLACK.toString().length()- " Not Active".length() -3));
+                secondLine.append(" ".repeat(xSize - Color.ANSI_BLACK.toString().length()- " Not Active".length()));
             }
             secondLine.append(Color.RESET);
             secondLine.append(BOX.VERT);
@@ -672,6 +679,14 @@ public class CLI implements Runnable{
     public void visit(ReplaceCharacter u){
         virtualView.setVirtualCharacters(u.getIndex(),u.getCharacter());
     }
+    public void visit(ReplaceCharacterStudents u){
+        System.out.println("students");
+        virtualView.setVirtualCharacters(u.getIndex(),u.getVirtualCharacterWithStudents());
+    }
+    public void visit(ReplaceCharacterWithNoEntry u){
+        System.out.println("noEntry");
+        virtualView.setVirtualCharacters(u.getIndex(),u.getCharacterWithNoEntry());
+    }
     public void visit(ReplaceCloud u){
         virtualView.setVirtualClouds(u.getIndex(),u.getCloud());
     }
@@ -707,7 +722,7 @@ public class CLI implements Runnable{
 
     public void visit(Error e){
         String text = e.getString();
-        System.out.println(text);
+        lastError = text;
 
         if(text!=null&&(text.equals(ERRORS.MAGE_TAKEN.toString())||text.equals(ERRORS.NICKNAME_TAKEN.toString())
                 ||text.equals(ERRORS.COLOR_TOWER_TAKEN.toString())||text.equals("Error: the lobby is full")

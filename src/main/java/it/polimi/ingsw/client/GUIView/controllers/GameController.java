@@ -32,7 +32,7 @@ import java.util.*;
 
 public class GameController implements GUIController{
     Random r = new Random(System.currentTimeMillis());
-    private final int numIslands = 12;
+    private final int numIslands = 5;
     private HashMap<ColorS, Image> studentImages;
     private HashMap<ColorS, Image> profImages;
     private HashMap<ColorT, Image> towerImages;
@@ -346,7 +346,7 @@ public class GameController implements GUIController{
 
     private void fillRandom(ArrayList<ColorS> list, int num){
         for(int i=0;i<num;i++){
-            list.add(ColorS.values()[r.nextInt(4)]);
+            list.add(ColorS.values()[r.nextInt(5)]);
         }
     }
 

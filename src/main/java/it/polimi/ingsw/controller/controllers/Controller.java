@@ -91,8 +91,11 @@ public class Controller implements PropertyChangeListener {
     public void visit(ChooseAssistant msg){
         if(phase.equals(PHASE.PLANNING) && model.getSortedPlayers().get(haveChosenAssistant).getNickname().equals(messageSender))
             try {
-                model.chooseAssistants(model.getPlayerByNickname(messageSender), msg.getIndex());
-                increaseHaveChosenAssistant();
+                if(model.chooseAssistants(model.getPlayerByNickname(messageSender), msg.getIndex()))
+                    increaseHaveChosenAssistant();
+                else
+                    lobby.sendMessage(messageSender, new Error("Can't choose this Assistant!"));
+
             } catch (InvalidIndexException e) {
                 lobby.sendMessage(messageSender, new Error(ERRORS.INVALID_INDEX.toString()));
             }
@@ -128,12 +131,12 @@ public class Controller implements PropertyChangeListener {
                 gameStarted = true;
                 lobby.sendMessageToAll(new Information("Game Started!"));
             }
-            lobby.sendMessageToAll(new FullView(virtualView));
+            sendFullView();
         }
         //if the Player had disconnected update his status as connected
         else if(!availableNickname && !model.getPlayerByNickname(messageSender).isConnected()) {
             model.setConnected(messageSender, true);
-            lobby.sendMessageToAll(new FullView(virtualView));
+            sendFullView();
         }
         else if(!availableNickname)
             message+=ERRORS.NICKNAME_TAKEN;
@@ -461,8 +464,12 @@ public class Controller implements PropertyChangeListener {
                 break;
             default:
                 //in case an undefined event is thrown the whole view will be sent
-                lobby.sendMessageToAll(new FullView(virtualView));
+                sendFullView();
         }
+    }
+
+    public void sendFullView(){
+        lobby.sendMessageToAll(new FullView(virtualView));
     }
 
 
