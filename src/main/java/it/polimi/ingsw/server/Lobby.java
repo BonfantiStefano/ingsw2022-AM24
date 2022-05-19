@@ -15,6 +15,7 @@ import it.polimi.ingsw.server.answer.Error;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 //Not final, work in progress
 /**
@@ -24,9 +25,9 @@ import java.util.Map;
  */
 public class Lobby {
     private Controller controller;
-    private Map<String, Integer> mapNicknameId;
-    private Map<Integer, String> mapIdNickname;
-    private Map<Integer, SocketClientHandler> mapIdSocket;
+    private ConcurrentHashMap<String, Integer> mapNicknameId;
+    private ConcurrentHashMap<Integer, String> mapIdNickname;
+    private ConcurrentHashMap<Integer, SocketClientHandler> mapIdSocket;
     private ArrayList<Integer> clientsId;
     private ArrayList<Integer> disconnectedClientsId;
     private final int numPlayers;
@@ -55,9 +56,9 @@ public class Lobby {
      */
     public Lobby(GameParams gameParams, SocketClientHandler socketClientHandler, int idClients) {
         createController(gameParams);
-        mapIdNickname = new HashMap<>();
-        mapIdSocket = new HashMap<>();
-        mapNicknameId = new HashMap<>();
+        mapIdNickname = new ConcurrentHashMap<>();
+        mapIdSocket = new ConcurrentHashMap<>();
+        mapNicknameId = new ConcurrentHashMap<>();
         clientsId = new ArrayList<>();
         mages = new ArrayList<>();
         towers = new ArrayList<>();

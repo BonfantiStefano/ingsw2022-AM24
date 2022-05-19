@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,8 +26,8 @@ import java.util.concurrent.Executors;
  */
 public class Server {
     private ExecutorService executorService;
-    private Map<Integer, SocketClientHandler> mapIdSocket;
-    private Map<Integer, Lobby> mapIdLobby;
+    private ConcurrentHashMap<Integer, SocketClientHandler> mapIdSocket;
+    private ConcurrentHashMap<Integer, Lobby> mapIdLobby;
     private ArrayList<Lobby> lobbies;
     private int idClients;
 
@@ -35,8 +36,8 @@ public class Server {
      */
     public Server() {
         executorService = Executors.newCachedThreadPool();
-        mapIdSocket = new HashMap<>();
-        mapIdLobby = new HashMap<>();
+        mapIdSocket = new ConcurrentHashMap<>();
+        mapIdLobby = new ConcurrentHashMap<>();
         lobbies = new ArrayList<>();
     }
 
@@ -47,21 +48,21 @@ public class Server {
      */
     public void startServer(int port) {
         try (ServerSocket serverSocket = new ServerSocket(port)) {
-                System.out.println("Server started on port " + port);
-                while (true) {
-                    //Until the server is stopped, he keeps accepting new connections from clients who connect to its socket
-                    try {
-                        Socket clientSocket = serverSocket.accept();
-                        SocketClientHandler socketClientHandler = new SocketClientHandler(clientSocket, this, idClients);
-                        mapIdSocket.put(idClients, socketClientHandler);
-                        executorService.submit(socketClientHandler);
-                        System.out.println("Socket " + idClients + " aperto");
-                        idClients++;
-                    } catch (IOException e) {
-                        System.out.println("An exception caused the server to stop working.");
-                        System.exit(0);
-                    }
+            System.out.println("Server started on port " + port);
+            while (true) {
+                //Until the server is stopped, he keeps accepting new connections from clients who connect to its socket
+                try {
+                    Socket clientSocket = serverSocket.accept();
+                    SocketClientHandler socketClientHandler = new SocketClientHandler(clientSocket, this, idClients);
+                    mapIdSocket.put(idClients, socketClientHandler);
+                    executorService.submit(socketClientHandler);
+                    System.out.println("Socket " + idClients + " aperto");
+                    idClients++;
+                } catch (IOException e) {
+                    System.out.println("An exception caused the server to stop working.");
+                    System.exit(0);
                 }
+            }
         } catch (IOException e) {
             System.err.println("Error during Socket initialization, the application will close");
             System.exit(0);
@@ -89,6 +90,7 @@ public class Server {
             sendMessage(clientId, new Error("Error: you are already in a lobby"));
         } else if(lobbies.isEmpty()) {
             //Case when the first client connects to the server
+            sendMessage(clientId, getLobbies());
             sendMessage(clientId, new Error("Error: there is no lobby available, please create a new one"));
         } else if(join.getIndex() >= 0 && join.getIndex() < lobbies.size() && lobbies.get(join.getIndex()).isPresent(join.getNickname())){
             //Case when a client maybe is a disconnected player
@@ -102,11 +104,13 @@ public class Server {
             boolean ris = lobbies.get(join.getIndex()).addPlayer(join, mapIdSocket.get(clientId), clientId);
             if (ris) {
                 mapIdLobby.put(clientId, lobbies.get(join.getIndex()));
+            } else {
+                sendMessage(clientId, getLobbies());
             }
         } else {
+            sendMessage(clientId, getLobbies());
             sendMessage(clientId, new Error("Error: invalid lobby index, please retry"));
             //Capire se serve fare questo, poichè alcuni controlli li faccio già lato client
-            sendMessage(clientId, getLobbies());
         }
     }
 
