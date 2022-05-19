@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="1000.0" maxWidth="1500.0" prefHeight="1000.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.GUIView.controllers.GameController">
+<AnchorPane fx:id="anchor" maxHeight="1000.0" maxWidth="1500.0" prefHeight="1000.0" prefWidth="1500.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.GUIView.controllers.GameController">
     <children>
         <Pane fx:id="sc1" layoutX="490.0" layoutY="761.0" prefHeight="225.0" prefWidth="520.0" styleClass="pane" stylesheets="@css/application.css">
             <children>

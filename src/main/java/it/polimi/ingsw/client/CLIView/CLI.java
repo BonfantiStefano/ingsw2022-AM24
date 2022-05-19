@@ -57,7 +57,9 @@ public class CLI implements Runnable{
         new Thread(()->{
             try {
                 while (client.isActive()) {
+                    System.out.println("Devo prendere dalla coda");
                     Answer u = messagesQueue.take();
+                    System.out.println("Ho preso dalla coda");
                     handleMessage(u);
                 }
             } catch (InterruptedException e) {
@@ -78,6 +80,7 @@ public class CLI implements Runnable{
     }
 
     public void addMessage(Answer a){
+        System.out.println("Aggiungo alla coda");
         messagesQueue.add(a);
     }
 

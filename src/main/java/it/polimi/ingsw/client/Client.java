@@ -180,6 +180,7 @@ public class Client {
     public void startServerReader() {
         while (active) {
             try {
+                System.out.println("Sto leggendo");
                 String s = (String) is.readObject();
                 if(s!= null) {
                     //questo if poi andrà rimosso, utile per debuggare.
