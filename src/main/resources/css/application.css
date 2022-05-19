@@ -6,7 +6,13 @@
     -fx-background-image: url('../graphics/EriantysLogo.jpg');
 
 }
+.islandPanel{
+    -fx-border-color: red;
+}
 .pane {
     -fx-background-image: url('../graphics/Plancia.png');
     -fx-background-size: contain;
+}
+.border{
+    -fx-border-color: red;
 }

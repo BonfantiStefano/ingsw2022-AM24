@@ -4,9 +4,10 @@ import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.model.Cloud;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
+import it.polimi.ingsw.model.StudentContainer;
 import it.polimi.ingsw.model.character.*;
-
 import it.polimi.ingsw.model.character.Character;
+
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
@@ -15,13 +16,35 @@ import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.server.virtualview.*;
 import org.junit.jupiter.api.Test;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
 class CLITest {
     CLI c = new CLI(new Client());
-
+    CharacterFactory factory = new CharacterFactory(null,null,new StudentContainer(),null);
+/*
+    @Test
+    void test(){
+        ArrayList<Character> characters = new ArrayList<>();
+        while(characters.size()<3) {
+            Character c = factory.createCharacter();
+            if (c instanceof CharacterWithStudent)
+                characters.add(c);
+            else if (c instanceof CharacterWithNoEntry)
+                characters.add(c);
+        }
+        ArrayList<VirtualCharacter> vchars = new ArrayList<>();
+        characters.forEach(c->{
+            if(c instanceof CharacterWithStudent)
+                vchars.add(new VirtualCharacterWithStudents(c));
+            else if(c instanceof CharacterWithNoEntry)
+                vchars.add(new VirtualCharacterWithNoEntry(c));
+        });
+        c.drawCharacters(vchars);
+        characters.forEach(c->System.out.println(c.getDescription()));
+    }
 /*
     @Test
     void schoolBoard(){

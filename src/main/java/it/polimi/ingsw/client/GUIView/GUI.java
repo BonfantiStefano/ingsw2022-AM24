@@ -77,8 +77,8 @@ public class GUI extends Application {
     }
 
     private void run() {
-        window.setWidth(1500);
-        window.setHeight(1000);
+        window.setWidth(1400);
+        window.setHeight(800);
         window.setTitle("Eriantys!");
         window.setScene(currentScene);
         GameController g = (GameController) nameMapController.get(currentScene);
