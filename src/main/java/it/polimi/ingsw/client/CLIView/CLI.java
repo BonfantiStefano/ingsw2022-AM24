@@ -217,16 +217,29 @@ public class CLI implements Runnable{
         //TODO remove nickname check to allow players to rejoin a lobby
         clearScreen();
         ArrayList<VirtualLobby> lobbies = new ArrayList<>();
-        if (welcome != null) {
-            printLobbies(welcome);
-            lobbies = welcome.getLobbies();
+        /*
+        while(welcome == null) {
+            System.out.println("Getting the lobbies' information");
+            try {
+                wait(1000);
+            } catch (InterruptedException ignored) {
+            }
         }
 
+         */
+
+        printLobbies(welcome);
+        lobbies = welcome.getLobbies();
+
         String answer;
-        do {
-            System.out.println("Do you want to Join a Lobby? (y/n)");
-            answer = input.nextLine();
-        }while ((!answer.equals("y") && !answer.equals("n"))||(answer.equals("y")&&lobbies.size()==0));
+        if(!lobbies.isEmpty()) {
+            do {
+                System.out.println("Do you want to Join a Lobby? (y/n)");
+                answer = input.nextLine();
+            } while ((!answer.equals("y") && !answer.equals("n")) || (answer.equals("y") && lobbies.size() == 0));
+        } else {
+            answer = "n";
+        }
 
         if (answer.equals("y")) {
             //TODO check the value of the lobby's index
@@ -244,10 +257,12 @@ public class CLI implements Runnable{
             do {
                 System.out.println("Choose your nickname: ");
                 nickname = input.nextLine();
+                /*
                 if (lobbies.get(getLobbyByIndex(lobbies, index)).getNicknames().contains(nickname)) {
                     System.out.println("Nickname already in use!");
                     nickname = null;
                 }
+                 */
             } while (nickname == null);
 
             int mageIndex;
@@ -388,7 +403,7 @@ public class CLI implements Runnable{
         lastLine(xSize,1,lines);
 
         lines.forEach(l->{if(!l.isEmpty())
-        System.out.println(l);});
+            System.out.println(l);});
     }
 
     /**
@@ -683,8 +698,10 @@ public class CLI implements Runnable{
             gameActive=true;
             new Thread(this).start();
         }
-        else if(text.equals("The lobby has been created")||text.equals("You have joined the game"))
+        else if(text.equals("The lobby has been created")||text.equals("You have joined the game")) {
             new Thread(this).start();
+            inLobby = true;
+        }
         printView();
     }
 
@@ -693,7 +710,10 @@ public class CLI implements Runnable{
         System.out.println(text);
 
         if(text!=null&&(text.equals(ERRORS.MAGE_TAKEN.toString())||text.equals(ERRORS.NICKNAME_TAKEN.toString())
-        ||text.equals(ERRORS.COLOR_TOWER_TAKEN.toString())||text.equals("Error: the lobby is full"))){
+                ||text.equals(ERRORS.COLOR_TOWER_TAKEN.toString())||text.equals("Error: the lobby is full")
+                || text.equals("Error: there is no lobby available, please create a new one") ||
+                text.equals("Error: invalid lobby index, please retry"))){
+            getInfo();
             try{
                 wait(5000);
             }catch (InterruptedException ignored){}
@@ -708,10 +728,15 @@ public class CLI implements Runnable{
     public void visit(Welcome w){
         welcome = w;
 
+        if(!inLobby) {
+            new Thread(this::getInfo).start();
+        }
+        /*
         if(!inLobby){
             inLobby=true;
             new Thread(this::getInfo).start();
         }
+         */
     }
 
     /**

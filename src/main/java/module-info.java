@@ -1,4 +1,4 @@
-module it.polimi.ingsw {
+open module it.polimi.ingsw {
     requires javafx.base;
     requires javafx.fxml;
     requires javafx.graphics;
@@ -6,10 +6,12 @@ module it.polimi.ingsw {
     requires java.desktop;
     requires javafx.controls;
 
-    opens it.polimi.ingsw.client.GUIView to javafx.fxml;
+    //opens it.polimi.ingsw.client.GUIView to javafx.fxml;
     exports it.polimi.ingsw.client.GUIView;
     exports it.polimi.ingsw.client.GUIView.controllers;
-    opens it.polimi.ingsw.client.GUIView.controllers to javafx.fxml;
+    //opens it.polimi.ingsw.client.GUIView.controllers to javafx.fxml;
+    //opens it.polimi.ingsw.server to com.google.gson;
+    //exports it.polimi.ingsw.server.answer;
 }
 
 /*

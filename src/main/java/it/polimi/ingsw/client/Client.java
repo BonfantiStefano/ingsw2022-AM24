@@ -28,7 +28,6 @@ public class Client {
     private final CLI cli;
     private Thread timer;
     private static final int TIMEOUT = 50000;
-    private boolean isStarted = false;
 
     /**
      * Method main is used to start the client side.
@@ -128,10 +127,7 @@ public class Client {
         JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
         switch (jsonObject.get("type").getAsString()) {
             case "Welcome" :
-                if(!isStarted) {
-                    isStarted = true;
-                    return gson.fromJson(jsonString, Welcome.class);
-                }
+                return gson.fromJson(jsonString, Welcome.class);
             case "Error" :
                 return gson.fromJson(jsonString, Error.class);
             case "Information" :
@@ -143,7 +139,6 @@ public class Client {
                 //Dopo si toglie la system out
                 System.out.println(gson.fromJson(jsonString, NotifyDisconnection.class).getString());
                 handleClientDisconnection();
-                //TODO manca da chiudere lo scanner se no il programma non si ferma
                 return null;
             case "AddPlayer":
                 return gson.fromJson(jsonString, AddPlayer.class);

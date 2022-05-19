@@ -44,7 +44,10 @@ public class Eriantys {
                 }
                 switch (client) {
                     case 0 -> Client.main(null);
-                    case 1 -> GUI.main(null);
+                    case 1 -> {
+                        System.out.println("The Application is starting...");
+                        GUI.main(null);
+                    }
                     default -> System.err.println("Invalid argument, please run the executable again");
                 }
             }
