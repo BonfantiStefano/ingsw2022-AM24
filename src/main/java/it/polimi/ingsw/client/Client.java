@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.client.request.*;
@@ -31,32 +32,16 @@ public class Client {
     private ObjectOutputStream os;
     private ObjectInputStream is;
     private boolean active;
-    private final CLI cli;
+    private final UserInterface userInterface;
     private Thread timer;
     private static final int TIMEOUT = 50000;
 
     /**
-     * Method main is used to start the client side.
-     * @param args of type String[]
-     */
-    public static void main(String[] args) {
-        Scanner initialScanner = new Scanner(System.in);
-        System.out.println("Enter IP");
-        String ip = initialScanner.nextLine();
-        System.out.println("IP is: " + ip);
-        System.out.println("Enter port");
-        int port = initialScanner.nextInt();
-        System.out.println("Port is: "+ port);
-        Client c = new Client();
-        c.startClient(ip, port);
-    }
-
-    /**
      * Constructor Client creates a new Client instance.
      */
-    public Client() {
+    public Client(UserInterface userInterface) {
         active = false;
-        cli = new CLI(this);
+        this.userInterface = userInterface;
     }
 
     /**
@@ -79,16 +64,45 @@ public class Client {
                 System.out.println("Error during initialization of the client!");
                 System.exit(0);
             }
-
-            //Avvio del metodo che si occupa della lettura dei messaggi che gli invia il server e del loro smistamento
             System.out.println("Stream created");
-
+            //The client starts to read the server input
             startServerReader();
 
         } catch (NoSuchElementException | IllegalStateException e) {
             System.out.println("Connection closed");
+            System.exit(-1);
         } catch (IOException e) {
             System.out.println("Error during the creation od the socket");
+            System.exit(-1);
+        }
+    }
+
+    /**
+     * Method startServerReader reads all the message that the server sends and forwards those messages to the user interface.
+     */
+    private void startServerReader() {
+        while (active) {
+            try {
+                String s = (String) is.readObject();
+                if(s!= null) {
+                    //questo if poi andrà rimosso, utile per debuggare.
+                    if (!s.equals("{\"type\":\"Ping\"}")) {
+                        System.out.println(s);
+                    }
+                    stopTimer();
+                    startTimer();
+                    Answer a = parseMessage(s);
+                    if (a!=null) {
+                        userInterface.addMessage(a);
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                System.out.println("Socket chiuso, al posto di e.printStackTrace");
+                //e.printStackTrace();
+                handleClientDisconnection();
+            }
         }
     }
 
@@ -139,7 +153,7 @@ public class Client {
             case "Information" :
                 return gson.fromJson(jsonString, Information.class);
             case "Ping" :
-                sendMessage(cli.toJson(new Pong()));
+                sendMessage(toJson(new Pong()));
                 return null;
             case "NotifyDisconnection" :
                 //Dopo si toglie la system out e la si ritorna il json alla ui
@@ -179,36 +193,6 @@ public class Client {
         }
     }
 
-    /**
-     * Method startServerReader reads all the message that the server sends and forwards those messages to the user interface.
-     */
-    public void startServerReader() {
-        while (active) {
-            try {
-                String s = (String) is.readObject();
-                if(s!= null) {
-                    //questo if poi andrà rimosso, utile per debuggare.
-                    if (!s.equals("{\"type\":\"Ping\"}")) {
-                        System.out.println(s);
-                    }
-                    stopTimer();
-                    startTimer();
-                    Answer a = parseMessage(s);
-                    //TODO handle all other messages
-                    if (a!=null) {
-                        cli.addMessage(a);
-                    }
-                }
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                System.out.println("Socket chiuso, al posto di e.printStackTrace");
-                //e.printStackTrace();
-                handleClientDisconnection();
-            }
-        }
-    }
-
     //Utile se vogliamo implementare un timer che ci dice che il server non è raggiungibile
     /**
      * Method startTimer starts the timer that checks if the server is still alive.
@@ -242,5 +226,19 @@ public class Client {
      */
     public boolean isActive() {
         return active;
+    }
+
+    /**
+     * Converts an Object to Json format
+     * @param r the Client's request
+     * @return Request Object containing the Message
+     */
+    public String toJson(Object r){
+        Gson gson = new Gson();
+        JsonElement jsonElement;
+        jsonElement = gson.toJsonTree(r);
+        jsonElement.getAsJsonObject().addProperty("type", r.getClass().getSimpleName());
+
+        return gson.toJson(jsonElement);
     }
 }

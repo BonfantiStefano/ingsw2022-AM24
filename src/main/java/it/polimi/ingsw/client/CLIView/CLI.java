@@ -4,6 +4,7 @@ package it.polimi.ingsw.client.CLIView;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.client.UserInterface;
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.controller.ERRORS;
 import it.polimi.ingsw.model.ColorS;
@@ -23,13 +24,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//TODO inserire i controlli ogni volta che faccio la parsInt in un blocco try catch per la eccezione che lancia o in alternativa usare nextInt
+//come faccio in eriantys.java, in teoria è preferibile usare il parsing a nextLine con blocco try catch per la NumericFormatException
 /**
  * Class CLI represents the terminal UI
  */
-public class CLI implements Runnable{
+public class CLI implements Runnable, UserInterface {
     //TODO add handle disconnection
     private VirtualView virtualView;
-    private final Client client;
+    private Client client;
     private Welcome welcome;
     private boolean gameActive;
     private String lastInfo;
@@ -41,21 +44,25 @@ public class CLI implements Runnable{
     private boolean firstTime = true;
 
     /**
-     * Creates a new CLI object
-     * @param client the Client creating the UI
+     * Method main is used to start the CLI side.
+     * @param args of type String[]
      */
-    public CLI(Client client) {
-        input = new Scanner(System.in);
-        virtualView = new VirtualView();
-        this.client = client;
-        welcome = null;
-        //TODO implement set gameActive based on messages from Server
-        gameActive = true;
-        lastInfo="";
-        lastError="";
-        inLobby=false;
-        messagesQueue = new ArrayBlockingQueue<>(20);
+    public static void main(String[] args) {
+        //TODO inserire controlli per la porta (che sia compresa tra quei valori)
+        Scanner initialScanner = new Scanner(System.in);
+        System.out.println("Enter IP");
+        String ip = initialScanner.nextLine();
+        System.out.println("IP is: " + ip);
+        System.out.println("Enter port (between 1024 and 65535)");
+        int port = Integer.parseInt(initialScanner.nextLine());
+        System.out.println("Port is: "+ port);
+        CLI cli = new CLI();
+        cli.begin(ip, port);
+    }
 
+    @Override
+    public void begin(String ip, int port) {
+        client = new Client(this);
         //start thread to handle all messages received sequentially
         new Thread(()->{
             try {
@@ -67,7 +74,22 @@ public class CLI implements Runnable{
                 e.printStackTrace();
             }
         }).start();
+        client.startClient(ip, port);
+    }
 
+    /**
+     * Creates a new CLI object
+     */
+    public CLI() {
+        input = new Scanner(System.in);
+        virtualView = new VirtualView();
+        welcome = null;
+        //TODO implement set gameActive based on messages from Server
+        gameActive = true;
+        lastInfo="";
+        lastError="";
+        inLobby=false;
+        messagesQueue = new ArrayBlockingQueue<>(20);
     }
 
     /**
@@ -232,9 +254,8 @@ public class CLI implements Runnable{
      */
     public void getInfo() {
 //        Scanner scanner = new Scanner(System.in);
-        //TODO remove nickname check to allow players to rejoin a lobby
         clearScreen();
-        ArrayList<VirtualLobby> lobbies = new ArrayList<>();
+        ArrayList<VirtualLobby> lobbies;
         if(error!= null) {
             System.out.println(error.getString());
         }
@@ -252,7 +273,6 @@ public class CLI implements Runnable{
         }
 
         if (answer.equals("y")) {
-            //TODO check the value of the lobby's index
             int index;
             do {
                 System.out.println("Insert the Lobby's number: ");
@@ -267,36 +287,18 @@ public class CLI implements Runnable{
             do {
                 System.out.println("Choose your nickname: ");
                 nickname = input.nextLine();
-                /*
-                if (lobbies.get(getLobbyByIndex(lobbies, index)).getNicknames().contains(nickname)) {
-                    System.out.println("Nickname already in use!");
-                    nickname = null;
-                }
-                 */
             } while (nickname == null);
 
             int mageIndex;
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
                 mageIndex = Integer.parseInt(input.nextLine());
-                /*
-                if (lobbies.get(getLobbyByIndex(lobbies, index)).getMages().contains(Mage.values()[mageIndex-1])) {
-                    System.out.println("Mage already in use!");
-                    mageIndex = -1;
-                }
-                 */
             } while (mageIndex < 0 || mageIndex > 4);
             //TODO print also the color of the tower
             int towerIndex;
             do {
                 System.out.println("Choose your TowerColor (1,2"+ (lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2 ? ")":",3)")+":");
                 towerIndex = Integer.parseInt(input.nextLine());
-                /*
-                if (lobbies.get(getLobbyByIndex(lobbies, index)).getTowers().contains(ColorT.values()[towerIndex-1])) {
-                    System.out.println("Tower Color already in use!");
-                    towerIndex = -1;
-                }
-                 */
             } while ((towerIndex < 0 || towerIndex > 4)||(towerIndex==3&&lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2));
 
             Join msg = new Join(nickname, Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1], index);
@@ -329,7 +331,7 @@ public class CLI implements Runnable{
 
             int towerIndex;
             do {
-                System.out.println("Choose your TowerColor (1,2"+ (numPlayers==2 ? ")":",3)")+":");
+                System.out.println("Choose your TowerColor (1-Black,2-White"+ (numPlayers==2 ? ")":",3-Grey)")+":");
                 towerIndex = Integer.parseInt(input.nextLine());
             } while (towerIndex < 0 || towerIndex > 4);
 
@@ -417,36 +419,6 @@ public class CLI implements Runnable{
 
         lines.forEach(l->{if(!l.isEmpty())
             System.out.println(l);});
-    }
-
-    /**
-     * Gets the special Char corresponding to the parameter's ColorS
-     * @param c the ColorS being searched
-     * @return the Symbol and Color corresponding to the parameter
-     */
-    private String getChar(ColorS c) {
-        final String circle = BOX.CIRCLE.toString();
-        return switch (c) {
-            case BLUE -> Color.ANSI_BLUE + circle + Color.RESET;
-            case GREEN -> Color.ANSI_GREEN + circle + Color.RESET;
-            case YELLOW -> Color.ANSI_YELLOW + circle + Color.RESET;
-            case RED -> Color.ANSI_RED + circle + Color.RESET;
-            case PINK -> Color.ANSI_PURPLE + circle + Color.RESET;
-        };
-    }
-
-    /**
-     * Gets the special Char corresponding to the parameter's ColorS
-     * @param c the ColorS being searched
-     * @return the Symbol and Color corresponding to the parameter
-     */
-    private String getChar(ColorT c) {
-        return switch (c) {
-            case BLACK -> Color.ANSI_BLACK.toString();
-            case WHITE -> Color.RESET;
-            case GREY -> Color.ANSI_GREY.toString();
-
-        };
     }
 
     /**
@@ -810,6 +782,36 @@ public class CLI implements Runnable{
                 System.out.println(BOX.HORIZ.toString().repeat(10));
             }
         }
+    }
+
+    /**
+     * Gets the special Char corresponding to the parameter's ColorS
+     * @param c the ColorS being searched
+     * @return the Symbol and Color corresponding to the parameter
+     */
+    private String getChar(ColorS c) {
+        final String circle = BOX.CIRCLE.toString();
+        return switch (c) {
+            case BLUE -> Color.ANSI_BLUE + circle + Color.RESET;
+            case GREEN -> Color.ANSI_GREEN + circle + Color.RESET;
+            case YELLOW -> Color.ANSI_YELLOW + circle + Color.RESET;
+            case RED -> Color.ANSI_RED + circle + Color.RESET;
+            case PINK -> Color.ANSI_PURPLE + circle + Color.RESET;
+        };
+    }
+
+    /**
+     * Gets the special Char corresponding to the parameter's ColorS
+     * @param c the ColorS being searched
+     * @return the Symbol and Color corresponding to the parameter
+     */
+    private String getChar(ColorT c) {
+        return switch (c) {
+            case BLACK -> Color.ANSI_BLACK.toString();
+            case WHITE -> Color.RESET;
+            case GREY -> Color.ANSI_GREY.toString();
+
+        };
     }
 
     private int getLobbyByIndex(ArrayList<VirtualLobby> lobbies, int index) {

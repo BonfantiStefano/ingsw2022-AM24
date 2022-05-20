@@ -1,51 +1,33 @@
 package it.polimi.ingsw.client.GUIView;
 
+import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.GUIView.controllers.CONTROLLERS;
 import it.polimi.ingsw.client.GUIView.controllers.GUIController;
 import it.polimi.ingsw.client.GUIView.controllers.GameController;
 import it.polimi.ingsw.client.GUIView.controllers.LobbyController;
+import it.polimi.ingsw.client.UserInterface;
+import it.polimi.ingsw.server.answer.Answer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
-public class GUI extends Application {
+public class GUI extends Application implements UserInterface {
     private Scene currentScene;
     private Stage window;
-    private Socket clientSocket;
+    private Client client;
     private final HashMap<String, Scene> nameMapScene = new HashMap<>();
     private final HashMap<Scene, GUIController> nameMapController = new HashMap<>();
-    private ObjectOutputStream os;
-    private ObjectInputStream is;
+    private final BlockingQueue<Answer> messagesQueue = new ArrayBlockingQueue<>(20);
 
     public static void main(String[] args) {
         launch();
     }
-
-    /*
-    public void start(Stage primaryStage) throws Exception {
-
-        FXMLLoader fxmlLoader = new FXMLLoader(GUI.class.getResource("/setUpScene.fxml"));
-
-        GUIController c = fxmlLoader.getController();
-
-        Scene scene = new Scene(fxmlLoader.load());
-        primaryStage.setScene( scene );
-        primaryStage.show();
-    }
-     */
-
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -86,36 +68,9 @@ public class GUI extends Application {
         window.show();
     }
 
-    public void setupConnection(Socket clientSocket) {
-        this.clientSocket = clientSocket;
-        try {
-            os = new ObjectOutputStream(clientSocket.getOutputStream());
-            os.flush();
-            is = new ObjectInputStream(clientSocket.getInputStream());
-        } catch (IOException e) {
-            System.out.println("Error during initialization of the client!");
-            System.exit(0);
-        }
-        System.out.println("Stream created");
-        new Thread(() -> {
-            while (true) {
-                try {
-                    String s = (String) is.readObject();
-                    System.out.println(s);
-                    /*
-                    if(s.contains("{\"lobbies\":")) {
-
-                    }
-                     */
-                    //sendMessageToServer(s);
-                } catch (ClassNotFoundException | IOException e) {
-                    e.printStackTrace();
-                    System.exit(0);
-                } catch (Exception e) {
-                    sendMessageToServer("Error exception");
-                }
-            }
-        }).start();
+    public void setupConnection(String serverAddress, int port) {
+        client = new Client(this);
+        client.startClient(serverAddress, port);
     }
 
     public void changeScene(String newSceneName) throws IOException {
@@ -132,12 +87,17 @@ public class GUI extends Application {
     }
 
     public void sendMessageToServer(Object string) {
-        try {
-            os.reset();
-            os.writeObject(string);
-            os.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //Dopo cambiare questo metodo
+        client.sendMessage(client.toJson(string));
+    }
+
+    @Override
+    public void begin(String ip, int port) {
+
+    }
+
+    @Override
+    public void addMessage(Answer a) {
+        messagesQueue.add(a);
     }
 }

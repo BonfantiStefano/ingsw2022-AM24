@@ -73,7 +73,9 @@ public class Server {
      * @param clientId int - the id of the client who has to be disconnected.
      */
     public void handleClientDisconnection(int clientId) {
-        mapIdLobby.get(clientId).handleDisconnection(clientId);
+        if(mapIdLobby.containsKey(clientId)) {
+            mapIdLobby.get(clientId).handleDisconnection(clientId);
+        }
         mapIdSocket.remove(clientId);
     }
 

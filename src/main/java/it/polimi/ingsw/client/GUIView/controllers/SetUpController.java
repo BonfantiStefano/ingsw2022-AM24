@@ -7,7 +7,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
-import java.net.Socket;
 
 /**
  * This class is the GUIController which handles choosing which host IP and port to connect to
@@ -69,8 +68,8 @@ public class SetUpController implements GUIController{
             try {
                 //Attempts connection to server and creates the Reader
                 int port = Integer.parseInt(getServerPort());
-                Socket clientSocket = new Socket(getServer(), port);
-                gui.setupConnection(clientSocket);
+                //TODO verificare se funziona poiché al momento la gui non parte da questa pagina
+                gui.setupConnection(getServer(), port);
                 gui.changeScene("/Welcome.fxml");
             } catch (IOException e) {
                 statusLabel.setText("Couldn't connect to the specified server");

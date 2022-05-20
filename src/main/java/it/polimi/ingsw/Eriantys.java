@@ -1,6 +1,6 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.client.Client;
+import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.client.GUIView.GUI;
 import it.polimi.ingsw.server.ServerMain;
 
@@ -35,7 +35,7 @@ public class Eriantys {
             case 0 -> ServerMain.main(null);
             case 1 -> {
                 System.out.println("0. CLI\n1. GUI");
-                System.out.println("Type the number of the desired option!");
+                System.out.println("Type the number of the interface you want to play with!");
                 try {
                     client = scanner.nextInt();
                 } catch (InputMismatchException e) {
@@ -43,7 +43,7 @@ public class Eriantys {
                     System.exit(-1);
                 }
                 switch (client) {
-                    case 0 -> Client.main(null);
+                    case 0 -> CLI.main(null);
                     case 1 -> {
                         System.out.println("The Application is starting...");
                         GUI.main(null);

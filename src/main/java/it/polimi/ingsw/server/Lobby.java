@@ -188,7 +188,6 @@ public class Lobby {
         if((disconnectedClientsId.size() == 1 && clientsId.size() == 1 && gameStatus == GameStatus.SETUP) ||
                 (disconnectedClientsId.size() == numPlayers && gameStatus == GameStatus.PAUSE)) {
             System.out.println("The lobby must be closed");
-            //Togliere commento delle istruzioni sotto solo quando avremo finito altrimenti mi sarà difficile fare il debug
             gameStatus = GameStatus.ENDED;
             //dobbiamo comunicarlo anche al controller che la partita è finita?
         } else {
@@ -197,6 +196,7 @@ public class Lobby {
                 gameStatus = GameStatus.PAUSE;
                 startTimer();
                 System.out.println("The lobby is in pause, waiting a re-connection");
+                sendMessageToAll(new Information("The lobby is in pause, waiting a re-connection"));
             }
         }
     }
@@ -230,7 +230,7 @@ public class Lobby {
     }
 
     /**
-     * Method sendMessageToAll sends an Answer message to all the clients.
+     * Method sendMessageToAll sends an Answer message to all the active clients.
      * @param answer AnswerWithString - the message that will be sent to the clients.
      */
     public void sendMessageToAll(Answer answer) {

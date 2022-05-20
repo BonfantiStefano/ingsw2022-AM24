@@ -22,8 +22,8 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 class CLITest {
-    CLI c = new CLI(new Client());
-    CharacterFactory factory = new CharacterFactory(null,null,new StudentContainer(),null);
+//    CLI c = new CLI(new Client());
+//    CharacterFactory factory = new CharacterFactory(null,null,new StudentContainer(),null);
 /*
     @Test
     void test(){
