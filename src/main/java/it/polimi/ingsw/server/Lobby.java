@@ -13,8 +13,6 @@ import it.polimi.ingsw.server.answer.*;
 import it.polimi.ingsw.server.answer.Error;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 //Not final, work in progress
@@ -95,7 +93,7 @@ public class Lobby {
      * @param idClients int - the client's id who sent the message.
      * @return a boolean that notify the server if the addition of the player is corrected.
      */
-    public boolean addPlayer(Join join, SocketClientHandler socketClientHandler, int idClients) {
+    public /*synchronized*/ boolean addPlayer(Join join, SocketClientHandler socketClientHandler, int idClients) {
         if(mapIdNickname.size() < numPlayers && gameStatus.equals(GameStatus.SETUP)) {
             boolean ris = true;
             for (int counter = 0; counter < clientsId.size() && ris; counter++) {
@@ -146,7 +144,7 @@ public class Lobby {
      */
     public int checkReconnection(Join join, SocketClientHandler socketClientHandler, int clientId) {
         if(mapNicknameId.containsKey(join.getNickname()) && disconnectedClientsId.contains(mapNicknameId.get(join.getNickname()))
-                && gameStatus != GameStatus.ENDED) {
+                && gameStatus != GameStatus.ENDED /*TODO manca il controllo se il mago e il colore delle torri era quello di prima*/) {
             int oldId = mapNicknameId.get(join.getNickname());
             //Notification of the re-connection to the players
             socketClientHandler.sendMessage(new Information("Welcome back " + join.getNickname()));
@@ -170,6 +168,11 @@ public class Lobby {
             return oldId;
         }
         //forse si può mettere che se uno prova a riconnettersi dopo che la partita è finita può dirgli che la partita è finita
+        if(gameStatus == GameStatus.ENDED) {
+            socketClientHandler.sendMessage(new Error("Error: game ended"));
+        } else {
+            socketClientHandler.sendMessage(new Error(ERRORS.NICKNAME_TAKEN.toString()));
+        }
         return -1;
     }
 

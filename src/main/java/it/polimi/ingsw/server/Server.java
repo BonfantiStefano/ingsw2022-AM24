@@ -11,8 +11,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -90,8 +88,8 @@ public class Server {
             sendMessage(clientId, new Error("Error: you are already in a lobby"));
         } else if(lobbies.isEmpty()) {
             //Case when the first client connects to the server
-            sendMessage(clientId, getLobbies());
             sendMessage(clientId, new Error("Error: there is no lobby available, please create a new one"));
+            sendMessage(clientId, getLobbies());
         } else if(join.getIndex() >= 0 && join.getIndex() < lobbies.size() && lobbies.get(join.getIndex()).isPresent(join.getNickname())){
             //Case when a client maybe is a disconnected player
             int oldClientId = lobbies.get(join.getIndex()).checkReconnection(join, mapIdSocket.get(clientId), clientId);
@@ -108,8 +106,8 @@ public class Server {
                 sendMessage(clientId, getLobbies());
             }
         } else {
-            sendMessage(clientId, getLobbies());
             sendMessage(clientId, new Error("Error: invalid lobby index, please retry"));
+            sendMessage(clientId, getLobbies());
             //Capire se serve fare questo, poichè alcuni controlli li faccio già lato client
         }
     }

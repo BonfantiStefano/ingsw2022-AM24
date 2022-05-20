@@ -36,8 +36,9 @@ public class CLI implements Runnable{
     private String lastError;
     private boolean inLobby;
     private final BlockingQueue<Answer> messagesQueue;
-
+    private Error error;
     private final Scanner input;
+    private boolean firstTime = true;
 
     /**
      * Creates a new CLI object
@@ -74,6 +75,15 @@ public class CLI implements Runnable{
      */
     public void run() {
         while(client.isActive()) {
+            //TODO controllare se dà l' eccezione quando finisco la getInfo (con il codice commentato può essere che venga stampato il
+            // testo due volte (anche se non ne vedo la correlazione))
+            /*
+            try {
+                String s = input.nextLine();
+                parseInput(s);
+            } catch (Exception ignored) {
+            }
+             */
             String s = input.nextLine();
             parseInput(s);
         }
@@ -221,20 +231,13 @@ public class CLI implements Runnable{
      * Ask the Player whether they want to create a Lobby or Join one
      */
     public void getInfo() {
+//        Scanner scanner = new Scanner(System.in);
         //TODO remove nickname check to allow players to rejoin a lobby
         clearScreen();
         ArrayList<VirtualLobby> lobbies = new ArrayList<>();
-        /*
-        while(welcome == null) {
-            System.out.println("Getting the lobbies' information");
-            try {
-                wait(1000);
-            } catch (InterruptedException ignored) {
-            }
+        if(error!= null) {
+            System.out.println(error.getString());
         }
-
-         */
-
         printLobbies(welcome);
         lobbies = welcome.getLobbies();
 
@@ -276,20 +279,24 @@ public class CLI implements Runnable{
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
                 mageIndex = Integer.parseInt(input.nextLine());
+                /*
                 if (lobbies.get(getLobbyByIndex(lobbies, index)).getMages().contains(Mage.values()[mageIndex-1])) {
                     System.out.println("Mage already in use!");
                     mageIndex = -1;
                 }
+                 */
             } while (mageIndex < 0 || mageIndex > 4);
             //TODO print also the color of the tower
             int towerIndex;
             do {
                 System.out.println("Choose your TowerColor (1,2"+ (lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2 ? ")":",3)")+":");
                 towerIndex = Integer.parseInt(input.nextLine());
+                /*
                 if (lobbies.get(getLobbyByIndex(lobbies, index)).getTowers().contains(ColorT.values()[towerIndex-1])) {
                     System.out.println("Tower Color already in use!");
                     towerIndex = -1;
                 }
+                 */
             } while ((towerIndex < 0 || towerIndex > 4)||(towerIndex==3&&lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2));
 
             Join msg = new Join(nickname, Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1], index);
@@ -329,7 +336,6 @@ public class CLI implements Runnable{
             GameParams msg = new GameParams(numPlayers, expert.equals("y"), nickname,Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1]);
             client.sendMessage(toJson(msg));
         }
-
     }
 
     /**
@@ -728,30 +734,25 @@ public class CLI implements Runnable{
                 ||text.equals(ERRORS.COLOR_TOWER_TAKEN.toString())||text.equals("Error: the lobby is full")
                 || text.equals("Error: there is no lobby available, please create a new one") ||
                 text.equals("Error: invalid lobby index, please retry"))){
-            getInfo();
-            try{
-                wait(5000);
-            }catch (InterruptedException ignored){}
-            new Thread(this::getInfo).start();
+            error = e;
+            if(!firstTime && !inLobby) {
+                new Thread(this::getInfo).start();
+            }
         }
 
     }
     public void visit(NotifyDisconnection e){
         System.out.println(e.getString());
+
     }
 
     public void visit(Welcome w){
         welcome = w;
 
-        if(!inLobby) {
+        if(firstTime) {
+            firstTime = false;
             new Thread(this::getInfo).start();
         }
-        /*
-        if(!inLobby){
-            inLobby=true;
-            new Thread(this::getInfo).start();
-        }
-         */
     }
 
     /**

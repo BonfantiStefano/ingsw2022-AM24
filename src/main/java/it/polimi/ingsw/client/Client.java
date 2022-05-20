@@ -12,9 +12,15 @@ import java.io.*;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
+//TODO
+/*
+Per unificare cli e gui devo creare un' interfaccio userInterface, sia cli che gui dopo aver chiesto in input all' utente ip e porta
+creano un Client (si passano loro come parametro) e poi vi chiamano startClient passandovi porta e ip, il client deve leggere i messaggi
+inviati dal server, poi (su un altro thread) li gestisce (cioè chiama la visit) (nel caso di update ha anche un metodo per notificarli
+(della user interface) alla ui, per cli stampa tutta la view mentre per gui notifica la scena corrente. Gestisce inoltre i ping/pong e permette
+alla ui di inviare i messaggi al server (prima li trasforma in json)
+*/
 //Not final, work in progress
 /**
  * Class Client manages the connection of a client with the server.
@@ -61,30 +67,28 @@ public class Client {
     public void startClient(String ip, int port) {
         active = true;
         startTimer();
-        try {
-            //Socket creation
-            try (Socket socket = new Socket(ip, port)) {
-                System.out.println("Connection established");
-                //Stream creation
-                try {
-                    os = new ObjectOutputStream(socket.getOutputStream());
-                    os.flush();
-                    is = new ObjectInputStream(socket.getInputStream());
-                } catch (IOException e) {
-                    System.out.println("Error during initialization of the client!");
-                    System.exit(0);
-                }
-
-                //Avvio del metodo che si occupa della lettura dei messaggi che gli invia il server e del loro smistamento
-                System.out.println("Stream created");
-
-                startServerReader();
-
-            } catch (NoSuchElementException | IllegalStateException e) {
-                System.out.println("Connection closed");
+        //Socket creation
+        try (Socket socket = new Socket(ip, port)) {
+            System.out.println("Connection established");
+            //Stream creation
+            try {
+                os = new ObjectOutputStream(socket.getOutputStream());
+                os.flush();
+                is = new ObjectInputStream(socket.getInputStream());
+            } catch (IOException e) {
+                System.out.println("Error during initialization of the client!");
+                System.exit(0);
             }
+
+            //Avvio del metodo che si occupa della lettura dei messaggi che gli invia il server e del loro smistamento
+            System.out.println("Stream created");
+
+            startServerReader();
+
+        } catch (NoSuchElementException | IllegalStateException e) {
+            System.out.println("Connection closed");
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error during the creation od the socket");
         }
     }
 
@@ -108,6 +112,8 @@ public class Client {
     public void handleClientDisconnection() {
         active = false;
         stopTimer();
+        //Per usare questo sotto bisogna trasformare questo metodo e renderlo simile a quello del SocketClientHandler
+        //sendMessage(cli.toJson(new Disconnect()));
         try {
             os.close();
             is.close();
@@ -136,7 +142,7 @@ public class Client {
                 sendMessage(cli.toJson(new Pong()));
                 return null;
             case "NotifyDisconnection" :
-                //Dopo si toglie la system out
+                //Dopo si toglie la system out e la si ritorna il json alla ui
                 System.out.println(gson.fromJson(jsonString, NotifyDisconnection.class).getString());
                 handleClientDisconnection();
                 return null;
