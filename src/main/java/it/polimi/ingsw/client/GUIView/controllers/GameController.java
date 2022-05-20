@@ -3,49 +3,51 @@ package it.polimi.ingsw.client.GUIView.controllers;
 import it.polimi.ingsw.client.GUIView.GUI;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
+import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.character.CharacterDescription;
-import it.polimi.ingsw.server.virtualview.VirtualCharacter;
-import it.polimi.ingsw.server.virtualview.VirtualCharacterWithNoEntry;
-import it.polimi.ingsw.server.virtualview.VirtualCharacterWithStudents;
-import it.polimi.ingsw.server.virtualview.VirtualView;
+import it.polimi.ingsw.model.character.CharacterWithNoEntry;
+import it.polimi.ingsw.model.character.CharacterWithStudent;
+import it.polimi.ingsw.model.player.Assistant;
+import it.polimi.ingsw.model.player.Mage;
+import it.polimi.ingsw.server.virtualview.*;
 import javafx.fxml.FXML;
 import javafx.geometry.*;
-import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.Effect;
-import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
-import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.*;
+import java.util.List;
 
 public class GameController implements GUIController{
     Random r = new Random(System.currentTimeMillis());
-    private final int numIslands = 5;
+    private int numIslands = 12;
     private HashMap<ColorS, Image> studentImages;
     private HashMap<ColorS, Image> profImages;
     private HashMap<ColorT, Image> towerImages;
     private HashMap<CharacterDescription,Image> charImages;
-    private final int radius = 200;
+    private ArrayList<Image> cloudImages;
+    private HashMap<Integer, Image> assistantImages;
+    private final int radiusIslands = 200;
+    private final int radiusClouds = 75;
     private final int angle = 360;
     private GUI gui;
     private VirtualView virtualView;
-    private ArrayList<GridPane> entrancesGrids = new ArrayList<>();
-    private ArrayList<GridPane> hallGrids = new ArrayList<>();
-    private ArrayList<GridPane> profsGrids = new ArrayList<>();
-    private ArrayList<GridPane> towersGrids = new ArrayList<>();
-    private ArrayList<Pane> boards = new ArrayList<>();
+    private final ArrayList<GridPane> entrancesGrids = new ArrayList<>();
+    private final ArrayList<GridPane> hallGrids = new ArrayList<>();
+    private final ArrayList<GridPane> profsGrids = new ArrayList<>();
+    private final ArrayList<GridPane> towersGrids = new ArrayList<>();
+    private final ArrayList<Pane> boards = new ArrayList<>();
+    private final ArrayList<Pane> lastAssistants = new ArrayList<>();
 
     private Node from;
     private Node to;
@@ -54,7 +56,7 @@ public class GameController implements GUIController{
     @FXML
     private AnchorPane anchor;
     @FXML
-    private Pane sc1, sc2, sc3, islandsPane;
+    private Pane sc1, sc2, sc3, islandsPane, last1, last2, last3;
     @FXML
     private VBox charBox;
 
@@ -65,6 +67,9 @@ public class GameController implements GUIController{
         boards.add(sc1);
         boards.add(sc2);
         boards.add(sc3);
+        lastAssistants.add(last1);
+        lastAssistants.add(last2);
+        lastAssistants.add(last3);
 
         for (Pane p : boards) {
             p.getChildren().forEach(this::addTo);
@@ -76,13 +81,13 @@ public class GameController implements GUIController{
         updateProfs();
         for (GridPane g : towersGrids)
             updateTowers(towersGrids.indexOf(g));
+        updateAssistants();
         drawIslands();
+        drawCharacters();
+        drawClouds();
         islandsPane.setMinHeight(520);
         islandsPane.setMinWidth(520);
-        /*
-        anchor.setBackground(new Background(new BackgroundImage(new Image(getClass().getResourceAsStream("/graphics/EriantysLogo.jpg")),BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                new BackgroundSize(10,10,false,false,true,true))));
-        */
+
     }
 
 
@@ -158,8 +163,9 @@ public class GameController implements GUIController{
     }
 
     public void drawIslands(){
-        islandsPane.getChildren().clear();
-        final int offset = 200;
+        List<Node> islandsPanes = islandsPane.getChildren().stream().filter(p -> p.getStyleClass().contains("islandPanel")).toList();
+        islandsPane.getChildren().removeAll(islandsPanes);
+
 
         ArrayList<ImageView> islands = new ArrayList<>();
         Image image = new Image(getClass().getResourceAsStream("/graphics/island1.png"));
@@ -176,7 +182,7 @@ public class GameController implements GUIController{
             for(int w=0;w<4;w++)
                 towers.add(ColorT.BLACK);
 
-            StackPane p = createPane(colors, towers, true);
+            StackPane p = createPane(colors, towers, true, 1);
 
             p.getStyleClass().add("islandPanel");
             p.setMaxHeight(100);
@@ -185,8 +191,8 @@ public class GameController implements GUIController{
 
             islandsPane.getChildren().add(p);
 
-            p.setLayoutX(325+radius*Math.sin(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
-            p.setLayoutY(248+radius*Math.cos(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
+            p.setLayoutX(325+radiusIslands*Math.sin(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
+            p.setLayoutY(248+radiusIslands*Math.cos(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
 
             islandsPane.getStyleClass().add("border");
 
@@ -215,7 +221,7 @@ public class GameController implements GUIController{
 
     }
 
-    private StackPane createPane(ArrayList<ColorS> students,ArrayList<ColorT> towers, boolean mn){
+    private StackPane createPane(ArrayList<ColorS> students,ArrayList<ColorT> towers, boolean mn, int noEntry){
         StackPane p = new StackPane();
         ArrayList<Group> counters = new ArrayList<>();
         HBox box = new HBox();
@@ -265,14 +271,27 @@ public class GameController implements GUIController{
         }
         vBox.getChildren().add(towerBox);
 
+        HBox mnNoEntry = new HBox();
+        mnNoEntry.setSpacing(2);
+        mnNoEntry.setAlignment(Pos.CENTER);
+
         if(mn){
             Image mnImg = new Image(getClass().getResourceAsStream("/graphics/wooden_pieces/mother_nature.png"));
             ImageView mnView = new ImageView(mnImg);
             mnView.setFitHeight(25);
             mnView.setFitWidth(25);
-            vBox.getChildren().add(mnView);
+            mnNoEntry.getChildren().add(mnView);
         }
-
+        if(noEntry>0){
+            Image mnImg = new Image(getClass().getResourceAsStream("/graphics/wooden_pieces/deny_island_icon.png"));
+            for(int i =0;i<noEntry;i++) {
+                ImageView mnView = new ImageView(mnImg);
+                mnView.setFitHeight(25);
+                mnView.setFitWidth(25);
+                mnNoEntry.getChildren().add(mnView);
+            }
+        }
+        vBox.getChildren().add(mnNoEntry);
         vBox.getChildren().add(box);
         int i=0,j=0;
         for(Group counter:counters){
@@ -281,8 +300,6 @@ public class GameController implements GUIController{
             i++;
             j=i%2==0?j:j+1;
         }
-
-
 
         p.getChildren().add(vBox);
         p.setAlignment(Pos.CENTER);
@@ -298,35 +315,61 @@ public class GameController implements GUIController{
     }
 
     private void drawCharacters(){
-        charBox.setAlignment(Pos.CENTER);
+        //charBox.setAlignment(Pos.CENTER);
         charBox.setSpacing(10);
 
-        for(VirtualCharacter vc:virtualView.getVirtualCharacters()){
+        ArrayList<VirtualCharacter> virtualCharacters = createChars();
+
+        for(VirtualCharacter vc:virtualCharacters){
             StackPane p = new StackPane();
             Image img = null;
             GridPane gp = new GridPane();
+
+            //gp.getStyleClass().add("border");
+            gp.setMaxWidth((charBox.getPrefWidth()/2));
+            gp.setMaxHeight(((charBox.getPrefHeight()-charBox.getSpacing()*2)/3)/3);
+            gp.getColumnConstraints().add(new ColumnConstraints(20));
+
             Optional<CharacterDescription> charIndex = Arrays.stream(CharacterDescription.values()).filter(c->c.getDesc().equals(vc.getDescription())).findFirst();
             if(charIndex.isPresent())
                 img = charImages.get(charIndex.get());
 
+            p.setPrefWidth(charBox.getPrefWidth());
+            p.setPrefHeight((charBox.getPrefHeight()-charBox.getSpacing()*2)/3);
+            p.setAlignment(Pos.CENTER);
+
             p.setBackground(new Background(new BackgroundImage(img,BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                    new BackgroundSize(10,10,false,false,true,true))));
+                    new BackgroundSize(charBox.getPrefWidth(),(charBox.getPrefHeight()-charBox.getSpacing()*2)/3,false,false,true,false))));
 
             if(vc instanceof VirtualCharacterWithStudents vcs){
                 int i=0,j=0;
                 for(ColorS c:vcs.getStudents()){
                     ImageView imgv = new ImageView(studentImages.get(c));
+                    imgv.setFitWidth(20);
+                    imgv.setFitHeight(20);
                     gp.add(imgv,i,j);
                     i++;
-                    j=i%3==0?j+1:j;
+                    if(i%3==0){
+                        i=0;
+                        j++;
+                    }
                 }
                 p.getChildren().add(gp);
             }
             else if(vc instanceof VirtualCharacterWithNoEntry vcn){
+                int j=0, w=0;
                 for(int i=0;i<vcn.getNoEntry();i++){
                     img = new Image(getClass().getResourceAsStream("/graphics/wooden_pieces/deny_island_icon.png"));
                     ImageView noEntry = new ImageView(img);
-                    gp.add(noEntry,0,i);
+                    noEntry.setFitWidth(25);
+                    noEntry.setFitHeight(25);
+                    gp.add(noEntry,w,j);
+                    if(i==1) {
+                        j++;
+                        w=0;
+                    }else
+                        w++;
+
                 }
                 p.getChildren().add(gp);
             }
@@ -334,6 +377,50 @@ public class GameController implements GUIController{
             charBox.getChildren().add(p);
         }
 
+    }
+
+    private void updateAssistants(){
+        for(int i = 0;i<3;i++){
+            //TODO uncomment next lines
+            //for(VirtualPlayer vp : virtualView.getVirtualPlayers()){
+            //Assistant a = vp.getVirtualLastAssistant();
+            int num = r.nextInt(10)+1;
+            Assistant a = new Assistant(num/2,num, Mage.MAGE1);
+            //Pane p = lastAssistants.get(virtualView.getVirtualPlayers().indexOf(vp));
+            Pane p = lastAssistants.get(i);
+            Image img = assistantImages.get(a.getTurn());
+            p.setBackground(new Background(new BackgroundImage(img,BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                    new BackgroundSize(charBox.getPrefWidth(),(charBox.getPrefHeight()-charBox.getSpacing()*2)/3,false,false,true,false))));
+        }
+    }
+
+    private void drawClouds(){
+        int size = 3;
+        int cloudSize = 90;
+        for(int i =0;i<size;i++){
+            StackPane p = new StackPane();
+            p.setAlignment(Pos.CENTER);
+            p.setBackground(new Background(new BackgroundImage(cloudImages.get(r.nextInt(4)),BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                    new BackgroundSize(cloudSize,cloudSize,false,false,false,false))));
+            ImageView img = new ImageView(cloudImages.get(r.nextInt(4)));
+            img.setFitHeight(cloudSize);
+            img.setFitWidth(cloudSize);
+            //p.getChildren().add(img);
+            p.setPrefHeight(cloudSize);
+            p.setPrefWidth(cloudSize);
+
+            p.getStyleClass().add("border");
+            int thisAngle = i*angle/size;
+            ImageView student = new ImageView(studentImages.get(ColorS.BLUE));
+            student.setFitWidth(35);
+            student.setFitHeight(35);
+
+            p.getChildren().add(student);
+            p.setLayoutX(325+radiusClouds*Math.sin(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
+            p.setLayoutY(248+radiusClouds*Math.cos(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
+
+            islandsPane.getChildren().add(p);
+        }
     }
 
     public VirtualView getVirtualView() {
@@ -355,6 +442,8 @@ public class GameController implements GUIController{
         profImages = new HashMap<>();
         towerImages = new HashMap<>();
         charImages = new HashMap<>();
+        assistantImages = new HashMap<>();
+        cloudImages = new ArrayList<>();
 
         for(ColorS c:ColorS.values()){
             Image imageS = new Image(getClass().getResourceAsStream("/graphics/wooden_pieces/student_"+c.toString().toLowerCase()+".png"));
@@ -367,14 +456,24 @@ public class GameController implements GUIController{
             Image imageT = new Image(getClass().getResourceAsStream("/graphics/wooden_pieces/"+c.toString().toLowerCase()+"_tower.png"));
             towerImages.put(c,imageT);
         }
+
         Image imageC;
-        //TODO add character resources
-        /*
         for(int i = 1;i<=12;i++) {
-            imageC = new Image(getClass().getResourceAsStream(""));
-            charImages.put(CharacterDescription.values()[i - 1], imageC);
+            imageC = new Image(getClass().getResourceAsStream("/graphics/Characters/CarteTOT_front"+i+".png"));
+            charImages.put(CharacterDescription.values()[i-1], imageC);
         }
-        */
+
+        Image imageA;
+        for(int i = 1;i<=10;i++){
+            imageA = new Image(getClass().getResourceAsStream("/graphics/Assistants/Animali_1_"+i+"@3x.png"));
+            assistantImages.put(i,imageA);
+        }
+
+        Image imageCloud;
+        for(int i =1;i<=4;i++){
+            imageCloud = new Image(getClass().getResourceAsStream("/graphics/wooden_pieces/cloud_card_"+i+".png"));
+            cloudImages.add(imageCloud);
+        }
     }
 
     public void onClick(MouseEvent e){
@@ -385,8 +484,35 @@ public class GameController implements GUIController{
     }
 
     public void again(){
+        numIslands = r.nextInt(12)+1;
         drawIslands();
     }
 
+
+    //TODO remove, characters are taken from virtualView
+    private ArrayList<VirtualCharacter> createChars(){
+        ArrayList<VirtualCharacter> virtualCharacters = new ArrayList<>();
+
+        CharacterWithStudent c1 = new CharacterWithStudent(1, "Take one Student from this card and place it on an Island of your choice. Then draw a new Student" +
+                "from the bag and place it on this card.", 5);
+        c1.add(ColorS.BLUE);
+        c1.add(ColorS.GREEN);
+        c1.add(ColorS.RED);
+        c1.add(ColorS.YELLOW);
+        VirtualCharacterWithStudents vc1 = new VirtualCharacterWithStudents(c1);
+        virtualCharacters.add(vc1);
+
+        CharacterWithNoEntry c2 = new CharacterWithNoEntry(1, "Place a No Entry tile on an Island of your choice. The first time Mother Nature ends her movement there, put the No Entry" +
+                "tile back onto this card DO NOT calculate influence on that Island, or place any Towers.");
+        VirtualCharacterWithNoEntry vc2 = new VirtualCharacterWithNoEntry(c2);
+        virtualCharacters.add(vc2);
+
+        Character c3 = new Character(1,"During this turn, you take control of any number of Professors even if you have the same number of Students" +
+                "as the Player who currently controls them.");
+        VirtualCharacter vc3 = new VirtualCharacter(c3);
+        virtualCharacters.add(vc3);
+
+        return virtualCharacters;
+    }
 }
 

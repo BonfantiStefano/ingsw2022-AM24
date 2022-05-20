@@ -204,7 +204,7 @@ public class CLI implements Runnable{
             if (virtualView.getVirtualCharacters().size() > 0) {
                 drawCharacters(virtualView.getVirtualCharacters());
                 System.out.println("Characters Descriptions:");
-                virtualView.getVirtualCharacters().forEach(c->System.out.println(virtualView.getVirtualCharacters().indexOf(c)+": "+c.getDescription()));
+                virtualView.getVirtualCharacters().forEach(c->System.out.println((virtualView.getVirtualCharacters().indexOf(c)+1)+": "+c.getDescription()));
             }
 
             for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {
