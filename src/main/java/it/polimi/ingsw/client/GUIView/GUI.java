@@ -1,5 +1,7 @@
 package it.polimi.ingsw.client.GUIView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.GUIView.controllers.CONTROLLERS;
 import it.polimi.ingsw.client.GUIView.controllers.GUIController;
@@ -88,7 +90,9 @@ public class GUI extends Application implements UserInterface {
 
     public void sendMessageToServer(Object string) {
         //Dopo cambiare questo metodo
-        client.sendMessage(client.toJson(string));
+        if(client!=null)
+            client.sendMessage(client.toJson(string));
+        System.out.println(toJson(string));
     }
 
     @Override
@@ -99,5 +103,14 @@ public class GUI extends Application implements UserInterface {
     @Override
     public void addMessage(Answer a) {
         messagesQueue.add(a);
+    }
+
+    public String toJson(Object r){
+        Gson gson = new Gson();
+        JsonElement jsonElement;
+        jsonElement = gson.toJsonTree(r);
+        jsonElement.getAsJsonObject().addProperty("type", r.getClass().getSimpleName());
+
+        return gson.toJson(jsonElement);
     }
 }

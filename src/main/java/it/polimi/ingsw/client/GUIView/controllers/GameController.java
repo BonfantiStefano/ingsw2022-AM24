@@ -34,6 +34,7 @@ import java.util.List;
 
 public class GameController implements GUIController{
     Random r = new Random(System.currentTimeMillis());
+    private String nickname;
     private int numIslands = 12;
     private HashMap<ColorS, Image> studentImages;
     private HashMap<ColorS, Image> profImages;
@@ -61,11 +62,10 @@ public class GameController implements GUIController{
     private Node to;
     private ColorS selected;
     private boolean selectedMN = false;
+    private boolean selectedNoEntry = false;
     private int startMN=-1;
     private int endMN=-1;
 
-    @FXML
-    private AnchorPane anchor;
     @FXML
     private Pane sc1, sc2, sc3, islandsPane, last1, last2, last3;
     @FXML
@@ -74,6 +74,7 @@ public class GameController implements GUIController{
 
 
     public void init() {
+        virtualView = new VirtualView();
         createImages();
         boards.add(sc1);
         boards.add(sc2);
@@ -85,6 +86,7 @@ public class GameController implements GUIController{
         for (Pane p : boards) {
             p.getChildren().forEach(this::addTo);
         }
+
         for (GridPane g : entrancesGrids) {
             updateEntrance(entrancesGrids.indexOf(g));
             g.setOnMouseClicked(destinationHandler);
@@ -96,6 +98,7 @@ public class GameController implements GUIController{
         updateProfs();
         for (GridPane g : towersGrids)
             updateTowers(towersGrids.indexOf(g));
+
         updateAssistants();
         drawIslands();
         drawCharacters();
@@ -109,7 +112,8 @@ public class GameController implements GUIController{
     public void updateEntrance(int index){
         ArrayList<ColorS> entrance = new ArrayList<>();
         //TODO remove fillRandom and get correct entrance from virtualView
-        //entrance = virtualView.getVirtualPlayers().get(index).getVirtualBoard().getEntrance();
+        //ArrayList<ColorS> entrance = virtualView.getVirtualPlayers().get(index).getVirtualBoard().getEntrance();
+        entrancesGrids.get(index).getChildren().clear();
         fillRandom(entrance, 7);
         int entrIndex=0;
         for(int i=0;i<4;i++)
@@ -129,7 +133,9 @@ public class GameController implements GUIController{
 
     public void updateHall(int index){
         HashMap<ColorS, Integer> hall = new HashMap<>();
+        hallGrids.get(index).getChildren().clear();
         //TODO same as updateEntrance
+        //HashMap<ColorS, Integer> hall = virtualView.getVirtualPlayers().get(index).getVirtualBoard().getHall();
         for(ColorS c: ColorS.values())
             hall.put(c,5);
 
@@ -149,6 +155,10 @@ public class GameController implements GUIController{
 
     public void updateProfs(){
         HashMap<ColorS, Integer> profs = new HashMap<>();
+        //HashMap<ColorS, Integer> profs = virtualView.getVirtualProfs();
+        for(GridPane g:profsGrids)
+            g.getChildren().clear();
+
         //TODO insert correct hashmap from virtualView
         for(ColorS c:ColorS.values()){
             //TODO remove the following line
@@ -166,6 +176,8 @@ public class GameController implements GUIController{
 
     public void updateTowers(int index){
         ArrayList<ColorT> towers = new ArrayList<>();
+        //ArrayList<ColorT> towers = virtualView.getVirtualPlayers().get(index).getVirtualBoard().getTowers();
+        towersGrids.get(index).getChildren().clear();
         for(int k =0;k<5;k++)
             towers.add(ColorT.BLACK);
         int towerIndex=0;
@@ -297,19 +309,20 @@ public class GameController implements GUIController{
             ImageView mnView = new ImageView(mnImg);
             mnView.setFitHeight(25);
             mnView.setFitWidth(25);
-            mnView.setOnMouseClicked(mouseEvent -> {selectedMN = true;
-            System.out.println("Selected MN");
-            mouseEvent.consume();
+            mnView.setOnMouseClicked(mouseEvent -> {
+                selectedMN = true;
+                System.out.println("Selected MN");
+                mouseEvent.consume();
             });
             mnNoEntry.getChildren().add(mnView);
         }
         if(noEntry>0){
-            Image mnImg = new Image(getClass().getResourceAsStream("/graphics/wooden_pieces/deny_island_icon.png"));
+            Image nE = new Image(getClass().getResourceAsStream("/graphics/wooden_pieces/deny_island_icon.png"));
             for(int i =0;i<noEntry;i++) {
-                ImageView mnView = new ImageView(mnImg);
-                mnView.setFitHeight(25);
-                mnView.setFitWidth(25);
-                mnNoEntry.getChildren().add(mnView);
+                ImageView nEView = new ImageView(nE);
+                nEView.setFitHeight(25);
+                nEView.setFitWidth(25);
+                mnNoEntry.getChildren().add(nEView);
             }
 
         }
@@ -350,6 +363,8 @@ public class GameController implements GUIController{
     private void drawCharacters(){
         //charBox.setAlignment(Pos.CENTER);
         charBox.setSpacing(10);
+
+        charBox.getChildren().clear();
 
         ArrayList<VirtualCharacter> virtualCharacters = createChars();
 
@@ -401,6 +416,12 @@ public class GameController implements GUIController{
                     ImageView noEntry = new ImageView(img);
                     noEntry.setFitWidth(25);
                     noEntry.setFitHeight(25);
+
+                    noEntry.setOnMouseClicked(mouseEvent -> {
+                        selectedNoEntry = true;
+                        System.out.println("No Entry selected");
+                    });
+
                     gp.add(noEntry,w,j);
                     if(i==1) {
                         j++;
@@ -414,7 +435,7 @@ public class GameController implements GUIController{
 
             p.setOnMouseClicked(mouseEvent -> {
                 if(mouseEvent.getClickCount()==2)
-                    System.out.println(toJson(new PlayCharacter(charIndex.get())));
+                    gui.sendMessageToServer(new PlayCharacter(charIndex.get()));
             });
             charBox.getChildren().add(p);
         }
@@ -423,7 +444,7 @@ public class GameController implements GUIController{
 
     private void updateAssistants(){
         for(int i = 0;i<3;i++){
-            //TODO uncomment next lines
+            //TODO uncomment next lines and remove the preceding one
             //for(VirtualPlayer vp : virtualView.getVirtualPlayers()){
             //Assistant a = vp.getVirtualLastAssistant();
             int num = r.nextInt(10)+1;
@@ -437,6 +458,8 @@ public class GameController implements GUIController{
     }
 
     private void drawClouds(){
+        List<Node> cloudsPanes = islandsPane.getChildren().stream().filter(p -> p.getStyleClass().contains("cloud")).toList();
+        islandsPane.getChildren().removeAll(cloudsPanes);
         int size = 3;
         int cloudSize = 90;
         for(int i = 0;i<size;i++){
@@ -459,11 +482,12 @@ public class GameController implements GUIController{
             p.setLayoutY(248+radiusClouds*Math.cos(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
 
             int finalI = i;
-            p.setOnMouseClicked(mouseEvent -> System.out.println(toJson(new ChooseCloud(finalI))));
+            p.setOnMouseClicked(mouseEvent -> gui.sendMessageToServer(new ChooseCloud(finalI)));
             islandsPane.getChildren().add(p);
         }
     }
 
+    //TODO remove
     private void createClouds(Pane p){
         ArrayList<ColorS> students = new ArrayList<>();
         fillRandom(students, 3);
@@ -541,12 +565,6 @@ public class GameController implements GUIController{
         }
     }
 
-    public void onClick(javafx.scene.input.MouseEvent e){
-        if(from == null)
-            from = (Node) e.getSource();
-        else
-            to = (Node) e.getSource();
-    }
 
     public void again(){
         numIslands = r.nextInt(12)+1;
@@ -554,7 +572,10 @@ public class GameController implements GUIController{
     }
 
     private void clickOnStudent(MouseEvent e){
-        Node student = (Node) e.getSource(), parent = getParent((Node) e.getSource()) ;
+        Node student = (Node) e.getSource(), parent = getParent((Node) e.getSource());
+        if(from!=null&&(from.getId().contains("e1")&&parent.getId().contains("h1")||(from.getId().contains("h1")&&parent.getId().contains("e1")))){
+            gui.sendMessageToServer(new ChooseTwoColors(selected,ColorS.valueOf(student.getId())));
+        }
         selected = ColorS.valueOf(student.getId());
         if(from == null)
             from = parent;
@@ -581,8 +602,23 @@ public class GameController implements GUIController{
         else if(selectedMN){
             String destinationId = ((Node) e.getSource()).getId();
             int dest = Integer.parseInt(destinationId.replace("island",""));
+            //TODO set currMnPos to value from virtualView
+            int currMnPos = 1;
+            for(int i=currMnPos;i<numIslands;){
+                if(i==dest){
+                    gui.sendMessageToServer(new MoveMN(i-currMnPos));
+                    break;
+                }
+                i = (i+1)% numIslands;
+            }
             System.out.println(dest);
             selectedMN = false;
+        }
+        else if(selectedNoEntry){
+            String destinationId = ((Node) e.getSource()).getId();
+            int dest = Integer.parseInt(destinationId.replace("island",""));
+            gui.sendMessageToServer(new ChooseIsland(dest));
+            selectedNoEntry = false;
         }
     }
 
@@ -597,18 +633,16 @@ public class GameController implements GUIController{
         boolean fromEntrance = fromId.charAt(0)=='e'&&fromId.charAt(1)=='1';
         String toId = to.getId();
         if(!from.equals(to)){
-            if(fromEntrance&&toId.charAt(0)=='h'&&fromId.charAt(1)==toId.charAt(1)&&toId.charAt(1)=='1')
-                System.out.println(toJson(new EntranceToHall(selected)));
+            if(fromEntrance&&toId.contains("h1"))
+                gui.sendMessageToServer(new EntranceToHall(selected));
             else if(fromEntrance && toId.contains("island"))
-                System.out.println(toJson(new MoveToIsland(selected, Integer.parseInt(toId.replace("island","")))));
+                gui.sendMessageToServer(new MoveToIsland(selected, Integer.parseInt(toId.replace("island",""))));
             if(fromId.contains("character")&&toId.contains("island")){
-                System.out.println(toJson(new SpecialMoveIsland(selected,Integer.parseInt(toId.replace("island","")))));
+                gui.sendMessageToServer(new SpecialMoveIsland(selected,Integer.parseInt(toId.replace("island",""))));
             }
+            if(fromId.contains("character") && toId.contains("h1"))
+                gui.sendMessageToServer(new ChooseColor(selected));
         }
-    }
-
-    private void moveMN(){
-
     }
 
 
@@ -617,7 +651,6 @@ public class GameController implements GUIController{
     //TODO remove, characters are taken from virtualView
     private ArrayList<VirtualCharacter> createChars(){
         ArrayList<VirtualCharacter> virtualCharacters = new ArrayList<>();
-
         CharacterWithStudent c1 = new CharacterWithStudent(1, "Take one Student from this card and place it on an Island of your choice. Then draw a new Student" +
                 "from the bag and place it on this card.", 5);
         c1.add(ColorS.BLUE);
@@ -640,13 +673,9 @@ public class GameController implements GUIController{
         return virtualCharacters;
     }
 
-    public String toJson(Object r){
-        Gson gson = new Gson();
-        JsonElement jsonElement;
-        jsonElement = gson.toJsonTree(r);
-        jsonElement.getAsJsonObject().addProperty("type", r.getClass().getSimpleName());
-
-        return gson.toJson(jsonElement);
+    private VirtualPlayer getLocalPlayer(){
+        return virtualView.getVirtualPlayers().stream().filter(vp->vp.getNickname().equals(nickname)).findFirst().get();
     }
+
 }
 
