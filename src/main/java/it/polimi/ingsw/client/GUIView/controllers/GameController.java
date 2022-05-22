@@ -1,7 +1,5 @@
 package it.polimi.ingsw.client.GUIView.controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import it.polimi.ingsw.client.GUIView.GUI;
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.model.ColorS;
@@ -32,8 +30,12 @@ import javafx.scene.text.TextAlignment;
 import java.util.*;
 import java.util.List;
 
+/**
+ * GameController class handles the main Game scene
+ */
 public class GameController implements GUIController{
     Random r = new Random(System.currentTimeMillis());
+    //TODO local player nickname
     private String nickname;
     private int numIslands = 12;
     private HashMap<ColorS, Image> studentImages;
@@ -72,7 +74,9 @@ public class GameController implements GUIController{
     private VBox charBox;
 
 
-
+    /**
+     * Performs all operations needed to initialize the scene: creates all Panes representing model objects and updates them
+     */
     public void init() {
         virtualView = new VirtualView();
         createImages();
@@ -108,7 +112,10 @@ public class GameController implements GUIController{
         from = null;
     }
 
-
+    /**
+     * Updates the selected Entrance by reading data from VirtualView
+     * @param index the selected Entrance's index
+     */
     public void updateEntrance(int index){
         ArrayList<ColorS> entrance = new ArrayList<>();
         //TODO remove fillRandom and get correct entrance from virtualView
@@ -131,6 +138,10 @@ public class GameController implements GUIController{
             }
     }
 
+    /**
+     * Updates the selected Hall by reading data from VirtualView
+     * @param index the selected Hall's index
+     */
     public void updateHall(int index){
         HashMap<ColorS, Integer> hall = new HashMap<>();
         hallGrids.get(index).getChildren().clear();
@@ -153,6 +164,9 @@ public class GameController implements GUIController{
         }
     }
 
+    /**
+     * Updates Profs by reading data from VirtualView
+     */
     public void updateProfs(){
         HashMap<ColorS, Integer> profs = new HashMap<>();
         //HashMap<ColorS, Integer> profs = virtualView.getVirtualProfs();
@@ -173,7 +187,10 @@ public class GameController implements GUIController{
 
         }
     }
-
+    /**
+     * Updates the selected Towers GridPane by reading data from VirtualView
+     * @param index the selected Tower GridPane index
+     */
     public void updateTowers(int index){
         ArrayList<ColorT> towers = new ArrayList<>();
         //ArrayList<ColorT> towers = virtualView.getVirtualPlayers().get(index).getVirtualBoard().getTowers();
@@ -192,6 +209,9 @@ public class GameController implements GUIController{
             }
     }
 
+    /**
+     * Draws all Islands in the central Pane
+     */
     public void drawIslands(){
         List<Node> islandsPanes = islandsPane.getChildren().stream().filter(p -> p.getStyleClass().contains("islandPane")).toList();
         islandsPane.getChildren().removeAll(islandsPanes);
@@ -230,12 +250,15 @@ public class GameController implements GUIController{
     }
 
 
-
     @Override
     public void setGui(GUI gui) {
         this.gui = gui;
     }
 
+    /**
+     * Puts the parameter in the correct Node list
+     * @param n the Node to categorise
+     */
     private void addTo(Node n){
         String id = n.getId();
         GridPane p = (GridPane) n;
@@ -250,6 +273,14 @@ public class GameController implements GUIController{
 
     }
 
+    /**
+     * Creates an Island Pane collecting all Island information
+     * @param students the list of Students on the Island
+     * @param towers the list of Towers on the Island
+     * @param mn true if MN is on the Island
+     * @param noEntry the number of NoEntry tiles on the Island
+     * @return the Pane containing all Island information
+     */
     private StackPane createPane(ArrayList<ColorS> students,ArrayList<ColorT> towers, boolean mn, int noEntry){
         StackPane p = new StackPane();
         ArrayList<Group> counters = new ArrayList<>();
@@ -360,6 +391,9 @@ public class GameController implements GUIController{
         return p;
     }
 
+    /**
+     * Draws all Characters in the Characters Pane
+     */
     private void drawCharacters(){
         //charBox.setAlignment(Pos.CENTER);
         charBox.setSpacing(10);
@@ -442,6 +476,9 @@ public class GameController implements GUIController{
 
     }
 
+    /**
+     * For Every Player shows their last Assistant
+     */
     private void updateAssistants(){
         for(int i = 0;i<3;i++){
             //TODO uncomment next lines and remove the preceding one
@@ -457,6 +494,9 @@ public class GameController implements GUIController{
         }
     }
 
+    /**
+     * Draws all Clouds with the Students they contain
+     */
     private void drawClouds(){
         List<Node> cloudsPanes = islandsPane.getChildren().stream().filter(p -> p.getStyleClass().contains("cloud")).toList();
         islandsPane.getChildren().removeAll(cloudsPanes);
@@ -503,6 +543,13 @@ public class GameController implements GUIController{
         p.getChildren().add(createImage(currStudent, 8,25));
     }
 
+    /**
+     * Creates a Student Images in the specified positions
+     * @param c the Student's color
+     * @param x  X coordinate
+     * @param y y coordinate
+     * @return an Imageview with the specified properties
+     */
     private ImageView createImage(ColorS c, double x, double y){
         ImageView img = new ImageView(studentImages.get(c));
         img.setFitHeight(35);
@@ -526,6 +573,9 @@ public class GameController implements GUIController{
         }
     }
 
+    /**
+     * Reads from file all Images needed in the Scene and stores them in Lists to be easily accessible
+     */
     private void createImages(){
         studentImages = new HashMap<>();
         profImages = new HashMap<>();
@@ -571,6 +621,10 @@ public class GameController implements GUIController{
         drawIslands();
     }
 
+    /**
+     * Handles clicks on a Student
+     * @param e the MouseEvent
+     */
     private void clickOnStudent(MouseEvent e){
         Node student = (Node) e.getSource(), parent = getParent((Node) e.getSource());
         if(from!=null&&(from.getId().contains("e1")&&parent.getId().contains("h1")||(from.getId().contains("h1")&&parent.getId().contains("e1")))){
@@ -590,6 +644,10 @@ public class GameController implements GUIController{
         e.consume();
     }
 
+    /**
+     * Handles clicks on a Student destination, a place where a Student can move
+     * @param e
+     */
     private void studentDestination(MouseEvent e){
         if(from!=null&&selected!=null){
             to = (Node) e.getSource();
@@ -622,12 +680,20 @@ public class GameController implements GUIController{
         }
     }
 
+    /**
+     * Recursively finds the Node's first parent with an ID
+     * @param n the Node to search the parent for
+     * @return the Node's parent
+     */
     private Node getParent(Node n){
         if(n.getParent().getId()!=null)
             return n.getParent();
         return getParent(n.getParent());
     }
 
+    /**
+     * Based on the information from the last Click creates and sends a Message to the Server
+     */
     private void createMessage(){
         String fromId = from.getId();
         boolean fromEntrance = fromId.charAt(0)=='e'&&fromId.charAt(1)=='1';
@@ -673,6 +739,10 @@ public class GameController implements GUIController{
         return virtualCharacters;
     }
 
+    /**
+     * Gets the Local Player in the list of Players
+     * @return the local VirtualPlayer
+     */
     private VirtualPlayer getLocalPlayer(){
         return virtualView.getVirtualPlayers().stream().filter(vp->vp.getNickname().equals(nickname)).findFirst().get();
     }
