@@ -199,7 +199,7 @@
                 </GridPane>
             </children>
         </Pane>
-      <Pane fx:id="islandsPane" layoutX="275.0" layoutY="36.0" maxHeight="495.0" maxWidth="650.0" prefHeight="495.0" prefWidth="650.0" />
+      <Pane fx:id="islandsPane" layoutX="275.0" layoutY="36.0" maxHeight="495.0" maxWidth="650.0" prefHeight="495.0" prefWidth="650.0" stylesheets="@css/application.css" />
       <VBox fx:id="charBox" layoutX="940.0" layoutY="39.0" prefHeight="520.0" prefWidth="110.0" stylesheets="@css/application.css" />
       <StackPane fx:id="last1" layoutX="870.0" layoutY="575.0" prefHeight="200.0" prefWidth="110.0" />
       <StackPane fx:id="last2" layoutX="1141.0" layoutY="522.0" prefHeight="200.0" prefWidth="110.0" rotate="-90.0" />

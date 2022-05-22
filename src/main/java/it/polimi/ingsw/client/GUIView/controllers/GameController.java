@@ -1,6 +1,9 @@
 package it.polimi.ingsw.client.GUIView.controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import it.polimi.ingsw.client.GUIView.GUI;
+import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.Character;
@@ -10,6 +13,7 @@ import it.polimi.ingsw.model.character.CharacterWithStudent;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.server.virtualview.*;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.*;
 import javafx.scene.Group;
@@ -17,6 +21,7 @@ import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -24,7 +29,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
-import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 
@@ -49,9 +53,16 @@ public class GameController implements GUIController{
     private final ArrayList<Pane> boards = new ArrayList<>();
     private final ArrayList<Pane> lastAssistants = new ArrayList<>();
 
+    private final EventHandler<MouseEvent> studentHandler = this::clickOnStudent;
+    private final EventHandler<MouseEvent> destinationHandler = this::studentDestination;
+
+
     private Node from;
     private Node to;
     private ColorS selected;
+    private boolean selectedMN = false;
+    private int startMN=-1;
+    private int endMN=-1;
 
     @FXML
     private AnchorPane anchor;
@@ -74,10 +85,14 @@ public class GameController implements GUIController{
         for (Pane p : boards) {
             p.getChildren().forEach(this::addTo);
         }
-        for (GridPane g : entrancesGrids)
+        for (GridPane g : entrancesGrids) {
             updateEntrance(entrancesGrids.indexOf(g));
-        for (GridPane g : hallGrids)
+            g.setOnMouseClicked(destinationHandler);
+        }
+        for (GridPane g : hallGrids) {
             updateHall(hallGrids.indexOf(g));
+            g.setOnMouseClicked(destinationHandler);
+        }
         updateProfs();
         for (GridPane g : towersGrids)
             updateTowers(towersGrids.indexOf(g));
@@ -87,7 +102,7 @@ public class GameController implements GUIController{
         drawClouds();
         islandsPane.setMinHeight(520);
         islandsPane.setMinWidth(520);
-
+        from = null;
     }
 
 
@@ -105,7 +120,8 @@ public class GameController implements GUIController{
                     Circle c = new Circle(10);
                     c.setFill(new ImagePattern(studentImages.get(entrance.get(entrIndex))));
                     entrancesGrids.get(index).add(c, j, i);
-
+                    c.setId(entrance.get(entrIndex).toString());
+                    c.setOnMouseClicked(studentHandler);
                     entrIndex++;
                 }
             }
@@ -123,6 +139,8 @@ public class GameController implements GUIController{
                 if (hall.get(color)-j>0) {
                     Circle c = new Circle(10);
                     c.setFill(new ImagePattern(studentImages.get(color)));
+                    c.setId(color.toString());
+                    c.setOnMouseClicked(studentHandler);
                     hallGrids.get(index).add(c, j, i);
                 }
             }
@@ -163,7 +181,7 @@ public class GameController implements GUIController{
     }
 
     public void drawIslands(){
-        List<Node> islandsPanes = islandsPane.getChildren().stream().filter(p -> p.getStyleClass().contains("islandPanel")).toList();
+        List<Node> islandsPanes = islandsPane.getChildren().stream().filter(p -> p.getStyleClass().contains("islandPane")).toList();
         islandsPane.getChildren().removeAll(islandsPanes);
 
 
@@ -182,9 +200,10 @@ public class GameController implements GUIController{
             for(int w=0;w<4;w++)
                 towers.add(ColorT.BLACK);
 
-            StackPane p = createPane(colors, towers, true, 1);
+            StackPane p = createPane(colors, towers, r.nextInt(2) == 0, r.nextInt(4));
+            p.setOnMouseClicked(destinationHandler);
 
-            p.getStyleClass().add("islandPanel");
+            p.setId("island"+islands.indexOf(i));
             p.setMaxHeight(100);
             p.setMaxWidth(100);
 
@@ -193,8 +212,6 @@ public class GameController implements GUIController{
 
             p.setLayoutX(325+radiusIslands*Math.sin(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
             p.setLayoutY(248+radiusIslands*Math.cos(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
-
-            islandsPane.getStyleClass().add("border");
 
         });
 
@@ -280,6 +297,10 @@ public class GameController implements GUIController{
             ImageView mnView = new ImageView(mnImg);
             mnView.setFitHeight(25);
             mnView.setFitWidth(25);
+            mnView.setOnMouseClicked(mouseEvent -> {selectedMN = true;
+            System.out.println("Selected MN");
+            mouseEvent.consume();
+            });
             mnNoEntry.getChildren().add(mnView);
         }
         if(noEntry>0){
@@ -290,9 +311,16 @@ public class GameController implements GUIController{
                 mnView.setFitWidth(25);
                 mnNoEntry.getChildren().add(mnView);
             }
+
         }
-        vBox.getChildren().add(mnNoEntry);
+        if(mnNoEntry.getChildren().isEmpty()){
+            Circle c = new Circle(12.5);
+            c.setVisible(false);
+            mnNoEntry.getChildren().add(c);
+        }
+
         vBox.getChildren().add(box);
+        vBox.getChildren().add(mnNoEntry);
         int i=0,j=0;
         for(Group counter:counters){
             //gp.add(counter,i,2);
@@ -311,6 +339,11 @@ public class GameController implements GUIController{
 
         p.setPrefWidth(50);
         p.setPrefHeight(50);
+        if(noEntry>=3){
+            p.setMinHeight(100);
+        }
+        p.getStyleClass().add("islandPane");
+
         return p;
     }
 
@@ -324,6 +357,9 @@ public class GameController implements GUIController{
             StackPane p = new StackPane();
             Image img = null;
             GridPane gp = new GridPane();
+
+            p.setId("character"+ virtualCharacters.indexOf(vc));
+            p.setOnMouseClicked(destinationHandler);
 
             //gp.getStyleClass().add("border");
             gp.setMaxWidth((charBox.getPrefWidth()/2));
@@ -347,6 +383,8 @@ public class GameController implements GUIController{
                     ImageView imgv = new ImageView(studentImages.get(c));
                     imgv.setFitWidth(20);
                     imgv.setFitHeight(20);
+                    imgv.setOnMouseClicked(studentHandler);
+                    imgv.setId(c.toString());
                     gp.add(imgv,i,j);
                     i++;
                     if(i%3==0){
@@ -374,6 +412,10 @@ public class GameController implements GUIController{
                 p.getChildren().add(gp);
             }
 
+            p.setOnMouseClicked(mouseEvent -> {
+                if(mouseEvent.getClickCount()==2)
+                    System.out.println(toJson(new PlayCharacter(charIndex.get())));
+            });
             charBox.getChildren().add(p);
         }
 
@@ -397,30 +439,53 @@ public class GameController implements GUIController{
     private void drawClouds(){
         int size = 3;
         int cloudSize = 90;
-        for(int i =0;i<size;i++){
+        for(int i = 0;i<size;i++){
             StackPane p = new StackPane();
             p.setAlignment(Pos.CENTER);
+
+            p.setId("cloud"+i);
             p.setBackground(new Background(new BackgroundImage(cloudImages.get(r.nextInt(4)),BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                     new BackgroundSize(cloudSize,cloudSize,false,false,false,false))));
-            ImageView img = new ImageView(cloudImages.get(r.nextInt(4)));
-            img.setFitHeight(cloudSize);
-            img.setFitWidth(cloudSize);
-            //p.getChildren().add(img);
-            p.setPrefHeight(cloudSize);
-            p.setPrefWidth(cloudSize);
+
+            p.setMinHeight(cloudSize);
+            p.setMinWidth(cloudSize);
 
             p.getStyleClass().add("border");
-            int thisAngle = i*angle/size;
-            ImageView student = new ImageView(studentImages.get(ColorS.BLUE));
-            student.setFitWidth(35);
-            student.setFitHeight(35);
 
-            p.getChildren().add(student);
+            createClouds(p);
+
+            int thisAngle = i*angle/size;
             p.setLayoutX(325+radiusClouds*Math.sin(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
             p.setLayoutY(248+radiusClouds*Math.cos(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
 
+            int finalI = i;
+            p.setOnMouseClicked(mouseEvent -> System.out.println(toJson(new ChooseCloud(finalI))));
             islandsPane.getChildren().add(p);
         }
+    }
+
+    private void createClouds(Pane p){
+        ArrayList<ColorS> students = new ArrayList<>();
+        fillRandom(students, 3);
+
+        int j=0;
+        ColorS currStudent = students.get(j);
+        p.getChildren().add(createImage(currStudent, -26.5,-7));
+        j++;
+        currStudent = students.get(j);
+        p.getChildren().add(createImage(currStudent, 19,-20));
+        j++;
+        currStudent = students.get(j);
+        p.getChildren().add(createImage(currStudent, 8,25));
+    }
+
+    private ImageView createImage(ColorS c, double x, double y){
+        ImageView img = new ImageView(studentImages.get(c));
+        img.setFitHeight(35);
+        img.setFitWidth(35);
+        img.setTranslateX(x);
+        img.setTranslateY(y);
+        return img;
     }
 
     public VirtualView getVirtualView() {
@@ -476,7 +541,7 @@ public class GameController implements GUIController{
         }
     }
 
-    public void onClick(MouseEvent e){
+    public void onClick(javafx.scene.input.MouseEvent e){
         if(from == null)
             from = (Node) e.getSource();
         else
@@ -487,6 +552,66 @@ public class GameController implements GUIController{
         numIslands = r.nextInt(12)+1;
         drawIslands();
     }
+
+    private void clickOnStudent(MouseEvent e){
+        Node student = (Node) e.getSource(), parent = getParent((Node) e.getSource()) ;
+        selected = ColorS.valueOf(student.getId());
+        if(from == null)
+            from = parent;
+        else {
+            to = parent;
+            System.out.println("from: " +from.getId()+" to: "+to.getId()+" selected: "+ selected.toString());
+            createMessage();
+            from = null;
+            to = null;
+            selected = null;
+        }
+        e.consume();
+    }
+
+    private void studentDestination(MouseEvent e){
+        if(from!=null&&selected!=null){
+            to = (Node) e.getSource();
+            System.out.println("from: " +from.getId()+" to: "+to.getId()+" selected: "+ selected.toString());
+            createMessage();
+            from = null;
+            to = null;
+            selected = null;
+        }
+        else if(selectedMN){
+            String destinationId = ((Node) e.getSource()).getId();
+            int dest = Integer.parseInt(destinationId.replace("island",""));
+            System.out.println(dest);
+            selectedMN = false;
+        }
+    }
+
+    private Node getParent(Node n){
+        if(n.getParent().getId()!=null)
+            return n.getParent();
+        return getParent(n.getParent());
+    }
+
+    private void createMessage(){
+        String fromId = from.getId();
+        boolean fromEntrance = fromId.charAt(0)=='e'&&fromId.charAt(1)=='1';
+        String toId = to.getId();
+        if(!from.equals(to)){
+            if(fromEntrance&&toId.charAt(0)=='h'&&fromId.charAt(1)==toId.charAt(1)&&toId.charAt(1)=='1')
+                System.out.println(toJson(new EntranceToHall(selected)));
+            else if(fromEntrance && toId.contains("island"))
+                System.out.println(toJson(new MoveToIsland(selected, Integer.parseInt(toId.replace("island","")))));
+            if(fromId.contains("character")&&toId.contains("island")){
+                System.out.println(toJson(new SpecialMoveIsland(selected,Integer.parseInt(toId.replace("island","")))));
+            }
+        }
+    }
+
+    private void moveMN(){
+
+    }
+
+
 
 
     //TODO remove, characters are taken from virtualView
@@ -513,6 +638,15 @@ public class GameController implements GUIController{
         virtualCharacters.add(vc3);
 
         return virtualCharacters;
+    }
+
+    public String toJson(Object r){
+        Gson gson = new Gson();
+        JsonElement jsonElement;
+        jsonElement = gson.toJsonTree(r);
+        jsonElement.getAsJsonObject().addProperty("type", r.getClass().getSimpleName());
+
+        return gson.toJson(jsonElement);
     }
 }
 

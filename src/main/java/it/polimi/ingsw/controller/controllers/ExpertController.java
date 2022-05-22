@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller.controllers;
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.controller.ActionController;
 import it.polimi.ingsw.controller.ERRORS;
+import it.polimi.ingsw.controller.PHASE;
 import it.polimi.ingsw.controller.controllers.Controller;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
@@ -77,7 +78,7 @@ public class ExpertController extends Controller {
 
     @Override
     public void visit(PlayCharacter msg){
-        if(activeCharacter == null){
+        if(activeCharacter == null && !phase.equals(PHASE.PLANNING)){
             try {
                 Character c = getModel().getCharacters().stream().
                         filter(character -> msg.getC().getDesc().equals(character.getDescription())).findAny().orElse(null);
@@ -86,6 +87,9 @@ public class ExpertController extends Controller {
             } catch (NotEnoughCoinsException e) {
                 lobby.sendMessage(getMessageSender(), new Error(ERRORS.NOT_ENOUGH_COINS.toString()));
             }
+        }
+        else if(phase.equals(PHASE.PLANNING)){
+            lobby.sendMessage(messageSender, new Error("You can't play a Character right now"));
         }
     }
     @Override

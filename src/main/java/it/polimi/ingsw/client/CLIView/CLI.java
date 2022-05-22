@@ -30,7 +30,6 @@ import java.util.regex.Pattern;
  * Class CLI represents the terminal UI
  */
 public class CLI implements Runnable, UserInterface {
-    //TODO add handle disconnection
     private VirtualView virtualView;
     private Client client;
     private Welcome welcome;
@@ -184,7 +183,6 @@ public class CLI implements Runnable, UserInterface {
             case TO_ISLAND:
                 ColorS colorS = colorByString(s.substring(5));
                 int in = Integer.parseInt(s.split(" ")[3])-1;
-                //TODO check if input.nextLine() is needed here
                 return new MoveToIsland(colorS, in);
             case CHOOSE_CLOUD: return new ChooseCloud(Integer.parseInt(s.substring(6))-1);
             case TWO_COLORS:
@@ -196,6 +194,9 @@ public class CLI implements Runnable, UserInterface {
                 ColorS color = colorByString(s.split(" ")[1]);
                 int i = Integer.parseInt(s.split(" ")[3]);
                 return new SpecialMoveIsland(color, i);
+            case CHOOSE_ISLAND:
+                int island = Integer.parseInt(s.split(" ")[1]);
+                return new ChooseIsland(island);
         }
 
         return null;
@@ -366,7 +367,6 @@ public class CLI implements Runnable, UserInterface {
         lines.add(currLine);
         firstLine(currLine, nickname+appendix, xSize);
         int entrIndex = 0, towIndex = 0;
-
 
 
         for(ColorS c: ColorS.values()) {
