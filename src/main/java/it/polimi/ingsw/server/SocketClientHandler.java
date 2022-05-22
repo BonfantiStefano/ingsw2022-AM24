@@ -132,7 +132,6 @@ public class SocketClientHandler implements Runnable{
      */
     private void closeSocket() {
         try {
-            //outputStream.close();
             socket.close();
         } catch (IOException e) {
             System.out.println("Exception during the closure of the stream of socket " + clientID);
@@ -164,7 +163,7 @@ public class SocketClientHandler implements Runnable{
             sendMessage(new NotifyDisconnection("You have been disconnected, you can rejoin the game in the future"));
         }
         server.handleClientDisconnection(clientID);
-        if(/*socket != null &&*/ !socket.isClosed()) {
+        if(!socket.isClosed()) {
             closeSocket();
         }
         System.out.println("Socket " + clientID + " chiuso");

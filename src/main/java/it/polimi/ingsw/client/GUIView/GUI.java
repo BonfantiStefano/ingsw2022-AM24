@@ -8,24 +8,23 @@ import it.polimi.ingsw.client.GUIView.controllers.GUIController;
 import it.polimi.ingsw.client.GUIView.controllers.GameController;
 import it.polimi.ingsw.client.GUIView.controllers.LobbyController;
 import it.polimi.ingsw.client.UserInterface;
-import it.polimi.ingsw.server.answer.Answer;
+import it.polimi.ingsw.server.virtualview.VirtualView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 public class GUI extends Application implements UserInterface {
     private Scene currentScene;
     private Stage window;
     private Client client;
+    private VirtualView virtualView;
     private final HashMap<String, Scene> nameMapScene = new HashMap<>();
     private final HashMap<Scene, GUIController> nameMapController = new HashMap<>();
-    private final BlockingQueue<Answer> messagesQueue = new ArrayBlockingQueue<>(20);
 
     public static void main(String[] args) {
         launch();
@@ -70,8 +69,10 @@ public class GUI extends Application implements UserInterface {
         window.show();
     }
 
+    @Override
     public void setupConnection(String serverAddress, int port) {
         client = new Client(this);
+        client.addListener(this);
         client.startClient(serverAddress, port);
     }
 
@@ -96,13 +97,13 @@ public class GUI extends Application implements UserInterface {
     }
 
     @Override
-    public void begin(String ip, int port) {
-
+    public void setVirtualView(VirtualView virtualView) {
+        this.virtualView = virtualView;
     }
 
     @Override
-    public void addMessage(Answer a) {
-        messagesQueue.add(a);
+    public void propertyChange(PropertyChangeEvent evt) {
+
     }
 
     public String toJson(Object r){

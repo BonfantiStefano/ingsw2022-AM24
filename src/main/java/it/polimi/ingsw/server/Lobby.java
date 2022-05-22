@@ -187,8 +187,11 @@ public class Lobby {
         disconnectedClientsId.add(clientId);
         if((disconnectedClientsId.size() == 1 && clientsId.size() == 1 && gameStatus == GameStatus.SETUP) ||
                 (disconnectedClientsId.size() == numPlayers && gameStatus == GameStatus.PAUSE)) {
-            System.out.println("The lobby must be closed");
+            System.out.println("The lobby has been closed");
             gameStatus = GameStatus.ENDED;
+            if(timerPause.isAlive()) {
+                stopTimer();
+            }
             //dobbiamo comunicarlo anche al controller che la partita è finita?
         } else {
             controller.handleMessage(new Disconnect(), mapIdNickname.get(clientId));

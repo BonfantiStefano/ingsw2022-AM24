@@ -4,7 +4,6 @@ import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.client.GUIView.GUI;
 import it.polimi.ingsw.server.ServerMain;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -26,8 +25,8 @@ public class Eriantys {
         int input = 0;
         int client = 0;
         try {
-            input = scanner.nextInt();
-        } catch (InputMismatchException e) {
+            input = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException exception) {
             System.err.println("Numeric format requested, application will now close...");
             System.exit(-1);
         }
@@ -37,8 +36,8 @@ public class Eriantys {
                 System.out.println("0. CLI\n1. GUI");
                 System.out.println("Type the number of the interface you want to play with!");
                 try {
-                    client = scanner.nextInt();
-                } catch (InputMismatchException e) {
+                    client = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException exception) {
                     System.err.println("Numeric format requested, application will now close...");
                     System.exit(-1);
                 }

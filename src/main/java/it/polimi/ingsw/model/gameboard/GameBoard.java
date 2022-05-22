@@ -13,7 +13,6 @@ import it.polimi.ingsw.model.world.World;
 import it.polimi.ingsw.server.virtualview.VirtualCloud;
 import it.polimi.ingsw.server.virtualview.VirtualIsland;
 import it.polimi.ingsw.server.virtualview.VirtualPlayer;
-import it.polimi.ingsw.server.virtualview.VirtualView;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -174,9 +173,8 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
                 sortedPlayers.add(p);
             }
         }
-        sortedPlayers.sort((p1, p2) -> {
-            return p1.getLastAssistant().compareTo(p2.getLastAssistant());
-        });
+        sortedPlayers.sort((p1, p2) ->
+            p1.getLastAssistant().compareTo(p2.getLastAssistant()));
         return !sortedPlayers.isEmpty() ? players.indexOf(sortedPlayers.get(0)) : 0;
     }
 
@@ -586,8 +584,8 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         EVENT event = EVENT.valueOf(evt.getPropertyName());
-        switch(event) {
-            case CHANGE_SCHOOLBOARD:
+        switch (event) {
+            case CHANGE_SCHOOLBOARD -> {
                 int indexPlayer = -1;
                 VirtualPlayer virtualPlayer = null;
                 SchoolBoard modelBoard = ((SchoolBoard) evt.getNewValue());
@@ -598,33 +596,33 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
                     }
                 checkProfs();
                 listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PLAYER), indexPlayer, virtualPlayer);
-                break;
-            case PLAYER_COINS:
+            }
+            case PLAYER_COINS -> {
                 Player modelPlayer = (Player) evt.getNewValue();
                 int indexP = players.indexOf(modelPlayer);
                 VirtualPlayer virtualP = new VirtualPlayer(modelPlayer);
                 listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PLAYER), indexP, virtualP);
-                break;
-            case CHANGE_ISLAND:
+            }
+            case CHANGE_ISLAND -> {
                 Island modelIsland = (Island) evt.getNewValue();
                 int indexIsland = world.getIndexByIsland(modelIsland);
                 VirtualIsland virtualIsland = new VirtualIsland(modelIsland);
                 listener.firePropertyChange(String.valueOf(EVENT.REPLACE_ISLAND), indexIsland, virtualIsland);
-                break;
-            case CHANGE_CLOUD:
+            }
+            case CHANGE_CLOUD -> {
                 Cloud modelCloud = (Cloud) evt.getNewValue();
                 int indexCloud = clouds.indexOf(modelCloud);
                 VirtualCloud virtualCloud = new VirtualCloud(modelCloud);
                 listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CLOUD), indexCloud, virtualCloud);
-                break;
-            case CHANGE_MN_POS:
+            }
+            case CHANGE_MN_POS -> {
                 int pos = (int) evt.getNewValue();
                 listener.firePropertyChange(String.valueOf(EVENT.MN_POS), null, pos);
-                break;
-            case CHANGE_WORLD:
+            }
+            case CHANGE_WORLD -> {
                 ArrayList<VirtualIsland> islands = (ArrayList<VirtualIsland>) evt.getNewValue();
                 listener.firePropertyChange(String.valueOf(EVENT.CREATE_WORLD), null, islands);
-                break;
+            }
         }
     }
 

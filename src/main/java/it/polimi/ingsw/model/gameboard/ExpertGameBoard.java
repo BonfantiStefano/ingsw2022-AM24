@@ -14,11 +14,9 @@ import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.server.virtualview.VirtualCharacter;
 import it.polimi.ingsw.server.virtualview.VirtualCharacterWithNoEntry;
 import it.polimi.ingsw.server.virtualview.VirtualCharacterWithStudents;
-import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -81,8 +79,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      */
     @Override
     public void entranceToHall(ColorS s) throws PlaceFullException, NoSuchStudentException {
-        boolean result = false;
-        result = activePlayer.getMyBoard().entranceToHall(s);
+        boolean result = activePlayer.getMyBoard().entranceToHall(s);
         if (result){
             activePlayer.setCoins(1);
             coins--;
@@ -351,24 +348,24 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
     public void propertyChange(PropertyChangeEvent evt){
         super.propertyChange(evt);
         EVENT event = EVENT.valueOf(evt.getPropertyName());
-        switch (event){
-            case CHANGE_CHARACTER_NE:
+        switch (event) {
+            case CHANGE_CHARACTER_NE -> {
                 CharacterWithNoEntry modelCard = (CharacterWithNoEntry) evt.getNewValue();
                 int indexCard = characters.indexOf(modelCard);
                 VirtualCharacterWithNoEntry virtualCard = new VirtualCharacterWithNoEntry(modelCard);
                 listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CHARACTER_NE), indexCard, virtualCard);
-                break;
-            case CHANGE_CHARACTER_S:
+            }
+            case CHANGE_CHARACTER_S -> {
                 CharacterWithStudent modelC = (CharacterWithStudent) evt.getNewValue();
                 int indexC = characters.indexOf(modelC);
                 VirtualCharacterWithStudents virtualC = new VirtualCharacterWithStudents(modelC);
                 listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CHARACTER_S), indexC, virtualC);
-                break;
-            case CHARACTER_COST:
+            }
+            case CHARACTER_COST -> {
                 Character modelCharacter = (Character) evt.getNewValue();
                 int indexCharacter = characters.indexOf(modelCharacter);
                 listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CHARACTER), indexCharacter, modelCharacter);
-                break;
+            }
         }
 
     }

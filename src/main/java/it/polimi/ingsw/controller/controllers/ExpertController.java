@@ -78,7 +78,7 @@ public class ExpertController extends Controller {
 
     @Override
     public void visit(PlayCharacter msg){
-        if(activeCharacter == null && !phase.equals(PHASE.PLANNING)){
+        /*if(activeCharacter == null && !phase.equals(PHASE.PLANNING)){*/
             try {
                 Character c = getModel().getCharacters().stream().
                         filter(character -> msg.getC().getDesc().equals(character.getDescription())).findAny().orElse(null);
@@ -87,10 +87,10 @@ public class ExpertController extends Controller {
             } catch (NotEnoughCoinsException e) {
                 lobby.sendMessage(getMessageSender(), new Error(ERRORS.NOT_ENOUGH_COINS.toString()));
             }
-        }
+        /*}
         else if(phase.equals(PHASE.PLANNING)){
             lobby.sendMessage(messageSender, new Error("You can't play a Character right now"));
-        }
+        }*/
     }
     @Override
     public void visit(SpecialMoveIsland m){
@@ -224,54 +224,54 @@ public class ExpertController extends Controller {
     public void propertyChange(PropertyChangeEvent evt){
         super.propertyChange(evt);
         EVENT event = EVENT.valueOf(evt.getPropertyName());
-        switch (event){
-            case REPLACE_CHARACTER:
+        switch (event) {
+            case REPLACE_CHARACTER -> {
                 int indexChar = (int) evt.getOldValue();
                 Character modelChar = (Character) evt.getNewValue();
                 VirtualCharacter virtualChar = new VirtualCharacter(modelChar);
                 getVirtualView().setVirtualCharacters(indexChar, virtualChar);
                 lobby.sendMessageToAll(new ReplaceCharacter(virtualChar, indexChar));
-                break;
-            case REPLACE_CHARACTER_S:
+            }
+            case REPLACE_CHARACTER_S -> {
                 int indexCharacter = (int) evt.getOldValue();
                 VirtualCharacterWithStudents character = (VirtualCharacterWithStudents) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(indexCharacter, character);
                 lobby.sendMessageToAll(new ReplaceCharacterStudents(character, indexCharacter));
-                break;
-            case REPLACE_CHARACTER_NE:
+            }
+            case REPLACE_CHARACTER_NE -> {
                 int indexC = (int) evt.getOldValue();
                 VirtualCharacterWithNoEntry VirtualC = (VirtualCharacterWithNoEntry) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(indexC, VirtualC);
                 lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(VirtualC, indexC));
-                break;
-            case CREATE_CHARACTERS:
+            }
+            case CREATE_CHARACTERS -> {
                 ArrayList<VirtualCharacter> virtualCharacters = (ArrayList<VirtualCharacter>) evt.getNewValue();
                 getVirtualView().setVirtualCharacters(virtualCharacters);
                 sendFullView();
-                break;
-            case BOARD_COINS:
+            }
+            case BOARD_COINS -> {
                 int coins = (int) evt.getNewValue();
                 getVirtualView().setVirtualCoins(coins);
                 lobby.sendMessageToAll(new UpdateCoins(coins));
-                break;
-            case MN_POS:
+            }
+            case MN_POS -> {
                 int pos = (int) evt.getNewValue();
                 virtualView.setMnPos(pos);
                 lobby.sendMessageToAll(new UpdateMN(pos));
-                break;
-            case CREATE_WORLD:
+            }
+            case CREATE_WORLD -> {
                 ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
                 virtualView.setVirtualWorld(virtualWorld);
                 lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
-                break;
-            case ACTIVE_CHARACTER:
+            }
+            case ACTIVE_CHARACTER -> {
                 int activeVirtualCharacter = (int) evt.getNewValue();
                 virtualView.getVirtualCharacters().get(activeVirtualCharacter).setActive(true);
-                break;
-            case NO_ACTIVE_CHARACTER:
+            }
+            case NO_ACTIVE_CHARACTER -> {
                 int activeVirtualChar = (int) evt.getNewValue();
                 virtualView.getVirtualCharacters().get(activeVirtualChar).setActive(false);
-                break;
+            }
         }
     }
 

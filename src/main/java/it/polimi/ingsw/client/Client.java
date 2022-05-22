@@ -3,16 +3,20 @@ package it.polimi.ingsw.client;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.client.request.*;
+import it.polimi.ingsw.model.EVENT;
 import it.polimi.ingsw.server.answer.*;
 import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Update.*;
+import it.polimi.ingsw.server.virtualview.VirtualView;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.*;
 import java.net.Socket;
 import java.util.NoSuchElementException;
-import java.util.Scanner;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 //TODO
 /*
@@ -28,13 +32,17 @@ alla ui di inviare i messaggi al server (prima li trasforma in json)
  *  *
  *  * @author Baratto Marco, Bonfanti Stefano
  */
-public class Client {
+public class Client{
     private ObjectOutputStream os;
     private ObjectInputStream is;
     private boolean active;
     private final UserInterface userInterface;
     private Thread timer;
+    private final Thread messageHandler;
+    private VirtualView virtualView;
     private static final int TIMEOUT = 50000;
+    private final BlockingQueue<Answer> messagesQueue;
+    protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**
      * Constructor Client creates a new Client instance.
@@ -42,6 +50,10 @@ public class Client {
     public Client(UserInterface userInterface) {
         active = false;
         this.userInterface = userInterface;
+        virtualView = new VirtualView();
+        userInterface.setVirtualView(virtualView);
+        messagesQueue = new ArrayBlockingQueue<>(20);
+        this.messageHandler = new Thread(this::messageParser);
     }
 
     /**
@@ -65,6 +77,8 @@ public class Client {
                 System.exit(0);
             }
             System.out.println("Stream created");
+            //start thread that handles all messages received sequentially
+            messageHandler.start();
             //The client starts to read the server input
             startServerReader();
 
@@ -72,7 +86,7 @@ public class Client {
             System.out.println("Connection closed");
             System.exit(-1);
         } catch (IOException e) {
-            System.out.println("Error during the creation od the socket");
+            System.out.println("Error during the creation of the socket");
             System.exit(-1);
         }
     }
@@ -93,15 +107,14 @@ public class Client {
                     startTimer();
                     Answer a = parseMessage(s);
                     if (a!=null) {
-                        userInterface.addMessage(a);
+                        messagesQueue.add(a);
                     }
                 }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 System.out.println("Socket chiuso, al posto di e.printStackTrace");
-                //e.printStackTrace();
-                handleClientDisconnection();
+                handleClientDisconnection(false);
             }
         }
     }
@@ -123,11 +136,12 @@ public class Client {
     /**
      * Method handleClientDisconnection closes the streams.
      */
-    public void handleClientDisconnection() {
+    public void handleClientDisconnection(boolean quit) {
         active = false;
         stopTimer();
-        //Per usare questo sotto bisogna trasformare questo metodo e renderlo simile a quello del SocketClientHandler
-        //sendMessage(cli.toJson(new Disconnect()));
+        if(quit) {
+            sendMessage(toJson(new Disconnect()));
+        }
         try {
             os.close();
             is.close();
@@ -156,9 +170,10 @@ public class Client {
                 sendMessage(toJson(new Pong()));
                 return null;
             case "NotifyDisconnection" :
-                //Dopo si toglie la system out e la si ritorna il json alla ui
+                //Se mi arriva questo messaggio non passo mai per la visit poichè facendo la handleClientDisconnection si chiude tutto
+                //e stampo su sout il messaggio, decidere cosa fare
                 System.out.println(gson.fromJson(jsonString, NotifyDisconnection.class).getString());
-                handleClientDisconnection();
+                handleClientDisconnection(false);
                 return null;
             case "AddPlayer":
                 return gson.fromJson(jsonString, AddPlayer.class);
@@ -202,7 +217,7 @@ public class Client {
             try{
                 Thread.sleep(TIMEOUT);
                 System.out.println("The server isn't available");
-                handleClientDisconnection();
+                handleClientDisconnection(true);
             } catch (InterruptedException e){
                 //System.out.println("The timeout timer has been stopped");
             }
@@ -240,5 +255,105 @@ public class Client {
         jsonElement.getAsJsonObject().addProperty("type", r.getClass().getSimpleName());
 
         return gson.toJson(jsonElement);
+    }
+
+    public void visit(FullView u){
+        virtualView = u.getVirtualView();
+        userInterface.setVirtualView(u.getVirtualView());
+        // Esempio di listener, da modificare sicuramente (ho aggiunto questo evento) chiedere come farlo
+        listener.firePropertyChange(String.valueOf(EVENT.UPDATE_ALL), null, u.getVirtualView());
+    }
+    public void visit(AddPlayer u){
+        virtualView.addVirtualPlayer(u.getPlayer());
+        listener.firePropertyChange(String.valueOf(EVENT.ADD_PLAYER), null, u.getPlayer());
+    }
+    public void visit(CreateCharacters u){
+        virtualView.setVirtualCharacters(u.getCharacters());
+        listener.firePropertyChange(String.valueOf(EVENT.CREATE_CHARACTERS), null, u.getCharacters());
+    }
+    public void visit(CreateClouds u){
+        virtualView.setVirtualClouds(u.getClouds());
+        listener.firePropertyChange(String.valueOf(EVENT.CREATE_CLOUDS), null, u.getClouds());
+
+    }
+    public void visit(ReplaceCharacter u){
+        virtualView.setVirtualCharacters(u.getIndex(),u.getCharacter());
+        listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CHARACTER), null, u.getCharacter());
+    }
+    public void visit(ReplaceCharacterStudents u){
+        virtualView.setVirtualCharacters(u.getIndex(),u.getVirtualCharacterWithStudents());
+        listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CHARACTER_S), null, u.getVirtualCharacterWithStudents());
+    }
+    public void visit(ReplaceCharacterWithNoEntry u){
+        virtualView.setVirtualCharacters(u.getIndex(),u.getCharacterWithNoEntry());
+        listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CHARACTER_NE), null, u.getCharacterWithNoEntry());
+    }
+    public void visit(ReplaceCloud u){
+        virtualView.setVirtualClouds(u.getIndex(),u.getCloud());
+        listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CLOUD), null, u.getCloud());
+    }
+    public void visit(UpdateCoins u){
+        virtualView.setVirtualCoins(u.getCoins());
+        listener.firePropertyChange(String.valueOf(EVENT.BOARD_COINS), null, u.getCoins());
+    }
+    public void visit(UpdateIsland u){
+        virtualView.setVirtualWorld(u.getIndex(),u.getIsland());
+        listener.firePropertyChange(String.valueOf(EVENT.REPLACE_ISLAND), null, u.getIsland());
+    }
+    public void visit(UpdateWorld u){
+        virtualView.setVirtualWorld(u.getIslands());
+        listener.firePropertyChange(String.valueOf(EVENT.CREATE_WORLD), null, u.getIslands());
+    }
+    public void visit(UpdateMN u){
+        virtualView.setMnPos(u.getIndex());
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_MN_POS), null, u.getIndex());
+    }
+    public void visit(UpdatePlayer u){
+        virtualView.setVirtualPlayers(u.getIndex(),u.getPlayer());
+        listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PLAYER), null, u.getPlayer());
+    }
+    public void visit(UpdateProfs u){
+        virtualView.setVirtualProfs(u.getProfs());
+        listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PROFS), null, u.getProfs());
+    }
+    public void visit(Error error){
+        listener.firePropertyChange("ERROR", null, error);
+    }
+    public void visit(Information information){
+        listener.firePropertyChange("INFORMATION", null, information);
+    }
+    public void visit(NotifyDisconnection notifyDisconnection) {
+        //in teoria non raggiungo mai questo ramo
+        listener.firePropertyChange("NOTIFYDISCONNECTION", null, notifyDisconnection);
+    }
+    public void visit(Welcome welcome) {
+        listener.firePropertyChange("WELCOME", null, welcome);
+    }
+
+    public int getSizeQueue() {
+        return messagesQueue.size();
+    }
+
+    public void messageParser() {
+        try {
+            while (active) {
+                Answer u = messagesQueue.take();
+                handleMessage(u);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Handles all Updates calling the respective visitor method
+     * @param a the Update received
+     */
+    public void handleMessage(Answer a){
+        a.accept(this);
+    }
+
+    public void addListener(PropertyChangeListener userInterface){
+        listener.addPropertyChangeListener(userInterface);
     }
 }

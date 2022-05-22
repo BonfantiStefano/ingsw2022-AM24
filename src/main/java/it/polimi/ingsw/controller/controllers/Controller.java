@@ -24,7 +24,6 @@ import it.polimi.ingsw.server.virtualview.VirtualView;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -108,8 +107,6 @@ public class Controller implements PropertyChangeListener {
     public void visit(Disconnect msg){
         //if a Player disconnects during the setup phase the game is canceled
         //can be changed later
-        //Stefano: Ho commentato questo metodo perchè in teoria non ci serve
-
         model.setConnected(messageSender, false);
         nextPhase();
     }
@@ -406,65 +403,65 @@ public class Controller implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         EVENT event = EVENT.valueOf(evt.getPropertyName());
-        switch(event){
-            case ADD_PLAYER:
+        switch (event) {
+            case ADD_PLAYER -> {
                 Player modelPlayer = (Player) evt.getNewValue();
                 VirtualPlayer virtualPlayer = new VirtualPlayer(modelPlayer);
                 virtualView.addVirtualPlayer(virtualPlayer);
                 lobby.sendMessageToAll(new AddPlayer(virtualPlayer));
-                break;
-            case REPLACE_ISLAND:
+            }
+            case REPLACE_ISLAND -> {
                 int indexIsland = (int) evt.getOldValue();
                 VirtualIsland island = (VirtualIsland) evt.getNewValue();
                 virtualView.setVirtualWorld(indexIsland, island);
                 lobby.sendMessageToAll(new UpdateIsland(island, indexIsland));
-                break;
-            case CREATE_WORLD:
+            }
+            case CREATE_WORLD -> {
                 ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
                 virtualView.setVirtualWorld(virtualWorld);
                 lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
-                break;
-            case REPLACE_PLAYER:
+            }
+            case REPLACE_PLAYER -> {
                 int indexPlayer = (int) evt.getOldValue();
                 VirtualPlayer player = (VirtualPlayer) evt.getNewValue();
                 virtualView.setVirtualPlayers(indexPlayer, player);
                 lobby.sendMessageToAll(new UpdatePlayer(player, indexPlayer));
-                break;
-            case CREATE_CLOUDS:
+            }
+            case CREATE_CLOUDS -> {
                 ArrayList<VirtualCloud> virtualClouds = (ArrayList<VirtualCloud>) evt.getNewValue();
                 virtualView.setVirtualClouds(virtualClouds);
                 lobby.sendMessageToAll(new CreateClouds(virtualClouds));
-                break;
-            case CREATE_PLAYERS:
+            }
+            case CREATE_PLAYERS -> {
                 ArrayList<VirtualPlayer> virtualPlayers = (ArrayList<VirtualPlayer>) evt.getNewValue();
                 virtualView.setVirtualPlayers(virtualPlayers);
-                break;
-            case REPLACE_CLOUD:
+            }
+            case REPLACE_CLOUD -> {
                 int indexCloud = (int) evt.getOldValue();
                 VirtualCloud cloud = (VirtualCloud) evt.getNewValue();
                 virtualView.setVirtualClouds(indexCloud, cloud);
                 lobby.sendMessageToAll(new ReplaceCloud(cloud, indexCloud));
-                break;
-            case REPLACE_PROFS:
+            }
+            case REPLACE_PROFS -> {
                 HashMap<ColorS, Player> modelProfs = (HashMap<ColorS, Player>) evt.getNewValue();
                 HashMap<ColorS, VirtualPlayer> virtualProfs = new HashMap<>();
-                for(ColorS c : ColorS.values()){
-                    if(modelProfs.get(c) != null)
+                for (ColorS c : ColorS.values()) {
+                    if (modelProfs.get(c) != null)
                         virtualProfs.put(c, new VirtualPlayer(modelProfs.get(c)));
                     else
-                        virtualProfs.put(c,null);
+                        virtualProfs.put(c, null);
                 }
                 virtualView.setVirtualProfs(virtualProfs);
                 lobby.sendMessageToAll(new UpdateProfs(virtualProfs));
-                break;
-            case MN_POS:
+            }
+            case MN_POS -> {
                 int mnPos = (int) evt.getNewValue();
                 virtualView.setMnPos(mnPos);
                 lobby.sendMessageToAll(new UpdateMN(mnPos));
-                break;
-            default:
-                //in case an undefined event is thrown the whole view will be sent
-                sendFullView();
+            }
+            default ->
+                    //in case an undefined event is thrown the whole view will be sent
+                    sendFullView();
         }
     }
 

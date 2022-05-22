@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.answer;
 
-import it.polimi.ingsw.client.CLIView.CLI;
-import it.polimi.ingsw.server.Lobby;
+import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.server.virtualview.VirtualLobby;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ public class Welcome implements Answer{
     }
 
     @Override
-    public void accept(CLI c) {
+    public void accept(Client c) {
         c.visit(this);
     }
 }

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.answer.Update;
 
-import it.polimi.ingsw.client.CLIView.CLI;
+import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.server.virtualview.VirtualIsland;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class UpdateWorld implements Update{
     }
 
     @Override
-    public void accept(CLI c){
+    public void accept(Client c){
         c.visit(this);
     }
 }
