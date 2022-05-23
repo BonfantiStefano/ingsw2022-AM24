@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -23,7 +24,7 @@ public class ChooseColorController implements GUIController{
     private GUI gui;
     private ColorS colorStudent;
 
-    public void showScene(){
+    public Scene getScene(){
         HashMap<ColorS, Image> studentImages = new HashMap<>();
         BorderPane root = new BorderPane();
         HBox buttons = new HBox();
@@ -63,7 +64,8 @@ public class ChooseColorController implements GUIController{
             if(cb.isSelected() && colorStudent!= null){
                 //send message to server
                 gui.sendMessageToServer(new ChooseColor(colorStudent));
-                System.exit(0);
+                Stage s = (Stage) cb.getScene().getWindow();
+                s.close();
             }
             else{
                 cb.setSelected(false);
@@ -101,10 +103,7 @@ public class ChooseColorController implements GUIController{
         tbl5.setStyle("-fx-base: lightskyblue");
 
         root.setCenter(rect);
-        //Scene scene = new Scene(root, 400, 400);
-        //stage.setTitle("Choose color!");
-        //stage.setScene(scene);
-        //stage.show();
+        return new Scene(root,400,400);
     }
 
     @Override

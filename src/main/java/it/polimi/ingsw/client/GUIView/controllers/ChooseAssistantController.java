@@ -3,6 +3,7 @@ package it.polimi.ingsw.client.GUIView.controllers;
 import it.polimi.ingsw.client.GUIView.GUI;
 import it.polimi.ingsw.client.request.ChooseAssistant;
 import it.polimi.ingsw.server.virtualview.VirtualView;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.image.Image;
@@ -11,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
@@ -19,18 +21,17 @@ public class ChooseAssistantController implements GUIController {
     private VirtualView view;
     private int posCard = -1;
 
-    public void showScene(){
+    public Scene getScene(int player){
 
         BorderPane root = new BorderPane();
-        view = new VirtualView();
-
+        view = gui.getVirtualView();
         //TODO activePlayer
-        int numCards = view.getVirtualPlayers().get(0).getVirtualHand().numCards();
+        int numCards = view.getVirtualPlayers().get(player).getVirtualHand().numCards();
 
         ArrayList<Image> assistantImages = new ArrayList<>();
-        for(int i = 1; i <= numCards; i++){
+        for(int i = 0; i < numCards; i++){
             //TODO activePlayer
-            int temp = view.getVirtualPlayers().get(0).getVirtualHand().getCards().get(i).getTurn();
+            int temp = view.getVirtualPlayers().get(player).getVirtualHand().getCards().get(i).getTurn();
             Image imageA = new Image(getClass().getResourceAsStream("/graphics/Assistants/Animali_1_"+temp+"@3x.png"));
             assistantImages.add(imageA);
         }
@@ -83,7 +84,8 @@ public class ChooseAssistantController implements GUIController {
                 //send message to server
                 int index = posCard + 1;
                 gui.sendMessageToServer(new ChooseAssistant(index));
-                System.exit(0);
+                Stage s = (Stage) cb.getScene().getWindow();
+                s.close();
             }
             else{
                 cb.setSelected(false);
@@ -94,12 +96,11 @@ public class ChooseAssistantController implements GUIController {
         cb.setTranslateY(-15);
         root.setBottom(cb);
 
-        //Scene scene = new Scene(root, 400, 400);
-        //stage.setTitle("Choose Assistant");
-        //stage.setScene(scene);
-        //stage.show();
-
+        Scene scene = new Scene(root, 400, 400);
+        return scene;
     }
+
+
 
     @Override
     public void setGui(GUI gui) {

@@ -302,7 +302,7 @@ public class Client{
     }
     public void visit(UpdatePlayer u){
         virtualView.setVirtualPlayers(u.getIndex(),u.getPlayer());
-        listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PLAYER), null, u.getPlayer());
+        listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PLAYER), null, u.getIndex());
     }
     public void visit(UpdateProfs u){
         virtualView.setVirtualProfs(u.getProfs());

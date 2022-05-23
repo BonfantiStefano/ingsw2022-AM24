@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane fx:id="anchor" maxHeight="800.0" maxWidth="1400.0" minHeight="800.0" minWidth="1400.0" prefHeight="800.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.GUIView.controllers.GameController">
+<AnchorPane fx:id="anchor" maxHeight="800.0" maxWidth="1400.0" minHeight="800.0" minWidth="1400.0" prefHeight="800.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.GUIView.controllers.GameController">
     <children>
       <StackPane fx:id="last3" layoutX="98.0" layoutY="522.0" prefHeight="200.0" prefWidth="110.0" rotate="90.0" />
         <Pane fx:id="sc1" layoutX="342.0" layoutY="542.0" prefHeight="225.0" prefWidth="520.0" styleClass="pane" stylesheets="@css/application.css">
@@ -136,7 +130,7 @@
                 </GridPane>
             </children>
         </Pane>
-      <Button fx:id="bottone" layoutX="1057.0" layoutY="650.0" mnemonicParsing="false" onAction="#again" text="Button" />
+      <Button fx:id="handButton" layoutX="1057.0" layoutY="650.0" mnemonicParsing="false" onAction="#showHand" text="Button" />
         <Pane fx:id="sc2" layoutX="936.0" layoutY="188.0" maxHeight="225.0" maxWidth="520.0" minHeight="225.0" minWidth="520.0" prefHeight="225.0" prefWidth="520.0" rotate="-90.0" styleClass="pane" stylesheets="@css/application.css">
             <children>
                 <GridPane fx:id="e2" layoutX="10.0" layoutY="23.0" prefHeight="184.0" prefWidth="63.0" stylesheets="@css/application.css">
