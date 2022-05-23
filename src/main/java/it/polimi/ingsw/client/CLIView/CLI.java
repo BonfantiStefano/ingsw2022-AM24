@@ -22,8 +22,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//TODO inserire i controlli ogni volta che faccio la parsInt in un blocco try catch per la eccezione che lancia o in alternativa usare nextInt
-//come faccio in eriantys.java, in teoria è preferibile usare il parsing a nextLine con blocco try catch per la NumericFormatException
 /**
  * Class CLI represents the terminal UI
  */
@@ -214,15 +212,9 @@ public class CLI implements Runnable, UserInterface {
             if(lastInfo.equals("The lobby has been created") || lastInfo.equals("You have joined the game")) {
                 System.out.println("Waiting other players...");
             }
-            /*
             if(client.getSizeQueue() == 0 && !lastError.isEmpty()){
                 System.out.println(lastError);
                 lastError="";
-            }
-
-             */
-            if(!lastError.isEmpty()) {
-                System.out.println(lastError);
             }
         }
     }
@@ -242,9 +234,10 @@ public class CLI implements Runnable, UserInterface {
         String answer;
         if(!lobbies.isEmpty()) {
             do {
-                System.out.println("Do you want to Join a Lobby? (y/n)");
+                System.out.println("Do you want to Join a Lobby? (y/n/reload)");
                 answer = input.nextLine();
-            } while ((!answer.equals("y") && !answer.equals("n")) || (answer.equals("y") && lobbies.size() == 0));
+                checkDisconnect(answer);
+            } while (!answer.equals("y") && !answer.equals("n") && !answer.equals("reload"));
         } else {
             answer = "n";
         }
@@ -253,7 +246,7 @@ public class CLI implements Runnable, UserInterface {
             int index;
             do {
                 System.out.println("Insert the Lobby's number: ");
-                index = Integer.parseInt(input.nextLine());
+                index = getInputValue();
                 if(getLobbyByIndex(lobbies, index) == -1) {
                     System.out.println("Invalid lobby index!");
                     index = -1;
@@ -264,55 +257,60 @@ public class CLI implements Runnable, UserInterface {
             do {
                 System.out.println("Choose your nickname: ");
                 nickname = input.nextLine();
+                checkDisconnect(nickname);
             } while (nickname == null);
 
             int mageIndex;
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
-                mageIndex = Integer.parseInt(input.nextLine());
+                mageIndex = getInputValue();
             } while (mageIndex < 0 || mageIndex > 4);
             int towerIndex;
             do {
                 System.out.println("Choose your TowerColor (1-Black, 2-White"+ (lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2 ? ")":", 3-Grey)")+":");
-                towerIndex = Integer.parseInt(input.nextLine());
+                towerIndex = getInputValue();
             } while ((towerIndex < 0 || towerIndex > 4)||(towerIndex==3&&lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2));
 
             Join msg = new Join(nickname, Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1], index);
             client.sendMessage(toJson(msg));
         }
-        else{
+        else if(answer.equals("n")){
             System.out.println("Creating a lobby!");
             int numPlayers;
             do {
                 System.out.println("How many Players will the Game have? (2/3)");
-                numPlayers = Integer.parseInt(input.nextLine());
+                numPlayers = getInputValue();
             }while(numPlayers<2 || numPlayers>3);
             String expert;
             do{
                 System.out.println("Do you want to create an Expert Game? (y/n)");
                 expert = input.nextLine();
+                checkDisconnect(expert);
             }while(!expert.equals("y")&&!expert.equals("n"));
 
             String nickname;
             do {
                 System.out.println("Choose your nickname: ");
                 nickname = input.nextLine();
+                checkDisconnect(nickname);
             } while (nickname == null);
 
             int mageIndex;
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
-                mageIndex = Integer.parseInt(input.nextLine());
+                mageIndex = getInputValue();
             } while (mageIndex < 0 || mageIndex > 4);
 
             int towerIndex;
             do {
                 System.out.println("Choose your TowerColor (1-Black, 2-White"+ (numPlayers==2 ? ")":", 3-Grey)")+":");
-                towerIndex = Integer.parseInt(input.nextLine());
+                towerIndex = getInputValue();
             } while (towerIndex < 0 || towerIndex > 4);
 
             GameParams msg = new GameParams(numPlayers, expert.equals("y"), nickname,Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1]);
             client.sendMessage(toJson(msg));
+        } else {
+            new Thread(this::getInfo).start();
         }
     }
 
@@ -761,6 +759,26 @@ public class CLI implements Runnable, UserInterface {
                 }
                 //printView();
             }
+        }
+    }
+
+    public int getInputValue() {
+        int val;
+        String string;
+        try {
+            string = input.nextLine();
+            checkDisconnect(string);
+            val = Integer.parseInt(string);
+        } catch (NumberFormatException exception) {
+            System.out.println("Numeric format requested");
+            val = -1;
+        }
+        return val;
+    }
+
+    private void checkDisconnect(String input) {
+        if(input != null && input.equals("disconnect")) {
+            System.exit(0);
         }
     }
 }

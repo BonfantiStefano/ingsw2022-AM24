@@ -15,7 +15,6 @@ import it.polimi.ingsw.server.answer.Error;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
-//Not final, work in progress
 /**
  * Class Lobby manages all the interaction between all the players of a lobby and the controller.
  *

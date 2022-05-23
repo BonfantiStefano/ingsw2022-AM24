@@ -18,14 +18,6 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-//TODO
-/*
-Per unificare cli e gui devo creare un' interfaccio userInterface, sia cli che gui dopo aver chiesto in input all' utente ip e porta
-creano un Client (si passano loro come parametro) e poi vi chiamano startClient passandovi porta e ip, il client deve leggere i messaggi
-inviati dal server, poi (su un altro thread) li gestisce (cioè chiama la visit) (nel caso di update ha anche un metodo per notificarli
-(della user interface) alla ui, per cli stampa tutta la view mentre per gui notifica la scena corrente. Gestisce inoltre i ping/pong e permette
-alla ui di inviare i messaggi al server (prima li trasforma in json)
-*/
 //Not final, work in progress
 /**
  * Class Client manages the connection of a client with the server.
