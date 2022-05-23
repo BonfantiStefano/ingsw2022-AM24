@@ -74,7 +74,7 @@
                 </GridPane>
             </children>
         </Pane>
-        <Pane fx:id="sc3" layoutX="-107.0" layoutY="184.0" maxHeight="225.0" maxWidth="520.0" minHeight="225.0" minWidth="520.0" prefHeight="225.0" prefWidth="520.0" rotate="90.0" styleClass="pane" stylesheets="@css/application.css" AnchorPane.leftAnchor="-107.0">
+        <Pane fx:id="sc3" layoutX="-107.0" layoutY="184.0" maxHeight="225.0" maxWidth="520.0" minHeight="225.0" minWidth="520.0" prefHeight="225.0" prefWidth="520.0" rotate="90.0" styleClass="pane" stylesheets="@css/application.css" visible="false" AnchorPane.leftAnchor="-107.0">
             <children>
                 <GridPane fx:id="e3" layoutX="10.0" layoutY="23.0" prefHeight="184.0" prefWidth="63.0" stylesheets="@css/application.css">
                     <columnConstraints>

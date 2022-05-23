@@ -38,19 +38,22 @@ public class LobbyController implements GUIController{
     private VirtualLobby selected;
 
     @FXML
-    private Label error;
+    private Label error, lastInfo;
 
     @FXML
     protected void showList(){
         createTable();
     }
 
+    public void setWelcome(Welcome welcome) {
+        this.welcome = welcome;
+    }
+
     public void createTable(){
         table.getItems().clear();
         table.setPlaceholder(new Label("No lobbies :("));
-        //TODO set list to welcome
-        ArrayList<VirtualLobby> list = new ArrayList<>();
-        //list = welcome.getLobbies();
+
+        ArrayList<VirtualLobby> list = welcome !=null?welcome.getLobbies():new ArrayList<>();
         table.setRowFactory(tv -> {TableRow<VirtualLobby> row = new TableRow<>();
             row.setOnMouseClicked(mouseEvent -> {
                 if(mouseEvent.getClickCount()==2 && !row.isEmpty()){
@@ -61,12 +64,11 @@ public class LobbyController implements GUIController{
             });
             return row;
         });
-        IDcloumn.setCellValueFactory(new PropertyValueFactory<>("intero"));
-        ExpColumn.setCellValueFactory(new PropertyValueFactory<>("string"));
+
+        IDcloumn.setCellValueFactory(new PropertyValueFactory<>("lobbyIndex"));
+        ExpColumn.setCellValueFactory(new PropertyValueFactory<>("mode"));
 
         table.getItems().addAll(list);
-
-
     }
 
     public void createModeField(){
@@ -119,7 +121,8 @@ public class LobbyController implements GUIController{
             error.setText("Nickname isn't available");
         if(error.getText().isEmpty()&& checkCredentials()) {
             msg = new Join(nickname, mage, color, selected.getLobbyIndex());
-            gui.sendMessageToServer("Ciao brutto");
+            gui.sendMessageToServer(msg);
+            gui.setNickname(nickname);
         }
     }
 
@@ -131,7 +134,8 @@ public class LobbyController implements GUIController{
         boolean exp = modeField.getValue().equals("expert");
         if(checkCredentials()) {
             msg = new GameParams(num, exp, nickname, mage, color);
-            gui.sendMessageToServer("Ciao bello");
+            gui.sendMessageToServer(msg);
+            gui.setNickname(nickname);
         }
     }
 
@@ -139,6 +143,19 @@ public class LobbyController implements GUIController{
         nickname = nicknameField.getText();
         mage = Arrays.stream(Mage.values()).filter(m -> m.toString().equals(mageField.getValue())).findFirst().get();
         color = Arrays.stream(ColorT.values()).filter(c -> c.toString().equals(colorField.getValue())).findFirst().get();
+    }
+
+    public void quickCreate(){
+        gui.sendMessageToServer(new GameParams(2,true,"marco",Mage.MAGE1,ColorT.BLACK));
+        gui.setNickname("marco");
+    }
+    public void quickJoin(){
+        gui.sendMessageToServer(new Join("pippo",Mage.MAGE2,ColorT.WHITE,0));
+        gui.setNickname("pippo");
+    }
+
+    public void setLastInfo(String text){
+        lastInfo.setText(text);
     }
 
     private boolean checkCredentials(){

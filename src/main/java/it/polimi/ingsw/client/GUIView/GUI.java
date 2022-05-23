@@ -8,8 +8,11 @@ import it.polimi.ingsw.client.GUIView.controllers.GUIController;
 import it.polimi.ingsw.client.GUIView.controllers.GameController;
 import it.polimi.ingsw.client.GUIView.controllers.LobbyController;
 import it.polimi.ingsw.client.UserInterface;
+import it.polimi.ingsw.server.answer.Information;
+import it.polimi.ingsw.server.answer.Welcome;
 import it.polimi.ingsw.server.virtualview.VirtualView;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -23,6 +26,7 @@ public class GUI extends Application implements UserInterface {
     private Stage window;
     private Client client;
     private VirtualView virtualView;
+    private  String nickname;
     private final HashMap<String, Scene> nameMapScene = new HashMap<>();
     private final HashMap<Scene, GUIController> nameMapController = new HashMap<>();
 
@@ -34,8 +38,8 @@ public class GUI extends Application implements UserInterface {
     public void start(Stage stage) throws IOException {
         setup();
         this.window = stage;
-        window.setMinWidth(1000);
-        window.setMinHeight(800);
+        window.setMinWidth(600);
+        window.setMinHeight(600);
         window.setResizable(true);
         run();
     }
@@ -56,16 +60,17 @@ public class GUI extends Application implements UserInterface {
             System.out.println("Warning: scenes setup failed");
             System.exit(0);
         }
-        currentScene = nameMapScene.get(CONTROLLERS.MAIN.toString());
+        currentScene = nameMapScene.get(CONTROLLERS.SETUP.toString());
+        //currentScene = nameMapScene.get(CONTROLLERS.MAIN.toString());
     }
 
     private void run() {
-        window.setWidth(1400);
-        window.setHeight(800);
+        window.setWidth(747);
+        window.setHeight(748);
         window.setTitle("Eriantys!");
         window.setScene(currentScene);
-        GameController g = (GameController) nameMapController.get(currentScene);
-        g.init();
+        //GameController g = (GameController) nameMapController.get(currentScene);
+        //g.init();
         window.show();
     }
 
@@ -73,7 +78,7 @@ public class GUI extends Application implements UserInterface {
     public void setupConnection(String serverAddress, int port) {
         client = new Client(this);
         client.addListener(this);
-        client.startClient(serverAddress, port);
+        new Thread(()-> client.startClient(serverAddress, port)).start();
     }
 
     public void changeScene(String newSceneName) throws IOException {
@@ -103,7 +108,48 @@ public class GUI extends Application implements UserInterface {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        GameController c = (GameController) nameMapController.get(nameMapScene.get(CONTROLLERS.MAIN.toString()));
+        LobbyController lb = (LobbyController) nameMapController.get(nameMapScene.get(CONTROLLERS.WELCOME.toString()));
+        switch(evt.getPropertyName()){
+            case "WELCOME":
+                if(currentScene.equals(nameMapScene.get(CONTROLLERS.WELCOME.toString())))
+                Platform.runLater(()-> {
+                    try {
+                        changeScene(CONTROLLERS.WELCOME.toString());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
 
+                Welcome w = (Welcome) evt.getNewValue();
+                lb.setWelcome(w);
+
+                Platform.runLater(lb::init);
+                break;
+            case "INFORMATION":
+                String text = ((Information) evt.getNewValue()).getString();
+                if(text.equals("Game Started!")){
+                    Platform.runLater(()-> {
+                        try {
+                            changeScene(CONTROLLERS.MAIN.toString());
+                            c.init();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+                else if(text.equals("The lobby has been created")||text.equals("You have joined the game")){
+                    Platform.runLater(()->lb.setLastInfo(text));
+                }
+                break;
+            case "UPDATE_ALL":
+                Platform.runLater(()->{
+                    c.setVirtualView((VirtualView) evt.getNewValue());
+                    c.init();
+                }
+                );
+
+        }
     }
 
     public String toJson(Object r){
@@ -113,5 +159,13 @@ public class GUI extends Application implements UserInterface {
         jsonElement.getAsJsonObject().addProperty("type", r.getClass().getSimpleName());
 
         return gson.toJson(jsonElement);
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }
