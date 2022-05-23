@@ -4,7 +4,8 @@ public enum CONTROLLERS {
     SETUP("/setUpScene.fxml"),
     WELCOME("/Welcome.fxml"),
     GAME("/Game.fxml"),
-    MAIN("/MainScene.fxml");
+    MAIN("/MainScene.fxml"),
+    CHOOSE_ASSISTANT("/ChooseAssistant.fxml");
 
     private final String path;
 
