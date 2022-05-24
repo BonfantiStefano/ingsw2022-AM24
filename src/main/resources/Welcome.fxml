@@ -11,11 +11,11 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="624.0" prefWidth="608.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.GUIView.controllers.LobbyController">
 
     <children>
-        <TableView fx:id="table" layoutX="14.0" layoutY="37.0" prefHeight="285.0" prefWidth="259.0" AnchorPane.bottomAnchor="302.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="335.0" AnchorPane.topAnchor="37.0">
+        <TableView fx:id="table" layoutX="14.0" layoutY="37.0" maxHeight="285.0" maxWidth="335.0" minHeight="285.0" minWidth="335.0" prefHeight="285.0" prefWidth="335.0" AnchorPane.bottomAnchor="302.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="259.0" AnchorPane.topAnchor="37.0">
             <columns>
                 <TableColumn fx:id="IDcloumn" prefWidth="75.0" text="ID" />
-                <TableColumn fx:id="numPCloumn" prefWidth="100.0" text="NumPlayers" />
                 <TableColumn fx:id="ExpColumn" onEditStart="#showList" prefWidth="75.0" text="Expert" />
+                <TableColumn fx:id="connected" prefWidth="183.79998779296875" text="Connected" />
             </columns>
         </TableView>
         <Button layoutX="14.0" layoutY="11.0" mnemonicParsing="false" onAction="#showList" text="Reload Lobbies" />

@@ -78,7 +78,7 @@ public class ExpertController extends Controller {
 
     @Override
     public void visit(PlayCharacter msg){
-        /*if(activeCharacter == null && !phase.equals(PHASE.PLANNING)){*/
+        if(activeCharacter == null){
             try {
                 Character c = getModel().getCharacters().stream().
                         filter(character -> msg.getC().getDesc().equals(character.getDescription())).findAny().orElse(null);
@@ -87,10 +87,10 @@ public class ExpertController extends Controller {
             } catch (NotEnoughCoinsException e) {
                 lobby.sendMessage(getMessageSender(), new Error(ERRORS.NOT_ENOUGH_COINS.toString()));
             }
-        /*}
+        }
         else if(phase.equals(PHASE.PLANNING)){
             lobby.sendMessage(messageSender, new Error("You can't play a Character right now"));
-        }*/
+        }
     }
     @Override
     public void visit(SpecialMoveIsland m){

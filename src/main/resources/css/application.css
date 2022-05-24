@@ -16,3 +16,6 @@
 .border{
     -fx-border-color: red;
 }
+.main{
+    -fx-background-image: url('../graphics/Background.jpg');
+}
