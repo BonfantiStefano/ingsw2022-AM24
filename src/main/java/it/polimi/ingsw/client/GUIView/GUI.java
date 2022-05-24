@@ -133,37 +133,33 @@ public class GUI extends Application implements UserInterface {
                 break;
             case "INFORMATION":
                 String text = ((Information) evt.getNewValue()).getString();
-                if(text.equals("Game Started!")){
-                    started = true;
-                    Platform.runLater(()-> {
-                        try {
-                            changeScene(CONTROLLERS.MAIN.toString());
-                            c.init();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                }
-                else if(text.equals("You Lose")){
-                    Platform.runLater(() ->{
+                switch (text) {
+                    case "Game Started!" -> {
+                        started = true;
+                        Platform.runLater(() -> {
+                            try {
+                                changeScene(CONTROLLERS.MAIN.toString());
+                                c.init();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+                    case "You Lose" -> Platform.runLater(() -> {
                         try {
                             changeScene(CONTROLLERS.YOUWIN.toString());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     });
-                }
-                else if(text.equals("You won")){
-                    Platform.runLater(() ->{
+                    case "You won" -> Platform.runLater(() -> {
                         try {
                             changeScene(CONTROLLERS.YOULOSE.toString());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     });
-                }
-                else if(text.equals("The lobby has been created")||text.equals("You have joined the game")){
-                    Platform.runLater(()->lb.setLastInfo(text));
+                    case "The lobby has been created", "You have joined the game" -> Platform.runLater(() -> lb.setLastInfo(text));
                 }
                 Platform.runLater(()->c.setLastInfo(text));
                 break;
