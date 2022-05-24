@@ -94,7 +94,6 @@ public class ExpertControllerTest {
         for (int i = 0; i < 6; i++){
             egb.getActivePlayer().getMyBoard().addToHall(ColorS.GREEN);
         }
-
         egb.checkProfs();
         Player p = egb.getProfs().get(ColorS.GREEN);
         assertEquals("Bob", p.getNickname());
@@ -127,8 +126,9 @@ public class ExpertControllerTest {
                 break;
             }
 
-
-        assertNull(egb.getActiveCharacter());
+        expertController.handleMessage(new ChooseAssistant(1), "Bob");
+        expertController.handleMessage(new ChooseAssistant(2), "Lisa");
+        expertController.handleMessage(new ChooseAssistant(3), "Alice");
 
         //sending message with not valid card
         PlayCharacter message1 = new PlayCharacter(notAvailableChar);

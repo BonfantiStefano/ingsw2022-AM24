@@ -50,46 +50,28 @@ public class CharacterFactory {
         Character c=null;
         CharacterWithStudent temp;
 
-        switch (i){
-            case 1:
-            case 11:
+        switch (i) {
+            case 1, 11 -> {
                 temp = new CharacterWithStudent(cost, desc, 4);
-                for(int j=0;j<4;j++) {
+                for (int j = 0; j < 4; j++) {
                     temp.add(bag.draw());
                 }
-                c=temp;
-                break;
-            case 2:
-                c = new CharacterProf(cost, desc, new EqualProf(), gameBoard);
-                break;
-            case 3:
-            case 10:
-            case 12:
-                c = new Character(cost,desc);
-                break;
-            case 4:
-                c = new CharacterMN(cost, desc, players);
-                break;
-            case 5:
-                c = new CharacterWithNoEntry(cost, desc);
-                break;
-            case 6:
-                c = new CharacterInfluence(cost, desc, new NoTowerInfluence(), world);
-                break;
-            case 7:
+                c = temp;
+            }
+            case 2 -> c = new CharacterProf(cost, desc, new EqualProf(), gameBoard);
+            case 3, 10, 12 -> c = new Character(cost, desc);
+            case 4 -> c = new CharacterMN(cost, desc, players);
+            case 5 -> c = new CharacterWithNoEntry(cost, desc);
+            case 6 -> c = new CharacterInfluence(cost, desc, new NoTowerInfluence(), world);
+            case 7 -> {
                 temp = new CharacterWithStudent(cost, desc, 6);
-                for(int j=0;j<6;j++) {
+                for (int j = 0; j < 6; j++) {
                     temp.add(bag.draw());
                 }
-                c=temp;
-                break;
-            case 8:
-                c = new CharacterInfluence(cost, desc, new AdditionalInfluence(), world);
-                break;
-            case 9:
-                c = new CharacterInfluence(cost, desc, new NoColorInfluence(), world);
-                break;
-
+                c = temp;
+            }
+            case 8 -> c = new CharacterInfluence(cost, desc, new AdditionalInfluence(), world);
+            case 9 -> c = new CharacterInfluence(cost, desc, new NoColorInfluence(), world);
         }
         return c;
     }
@@ -100,5 +82,9 @@ public class CharacterFactory {
      */
     private int getRandom(){
         return random.remove(0);
+    }
+
+    public void setPlayers(ArrayList<PlayerInterface> players) {
+        this.players = players;
     }
 }

@@ -1,10 +1,11 @@
 package it.polimi.ingsw.client;
 
-import it.polimi.ingsw.client.request.Pong;
-import it.polimi.ingsw.server.answer.Answer;
+import it.polimi.ingsw.server.virtualview.VirtualView;
 
-public interface UserInterface {
-    void begin(String ip, int port);
+import java.beans.PropertyChangeListener;
 
-    void addMessage(Answer a);
+public interface UserInterface extends PropertyChangeListener {
+    void setupConnection(String ip, int port);
+
+    void setVirtualView(VirtualView virtualView);
 }

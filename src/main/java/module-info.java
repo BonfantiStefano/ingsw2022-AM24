@@ -11,7 +11,8 @@ open module it.polimi.ingsw {
     exports it.polimi.ingsw.client.GUIView.controllers;
     //opens it.polimi.ingsw.client.GUIView.controllers to javafx.fxml;
     //opens it.polimi.ingsw.server to com.google.gson;
-    //exports it.polimi.ingsw.server.answer;
+    exports it.polimi.ingsw.server.virtualview;
+    exports it.polimi.ingsw.server.answer;
 }
 
 /*

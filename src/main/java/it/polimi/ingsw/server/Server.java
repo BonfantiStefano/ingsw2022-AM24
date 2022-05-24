@@ -15,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-//Not final, work in progress
 /**
  * Class Server used to manage new connecting clients, the forwarding of the messages from the socket that handle the client to the
  * right lobby.
@@ -23,10 +22,10 @@ import java.util.concurrent.Executors;
  * @author Bonfanti Stefano
  */
 public class Server {
-    private ExecutorService executorService;
-    private ConcurrentHashMap<Integer, SocketClientHandler> mapIdSocket;
-    private ConcurrentHashMap<Integer, Lobby> mapIdLobby;
-    private ArrayList<Lobby> lobbies;
+    private final ExecutorService executorService;
+    private final ConcurrentHashMap<Integer, SocketClientHandler> mapIdSocket;
+    private final ConcurrentHashMap<Integer, Lobby> mapIdLobby;
+    private final ArrayList<Lobby> lobbies;
     private int idClients;
 
     /**
@@ -85,33 +84,38 @@ public class Server {
      * @param clientId int - the client's id that sent the join to the server.
      */
     public void handleJoin(Join join, int clientId) {
-        if(mapIdLobby.containsKey(clientId)) {
-            //Case when a client has already sent a good GameParams or join
-            sendMessage(clientId, new Error("Error: you are already in a lobby"));
-        } else if(lobbies.isEmpty()) {
-            //Case when the first client connects to the server
-            sendMessage(clientId, new Error("Error: there is no lobby available, please create a new one"));
-            sendMessage(clientId, getLobbies());
-        } else if(join.getIndex() >= 0 && join.getIndex() < lobbies.size() && lobbies.get(join.getIndex()).isPresent(join.getNickname())){
-            //Case when a client maybe is a disconnected player
-            int oldClientId = lobbies.get(join.getIndex()).checkReconnection(join, mapIdSocket.get(clientId), clientId);
-            if(oldClientId != -1) {
-                mapIdLobby.remove(oldClientId);
-                mapIdLobby.put(clientId, lobbies.get(join.getIndex()));
-            }
-        } else if(join.getIndex() >= 0 && join.getIndex() < lobbies.size()) {
-            //Standard case when a player want to join an available lobby
-            boolean ris = lobbies.get(join.getIndex()).addPlayer(join, mapIdSocket.get(clientId), clientId);
-            if (ris) {
-                mapIdLobby.put(clientId, lobbies.get(join.getIndex()));
-            } else {
-                sendMessage(clientId, getLobbies());
-            }
-        } else {
-            sendMessage(clientId, new Error("Error: invalid lobby index, please retry"));
-            sendMessage(clientId, getLobbies());
-            //Capire se serve fare questo, poichè alcuni controlli li faccio già lato client
-        }
+        //if(join.getIndex() >= 0 && join.getIndex() < lobbies.size()) {
+            //synchronized (lobbies.get(join.getIndex())) {
+                if (mapIdLobby.containsKey(clientId)) {
+                    //Case when a client has already sent a good GameParams or join
+                    sendMessage(clientId, new Error("Error: you are already in a lobby"));
+                } else if (lobbies.isEmpty()) {
+                    //Case when the first client connects to the server
+                    sendMessage(clientId, new Error("Error: there is no lobby available, please create a new one"));
+                    sendMessage(clientId, getLobbies());
+                } else if (join.getIndex() >= 0 && join.getIndex() < lobbies.size() && lobbies.get(join.getIndex()).isPresent(join.getNickname())) {
+                    //Case when a client maybe is a disconnected player
+                    int oldClientId = lobbies.get(join.getIndex()).checkReconnection(join, mapIdSocket.get(clientId), clientId);
+                    if (oldClientId != -1) {
+                        mapIdLobby.remove(oldClientId);
+                        mapIdLobby.put(clientId, lobbies.get(join.getIndex()));
+                    }
+                } else if (join.getIndex() >= 0 && join.getIndex() < lobbies.size()) {
+                    //Standard case when a player want to join an available lobby
+                    boolean ris = lobbies.get(join.getIndex()).addPlayer(join, mapIdSocket.get(clientId), clientId);
+                    if (ris) {
+                        mapIdLobby.put(clientId, lobbies.get(join.getIndex()));
+                        sendMessageToAll(getLobbies());
+                    } else {
+                        sendMessage(clientId, getLobbies());
+                    }
+                } else {
+                    sendMessage(clientId, new Error("Error: invalid lobby index, please retry"));
+                    sendMessage(clientId, getLobbies());
+                    //Capire se serve fare questo, poichè alcuni controlli li faccio già lato client
+                }
+            //}
+        //}
     }
 
     /**

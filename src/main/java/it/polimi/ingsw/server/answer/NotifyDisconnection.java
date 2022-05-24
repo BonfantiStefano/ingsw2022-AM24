@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.answer;
 
-import it.polimi.ingsw.client.CLIView.CLI;
+import it.polimi.ingsw.client.Client;
 
 public class NotifyDisconnection implements AnswerWithString{
     private String string;
@@ -15,7 +15,7 @@ public class NotifyDisconnection implements AnswerWithString{
     }
 
     @Override
-    public void accept(CLI c) {
+    public void accept(Client c) {
         c.visit(this);
     }
 }

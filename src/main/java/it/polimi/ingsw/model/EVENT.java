@@ -28,5 +28,6 @@ public enum EVENT {
     MN_POS,
     BOARD_COINS,
     PLAYER_COINS,
-    CHARACTER_COST
+    CHARACTER_COST,
+    UPDATE_ALL
 }

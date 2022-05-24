@@ -203,6 +203,9 @@ class ControllerTest {
         controller.handleMessage(new ChooseAssistant(2), "Leo");
         controller.handleMessage(new ChooseAssistant(6), "Lisa");
 
+        assertEquals(2, view.getVirtualPlayers().get(0).getVirtualLastAssistant().getTurn());
+        assertEquals(6, view.getVirtualPlayers().get(1).getVirtualLastAssistant().getTurn());
+
         VirtualPlayer virtualLeo = view.getVirtualPlayers().get(0);
         Player modelLeo = gameBoard.getPlayers().get(0);
         Assistant card2 = modelLeo.getLastAssistant();

@@ -15,7 +15,6 @@ import it.polimi.ingsw.server.answer.Error;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
-//Not final, work in progress
 /**
  * Class Lobby manages all the interaction between all the players of a lobby and the controller.
  *
@@ -35,7 +34,6 @@ public class Lobby {
     private GameStatus gameStatus;
     private Thread timerPause;
     private static final int WAITING_TIME = 50000;
-    //private VirtualView virtualView;
 
     //metodo inutile usato solo perché altrimenti per i test dell' expert controller dovrei creare tutti i parametri, poi
     //lo cambierò.
@@ -70,7 +68,6 @@ public class Lobby {
         mages.add(gameParams.getMage());
         towers.add(gameParams.getColorT());
         gameStatus = GameStatus.SETUP;
-        //virtualView = new VirtualView();
     }
 
     /**
@@ -187,8 +184,11 @@ public class Lobby {
         disconnectedClientsId.add(clientId);
         if((disconnectedClientsId.size() == 1 && clientsId.size() == 1 && gameStatus == GameStatus.SETUP) ||
                 (disconnectedClientsId.size() == numPlayers && gameStatus == GameStatus.PAUSE)) {
-            System.out.println("The lobby must be closed");
+            System.out.println("The lobby has been closed");
             gameStatus = GameStatus.ENDED;
+            if(timerPause.isAlive()) {
+                stopTimer();
+            }
             //dobbiamo comunicarlo anche al controller che la partita è finita?
         } else {
             controller.handleMessage(new Disconnect(), mapIdNickname.get(clientId));

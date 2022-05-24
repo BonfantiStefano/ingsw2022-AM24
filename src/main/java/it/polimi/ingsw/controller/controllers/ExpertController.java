@@ -4,7 +4,6 @@ import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.controller.ActionController;
 import it.polimi.ingsw.controller.ERRORS;
 import it.polimi.ingsw.controller.PHASE;
-import it.polimi.ingsw.controller.controllers.Controller;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
@@ -104,6 +103,7 @@ public class ExpertController extends Controller {
                     lobby.sendMessage(getMessageSender(), new Error("there is no " + m.getStudent().toString().toLowerCase() + " student on the card"));
                 }
                 getModel().resetCharacterStudent();
+                turnController.setCharacterActionCheck(true);
             }
         }
     }
@@ -112,6 +112,7 @@ public class ExpertController extends Controller {
         if (filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR3.getDesc())) {
             if (m.getIslandIndex() >= 0 && m.getIslandIndex() < getModel().getSizeWorld()) {
                 getModel().checkIsland(getModel().getIslandByIndex(m.getIslandIndex()));
+                turnController.setCharacterActionCheck(true);
                 Optional<Player> winner = getModel().checkWin();
                 winner.ifPresentOrElse(w -> {
                             lobby.sendMessage(w.getNickname(), new Information("You won"));
@@ -132,20 +133,26 @@ public class ExpertController extends Controller {
             if (noEntry != 0) {
                 getModel().getIslandByIndex(m.getIslandIndex()).setNumNoEntry(1);
                 ((CharacterWithNoEntry) getModel().getActiveCharacter()).removeNoEntry();
+                turnController.setCharacterActionCheck(true);
             }
         }
     }
     @Override
     public void visit(ChooseColor m) {
         if(filter()) {
-            if (activeCharacter.getDescription().equals(CharacterDescription.CHAR9.getDesc()))
+            if (activeCharacter.getDescription().equals(CharacterDescription.CHAR9.getDesc())){
                 getModel().setBannedColor(m.getColor());
+                turnController.setCharacterActionCheck(true);
+            }
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR12.getDesc())) {
                 getModel().removeHall(m.getColor());
+                getModel().setBannedColor(m.getColor());
+                turnController.setCharacterActionCheck(true);
             }
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR11.getDesc())) {
                 try {
                     ((CharacterWithStudent) activeCharacter).remove(m.getColor());
+                    getModel().setBannedColor(m.getColor());
                 } catch (NoSuchStudentException e) {
                     lobby.sendMessage(getMessageSender(), new Error("there is no " + m.getColor().toString().toLowerCase() + " students on the card"));
                 }
@@ -155,6 +162,7 @@ public class ExpertController extends Controller {
                     lobby.sendMessage(getMessageSender(), new Error("There is no space for another " + m.getColor().toString().toLowerCase() + " student in the hall"));
                 }
                 getModel().resetCharacterStudent();
+                turnController.setCharacterActionCheck(true);
             }
         }
     }
@@ -170,6 +178,7 @@ public class ExpertController extends Controller {
                         lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_SUCH_STUDENT.toString()));
                     }
                     numSwitchMoves++;
+                    turnController.setCharacterActionCheck(true);
                 } else {
                     lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_MOVES_REMAINING.toString()));
                 }
@@ -188,6 +197,7 @@ public class ExpertController extends Controller {
                         lobby.sendMessage(getMessageSender(), new Error("There is no " + m.getSecondColor().toString().toLowerCase() + " students on the card"));
                     }
                     numStudMoves++;
+                    turnController.setCharacterActionCheck(true);
                 } else {
                     lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_MOVES_REMAINING.toString()));
                 }
@@ -224,54 +234,74 @@ public class ExpertController extends Controller {
     public void propertyChange(PropertyChangeEvent evt){
         super.propertyChange(evt);
         EVENT event = EVENT.valueOf(evt.getPropertyName());
-        switch (event){
-            case REPLACE_CHARACTER:
+        switch (event) {
+            case REPLACE_CHARACTER -> {
                 int indexChar = (int) evt.getOldValue();
                 Character modelChar = (Character) evt.getNewValue();
                 VirtualCharacter virtualChar = new VirtualCharacter(modelChar);
-                getVirtualView().setVirtualCharacters(indexChar, virtualChar);
-                lobby.sendMessageToAll(new ReplaceCharacter(virtualChar, indexChar));
-                break;
-            case REPLACE_CHARACTER_S:
+                virtualView.setVirtualCharacters(indexChar, virtualChar);
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new ReplaceCharacter(virtualChar, indexChar));
+                }
+            }
+            case REPLACE_CHARACTER_S -> {
                 int indexCharacter = (int) evt.getOldValue();
                 VirtualCharacterWithStudents character = (VirtualCharacterWithStudents) evt.getNewValue();
-                getVirtualView().setVirtualCharacters(indexCharacter, character);
-                lobby.sendMessageToAll(new ReplaceCharacterStudents(character, indexCharacter));
-                break;
-            case REPLACE_CHARACTER_NE:
+                virtualView.setVirtualCharacters(indexCharacter, character);
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new ReplaceCharacterStudents(character, indexCharacter));
+                }
+            }
+            case REPLACE_CHARACTER_NE -> {
                 int indexC = (int) evt.getOldValue();
                 VirtualCharacterWithNoEntry VirtualC = (VirtualCharacterWithNoEntry) evt.getNewValue();
-                getVirtualView().setVirtualCharacters(indexC, VirtualC);
-                lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(VirtualC, indexC));
-                break;
-            case CREATE_CHARACTERS:
+                virtualView.setVirtualCharacters(indexC, VirtualC);
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(VirtualC, indexC));
+                }
+            }
+            case CREATE_CHARACTERS -> {
                 ArrayList<VirtualCharacter> virtualCharacters = (ArrayList<VirtualCharacter>) evt.getNewValue();
-                getVirtualView().setVirtualCharacters(virtualCharacters);
-                sendFullView();
-                break;
-            case BOARD_COINS:
+                virtualView.setVirtualCharacters(virtualCharacters);
+                if(gameStarted) {
+                    sendFullView();
+                }
+            }
+            case BOARD_COINS -> {
                 int coins = (int) evt.getNewValue();
-                getVirtualView().setVirtualCoins(coins);
-                lobby.sendMessageToAll(new UpdateCoins(coins));
-                break;
-            case MN_POS:
+                virtualView.setVirtualCoins(coins);
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new UpdateCoins(coins));
+                }
+            }
+            case MN_POS -> {
                 int pos = (int) evt.getNewValue();
                 virtualView.setMnPos(pos);
-                lobby.sendMessageToAll(new UpdateMN(pos));
-                break;
-            case CREATE_WORLD:
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new UpdateMN(pos));
+                }
+            }
+            case CREATE_WORLD -> {
                 ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
                 virtualView.setVirtualWorld(virtualWorld);
-                lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
-                break;
-            case ACTIVE_CHARACTER:
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
+                }
+            }
+            case ACTIVE_CHARACTER -> {
                 int activeVirtualCharacter = (int) evt.getNewValue();
                 virtualView.getVirtualCharacters().get(activeVirtualCharacter).setActive(true);
-                break;
-            case NO_ACTIVE_CHARACTER:
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualCharacter, true));
+                }
+            }
+            case NO_ACTIVE_CHARACTER -> {
                 int activeVirtualChar = (int) evt.getNewValue();
                 virtualView.getVirtualCharacters().get(activeVirtualChar).setActive(false);
-                break;
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualChar, false));
+                }
+            }
         }
     }
 

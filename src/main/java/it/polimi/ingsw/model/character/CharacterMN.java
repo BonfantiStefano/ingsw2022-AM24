@@ -29,6 +29,5 @@ public class CharacterMN extends Character {
     public void play() {
         super.play();
         players.stream().filter(PlayerInterface::isPlaying).findFirst().ifPresent(p -> p.setStrategy(strategy));
-
     }
 }

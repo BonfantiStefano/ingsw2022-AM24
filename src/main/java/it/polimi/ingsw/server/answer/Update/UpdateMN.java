@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.answer.Update;
 
-import it.polimi.ingsw.client.CLIView.CLI;
+import it.polimi.ingsw.client.Client;
 
 public class UpdateMN implements Update{
     private final int index;
@@ -14,7 +14,7 @@ public class UpdateMN implements Update{
     }
 
     @Override
-    public void accept(CLI c){
+    public void accept(Client c){
         c.visit(this);
     }
 }

@@ -14,18 +14,14 @@ import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.server.answer.*;
 import it.polimi.ingsw.server.answer.Error;
-import it.polimi.ingsw.server.answer.Update.*;
 import it.polimi.ingsw.server.virtualview.*;
 
+import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//TODO inserire i controlli ogni volta che faccio la parsInt in un blocco try catch per la eccezione che lancia o in alternativa usare nextInt
-//come faccio in eriantys.java, in teoria è preferibile usare il parsing a nextLine con blocco try catch per la NumericFormatException
 /**
  * Class CLI represents the terminal UI
  */
@@ -33,46 +29,43 @@ public class CLI implements Runnable, UserInterface {
     private VirtualView virtualView;
     private Client client;
     private Welcome welcome;
-    private boolean gameActive;
     private String lastInfo;
     private String lastError;
     private boolean inLobby;
-    private final BlockingQueue<Answer> messagesQueue;
     private Error error;
     private final Scanner input;
     private boolean firstTime = true;
+    private boolean gameStarted = false;
+    private String nickname;
 
     /**
      * Method main is used to start the CLI side.
      * @param args of type String[]
      */
     public static void main(String[] args) {
-        //TODO inserire controlli per la porta (che sia compresa tra quei valori)
         Scanner initialScanner = new Scanner(System.in);
         System.out.println("Enter IP");
         String ip = initialScanner.nextLine();
         System.out.println("IP is: " + ip);
-        System.out.println("Enter port (between 1024 and 65535)");
-        int port = Integer.parseInt(initialScanner.nextLine());
+        int port;
+        do {
+            System.out.println("Enter port (between 1024 and 65535):");
+            try {
+                port = Integer.parseInt(initialScanner.nextLine());
+            } catch (NumberFormatException exception) {
+                System.out.println("Numeric format requested");
+                port = -1;
+            }
+        } while (port < 1024 || port > 65535);
         System.out.println("Port is: "+ port);
         CLI cli = new CLI();
-        cli.begin(ip, port);
+        cli.setupConnection(ip, port);
     }
 
     @Override
-    public void begin(String ip, int port) {
+    public void setupConnection(String ip, int port) {
         client = new Client(this);
-        //start thread to handle all messages received sequentially
-        new Thread(()->{
-            try {
-                while (client.isActive()) {
-                    Answer u = messagesQueue.take();
-                    handleMessage(u);
-                }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        client.addListener(this);
         client.startClient(ip, port);
     }
 
@@ -81,14 +74,10 @@ public class CLI implements Runnable, UserInterface {
      */
     public CLI() {
         input = new Scanner(System.in);
-        virtualView = new VirtualView();
         welcome = null;
-        //TODO implement set gameActive based on messages from Server
-        gameActive = true;
         lastInfo="";
         lastError="";
         inLobby=false;
-        messagesQueue = new ArrayBlockingQueue<>(20);
     }
 
     /**
@@ -96,32 +85,12 @@ public class CLI implements Runnable, UserInterface {
      */
     public void run() {
         while(client.isActive()) {
-            //TODO controllare se dà l' eccezione quando finisco la getInfo (con il codice commentato può essere che venga stampato il
-            // testo due volte (anche se non ne vedo la correlazione))
-            /*
-            try {
+            //try {
                 String s = input.nextLine();
                 parseInput(s);
-            } catch (Exception ignored) {
-            }
-             */
-            String s = input.nextLine();
-            parseInput(s);
+            /*} catch (IndexOutOfBoundsException ignored) {
+            }*/
         }
-    }
-
-    public void addMessage(Answer a){
-        messagesQueue.add(a);
-    }
-
-    /**
-     * Handles all Updates calling the respective visitor method
-     * @param a the Update received
-     */
-    public void handleMessage(Answer a){
-        a.accept(this);
-        if(gameActive&&(a instanceof Update))
-            printView();
     }
 
     /**
@@ -129,7 +98,6 @@ public class CLI implements Runnable, UserInterface {
      * @param s the user's input
      */
     public void parseInput(String s){
-        //TODO add help and disconnect patterns
         Pattern pattern;
         Matcher matcher;
         for(REGEX r:REGEX.values()){
@@ -138,8 +106,10 @@ public class CLI implements Runnable, UserInterface {
 
             if(matcher.find()) {
                 Request msg = createMessage(r, s);
-                System.out.println(toJson(msg));
-                client.sendMessage(toJson(msg));
+                if(msg!=null) {
+                    System.out.println(toJson(msg));
+                    client.sendMessage(toJson(msg));
+                }
                 return;
             }
         }
@@ -168,7 +138,6 @@ public class CLI implements Runnable, UserInterface {
      * @return the Request corresponding to the user's input
      */
     private Request createMessage(REGEX r, String s){
-        //TODO check all substring indexes
         switch (r){
             case DISCONNECT: return new Disconnect();
             case MOVE_MN: return new MoveMN(Integer.parseInt(s.substring(8)));
@@ -179,7 +148,7 @@ public class CLI implements Runnable, UserInterface {
                 //get the corresponding enum value
                 CharacterDescription c = Arrays.stream(CharacterDescription.values()).filter(c1 -> c1.getDesc().equals(virtualView.getVirtualCharacters().get(index).getDescription())).findFirst().get();
                 return new PlayCharacter(c);
-            case CHOOSE_ASSISTANT: return new ChooseAssistant(Integer.parseInt(s.substring(10))-1);
+            case CHOOSE_ASSISTANT: return new ChooseAssistant(Integer.parseInt(s.substring(10)));
             case TO_ISLAND:
                 ColorS colorS = colorByString(s.substring(5));
                 int in = Integer.parseInt(s.split(" ")[3])-1;
@@ -197,6 +166,12 @@ public class CLI implements Runnable, UserInterface {
             case CHOOSE_ISLAND:
                 int island = Integer.parseInt(s.split(" ")[1]);
                 return new ChooseIsland(island);
+            case SHOW_HAND:
+                showHand();
+                return null;
+            case HELP:
+                printHelp();
+                return null;
         }
 
         return null;
@@ -206,44 +181,50 @@ public class CLI implements Runnable, UserInterface {
      * Prints elements contained in the VirtualView
      */
     private synchronized void printView() {
-        if(gameActive) {
-            if(System.getProperty("os.name").contains("Windows")){
-                try {
-                    new ProcessBuilder("cmd.exe", "/c", "chcp 65001").inheritIO().start().waitFor();
-                } catch (InterruptedException | IOException e) {
-                    e.printStackTrace();
+        if(client.isActive()) {
+            if(gameStarted) {
+                if (System.getProperty("os.name").contains("Windows")) {
+                    try {
+                        new ProcessBuilder("cmd.exe", "/c", "chcp 65001").inheritIO().start().waitFor();
+                    } catch (InterruptedException | IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-            clearScreen();
-            ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
+                clearScreen();
+                ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
 
-            ArrayList<VirtualIsland> firstHalf = new ArrayList<>(virtualWorld.subList(0, virtualWorld.size() / 2));
-            ArrayList<VirtualIsland> secondHalf = new ArrayList<>(virtualWorld.subList(virtualWorld.size() / 2, virtualWorld.size()));
-            drawIslands(firstHalf);
-            drawIslands(secondHalf);
+                ArrayList<VirtualIsland> firstHalf = new ArrayList<>(virtualWorld.subList(0, virtualWorld.size() / 2));
+                ArrayList<VirtualIsland> secondHalf = new ArrayList<>(virtualWorld.subList(virtualWorld.size() / 2, virtualWorld.size()));
+                drawIslands(firstHalf);
+                drawIslands(secondHalf);
 
-            //drawIslands(virtualWorld);
-            drawClouds(virtualView.getVirtualClouds());
-            if (virtualView.getVirtualCharacters().size() > 0) {
-                drawCharacters(virtualView.getVirtualCharacters());
-                System.out.println("Characters Descriptions:");
-                virtualView.getVirtualCharacters().forEach(c->System.out.println((virtualView.getVirtualCharacters().indexOf(c)+1)+": "+c.getDescription()));
-            }
-
-            for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {
-                drawSchoolBoard(vp.getVirtualBoard(), vp.getNickname(), virtualView.getVirtualProfs());
-
-                if (vp.getVirtualLastAssistant() != null) {
-                    System.out.print(vp.getNickname() + "'s last assistant played: ");
-                    System.out.println("Turn: " + vp.getVirtualLastAssistant().getTurn() + " Steps: " + vp.getVirtualLastAssistant().getMNsteps());
+                //drawIslands(virtualWorld);
+                drawClouds(virtualView.getVirtualClouds());
+                if (virtualView.getVirtualCharacters().size() > 0) {
+                    drawCharacters(virtualView.getVirtualCharacters());
+                    System.out.println("Characters Descriptions:");
+                    virtualView.getVirtualCharacters().forEach(c -> System.out.println((virtualView.getVirtualCharacters().indexOf(c) + 1) + ": " + c.getDescription()));
                 }
 
-                if (virtualView.getVirtualCharacters().size() != 0) {
-                    System.out.println("Player: " + vp.getNickname() + " has " + vp.getVirtualCoins() + " coins.");
+                for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {
+                    drawSchoolBoard(vp.getVirtualBoard(), vp.getNickname(), virtualView.getVirtualProfs());
+
+                    if (vp.getVirtualLastAssistant() != null) {
+                        System.out.print(vp.getNickname() + "'s last assistant played: ");
+                        System.out.println("Turn: " + vp.getVirtualLastAssistant().getTurn() + " Steps: " + vp.getVirtualLastAssistant().getMNsteps());
+                    }
+
+                    if (virtualView.getVirtualCharacters().size() != 0) {
+                        System.out.println("Player: " + vp.getNickname() + " has " + vp.getVirtualCoins() + " coins.");
+                    }
                 }
             }
             System.out.println(lastInfo);
-            if(messagesQueue.size()==0&&!lastError.isEmpty()){
+            if(lastInfo.equals("The lobby has been created") || lastInfo.equals("You have joined the game")
+                || lastInfo.contains("entered the lobby")) {
+                System.out.println("Waiting other players...");
+            }
+            if(client.getSizeQueue() == 0 && !lastError.isEmpty()){
                 System.out.println(lastError);
                 lastError="";
             }
@@ -254,7 +235,6 @@ public class CLI implements Runnable, UserInterface {
      * Ask the Player whether they want to create a Lobby or Join one
      */
     public void getInfo() {
-//        Scanner scanner = new Scanner(System.in);
         clearScreen();
         ArrayList<VirtualLobby> lobbies;
         if(error!= null) {
@@ -266,9 +246,10 @@ public class CLI implements Runnable, UserInterface {
         String answer;
         if(!lobbies.isEmpty()) {
             do {
-                System.out.println("Do you want to Join a Lobby? (y/n)");
+                System.out.println("Do you want to Join a Lobby? (y/n/reload)");
                 answer = input.nextLine();
-            } while ((!answer.equals("y") && !answer.equals("n")) || (answer.equals("y") && lobbies.size() == 0));
+                checkDisconnect(answer);
+            } while (!answer.equals("y") && !answer.equals("n") && !answer.equals("reload"));
         } else {
             answer = "n";
         }
@@ -277,77 +258,70 @@ public class CLI implements Runnable, UserInterface {
             int index;
             do {
                 System.out.println("Insert the Lobby's number: ");
-                index = Integer.parseInt(input.nextLine());
+                index = getInputValue();
                 if(getLobbyByIndex(lobbies, index) == -1) {
                     System.out.println("Invalid lobby index!");
                     index = -1;
                 }
             }while(index<0);
 
-            String nickname;
             do {
                 System.out.println("Choose your nickname: ");
                 nickname = input.nextLine();
+                checkDisconnect(nickname);
             } while (nickname == null);
 
             int mageIndex;
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
-                mageIndex = Integer.parseInt(input.nextLine());
+                mageIndex = getInputValue();
             } while (mageIndex < 0 || mageIndex > 4);
-            //TODO print also the color of the tower
             int towerIndex;
             do {
-                System.out.println("Choose your TowerColor (1,2"+ (lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2 ? ")":",3)")+":");
-                towerIndex = Integer.parseInt(input.nextLine());
+                System.out.println("Choose your TowerColor (1-Black, 2-White"+ (lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2 ? ")":", 3-Grey)")+":");
+                towerIndex = getInputValue();
             } while ((towerIndex < 0 || towerIndex > 4)||(towerIndex==3&&lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2));
 
             Join msg = new Join(nickname, Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1], index);
             client.sendMessage(toJson(msg));
         }
-        else{
+        else if(answer.equals("n")){
             System.out.println("Creating a lobby!");
             int numPlayers;
             do {
                 System.out.println("How many Players will the Game have? (2/3)");
-                numPlayers = Integer.parseInt(input.nextLine());
+                numPlayers = getInputValue();
             }while(numPlayers<2 || numPlayers>3);
             String expert;
             do{
                 System.out.println("Do you want to create an Expert Game? (y/n)");
                 expert = input.nextLine();
+                checkDisconnect(expert);
             }while(!expert.equals("y")&&!expert.equals("n"));
 
-            String nickname;
             do {
                 System.out.println("Choose your nickname: ");
                 nickname = input.nextLine();
+                checkDisconnect(nickname);
             } while (nickname == null);
 
             int mageIndex;
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
-                mageIndex = Integer.parseInt(input.nextLine());
+                mageIndex = getInputValue();
             } while (mageIndex < 0 || mageIndex > 4);
 
             int towerIndex;
             do {
-                System.out.println("Choose your TowerColor (1-Black,2-White"+ (numPlayers==2 ? ")":",3-Grey)")+":");
-                towerIndex = Integer.parseInt(input.nextLine());
+                System.out.println("Choose your TowerColor (1-Black, 2-White"+ (numPlayers==2 ? ")":", 3-Grey)")+":");
+                towerIndex = getInputValue();
             } while (towerIndex < 0 || towerIndex > 4);
 
             GameParams msg = new GameParams(numPlayers, expert.equals("y"), nickname,Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1]);
             client.sendMessage(toJson(msg));
+        } else {
+            new Thread(this::getInfo).start();
         }
-    }
-
-    /**
-     * Receives an update and calls the visitor's method
-     * @param u the Update received
-     */
-    public void update(Update u){
-        u.accept(this);
-        printView();
     }
 
     /**
@@ -613,7 +587,6 @@ public class CLI implements Runnable, UserInterface {
             System.out.println(l);});
     }
 
-
     /**
      * Draws all Assistants
      * @param assistants ArrayList containing all VirtualAssistants
@@ -634,97 +607,13 @@ public class CLI implements Runnable, UserInterface {
         for (Assistant assistant : assistants) {
             currLine.append(BOX.VERT).append(" ");
             currLine.append(assistant.getTurn());
-            currLine.append(" ".repeat(assistant.getTurn() == 10 ? 10 : 12));
+            currLine.append(" ".repeat(assistant.getTurn() == 10 ? 11 : 12));
             currLine.append(assistant.getMNsteps());
             currLine.append(BOX.VERT);
         }
 
         lastLine(xSize, numAssistants, lines);
-    }
-
-    public void visit(FullView u){
-        virtualView = u.getVirtualView();
-    }
-    public void visit(AddPlayer u){
-        virtualView.addVirtualPlayer(u.getPlayer());
-    }
-    public void visit(CreateCharacters u){
-        virtualView.setVirtualCharacters(u.getCharacters());
-    }
-    public void visit(CreateClouds u){
-        virtualView.setVirtualClouds(u.getClouds());
-    }
-    public void visit(ReplaceCharacter u){
-        virtualView.setVirtualCharacters(u.getIndex(),u.getCharacter());
-    }
-    public void visit(ReplaceCharacterStudents u){
-        System.out.println("students");
-        virtualView.setVirtualCharacters(u.getIndex(),u.getVirtualCharacterWithStudents());
-    }
-    public void visit(ReplaceCharacterWithNoEntry u){
-        System.out.println("noEntry");
-        virtualView.setVirtualCharacters(u.getIndex(),u.getCharacterWithNoEntry());
-    }
-    public void visit(ReplaceCloud u){
-        virtualView.setVirtualClouds(u.getIndex(),u.getCloud());
-    }
-    public void visit(UpdateCoins u){virtualView.setVirtualCoins(u.getCoins());}
-    public void visit(UpdateIsland u){
-        virtualView.setVirtualWorld(u.getIndex(),u.getIsland());
-    }
-    public void visit(UpdateWorld u){
-        virtualView.setVirtualWorld(u.getIslands());
-    }
-    public void visit(UpdateMN u){
-        virtualView.setMnPos(u.getIndex());
-    }
-    public void visit(UpdatePlayer u){
-        virtualView.setVirtualPlayers(u.getIndex(),u.getPlayer());
-    }
-    public void visit(UpdateProfs u){
-        virtualView.setVirtualProfs(u.getProfs());
-    }
-    public void visit(Information i){
-        String text = i.getString();
-        lastInfo=text;
-        if(text.equals("Game Started!")) {
-            gameActive=true;
-            new Thread(this).start();
-        }
-        else if(text.equals("The lobby has been created")||text.equals("You have joined the game")) {
-            new Thread(this).start();
-            inLobby = true;
-        }
-        printView();
-    }
-
-    public void visit(Error e){
-        String text = e.getString();
-        lastError = text;
-
-        if(text!=null&&(text.equals(ERRORS.MAGE_TAKEN.toString())||text.equals(ERRORS.NICKNAME_TAKEN.toString())
-                ||text.equals(ERRORS.COLOR_TOWER_TAKEN.toString())||text.equals("Error: the lobby is full")
-                || text.equals("Error: there is no lobby available, please create a new one") ||
-                text.equals("Error: invalid lobby index, please retry"))){
-            error = e;
-            if(!firstTime && !inLobby) {
-                new Thread(this::getInfo).start();
-            }
-        }
-
-    }
-    public void visit(NotifyDisconnection e){
-        System.out.println(e.getString());
-
-    }
-
-    public void visit(Welcome w){
-        welcome = w;
-
-        if(firstTime) {
-            firstTime = false;
-            new Thread(this::getInfo).start();
-        }
+        lines.forEach(System.out::println);
     }
 
     /**
@@ -751,14 +640,32 @@ public class CLI implements Runnable, UserInterface {
             if(System.getProperty("os.name").contains("Windows")){
                 new ProcessBuilder("cmd.exe", "/c", "cls").inheritIO().start().waitFor();
             }
-            else
+            else {
                 Runtime.getRuntime().exec("clear");
+                System.out.println("\033c");
+            }
         }
         catch (IOException | InterruptedException e){
             Thread.currentThread().interrupt();
         }
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        //System.out.print("\033[H\033[2J");
+        //System.out.flush();
+        /*
+        public static void clearConsole() {
+        try {
+            final String os = System.getProperty("os.name");
+
+            if (os.contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                Runtime.getRuntime().exec("clear");
+            }
+            System.out.println("\n" + Color.YELLOW_LIGHT_BG + Color.GREY_DARK_FG + "Hint:" + Color.RESET + " type '" + Color.RESOURCE_STD + "help" + Color.RESET + "' for a list of commands you can do ;)" + "\n");
+        } catch (final Exception e) {
+            System.out.println("Warning: failed to clear console");
+        }
+    }
+         */
     }
 
     public void printLobbies(Welcome welcome) {
@@ -814,11 +721,105 @@ public class CLI implements Runnable, UserInterface {
         };
     }
 
+    private void showHand(){
+        System.out.println("Here's your hand:");
+        Optional<VirtualPlayer> vp = virtualView.getVirtualPlayers().stream().filter(p->p.getNickname().equals(nickname)).findAny();
+        vp.ifPresent(virtualPlayer -> printAssistants((ArrayList<Assistant>) virtualPlayer.getVirtualHand().getCards()));
+    }
+
     private int getLobbyByIndex(ArrayList<VirtualLobby> lobbies, int index) {
         for(VirtualLobby lobby : lobbies) {
             if(lobby.getLobbyIndex() == index)
                 return lobbies.indexOf(lobby);
         }
         return -1;
+    }
+
+    public void setVirtualView(VirtualView virtualView) {
+        this.virtualView = virtualView;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        String eventName = evt.getPropertyName();
+        switch (eventName) {
+            case "INFORMATION" -> {
+                Information information = (Information) evt.getNewValue();
+                String text = information.getString();
+                lastInfo = text;
+                if(text.equals("Game Started!")) {
+                    gameStarted = true;
+                    new Thread(this).start();
+                }
+                else if(text.equals("The lobby has been created")||text.equals("You have joined the game")) {
+                    new Thread(this).start();
+                    inLobby = true;
+                }
+                /*
+                if(client.getSizeQueue() == 0) {
+                    printView();
+                }
+                 */
+                printView();
+            }
+            case "ERROR" -> {
+                Error err = (Error) evt.getNewValue();
+                lastError = err.getString();
+                String text = err.getString();
+                if(text!=null&&(text.equals(ERRORS.MAGE_TAKEN.toString())||text.equals(ERRORS.NICKNAME_TAKEN.toString())
+                        ||text.equals(ERRORS.COLOR_TOWER_TAKEN.toString())||text.equals("Error: the lobby is full")
+                        || text.equals("Error: there is no lobby available, please create a new one") ||
+                        text.equals("Error: invalid lobby index, please retry"))){
+                    error = err;
+                    if(!firstTime && !inLobby) {
+                        new Thread(this::getInfo).start();
+                    }
+                }
+            }
+            case "WELCOME" -> {
+                welcome = (Welcome) evt.getNewValue();
+                if(firstTime) {
+                    firstTime = false;
+                    new Thread(this::getInfo).start();
+                }
+            }
+            case "NOTIFYDISCONNECTION" -> {
+                NotifyDisconnection notifyDisconnection = (NotifyDisconnection) evt.getNewValue();
+                System.out.println(notifyDisconnection.getString());
+            }
+            default -> {
+                if (client.getSizeQueue() == 0) {
+                    printView();
+                }
+                //printView();
+            }
+        }
+    }
+
+    public int getInputValue() {
+        int val;
+        String string;
+        try {
+            string = input.nextLine();
+            checkDisconnect(string);
+            val = Integer.parseInt(string);
+        } catch (NumberFormatException exception) {
+            System.out.println("Numeric format requested");
+            val = -1;
+        }
+        return val;
+    }
+
+    private void printHelp(){
+        System.out.println("Here's every command:");
+        for (REGEX r : REGEX.values()){
+            System.out.println(r.name()+": " + r.getDesc());
+        }
+    }
+
+    private void checkDisconnect(String input) {
+        if(input != null && input.equals("disconnect")) {
+            System.exit(0);
+        }
     }
 }

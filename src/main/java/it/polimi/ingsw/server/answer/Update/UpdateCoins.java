@@ -1,6 +1,6 @@
 package it.polimi.ingsw.server.answer.Update;
 
-import it.polimi.ingsw.client.CLIView.CLI;
+import it.polimi.ingsw.client.Client;
 
 public class UpdateCoins implements Update{
     private final int coins;
@@ -14,7 +14,7 @@ public class UpdateCoins implements Update{
     }
 
     @Override
-    public void accept(CLI c){
+    public void accept(Client c){
         c.visit(this);
     }
 }
