@@ -4,7 +4,6 @@ import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.controller.ActionController;
 import it.polimi.ingsw.controller.ERRORS;
 import it.polimi.ingsw.controller.PHASE;
-import it.polimi.ingsw.controller.controllers.Controller;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
@@ -78,7 +77,7 @@ public class ExpertController extends Controller {
 
     @Override
     public void visit(PlayCharacter msg){
-        /*if(activeCharacter == null && !phase.equals(PHASE.PLANNING)){*/
+        if(activeCharacter == null && !phase.equals(PHASE.PLANNING)){
             try {
                 Character c = getModel().getCharacters().stream().
                         filter(character -> msg.getC().getDesc().equals(character.getDescription())).findAny().orElse(null);
@@ -87,10 +86,10 @@ public class ExpertController extends Controller {
             } catch (NotEnoughCoinsException e) {
                 lobby.sendMessage(getMessageSender(), new Error(ERRORS.NOT_ENOUGH_COINS.toString()));
             }
-        /*}
+        }
         else if(phase.equals(PHASE.PLANNING)){
             lobby.sendMessage(messageSender, new Error("You can't play a Character right now"));
-        }*/
+        }
     }
     @Override
     public void visit(SpecialMoveIsland m){
@@ -100,6 +99,7 @@ public class ExpertController extends Controller {
             } else {
                 try {
                     getModel().moveStudent(m.getStudent(), ((CharacterWithStudent) activeCharacter), getModel().getIslandByIndex(m.getIslandIndex()));
+                    turnController.setCharacterActionCheck(true);
                 } catch (NoSuchStudentException e) {
                     lobby.sendMessage(getMessageSender(), new Error("there is no " + m.getStudent().toString().toLowerCase() + " student on the card"));
                 }
@@ -112,6 +112,7 @@ public class ExpertController extends Controller {
         if (filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR3.getDesc())) {
             if (m.getIslandIndex() >= 0 && m.getIslandIndex() < getModel().getSizeWorld()) {
                 getModel().checkIsland(getModel().getIslandByIndex(m.getIslandIndex()));
+                turnController.setCharacterActionCheck(true);
                 Optional<Player> winner = getModel().checkWin();
                 winner.ifPresentOrElse(w -> {
                             lobby.sendMessage(w.getNickname(), new Information("You won"));
@@ -132,16 +133,22 @@ public class ExpertController extends Controller {
             if (noEntry != 0) {
                 getModel().getIslandByIndex(m.getIslandIndex()).setNumNoEntry(1);
                 ((CharacterWithNoEntry) getModel().getActiveCharacter()).removeNoEntry();
+                turnController.setCharacterActionCheck(true);
             }
+            else
+                lobby.sendMessage(messageSender, new Error("There are no more entry tiles on this card"));
         }
     }
     @Override
     public void visit(ChooseColor m) {
         if(filter()) {
-            if (activeCharacter.getDescription().equals(CharacterDescription.CHAR9.getDesc()))
+            if (activeCharacter.getDescription().equals(CharacterDescription.CHAR9.getDesc())){
                 getModel().setBannedColor(m.getColor());
+                turnController.setCharacterActionCheck(true);
+            }
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR12.getDesc())) {
                 getModel().removeHall(m.getColor());
+                turnController.setCharacterActionCheck(true);
             }
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR11.getDesc())) {
                 try {
@@ -155,6 +162,7 @@ public class ExpertController extends Controller {
                     lobby.sendMessage(getMessageSender(), new Error("There is no space for another " + m.getColor().toString().toLowerCase() + " student in the hall"));
                 }
                 getModel().resetCharacterStudent();
+                turnController.setCharacterActionCheck(true);
             }
         }
     }
@@ -170,6 +178,7 @@ public class ExpertController extends Controller {
                         lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_SUCH_STUDENT.toString()));
                     }
                     numSwitchMoves++;
+                    turnController.setCharacterActionCheck(true);
                 } else {
                     lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_MOVES_REMAINING.toString()));
                 }
@@ -188,6 +197,7 @@ public class ExpertController extends Controller {
                         lobby.sendMessage(getMessageSender(), new Error("There is no " + m.getSecondColor().toString().toLowerCase() + " students on the card"));
                     }
                     numStudMoves++;
+                    turnController.setCharacterActionCheck(true);
                 } else {
                     lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_MOVES_REMAINING.toString()));
                 }

@@ -142,6 +142,24 @@ public class GUI extends Application implements UserInterface {
                         }
                     });
                 }
+                else if(text.equals("You Lose")){
+                    Platform.runLater(() ->{
+                        try {
+                            changeScene(CONTROLLERS.YOUWIN.toString());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+                else if(text.equals("You won")){
+                    Platform.runLater(() ->{
+                        try {
+                            changeScene(CONTROLLERS.YOULOSE.toString());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
                 else if(text.equals("The lobby has been created")||text.equals("You have joined the game")){
                     Platform.runLater(()->lb.setLastInfo(text));
                 }

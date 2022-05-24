@@ -147,7 +147,7 @@ public class CLI implements Runnable, UserInterface {
                 //get the corresponding enum value
                 CharacterDescription c = Arrays.stream(CharacterDescription.values()).filter(c1 -> c1.getDesc().equals(virtualView.getVirtualCharacters().get(index).getDescription())).findFirst().get();
                 return new PlayCharacter(c);
-            case CHOOSE_ASSISTANT: return new ChooseAssistant(Integer.parseInt(s.substring(10))-1);
+            case CHOOSE_ASSISTANT: return new ChooseAssistant(Integer.parseInt(s.substring(10)));
             case TO_ISLAND:
                 ColorS colorS = colorByString(s.substring(5));
                 int in = Integer.parseInt(s.split(" ")[3])-1;

@@ -6,7 +6,10 @@ public enum CONTROLLERS {
     GAME("/Game.fxml"),
     MAIN("/MainScene.fxml"),
     CHOOSE_ASSISTANT("/ChooseAssistant.fxml"),
-    CHOOSE_COLOR("/ChooseColor.fxml");
+    CHOOSE_COLOR("/ChooseColor.fxml"),
+    YOUWIN("/winScene.fxml"),
+    YOULOSE("/winScene.fxml");
+
 
     private final String path;
 
