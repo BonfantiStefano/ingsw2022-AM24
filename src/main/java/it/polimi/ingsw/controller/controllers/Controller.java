@@ -126,9 +126,9 @@ public class Controller implements PropertyChangeListener {
                 //all players have connected
                 turnController.setGameStarted(true);
                 gameStarted = true;
+                sendFullView();
                 lobby.sendMessageToAll(new Information("Game Started!"));
             }
-            sendFullView();
         }
         //if the Player had disconnected update his status as connected
         else if(!availableNickname && !model.getPlayerByNickname(messageSender).isConnected()) {
@@ -475,9 +475,7 @@ public class Controller implements PropertyChangeListener {
                     lobby.sendMessageToAll(new UpdateMN(mnPos));
                 }
             }
-            default ->
-                    //in case an undefined event is thrown the whole view will be sent
-                    sendFullView();
+            case BOARD_COINS -> lobby.sendMessageToAll(new UpdateCoins((int) evt.getNewValue()));
         }
     }
 

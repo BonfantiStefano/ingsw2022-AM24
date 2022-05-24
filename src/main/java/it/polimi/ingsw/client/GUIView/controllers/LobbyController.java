@@ -71,6 +71,7 @@ public class LobbyController implements GUIController{
         IDcloumn.setCellValueFactory(new PropertyValueFactory<>("lobbyIndex"));
         ExpColumn.setCellValueFactory(new PropertyValueFactory<>("mode"));
         connected.setCellValueFactory(new PropertyValueFactory<>("nicknames"));
+
         table.getItems().addAll(list);
     }
 
@@ -118,10 +119,6 @@ public class LobbyController implements GUIController{
             error.setText("Select a lobby first");
             return;
         }
-        if((selected.getNumPlayers()==2 && color.equals(ColorT.GREY)) || (selected.getTowers().stream().anyMatch(c->c.equals(color))))
-            error.setText(color + "color isn't available");
-        else if((selected.getNicknames().stream().anyMatch(n->n.equals(nickname))))
-            error.setText("Nickname isn't available");
         if(error.getText().isEmpty()&& checkCredentials()) {
             msg = new Join(nickname, mage, color, selected.getLobbyIndex());
             gui.sendMessageToServer(msg);
@@ -151,6 +148,14 @@ public class LobbyController implements GUIController{
     public void quickCreate(){
         gui.sendMessageToServer(new GameParams(2,true,"marco",Mage.MAGE1,ColorT.BLACK));
         gui.setNickname("marco");
+    }
+    public void quickCreate3(){
+        gui.sendMessageToServer(new GameParams(3,true,"marco",Mage.MAGE1,ColorT.BLACK));
+        gui.setNickname("marco");
+    }
+    public void quickJoin3(){
+        gui.sendMessageToServer(new Join("paolo",Mage.MAGE3,ColorT.GREY,0));
+        gui.setNickname("paolo");
     }
     public void quickJoin(){
         gui.sendMessageToServer(new Join("pippo",Mage.MAGE2,ColorT.WHITE,0));

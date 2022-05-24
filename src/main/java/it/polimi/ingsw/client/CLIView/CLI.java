@@ -36,6 +36,7 @@ public class CLI implements Runnable, UserInterface {
     private final Scanner input;
     private boolean firstTime = true;
     private boolean gameStarted = false;
+    private String nickname;
 
     /**
      * Method main is used to start the CLI side.
@@ -165,6 +166,9 @@ public class CLI implements Runnable, UserInterface {
             case CHOOSE_ISLAND:
                 int island = Integer.parseInt(s.split(" ")[1]);
                 return new ChooseIsland(island);
+            case SHOW_HAND:
+                showHand();
+                return null;
             case HELP:
                 printHelp();
                 return null;
@@ -261,7 +265,6 @@ public class CLI implements Runnable, UserInterface {
                 }
             }while(index<0);
 
-            String nickname;
             do {
                 System.out.println("Choose your nickname: ");
                 nickname = input.nextLine();
@@ -296,7 +299,6 @@ public class CLI implements Runnable, UserInterface {
                 checkDisconnect(expert);
             }while(!expert.equals("y")&&!expert.equals("n"));
 
-            String nickname;
             do {
                 System.out.println("Choose your nickname: ");
                 nickname = input.nextLine();
@@ -605,12 +607,13 @@ public class CLI implements Runnable, UserInterface {
         for (Assistant assistant : assistants) {
             currLine.append(BOX.VERT).append(" ");
             currLine.append(assistant.getTurn());
-            currLine.append(" ".repeat(assistant.getTurn() == 10 ? 10 : 12));
+            currLine.append(" ".repeat(assistant.getTurn() == 10 ? 11 : 12));
             currLine.append(assistant.getMNsteps());
             currLine.append(BOX.VERT);
         }
 
         lastLine(xSize, numAssistants, lines);
+        lines.forEach(System.out::println);
     }
 
     /**
@@ -716,6 +719,12 @@ public class CLI implements Runnable, UserInterface {
             case GREY -> Color.ANSI_GREY.toString();
 
         };
+    }
+
+    private void showHand(){
+        System.out.println("Here's your hand:");
+        Optional<VirtualPlayer> vp = virtualView.getVirtualPlayers().stream().filter(p->p.getNickname().equals(nickname)).findAny();
+        vp.ifPresent(virtualPlayer -> printAssistants((ArrayList<Assistant>) virtualPlayer.getVirtualHand().getCards()));
     }
 
     private int getLobbyByIndex(ArrayList<VirtualLobby> lobbies, int index) {

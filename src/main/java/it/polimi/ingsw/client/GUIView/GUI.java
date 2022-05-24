@@ -17,8 +17,8 @@ import javafx.stage.Stage;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.regex.Pattern;
 
 public class GUI extends Application implements UserInterface {
     private Scene currentScene;
@@ -28,6 +28,7 @@ public class GUI extends Application implements UserInterface {
     private  String nickname;
     private final HashMap<String, Scene> nameMapScene = new HashMap<>();
     private final HashMap<Scene, GUIController> nameMapController = new HashMap<>();
+    boolean started = false;
 
     public static void main(String[] args) {
         launch();
@@ -88,6 +89,9 @@ public class GUI extends Application implements UserInterface {
             LobbyController lobbyController =(LobbyController) nameMapController.get(nameMapScene.get(newSceneName));
             lobbyController.init();
         }
+        CONTROLLERS c = Arrays.stream(CONTROLLERS.values()).filter(co->co.toString().equals(newSceneName)).findFirst().get();
+        window.setWidth(c.getX());
+        window.setHeight(c.getY());
     }
 
     public void sendMessageToServer(Object string) {
@@ -130,6 +134,7 @@ public class GUI extends Application implements UserInterface {
             case "INFORMATION":
                 String text = ((Information) evt.getNewValue()).getString();
                 if(text.equals("Game Started!")){
+                    started = true;
                     Platform.runLater(()-> {
                         try {
                             changeScene(CONTROLLERS.MAIN.toString());

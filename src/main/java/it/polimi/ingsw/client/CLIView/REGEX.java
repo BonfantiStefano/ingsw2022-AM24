@@ -15,6 +15,7 @@ public enum REGEX {
     CHOOSE_CLOUD("^cloud [1-3]$", "cloud *numCloud*"),
     CHOOSE_ISLAND("^island ([1-9]|1[0-2])$", "island *numIsland*"),
     DISCONNECT("^disconnect$", "disconnect"),
+    SHOW_HAND("^hand$","hand"),
     HELP("^help$", "help")
     ;
 

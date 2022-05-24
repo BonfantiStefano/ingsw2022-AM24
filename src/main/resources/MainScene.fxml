@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -75,7 +76,7 @@
                 </GridPane>
             </children>
         </Pane>
-        <Pane fx:id="sc3" layoutX="-107.0" layoutY="184.0" maxHeight="225.0" maxWidth="520.0" minHeight="225.0" minWidth="520.0" prefHeight="225.0" prefWidth="520.0" rotate="90.0" styleClass="pane" stylesheets="@css/application.css" visible="false" AnchorPane.leftAnchor="-107.0">
+        <Pane fx:id="sc3" layoutX="-107.0" layoutY="184.0" maxHeight="225.0" maxWidth="520.0" minHeight="225.0" minWidth="520.0" prefHeight="225.0" prefWidth="520.0" rotate="90.0" styleClass="pane" stylesheets="@css/application.css" AnchorPane.leftAnchor="-107.0">
             <children>
                 <GridPane fx:id="e3" layoutX="10.0" layoutY="23.0" prefHeight="184.0" prefWidth="63.0" stylesheets="@css/application.css">
                     <columnConstraints>
@@ -204,10 +205,12 @@
       <StackPane fx:id="last1" layoutX="870.0" layoutY="575.0" prefHeight="200.0" prefWidth="110.0" />
       <StackPane fx:id="last2" layoutX="1141.0" layoutY="522.0" prefHeight="200.0" prefWidth="110.0" rotate="-90.0" />
       <Button fx:id="handButton" layoutX="194.0" layoutY="724.0" mnemonicParsing="false" onAction="#showHand" text="Show Hand" />
-      <ScrollPane layoutX="1079.0" layoutY="661.0" prefHeight="118.0" prefWidth="217.0">
+      <ScrollPane fx:id="paneLastInfo" layoutX="1087.0" layoutY="665.0" prefHeight="118.0" prefWidth="217.0">
          <content>
-            <VBox fx:id="vBoxLastInfo" maxWidth="215.0" minHeight="100.0" minWidth="215.0" prefHeight="100.0" prefWidth="215.0" />
-         </content>
-      </ScrollPane>
+            <VBox fx:id="vBoxLastInfo" maxWidth="213.0" prefHeight="116.0" prefWidth="213.0" />
+         </content></ScrollPane>
+      <Label fx:id="name3" layoutX="248.0" layoutY="584.0" rotate="90.0" text="Label" />
+      <Label fx:id="name1" layoutX="870.0" layoutY="558.0" text="Label" />
+      <Label fx:id="name2" layoutX="1076.0" layoutY="638.0" rotate="-90.0" text="Label" />
     </children>
 </AnchorPane>
