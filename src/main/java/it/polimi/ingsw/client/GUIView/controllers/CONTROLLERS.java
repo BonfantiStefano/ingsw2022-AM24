@@ -5,7 +5,9 @@ public enum CONTROLLERS {
     WELCOME("/Welcome.fxml",608,650),
     MAIN("/MainScene.fxml",1400,800),
     CHOOSE_ASSISTANT("/ChooseAssistant.fxml", 500,500),
-    CHOOSE_COLOR("/ChooseColor.fxml", 500,500);
+    CHOOSE_COLOR("/ChooseColor.fxml", 500,500),
+    YOUWIN("/winScene.fxml",500,500),
+    YOULOSE("/winScene.fxml",500,500);
 
     private final String path;
     private float x,y;
