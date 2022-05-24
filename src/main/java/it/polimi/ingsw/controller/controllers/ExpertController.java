@@ -77,7 +77,7 @@ public class ExpertController extends Controller {
 
     @Override
     public void visit(PlayCharacter msg){
-        if(activeCharacter == null /*&& !phase.equals(PHASE.PLANNING)*/){
+        if(activeCharacter == null && !phase.equals(PHASE.PLANNING)){
             try {
                 Character c = getModel().getCharacters().stream().
                         filter(character -> msg.getC().getDesc().equals(character.getDescription())).findAny().orElse(null);

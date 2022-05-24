@@ -107,7 +107,6 @@ public class ExpertControllerTest {
     }
 
     /** Method testPlayCharacter checks if one of the three available Characters is correctly chosen */
-    /*
     @Test
     public void testPlayCharacter() {
         CharacterDescription notAvailableChar = null;
@@ -126,6 +125,10 @@ public class ExpertControllerTest {
                 notAvailableChar = c;
                 break;
             }
+
+        expertController.handleMessage(new ChooseAssistant(1), "Bob");
+        expertController.handleMessage(new ChooseAssistant(2), "Lisa");
+        expertController.handleMessage(new ChooseAssistant(3), "Alice");
 
         //sending message with not valid card
         PlayCharacter message1 = new PlayCharacter(notAvailableChar);
@@ -149,7 +152,6 @@ public class ExpertControllerTest {
         assertFalse(view.getVirtualCharacters().get(0).isActive());
         //System.out.println("active Character: "+ egb.getActiveCharacter().getDescription());
     }
-     */
 
     /** Method testChar1 checks if the Character's ability is actually used when the card 1 is selected */
     @Test
