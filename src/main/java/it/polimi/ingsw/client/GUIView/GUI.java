@@ -60,7 +60,6 @@ public class GUI extends Application implements UserInterface {
             System.exit(0);
         }
         currentScene = nameMapScene.get(CONTROLLERS.SETUP.toString());
-        //currentScene = nameMapScene.get(CONTROLLERS.MAIN.toString());
     }
 
     private void run() {
@@ -68,8 +67,6 @@ public class GUI extends Application implements UserInterface {
         window.setHeight(748);
         window.setTitle("Eriantys!");
         window.setScene(currentScene);
-        //GameController g = (GameController) nameMapController.get(currentScene);
-        //g.init();
         window.show();
     }
 

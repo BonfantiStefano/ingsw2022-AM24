@@ -6,8 +6,10 @@ import it.polimi.ingsw.client.request.GameParams;
 import it.polimi.ingsw.client.request.Join;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
+import it.polimi.ingsw.server.GameStatus;
 import it.polimi.ingsw.server.answer.Welcome;
 import it.polimi.ingsw.server.virtualview.VirtualLobby;
+import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -21,7 +23,7 @@ public class LobbyController implements GUIController{
     private GUI gui;
     public TableView<VirtualLobby> table = new TableView<>();
     public TableColumn<VirtualLobby,Integer> IDcloumn;
-    public TableColumn<VirtualLobby, Integer> numPCloumn;
+    public TableColumn<VirtualLobby, ArrayList<String>> connected;
     public TableColumn<VirtualLobby, String> ExpColumn;
     public Button Join;
     public Button Params;
@@ -54,6 +56,7 @@ public class LobbyController implements GUIController{
         table.setPlaceholder(new Label("No lobbies :("));
 
         ArrayList<VirtualLobby> list = welcome !=null?welcome.getLobbies():new ArrayList<>();
+
         table.setRowFactory(tv -> {TableRow<VirtualLobby> row = new TableRow<>();
             row.setOnMouseClicked(mouseEvent -> {
                 if(mouseEvent.getClickCount()==2 && !row.isEmpty()){
@@ -67,7 +70,7 @@ public class LobbyController implements GUIController{
 
         IDcloumn.setCellValueFactory(new PropertyValueFactory<>("lobbyIndex"));
         ExpColumn.setCellValueFactory(new PropertyValueFactory<>("mode"));
-
+        connected.setCellValueFactory(new PropertyValueFactory<>("nicknames"));
         table.getItems().addAll(list);
     }
 

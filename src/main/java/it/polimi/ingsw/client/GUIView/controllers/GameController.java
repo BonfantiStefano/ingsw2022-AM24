@@ -36,6 +36,8 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
@@ -59,6 +61,7 @@ public class GameController implements GUIController{
     private final ArrayList<GridPane> towersGrids = new ArrayList<>();
     private final ArrayList<Pane> boards = new ArrayList<>();
     private final ArrayList<Pane> lastAssistants = new ArrayList<>();
+    private ArrayList<String> lastInfo = new ArrayList<>();
 
     private final EventHandler<MouseEvent> studentHandler = this::clickOnStudent;
     private final EventHandler<MouseEvent> destinationHandler = this::studentDestination;
@@ -77,17 +80,23 @@ public class GameController implements GUIController{
     @FXML
     private VBox charBox;
     @FXML
-    private Button handButton;
+    private AnchorPane anchor;
+    @FXML
+    private VBox vBoxLastInfo;
 
 
 
     public void init() {
+        Image image = new Image(getClass().getResourceAsStream("/graphics/Background.jpg"));
+        anchor.setBackground(new Background(new BackgroundImage(image,BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                new BackgroundSize(50,50,true,true,true,true))));
         createImages();
         boards.add(sc1);
         boards.add(sc2);
         if(virtualView.getVirtualPlayers().size()==3){
             boards.add(sc3);
             lastAssistants.add(last3);
+            sc3.setVisible(true);
         }
 
         lastAssistants.add(last1);
@@ -117,6 +126,8 @@ public class GameController implements GUIController{
         islandsPane.setMinHeight(520);
         islandsPane.setMinWidth(520);
         from = null;
+        vBoxLastInfo = new VBox();
+        vBoxLastInfo.setAlignment(Pos.TOP_LEFT);
     }
 
     public int calcIndex(int index) {
@@ -156,10 +167,10 @@ public class GameController implements GUIController{
     }
 
     public void updateHall(int index){
-        //HashMap<ColorS, Integer> hall = new HashMap<>();
+        HashMap<ColorS, Integer> hall = new HashMap<>();
         hallGrids.get(calcIndex(index)).getChildren().clear();
-        //TODO same as updateEntrance
-        HashMap<ColorS, Integer> hall = (HashMap<ColorS, Integer>) virtualView.getVirtualPlayers().get(index).getVirtualBoard().getHall();
+        if(virtualView!=null)
+            hall = (HashMap<ColorS, Integer>) virtualView.getVirtualPlayers().get(index).getVirtualBoard().getHall();
 
         for(int i=0;i<5;i++) {
             ColorS color = ColorS.values()[i];
@@ -177,8 +188,12 @@ public class GameController implements GUIController{
     }
 
     public void updateProfs(){
-        ArrayList<VirtualPlayer> vps = new ArrayList<>(virtualView.getVirtualPlayers());
-        HashMap<ColorS, VirtualPlayer> tempProfs = virtualView.getVirtualProfs();
+        ArrayList<VirtualPlayer> vps = new ArrayList<>();
+        HashMap<ColorS, VirtualPlayer> tempProfs = new HashMap<>();
+        if(virtualView!=null) {
+            vps = new ArrayList<>(virtualView.getVirtualPlayers());
+            tempProfs = virtualView.getVirtualProfs();
+        }
         HashMap<ColorS, Integer> profs = new HashMap<>();
 
         for(ColorS color:ColorS.values()){
@@ -187,7 +202,8 @@ public class GameController implements GUIController{
             if(owner.isPresent())
                 vp = vps.stream().filter(p->p.getNickname().equals(owner.get().getNickname())).findAny();
 
-            vp.ifPresentOrElse(virtualPlayer -> profs.put(color, vps.indexOf(virtualPlayer)),
+            ArrayList<VirtualPlayer> finalVps = vps;
+            vp.ifPresentOrElse(virtualPlayer -> profs.put(color, finalVps.indexOf(virtualPlayer)),
                     ()-> profs.put(color,-1));
 
         }
@@ -253,8 +269,6 @@ public class GameController implements GUIController{
 
             islandsPane.getChildren().add(p);
             Label l = new Label();
-            l.setText(String.valueOf(islands.indexOf(i)));
-            p.getChildren().add(l);
             p.setLayoutX(325+radiusIslands*Math.sin(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
             p.setLayoutY(248+radiusIslands*Math.cos(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
 
@@ -494,14 +508,15 @@ public class GameController implements GUIController{
     }
 
     public void updateAssistants(){
-        //for(int i = 0;i<3;i++){
-            //TODO uncomment next lines and remove the preceding one
-            for(VirtualPlayer vp : virtualView.getVirtualPlayers()){
+        ArrayList<VirtualPlayer> vps = new ArrayList<>();
+        if(virtualView!=null)
+            vps = virtualView.getVirtualPlayers();
+        for(VirtualPlayer vp : vps){
             Assistant a = vp.getVirtualLastAssistant();
             if(a!=null) {
                 //int num = r.nextInt(10)+1;
                 //Assistant a = new Assistant(num/2,num, Mage.MAGE1);
-                Pane p = lastAssistants.get(virtualView.getVirtualPlayers().indexOf(vp));
+                Pane p = lastAssistants.get(calcIndex(virtualView.getVirtualPlayers().indexOf(vp)));
                 //Pane p = lastAssistants.get(i);
                 Image img = assistantImages.get(a.getTurn());
                 p.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
@@ -749,12 +764,22 @@ public class GameController implements GUIController{
     }
 
     public void setLastInfo(String text){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION,text, ButtonType.OK);
-        //alert.showAndWait();
+        lastInfo.add(new SimpleDateFormat("HH.mm.ss").format(new Date()) +" "+text);
+        if(vBoxLastInfo!=null)
+            vBoxLastInfo.getChildren().clear();
+        for(String s:lastInfo) {
+            System.out.println(s);
+            Label l = new Label();
+            l.setText(s);
+            if (vBoxLastInfo != null) {
+                vBoxLastInfo.getChildren().add(l);
+                vBoxLastInfo.getChildren().forEach(System.out::println);
+            }
+        }
     }
     public void setLastError(String text){
         Alert alert = new Alert(Alert.AlertType.ERROR,text, ButtonType.OK);
-        //alert.showAndWait();
+        alert.showAndWait();
     }
 
     private VirtualPlayer getLocalPlayer(){

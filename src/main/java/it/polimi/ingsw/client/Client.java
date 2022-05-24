@@ -193,6 +193,8 @@ public class Client{
                 return gson.fromJson(jsonString, UpdateProfs.class);
             case "UpdateWorld":
                 return gson.fromJson(jsonString, UpdateWorld.class);
+            case "UpdateActiveCharacter":
+                return gson.fromJson(jsonString, UpdateActiveCharacter.class);
             case "FullView":
                 return gson.fromJson(jsonString, FullView.class);
             default : System.out.println("Invalid message: "+ jsonString);
@@ -307,6 +309,10 @@ public class Client{
     public void visit(UpdateProfs u){
         virtualView.setVirtualProfs(u.getProfs());
         listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PROFS), null, u.getProfs());
+    }
+    public void visit(UpdateActiveCharacter u) {
+        virtualView.getVirtualCharacters().get(u.getIndex()).setActive(u.isActive());
+        listener.firePropertyChange(String.valueOf(EVENT.ACTIVE_CHARACTER), null, u);
     }
     public void visit(Error error){
         listener.firePropertyChange("ERROR", null, error);

@@ -34,7 +34,6 @@ public class Lobby {
     private GameStatus gameStatus;
     private Thread timerPause;
     private static final int WAITING_TIME = 50000;
-    //private VirtualView virtualView;
 
     //metodo inutile usato solo perché altrimenti per i test dell' expert controller dovrei creare tutti i parametri, poi
     //lo cambierò.
@@ -69,7 +68,6 @@ public class Lobby {
         mages.add(gameParams.getMage());
         towers.add(gameParams.getColorT());
         gameStatus = GameStatus.SETUP;
-        //virtualView = new VirtualView();
     }
 
     /**
