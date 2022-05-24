@@ -4,7 +4,6 @@ import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.controller.ActionController;
 import it.polimi.ingsw.controller.ERRORS;
 import it.polimi.ingsw.controller.PHASE;
-import it.polimi.ingsw.controller.controllers.Controller;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.NotEnoughCoinsException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
@@ -78,7 +77,7 @@ public class ExpertController extends Controller {
 
     @Override
     public void visit(PlayCharacter msg){
-        /*if(activeCharacter == null && !phase.equals(PHASE.PLANNING)){*/
+        if(activeCharacter == null /*&& !phase.equals(PHASE.PLANNING)*/){
             try {
                 Character c = getModel().getCharacters().stream().
                         filter(character -> msg.getC().getDesc().equals(character.getDescription())).findAny().orElse(null);
@@ -87,10 +86,10 @@ public class ExpertController extends Controller {
             } catch (NotEnoughCoinsException e) {
                 lobby.sendMessage(getMessageSender(), new Error(ERRORS.NOT_ENOUGH_COINS.toString()));
             }
-        /*}
+        }
         else if(phase.equals(PHASE.PLANNING)){
             lobby.sendMessage(messageSender, new Error("You can't play a Character right now"));
-        }*/
+        }
     }
     @Override
     public void visit(SpecialMoveIsland m){
@@ -229,48 +228,68 @@ public class ExpertController extends Controller {
                 int indexChar = (int) evt.getOldValue();
                 Character modelChar = (Character) evt.getNewValue();
                 VirtualCharacter virtualChar = new VirtualCharacter(modelChar);
-                getVirtualView().setVirtualCharacters(indexChar, virtualChar);
-                lobby.sendMessageToAll(new ReplaceCharacter(virtualChar, indexChar));
+                virtualView.setVirtualCharacters(indexChar, virtualChar);
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new ReplaceCharacter(virtualChar, indexChar));
+                }
             }
             case REPLACE_CHARACTER_S -> {
                 int indexCharacter = (int) evt.getOldValue();
                 VirtualCharacterWithStudents character = (VirtualCharacterWithStudents) evt.getNewValue();
-                getVirtualView().setVirtualCharacters(indexCharacter, character);
-                lobby.sendMessageToAll(new ReplaceCharacterStudents(character, indexCharacter));
+                virtualView.setVirtualCharacters(indexCharacter, character);
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new ReplaceCharacterStudents(character, indexCharacter));
+                }
             }
             case REPLACE_CHARACTER_NE -> {
                 int indexC = (int) evt.getOldValue();
                 VirtualCharacterWithNoEntry VirtualC = (VirtualCharacterWithNoEntry) evt.getNewValue();
-                getVirtualView().setVirtualCharacters(indexC, VirtualC);
-                lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(VirtualC, indexC));
+                virtualView.setVirtualCharacters(indexC, VirtualC);
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(VirtualC, indexC));
+                }
             }
             case CREATE_CHARACTERS -> {
                 ArrayList<VirtualCharacter> virtualCharacters = (ArrayList<VirtualCharacter>) evt.getNewValue();
-                getVirtualView().setVirtualCharacters(virtualCharacters);
-                sendFullView();
+                virtualView.setVirtualCharacters(virtualCharacters);
+                if(gameStarted) {
+                    sendFullView();
+                }
             }
             case BOARD_COINS -> {
                 int coins = (int) evt.getNewValue();
-                getVirtualView().setVirtualCoins(coins);
-                lobby.sendMessageToAll(new UpdateCoins(coins));
+                virtualView.setVirtualCoins(coins);
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new UpdateCoins(coins));
+                }
             }
             case MN_POS -> {
                 int pos = (int) evt.getNewValue();
                 virtualView.setMnPos(pos);
-                lobby.sendMessageToAll(new UpdateMN(pos));
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new UpdateMN(pos));
+                }
             }
             case CREATE_WORLD -> {
                 ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
                 virtualView.setVirtualWorld(virtualWorld);
-                lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
+                }
             }
             case ACTIVE_CHARACTER -> {
                 int activeVirtualCharacter = (int) evt.getNewValue();
                 virtualView.getVirtualCharacters().get(activeVirtualCharacter).setActive(true);
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualCharacter, true));
+                }
             }
             case NO_ACTIVE_CHARACTER -> {
                 int activeVirtualChar = (int) evt.getNewValue();
                 virtualView.getVirtualCharacters().get(activeVirtualChar).setActive(false);
+                if(gameStarted) {
+                    lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualChar, false));
+                }
             }
         }
     }

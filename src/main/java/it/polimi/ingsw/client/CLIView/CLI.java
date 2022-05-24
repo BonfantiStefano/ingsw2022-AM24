@@ -29,13 +29,13 @@ public class CLI implements Runnable, UserInterface {
     private VirtualView virtualView;
     private Client client;
     private Welcome welcome;
-    private boolean gameActive;
     private String lastInfo;
     private String lastError;
     private boolean inLobby;
     private Error error;
     private final Scanner input;
     private boolean firstTime = true;
+    private boolean gameStarted = false;
 
     /**
      * Method main is used to start the CLI side.
@@ -74,8 +74,6 @@ public class CLI implements Runnable, UserInterface {
     public CLI() {
         input = new Scanner(System.in);
         welcome = null;
-        //TODO implement set gameActive based on messages from Server
-        gameActive = true;
         lastInfo="";
         lastError="";
         inLobby=false;
@@ -86,8 +84,11 @@ public class CLI implements Runnable, UserInterface {
      */
     public void run() {
         while(client.isActive()) {
-            String s = input.nextLine();
-            parseInput(s);
+            //try {
+                String s = input.nextLine();
+                parseInput(s);
+            /*} catch (IndexOutOfBoundsException ignored) {
+            }*/
         }
     }
 
@@ -96,7 +97,6 @@ public class CLI implements Runnable, UserInterface {
      * @param s the user's input
      */
     public void parseInput(String s){
-        //TODO add help and disconnect patterns
         Pattern pattern;
         Matcher matcher;
         for(REGEX r:REGEX.values()){
@@ -172,44 +172,47 @@ public class CLI implements Runnable, UserInterface {
      * Prints elements contained in the VirtualView
      */
     private synchronized void printView() {
-        if(gameActive) {
-            if(System.getProperty("os.name").contains("Windows")){
-                try {
-                    new ProcessBuilder("cmd.exe", "/c", "chcp 65001").inheritIO().start().waitFor();
-                } catch (InterruptedException | IOException e) {
-                    e.printStackTrace();
+        if(client.isActive()) {
+            if(gameStarted) {
+                if (System.getProperty("os.name").contains("Windows")) {
+                    try {
+                        new ProcessBuilder("cmd.exe", "/c", "chcp 65001").inheritIO().start().waitFor();
+                    } catch (InterruptedException | IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-            clearScreen();
-            ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
+                clearScreen();
+                ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
 
-            ArrayList<VirtualIsland> firstHalf = new ArrayList<>(virtualWorld.subList(0, virtualWorld.size() / 2));
-            ArrayList<VirtualIsland> secondHalf = new ArrayList<>(virtualWorld.subList(virtualWorld.size() / 2, virtualWorld.size()));
-            drawIslands(firstHalf);
-            drawIslands(secondHalf);
+                ArrayList<VirtualIsland> firstHalf = new ArrayList<>(virtualWorld.subList(0, virtualWorld.size() / 2));
+                ArrayList<VirtualIsland> secondHalf = new ArrayList<>(virtualWorld.subList(virtualWorld.size() / 2, virtualWorld.size()));
+                drawIslands(firstHalf);
+                drawIslands(secondHalf);
 
-            //drawIslands(virtualWorld);
-            drawClouds(virtualView.getVirtualClouds());
-            if (virtualView.getVirtualCharacters().size() > 0) {
-                drawCharacters(virtualView.getVirtualCharacters());
-                System.out.println("Characters Descriptions:");
-                virtualView.getVirtualCharacters().forEach(c->System.out.println((virtualView.getVirtualCharacters().indexOf(c)+1)+": "+c.getDescription()));
-            }
-
-            for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {
-                drawSchoolBoard(vp.getVirtualBoard(), vp.getNickname(), virtualView.getVirtualProfs());
-
-                if (vp.getVirtualLastAssistant() != null) {
-                    System.out.print(vp.getNickname() + "'s last assistant played: ");
-                    System.out.println("Turn: " + vp.getVirtualLastAssistant().getTurn() + " Steps: " + vp.getVirtualLastAssistant().getMNsteps());
+                //drawIslands(virtualWorld);
+                drawClouds(virtualView.getVirtualClouds());
+                if (virtualView.getVirtualCharacters().size() > 0) {
+                    drawCharacters(virtualView.getVirtualCharacters());
+                    System.out.println("Characters Descriptions:");
+                    virtualView.getVirtualCharacters().forEach(c -> System.out.println((virtualView.getVirtualCharacters().indexOf(c) + 1) + ": " + c.getDescription()));
                 }
 
-                if (virtualView.getVirtualCharacters().size() != 0) {
-                    System.out.println("Player: " + vp.getNickname() + " has " + vp.getVirtualCoins() + " coins.");
+                for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {
+                    drawSchoolBoard(vp.getVirtualBoard(), vp.getNickname(), virtualView.getVirtualProfs());
+
+                    if (vp.getVirtualLastAssistant() != null) {
+                        System.out.print(vp.getNickname() + "'s last assistant played: ");
+                        System.out.println("Turn: " + vp.getVirtualLastAssistant().getTurn() + " Steps: " + vp.getVirtualLastAssistant().getMNsteps());
+                    }
+
+                    if (virtualView.getVirtualCharacters().size() != 0) {
+                        System.out.println("Player: " + vp.getNickname() + " has " + vp.getVirtualCoins() + " coins.");
+                    }
                 }
             }
             System.out.println(lastInfo);
-            if(lastInfo.equals("The lobby has been created") || lastInfo.equals("You have joined the game")) {
+            if(lastInfo.equals("The lobby has been created") || lastInfo.equals("You have joined the game")
+                || lastInfo.contains("entered the lobby")) {
                 System.out.println("Waiting other players...");
             }
             if(client.getSizeQueue() == 0 && !lastError.isEmpty()){
@@ -577,7 +580,6 @@ public class CLI implements Runnable, UserInterface {
             System.out.println(l);});
     }
 
-
     /**
      * Draws all Assistants
      * @param assistants ArrayList containing all VirtualAssistants
@@ -630,14 +632,32 @@ public class CLI implements Runnable, UserInterface {
             if(System.getProperty("os.name").contains("Windows")){
                 new ProcessBuilder("cmd.exe", "/c", "cls").inheritIO().start().waitFor();
             }
-            else
+            else {
                 Runtime.getRuntime().exec("clear");
+                System.out.println("\033c");
+            }
         }
         catch (IOException | InterruptedException e){
             Thread.currentThread().interrupt();
         }
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        //System.out.print("\033[H\033[2J");
+        //System.out.flush();
+        /*
+        public static void clearConsole() {
+        try {
+            final String os = System.getProperty("os.name");
+
+            if (os.contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                Runtime.getRuntime().exec("clear");
+            }
+            System.out.println("\n" + Color.YELLOW_LIGHT_BG + Color.GREY_DARK_FG + "Hint:" + Color.RESET + " type '" + Color.RESOURCE_STD + "help" + Color.RESET + "' for a list of commands you can do ;)" + "\n");
+        } catch (final Exception e) {
+            System.out.println("Warning: failed to clear console");
+        }
+    }
+         */
     }
 
     public void printLobbies(Welcome welcome) {
@@ -714,7 +734,7 @@ public class CLI implements Runnable, UserInterface {
                 String text = information.getString();
                 lastInfo = text;
                 if(text.equals("Game Started!")) {
-                    gameActive=true;
+                    gameStarted = true;
                     new Thread(this).start();
                 }
                 else if(text.equals("The lobby has been created")||text.equals("You have joined the game")) {

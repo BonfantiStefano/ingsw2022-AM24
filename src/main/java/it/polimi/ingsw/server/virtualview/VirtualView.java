@@ -1,7 +1,6 @@
 package it.polimi.ingsw.server.virtualview;
 
 import it.polimi.ingsw.model.ColorS;
-import it.polimi.ingsw.model.player.Player;
 
 import java.util.ArrayList;
 import java.util.HashMap;
