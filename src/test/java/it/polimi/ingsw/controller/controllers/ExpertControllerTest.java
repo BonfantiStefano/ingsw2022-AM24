@@ -94,7 +94,6 @@ public class ExpertControllerTest {
         for (int i = 0; i < 6; i++){
             egb.getActivePlayer().getMyBoard().addToHall(ColorS.GREEN);
         }
-
         egb.checkProfs();
         Player p = egb.getProfs().get(ColorS.GREEN);
         assertEquals("Bob", p.getNickname());

@@ -166,8 +166,7 @@ public class GUI extends Application implements UserInterface {
                 Platform.runLater(()->{
                     c.setVirtualView((VirtualView) evt.getNewValue());
                     c.init();
-                }
-                );
+                });
             break;
             case "REPLACE_CHARACTER":
             case "REPLACE_CHARACTER_S":

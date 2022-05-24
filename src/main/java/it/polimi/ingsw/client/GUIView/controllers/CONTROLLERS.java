@@ -9,7 +9,6 @@ public enum CONTROLLERS {
     YOUWIN("/winScene.fxml"),
     YOULOSE("/winScene.fxml");
 
-
     private final String path;
 
     CONTROLLERS(String path){
