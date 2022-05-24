@@ -3,11 +3,9 @@ package it.polimi.ingsw.client.GUIView;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import it.polimi.ingsw.client.Client;
-import it.polimi.ingsw.client.GUIView.controllers.CONTROLLERS;
-import it.polimi.ingsw.client.GUIView.controllers.GUIController;
-import it.polimi.ingsw.client.GUIView.controllers.GameController;
-import it.polimi.ingsw.client.GUIView.controllers.LobbyController;
+import it.polimi.ingsw.client.GUIView.controllers.*;
 import it.polimi.ingsw.client.UserInterface;
+import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Information;
 import it.polimi.ingsw.server.answer.Welcome;
 import it.polimi.ingsw.server.virtualview.VirtualView;
@@ -20,6 +18,7 @@ import javafx.stage.Stage;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class GUI extends Application implements UserInterface {
     private Scene currentScene;
@@ -61,7 +60,6 @@ public class GUI extends Application implements UserInterface {
             System.exit(0);
         }
         currentScene = nameMapScene.get(CONTROLLERS.SETUP.toString());
-        //currentScene = nameMapScene.get(CONTROLLERS.MAIN.toString());
     }
 
     private void run() {
@@ -69,8 +67,6 @@ public class GUI extends Application implements UserInterface {
         window.setHeight(748);
         window.setTitle("Eriantys!");
         window.setScene(currentScene);
-        //GameController g = (GameController) nameMapController.get(currentScene);
-        //g.init();
         window.show();
     }
 
@@ -105,6 +101,11 @@ public class GUI extends Application implements UserInterface {
     public void setVirtualView(VirtualView virtualView) {
         this.virtualView = virtualView;
     }
+
+    public VirtualView getVirtualView() {
+        return virtualView;
+    }
+
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -141,6 +142,7 @@ public class GUI extends Application implements UserInterface {
                 else if(text.equals("The lobby has been created")||text.equals("You have joined the game")){
                     Platform.runLater(()->lb.setLastInfo(text));
                 }
+                Platform.runLater(()->c.setLastInfo(text));
                 break;
             case "UPDATE_ALL":
                 Platform.runLater(()->{
@@ -148,7 +150,38 @@ public class GUI extends Application implements UserInterface {
                     c.init();
                 }
                 );
-
+            break;
+            case "REPLACE_CHARACTER":
+            case "REPLACE_CHARACTER_S":
+            case "REPLACE_CHARACTER_NE":
+                Platform.runLater(c::drawCharacters);
+                break;
+            case "REPLACE_CLOUD":
+                Platform.runLater(c::drawClouds);
+                break;
+            case "BOARD_COINS":
+                //TODO call updateCoins
+                break;
+            case "CREATE_WORLD":
+            case "REPLACE_ISLAND":
+            case "CHANGE_MN_POS":
+                Platform.runLater(c::drawIslands);
+                break;
+            case "REPLACE_PLAYER":
+                int index = (int) evt.getNewValue();
+                Platform.runLater(()->{
+                    c.updateSchoolBoard(index);
+                    c.updateAssistants();
+                });
+                break;
+            case "REPLACE_PROFS":
+                Platform.runLater(c::updateProfs);
+                break;
+            case "ERROR":
+                text = ((Error)evt.getNewValue()).getString();
+                Platform.runLater(()->c.setLastError(text));
+            default:
+                break;
         }
     }
 
@@ -167,5 +200,13 @@ public class GUI extends Application implements UserInterface {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public HashMap<String, Scene> getNameMapScene() {
+        return nameMapScene;
+    }
+
+    public HashMap<Scene, GUIController> getNameMapController() {
+        return nameMapController;
     }
 }

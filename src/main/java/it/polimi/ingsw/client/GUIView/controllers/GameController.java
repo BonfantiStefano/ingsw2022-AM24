@@ -10,11 +10,19 @@ import it.polimi.ingsw.model.character.CharacterWithNoEntry;
 import it.polimi.ingsw.model.character.CharacterWithStudent;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.server.virtualview.*;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.*;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -25,13 +33,16 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
 public class GameController implements GUIController{
     Random r = new Random(System.currentTimeMillis());
-    private String nickname;
     private int numIslands = 12;
     private HashMap<ColorS, Image> studentImages;
     private HashMap<ColorS, Image> profImages;
@@ -50,6 +61,7 @@ public class GameController implements GUIController{
     private final ArrayList<GridPane> towersGrids = new ArrayList<>();
     private final ArrayList<Pane> boards = new ArrayList<>();
     private final ArrayList<Pane> lastAssistants = new ArrayList<>();
+    private ArrayList<String> lastInfo = new ArrayList<>();
 
     private final EventHandler<MouseEvent> studentHandler = this::clickOnStudent;
     private final EventHandler<MouseEvent> destinationHandler = this::studentDestination;
@@ -67,16 +79,24 @@ public class GameController implements GUIController{
     private Pane sc1, sc2, sc3, islandsPane, last1, last2, last3;
     @FXML
     private VBox charBox;
+    @FXML
+    private AnchorPane anchor;
+    @FXML
+    private VBox vBoxLastInfo;
 
 
 
     public void init() {
+        Image image = new Image(getClass().getResourceAsStream("/graphics/Background.jpg"));
+        anchor.setBackground(new Background(new BackgroundImage(image,BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                new BackgroundSize(50,50,true,true,true,true))));
         createImages();
         boards.add(sc1);
         boards.add(sc2);
         if(virtualView.getVirtualPlayers().size()==3){
             boards.add(sc3);
             lastAssistants.add(last3);
+            sc3.setVisible(true);
         }
 
         lastAssistants.add(last1);
@@ -106,6 +126,8 @@ public class GameController implements GUIController{
         islandsPane.setMinHeight(520);
         islandsPane.setMinWidth(520);
         from = null;
+        vBoxLastInfo = new VBox();
+        vBoxLastInfo.setAlignment(Pos.TOP_LEFT);
     }
 
     public int calcIndex(int index) {
@@ -127,7 +149,6 @@ public class GameController implements GUIController{
         //TODO remove fillRandom and get correct entrance from virtualView
         ArrayList<ColorS> entrance = virtualView.getVirtualPlayers().get(index).getVirtualBoard().getEntrance();
         entrancesGrids.get(calcIndex(index)).getChildren().clear();
-        fillRandom(entrance, 7);
         int entrIndex=0;
         for(int i=0;i<4;i++)
             for(int j=0;j<2;j++){
@@ -146,10 +167,10 @@ public class GameController implements GUIController{
     }
 
     public void updateHall(int index){
-        //HashMap<ColorS, Integer> hall = new HashMap<>();
+        HashMap<ColorS, Integer> hall = new HashMap<>();
         hallGrids.get(calcIndex(index)).getChildren().clear();
-        //TODO same as updateEntrance
-        HashMap<ColorS, Integer> hall = (HashMap<ColorS, Integer>) virtualView.getVirtualPlayers().get(index).getVirtualBoard().getHall();
+        if(virtualView!=null)
+            hall = (HashMap<ColorS, Integer>) virtualView.getVirtualPlayers().get(index).getVirtualBoard().getHall();
 
         for(int i=0;i<5;i++) {
             ColorS color = ColorS.values()[i];
@@ -167,19 +188,29 @@ public class GameController implements GUIController{
     }
 
     public void updateProfs(){
-        //HashMap<ColorS, Integer> profs = new HashMap<>();
-        HashMap<ColorS, VirtualPlayer> tempProfs = virtualView.getVirtualProfs();
+        ArrayList<VirtualPlayer> vps = new ArrayList<>();
+        HashMap<ColorS, VirtualPlayer> tempProfs = new HashMap<>();
+        if(virtualView!=null) {
+            vps = new ArrayList<>(virtualView.getVirtualPlayers());
+            tempProfs = virtualView.getVirtualProfs();
+        }
         HashMap<ColorS, Integer> profs = new HashMap<>();
+
         for(ColorS color:ColorS.values()){
-            profs.put(color,virtualView.getVirtualPlayers().indexOf(tempProfs.get(color)));
+            Optional<VirtualPlayer> owner = Optional.ofNullable(tempProfs.get(color));
+            Optional<VirtualPlayer> vp = Optional.empty();
+            if(owner.isPresent())
+                vp = vps.stream().filter(p->p.getNickname().equals(owner.get().getNickname())).findAny();
+
+            ArrayList<VirtualPlayer> finalVps = vps;
+            vp.ifPresentOrElse(virtualPlayer -> profs.put(color, finalVps.indexOf(virtualPlayer)),
+                    ()-> profs.put(color,-1));
+
         }
         for(GridPane g:profsGrids)
             g.getChildren().clear();
 
-        //TODO insert correct hashmap from virtualView
         for(ColorS c:ColorS.values()){
-            //TODO remove the following line
-
             if(profs.get(c)>=0){
                 int index = profs.get(c);
                 GridPane g = profsGrids.get(calcIndex(index));
@@ -222,7 +253,7 @@ public class GameController implements GUIController{
         }
 
         islands.forEach(i->{
-            int thisAngle = (islands.indexOf(i)+1)*(angle/islands.size());
+            int thisAngle = -(islands.indexOf(i)+1)*(angle/islands.size());
             int index = islands.indexOf(i);
             VirtualIsland vi = virtualView.getVirtualWorld().get(index);
             ArrayList<ColorS> colors = vi.getStudents();
@@ -237,7 +268,7 @@ public class GameController implements GUIController{
 
 
             islandsPane.getChildren().add(p);
-
+            Label l = new Label();
             p.setLayoutX(325+radiusIslands*Math.sin(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
             p.setLayoutY(248+radiusIslands*Math.cos(thisAngle*2*Math.PI/angle)-25*Math.sqrt(2));
 
@@ -385,7 +416,7 @@ public class GameController implements GUIController{
         return p;
     }
 
-    private void drawCharacters(){
+    public void drawCharacters(){
         //charBox.setAlignment(Pos.CENTER);
         charBox.setSpacing(10);
 
@@ -458,6 +489,14 @@ public class GameController implements GUIController{
                 }
                 p.getChildren().add(gp);
             }
+            else if(vc.getDescription().equals(CharacterDescription.CHAR9.getDesc())
+            ||vc.getDescription().equals(CharacterDescription.CHAR12.getDesc())){
+                Button b = new Button();
+                b.setText("Choose Color");
+                b.setOnAction(actionEvent -> chooseColor());
+                gp.getChildren().add(b);
+                p.getChildren().add(gp);
+            }
 
             p.setOnMouseClicked(mouseEvent -> {
                 if(mouseEvent.getClickCount()==2)
@@ -468,15 +507,16 @@ public class GameController implements GUIController{
 
     }
 
-    private void updateAssistants(){
-        //for(int i = 0;i<3;i++){
-            //TODO uncomment next lines and remove the preceding one
-            for(VirtualPlayer vp : virtualView.getVirtualPlayers()){
+    public void updateAssistants(){
+        ArrayList<VirtualPlayer> vps = new ArrayList<>();
+        if(virtualView!=null)
+            vps = virtualView.getVirtualPlayers();
+        for(VirtualPlayer vp : vps){
             Assistant a = vp.getVirtualLastAssistant();
             if(a!=null) {
                 //int num = r.nextInt(10)+1;
                 //Assistant a = new Assistant(num/2,num, Mage.MAGE1);
-                Pane p = lastAssistants.get(virtualView.getVirtualPlayers().indexOf(vp));
+                Pane p = lastAssistants.get(calcIndex(virtualView.getVirtualPlayers().indexOf(vp)));
                 //Pane p = lastAssistants.get(i);
                 Image img = assistantImages.get(a.getTurn());
                 p.setBackground(new Background(new BackgroundImage(img, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
@@ -484,8 +524,16 @@ public class GameController implements GUIController{
             }
         }
     }
+    public void updateSchoolBoard(int index){
+        if(virtualView!=null && virtualView.getVirtualPlayers().get(index)!=null) {
+            updateEntrance(index);
+            updateTowers(index);
+            updateHall(index);
+        }
+        updateProfs();
+    }
 
-    private void drawClouds(){
+    public void drawClouds(){
         List<Node> cloudsPanes = islandsPane.getChildren().stream().filter(p -> p.getStyleClass().contains("cloud")).toList();
         islandsPane.getChildren().removeAll(cloudsPanes);
         int size = virtualView.getVirtualClouds().size();
@@ -518,16 +566,17 @@ public class GameController implements GUIController{
         //ArrayList<ColorS> students = new ArrayList<>();
         ArrayList<ColorS> students = virtualView.getVirtualClouds().get(index).getStudents();
         //fillRandom(students, 3);
-
-        int j=0;
-        ColorS currStudent = students.get(j);
-        p.getChildren().add(createImage(currStudent, -26.5,-7));
-        j++;
-        currStudent = students.get(j);
-        p.getChildren().add(createImage(currStudent, 19,-20));
-        j++;
-        currStudent = students.get(j);
-        p.getChildren().add(createImage(currStudent, 8,25));
+        if(!students.isEmpty()) {
+            int j = 0;
+            ColorS currStudent = students.get(j);
+            p.getChildren().add(createImage(currStudent, -26.5, -7));
+            j++;
+            currStudent = students.get(j);
+            p.getChildren().add(createImage(currStudent, 19, -20));
+            j++;
+            currStudent = students.get(j);
+            p.getChildren().add(createImage(currStudent, 8, 25));
+        }
     }
 
     private ImageView createImage(ColorS c, double x, double y){
@@ -592,11 +641,26 @@ public class GameController implements GUIController{
         }
     }
 
+    public void showHand() {
+        Stage window = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(CONTROLLERS.CHOOSE_ASSISTANT.toString()));
+        ChooseAssistantController controller = (ChooseAssistantController) gui.getNameMapController().get(gui.getNameMapScene().get(CONTROLLERS.CHOOSE_ASSISTANT.toString()));
 
-    public void again(){
-        numIslands = r.nextInt(12)+1;
-        drawIslands();
+        controller.setGui(gui);
+        window.setScene(controller.getScene(virtualView.getVirtualPlayers().indexOf(getLocalPlayer())));
+        Platform.runLater(window::showAndWait);
     }
+
+    public void chooseColor(){
+        Stage window = new Stage();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(CONTROLLERS.CHOOSE_ASSISTANT.toString()));
+        ChooseColorController controller = (ChooseColorController) gui.getNameMapController().get(gui.getNameMapScene().get(CONTROLLERS.CHOOSE_COLOR.toString()));
+
+        controller.setGui(gui);
+        window.setScene(controller.getScene());
+        Platform.runLater(window::showAndWait);
+    }
+
 
     private void clickOnStudent(MouseEvent e){
         Node student = (Node) e.getSource(), parent = getParent((Node) e.getSource());
@@ -629,8 +693,7 @@ public class GameController implements GUIController{
         else if(selectedMN){
             String destinationId = ((Node) e.getSource()).getId();
             int dest = Integer.parseInt(destinationId.replace("island",""));
-            //TODO set currMnPos to value from virtualView
-            int currMnPos = 1;
+            int currMnPos = virtualView.getMnPos();
             for(int i=currMnPos;i<numIslands;){
                 if(i==dest){
                     gui.sendMessageToServer(new MoveMN(i-currMnPos));
@@ -698,6 +761,25 @@ public class GameController implements GUIController{
         virtualCharacters.add(vc3);
 
         return virtualCharacters;
+    }
+
+    public void setLastInfo(String text){
+        lastInfo.add(new SimpleDateFormat("HH.mm.ss").format(new Date()) +" "+text);
+        if(vBoxLastInfo!=null)
+            vBoxLastInfo.getChildren().clear();
+        for(String s:lastInfo) {
+            System.out.println(s);
+            Label l = new Label();
+            l.setText(s);
+            if (vBoxLastInfo != null) {
+                vBoxLastInfo.getChildren().add(l);
+                vBoxLastInfo.getChildren().forEach(System.out::println);
+            }
+        }
+    }
+    public void setLastError(String text){
+        Alert alert = new Alert(Alert.AlertType.ERROR,text, ButtonType.OK);
+        alert.showAndWait();
     }
 
     private VirtualPlayer getLocalPlayer(){

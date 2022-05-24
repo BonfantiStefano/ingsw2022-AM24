@@ -3,9 +3,9 @@ package it.polimi.ingsw.client.GUIView.controllers;
 public enum CONTROLLERS {
     SETUP("/setUpScene.fxml"),
     WELCOME("/Welcome.fxml"),
-    GAME("/Game.fxml"),
     MAIN("/MainScene.fxml"),
-    CHOOSE_ASSISTANT("/ChooseAssistant.fxml");
+    CHOOSE_ASSISTANT("/ChooseAssistant.fxml"),
+    CHOOSE_COLOR("/ChooseColor.fxml");
 
     private final String path;
 

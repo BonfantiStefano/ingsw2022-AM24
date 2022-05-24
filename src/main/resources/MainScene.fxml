@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -136,7 +137,6 @@
                 </GridPane>
             </children>
         </Pane>
-      <Button fx:id="bottone" layoutX="1057.0" layoutY="650.0" mnemonicParsing="false" onAction="#again" text="Button" />
         <Pane fx:id="sc2" layoutX="936.0" layoutY="188.0" maxHeight="225.0" maxWidth="520.0" minHeight="225.0" minWidth="520.0" prefHeight="225.0" prefWidth="520.0" rotate="-90.0" styleClass="pane" stylesheets="@css/application.css">
             <children>
                 <GridPane fx:id="e2" layoutX="10.0" layoutY="23.0" prefHeight="184.0" prefWidth="63.0" stylesheets="@css/application.css">
@@ -203,5 +203,11 @@
       <VBox fx:id="charBox" layoutX="940.0" layoutY="39.0" prefHeight="520.0" prefWidth="110.0" stylesheets="@css/application.css" />
       <StackPane fx:id="last1" layoutX="870.0" layoutY="575.0" prefHeight="200.0" prefWidth="110.0" />
       <StackPane fx:id="last2" layoutX="1141.0" layoutY="522.0" prefHeight="200.0" prefWidth="110.0" rotate="-90.0" />
+      <Button fx:id="handButton" layoutX="194.0" layoutY="724.0" mnemonicParsing="false" onAction="#showHand" text="Show Hand" />
+      <ScrollPane layoutX="1079.0" layoutY="661.0" prefHeight="118.0" prefWidth="217.0">
+         <content>
+            <VBox fx:id="vBoxLastInfo" maxWidth="215.0" minHeight="100.0" minWidth="215.0" prefHeight="100.0" prefWidth="215.0" />
+         </content>
+      </ScrollPane>
     </children>
 </AnchorPane>

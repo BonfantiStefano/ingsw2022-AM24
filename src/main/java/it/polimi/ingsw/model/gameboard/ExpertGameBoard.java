@@ -68,6 +68,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         getPlayerByNickname(nickname).setCoins(1);
         coins--;
         listener.firePropertyChange(String.valueOf(EVENT.BOARD_COINS), null, coins);
+        factory.setPlayers(players.stream().map(p -> (PlayerInterface) p).collect(Collectors.toCollection(ArrayList::new)));
     }
 
     /**

@@ -105,8 +105,10 @@ public class CLI implements Runnable, UserInterface {
 
             if(matcher.find()) {
                 Request msg = createMessage(r, s);
-                System.out.println(toJson(msg));
-                client.sendMessage(toJson(msg));
+                if(msg!=null) {
+                    System.out.println(toJson(msg));
+                    client.sendMessage(toJson(msg));
+                }
                 return;
             }
         }
@@ -163,6 +165,9 @@ public class CLI implements Runnable, UserInterface {
             case CHOOSE_ISLAND:
                 int island = Integer.parseInt(s.split(" ")[1]);
                 return new ChooseIsland(island);
+            case HELP:
+                printHelp();
+                return null;
         }
 
         return null;
@@ -794,6 +799,13 @@ public class CLI implements Runnable, UserInterface {
             val = -1;
         }
         return val;
+    }
+
+    private void printHelp(){
+        System.out.println("Here's every command:");
+        for (REGEX r : REGEX.values()){
+            System.out.println(r.name()+": " + r.getDesc());
+        }
     }
 
     private void checkDisconnect(String input) {
