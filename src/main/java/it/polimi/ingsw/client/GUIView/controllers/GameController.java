@@ -30,9 +30,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 
@@ -47,6 +45,8 @@ public class GameController implements GUIController{
     private HashMap<CharacterDescription,Image> charImages;
     private ArrayList<Image> cloudImages;
     private HashMap<Integer, Image> assistantImages;
+    private Image coinImage;
+
     private final int radiusIslands = 200;
     private final int radiusClouds = 75;
     private final int angle = 360;
@@ -58,7 +58,7 @@ public class GameController implements GUIController{
     private final ArrayList<GridPane> towersGrids = new ArrayList<>();
     private final ArrayList<Pane> boards = new ArrayList<>();
     private final ArrayList<Pane> lastAssistants = new ArrayList<>();
-    private final ArrayList<String> lastInfo = new ArrayList<>();
+    private final ArrayList<HBox> pInfo = new ArrayList<>();
 
     private final EventHandler<MouseEvent> studentHandler = this::clickOnStudent;
     private final EventHandler<MouseEvent> destinationHandler = this::studentDestination;
@@ -73,7 +73,9 @@ public class GameController implements GUIController{
     @FXML
     private Pane sc1, sc2, sc3, islandsPane, last1, last2, last3;
     @FXML
-    private Label name1,name2,name3;
+    private Label name1,name2,name3, boardCoins;
+    @FXML
+    private HBox pInfo1,pInfo2,pInfo3;
     @FXML
     private VBox charBox;
     @FXML
@@ -94,9 +96,12 @@ public class GameController implements GUIController{
         createImages();
         boards.add(sc1);
         boards.add(sc2);
+        pInfo.add(pInfo1);
+        pInfo.add(pInfo2);
         if(virtualView.getVirtualPlayers().size()==3){
             boards.add(sc3);
             sc3.setVisible(true);
+            pInfo.add(pInfo3);
         }
 
         lastAssistants.add(last1);
@@ -130,6 +135,9 @@ public class GameController implements GUIController{
         vBoxLastInfo.setAlignment(Pos.TOP_LEFT);
         vBoxLastInfo.setSpacing(10);
         setNames();
+        setCoins();
+        boardCoins.setAlignment(Pos.CENTER);
+        setBoardCoins();
     }
 
     /**
@@ -561,7 +569,7 @@ public class GameController implements GUIController{
 
             p.setId("cloud"+i);
 
-            p.setBackground(new Background(new BackgroundImage(cloudImages.get(r.nextInt(6)),BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+            p.setBackground(new Background(new BackgroundImage(cloudImages.get(r.nextInt(5)),BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                     new BackgroundSize(cloudSize,cloudSize,false,false,false,false))));
 
             p.setMinHeight(cloudSize);
@@ -583,22 +591,24 @@ public class GameController implements GUIController{
         ArrayList<ColorS> students = new ArrayList<>();
         if(virtualView!=null)
             students = virtualView.getVirtualClouds().get(index).getStudents();
-        int j = 0;
-        ColorS currStudent;
-        currStudent = students.get(j);
-        p.getChildren().add(createImage(currStudent, -26.5, -7));
-        j++;
-        currStudent = students.get(j);
-        p.getChildren().add(createImage(currStudent, 19, -20));
-        j++;
-        currStudent = students.get(j);
-        p.getChildren().add(createImage(currStudent, 8, 25));
-
-        if(students.size()==4){
+        if(students.size()>0) {
+            int j = 0;
+            ColorS currStudent;
+            currStudent = students.get(j);
+            p.getChildren().add(createImage(currStudent, -26.5, -7));
             j++;
             currStudent = students.get(j);
-            p.getChildren().add(createImage(currStudent, 0, -15));
+            p.getChildren().add(createImage(currStudent, 19, -20));
+            j++;
+            currStudent = students.get(j);
+            p.getChildren().add(createImage(currStudent, 8, 25));
 
+            if (students.size() == 4) {
+                j++;
+                currStudent = students.get(j);
+                p.getChildren().add(createImage(currStudent, 0, -15));
+
+            }
         }
     }
 
@@ -624,12 +634,6 @@ public class GameController implements GUIController{
 
     public void setVirtualView(VirtualView virtualView) {
         this.virtualView = virtualView;
-    }
-
-    private void fillRandom(ArrayList<ColorS> list, int num){
-        for(int i=0;i<num;i++){
-            list.add(ColorS.values()[r.nextInt(5)]);
-        }
     }
 
     /**
@@ -673,6 +677,7 @@ public class GameController implements GUIController{
             cloudImages.add(imageCloud);
         }
         cloudImages.add(new Image(getClass().getResourceAsStream("/graphics/wooden_pieces/cloud_card_5.png")));
+        coinImage = new Image(getClass().getResourceAsStream("/graphics/wooden_pieces/Moneta_base.png"));
     }
 
     public void showHand() {
@@ -720,7 +725,7 @@ public class GameController implements GUIController{
 
     /**
      * Handles clicks on a Student destination, a place where a Student can move
-     * @param e
+     * @param e the MouseEvent
      */
     private void studentDestination(MouseEvent e){
         if(from!=null&&selected!=null){
@@ -786,43 +791,15 @@ public class GameController implements GUIController{
         }
     }
 
-
-
-
-    //TODO remove, characters are taken from virtualView
-    private ArrayList<VirtualCharacter> createChars(){
-        ArrayList<VirtualCharacter> virtualCharacters = new ArrayList<>();
-        CharacterWithStudent c1 = new CharacterWithStudent(1, "Take one Student from this card and place it on an Island of your choice. Then draw a new Student" +
-                "from the bag and place it on this card.", 5);
-        c1.add(ColorS.BLUE);
-        c1.add(ColorS.GREEN);
-        c1.add(ColorS.RED);
-        c1.add(ColorS.YELLOW);
-        VirtualCharacterWithStudents vc1 = new VirtualCharacterWithStudents(c1);
-        virtualCharacters.add(vc1);
-
-        CharacterWithNoEntry c2 = new CharacterWithNoEntry(1, "Place a No Entry tile on an Island of your choice. The first time Mother Nature ends her movement there, put the No Entry" +
-                "tile back onto this card DO NOT calculate influence on that Island, or place any Towers.");
-        VirtualCharacterWithNoEntry vc2 = new VirtualCharacterWithNoEntry(c2);
-        virtualCharacters.add(vc2);
-
-        Character c3 = new Character(1,"During this turn, you take control of any number of Professors even if you have the same number of Students" +
-                "as the Player who currently controls them.");
-        VirtualCharacter vc3 = new VirtualCharacter(c3);
-        virtualCharacters.add(vc3);
-
-        return virtualCharacters;
-    }
-
     public void setLastInfo(String text){
-        lastInfo.add(new SimpleDateFormat("HH.mm.ss").format(new Date()) + " " + text);
         Label l = new Label();
         l.setWrapText(true);
         l.setMaxHeight(200);
         l.setMaxWidth(213);
-        l.setText(new SimpleDateFormat("HH.mm.ss").format(new Date()) + " " + text);
+        l.setText("["+new SimpleDateFormat("HH.mm.ss").format(new Date())+"] " + text);
         vBoxLastInfo.getChildren().add(l);
-        paneLastInfo.setVvalue(paneLastInfo.getVmax());
+        paneLastInfo.setContent(vBoxLastInfo);
+        paneLastInfo.vvalueProperty().bind(vBoxLastInfo.heightProperty());
     }
 
     public void setLastError(String text){
@@ -842,9 +819,38 @@ public class GameController implements GUIController{
             name3.setText(vps.get((vps.indexOf(getLocalPlayer())+2)%vps.size()).getNickname());
     }
 
+    public void setCoins(){
+        pInfo.forEach(p->{
+            List<Node> coins = p.getChildren().stream().filter(c -> c.getId().equals("coin")).toList();
+            p.getChildren().removeAll(coins);
+        });
+
+        ArrayList<VirtualPlayer> vps = virtualView.getVirtualPlayers();
+
+        for(VirtualPlayer vp:vps) {
+            for (int i = 0; i <vp.getVirtualCoins();i++)
+            {
+                ImageView coin = new ImageView(coinImage);
+                coin.setId("coin");
+                coin.setFitWidth(15);
+                coin.setFitHeight(15);
+                pInfo.get(calcIndex(vps.indexOf(vp))).getChildren().add(coin);
+            }
+        }
+    }
+    public void setBoardCoins(){
+        if(virtualView!=null)
+            boardCoins.setText("You can still earn: "+virtualView.getVirtualCoins()+" coins");
+    }
+
+    @FXML
+    public void disconnect(){
+        gui.sendMessageToServer(new Disconnect());
+    }
+
     public int calcIndex(int index) {
         ArrayList<VirtualPlayer> vps = virtualView.getVirtualPlayers();
-        int i = 0, localPlayerIndex = virtualView.getVirtualPlayers().indexOf(getLocalPlayer());
+        int localPlayerIndex = virtualView.getVirtualPlayers().indexOf(getLocalPlayer());
         if(index==localPlayerIndex){
             return 0;
         }

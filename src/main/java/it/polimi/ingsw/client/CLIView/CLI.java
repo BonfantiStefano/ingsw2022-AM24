@@ -198,12 +198,12 @@ public class CLI implements Runnable, UserInterface {
                 drawIslands(firstHalf);
                 drawIslands(secondHalf);
 
-                //drawIslands(virtualWorld);
                 drawClouds(virtualView.getVirtualClouds());
                 if (virtualView.getVirtualCharacters().size() > 0) {
                     drawCharacters(virtualView.getVirtualCharacters());
                     System.out.println("Characters Descriptions:");
                     virtualView.getVirtualCharacters().forEach(c -> System.out.println((virtualView.getVirtualCharacters().indexOf(c) + 1) + ": " + c.getDescription()));
+                    System.out.println("You can still earn "+ virtualView.getVirtualCoins()+" coins.");
                 }
 
                 for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {

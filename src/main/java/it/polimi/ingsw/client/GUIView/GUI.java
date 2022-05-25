@@ -88,6 +88,7 @@ public class GUI extends Application implements UserInterface {
             window.setHeight(650);
             LobbyController lobbyController =(LobbyController) nameMapController.get(nameMapScene.get(newSceneName));
             lobbyController.init();
+            window.setResizable(false);
         }
         CONTROLLERS c = Arrays.stream(CONTROLLERS.values()).filter(co->co.toString().equals(newSceneName)).findFirst().get();
         window.setWidth(c.getX());
@@ -167,6 +168,7 @@ public class GUI extends Application implements UserInterface {
                 Platform.runLater(()->{
                     c.setVirtualView((VirtualView) evt.getNewValue());
                     c.init();
+                    c.setCoins();
                 });
             break;
             case "REPLACE_CHARACTER":
@@ -178,7 +180,7 @@ public class GUI extends Application implements UserInterface {
                 Platform.runLater(c::drawClouds);
                 break;
             case "BOARD_COINS":
-                //TODO call updateCoins
+                Platform.runLater(c::setBoardCoins);
                 break;
             case "CREATE_WORLD":
             case "REPLACE_ISLAND":
@@ -190,6 +192,7 @@ public class GUI extends Application implements UserInterface {
                 Platform.runLater(()->{
                     c.updateSchoolBoard(index);
                     c.updateAssistants();
+                    c.setCoins();
                 });
                 break;
             case "REPLACE_PROFS":
