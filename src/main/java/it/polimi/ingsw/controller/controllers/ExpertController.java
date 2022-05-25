@@ -251,67 +251,49 @@ public class ExpertController extends Controller {
                 else
                     vc = new VirtualCharacter(modelChar);
                 virtualView.setVirtualCharacters(indexChar, vc);
-                if(gameStarted) {
-                    sendChar(indexChar);
-                }
+                sendChar(indexChar);
             }
             case REPLACE_CHARACTER_S -> {
                 int indexCharacter = (int) evt.getOldValue();
                 VirtualCharacterWithStudents character = (VirtualCharacterWithStudents) evt.getNewValue();
                 virtualView.setVirtualCharacters(indexCharacter, character);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new ReplaceCharacterStudents(character, indexCharacter));
-                }
+                lobby.sendMessageToAll(new ReplaceCharacterStudents(character, indexCharacter));
             }
             case REPLACE_CHARACTER_NE -> {
                 int indexC = (int) evt.getOldValue();
                 VirtualCharacterWithNoEntry VirtualC = (VirtualCharacterWithNoEntry) evt.getNewValue();
                 virtualView.setVirtualCharacters(indexC, VirtualC);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(VirtualC, indexC));
-                }
+                lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(VirtualC, indexC));
             }
             case CREATE_CHARACTERS -> {
                 ArrayList<VirtualCharacter> virtualCharacters = (ArrayList<VirtualCharacter>) evt.getNewValue();
                 virtualView.setVirtualCharacters(virtualCharacters);
-                if(gameStarted) {
-                    sendFullView();
-                }
+                sendFullView();
             }
             case BOARD_COINS -> {
                 int coins = (int) evt.getNewValue();
                 virtualView.setVirtualCoins(coins);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateCoins(coins));
-                }
+                lobby.sendMessageToAll(new UpdateCoins(coins));
             }
             case MN_POS -> {
                 int pos = (int) evt.getNewValue();
                 virtualView.setMnPos(pos);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateMN(pos));
-                }
+                lobby.sendMessageToAll(new UpdateMN(pos));
             }
             case CREATE_WORLD -> {
                 ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
                 virtualView.setVirtualWorld(virtualWorld);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
-                }
+                lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
             }
             case ACTIVE_CHARACTER -> {
                 int activeVirtualCharacter = (int) evt.getNewValue();
                 virtualView.getVirtualCharacters().get(activeVirtualCharacter).setActive(true);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualCharacter, true));
-                }
+                lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualCharacter, true));
             }
             case NO_ACTIVE_CHARACTER -> {
                 int activeVirtualChar = (int) evt.getNewValue();
                 virtualView.getVirtualCharacters().get(activeVirtualChar).setActive(false);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualChar, false));
-                }
+                lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualChar, false));
             }
         }
     }

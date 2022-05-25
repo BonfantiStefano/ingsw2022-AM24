@@ -84,8 +84,8 @@ public class Server {
      * @param clientId int - the client's id that sent the join to the server.
      */
     public void handleJoin(Join join, int clientId) {
-        //if(join.getIndex() >= 0 && join.getIndex() < lobbies.size()) {
-            //synchronized (lobbies.get(join.getIndex())) {
+        if(join.getIndex() >= 0 && join.getIndex() < lobbies.size()) {
+            synchronized (lobbies.get(join.getIndex())) {
                 if (mapIdLobby.containsKey(clientId)) {
                     //Case when a client has already sent a good GameParams or join
                     sendMessage(clientId, new Error("Error: you are already in a lobby"));
@@ -112,10 +112,9 @@ public class Server {
                 } else {
                     sendMessage(clientId, new Error("Error: invalid lobby index, please retry"));
                     sendMessage(clientId, getLobbies());
-                    //Capire se serve fare questo, poichè alcuni controlli li faccio già lato client
                 }
-            //}
-        //}
+            }
+        }
     }
 
     /**

@@ -9,13 +9,13 @@
 |:---------------|:-----:|
 | Basic Rules    |  🟢   |
 | Expert Mode    |  🟢   |
-| Socket         |  🟡   |
-| GUI            |  🔴   |
-| CLI            |  🟡   |
-| Multiple games |  🟡   |
+| Socket         |  🟢   |
+| GUI            |  🟡   |
+| CLI            |  🟢   |
+| Multiple games |  🟢   |
 | Persistence    |  🔴   |
 | 12 Characters  |  🟢   |
 | 4 Players      |  🔴   |
-| Resilience     |  🟡   |
+| Resilience     |  🟢   |
 
 <!-- 🔴 🟢 🟡 -->
