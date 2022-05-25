@@ -75,6 +75,11 @@ public class ExpertController extends Controller {
         m.accept(this);
     }
 
+    /* Method visit activates a Character card's ability. The Character can't be played at the beginning of
+    the player's turn before the Planning phase has been completed. it also can't be played if the player doesn't
+    have enough coins to activate the chosen card.
+    @param msg - Character which ability will be activated
+     */
     @Override
     public void visit(PlayCharacter msg){
         if(activeCharacter == null && !phase.equals(PHASE.PLANNING)){
@@ -91,6 +96,10 @@ public class ExpertController extends Controller {
             lobby.sendMessage(messageSender, new Error("You can't play a Character right now"));
         }
     }
+
+    /* Method visit is used to apply the Character effect that allows to move a student from the card to an island
+     @param m - request which contains the color of the student and the index of the island where he is moved
+     */
     @Override
     public void visit(SpecialMoveIsland m){
         if(filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR1.getDesc())) {
@@ -107,6 +116,12 @@ public class ExpertController extends Controller {
             }
         }
     }
+
+    /* Method visit is used to apply the Character effect that allows to calculate the influence on the chosen
+       island (in case the activate Character is the third one) or to place a No Entry tile on the chosen island
+       (in case the activate Character is the 5th one)
+       @param m - request which contains the index of the island
+     */
     @Override
     public void visit(ChooseIsland m) {
         if (filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR3.getDesc())) {
@@ -137,6 +152,13 @@ public class ExpertController extends Controller {
             }
         }
     }
+
+    /* Method visit is used to apply the Character effect that allows to choose the color that adds no influence
+    during the influence calculation (in case the active Character is the ninth one) or the color of three students that
+    the must be removed from the player's hall (in case the active character is 12th one) or the color of the
+    student that must be moved from the card to the player's hall (in case the active Character is the 11th one)
+    @param m - request which contains the chosen color
+     */
     @Override
     public void visit(ChooseColor m) {
         if(filter()) {
@@ -146,13 +168,11 @@ public class ExpertController extends Controller {
             }
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR12.getDesc())) {
                 getModel().removeHall(m.getColor());
-                getModel().setBannedColor(m.getColor());
                 turnController.setCharacterActionCheck(true);
             }
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR11.getDesc())) {
                 try {
                     ((CharacterWithStudent) activeCharacter).remove(m.getColor());
-                    getModel().setBannedColor(m.getColor());
                 } catch (NoSuchStudentException e) {
                     lobby.sendMessage(getMessageSender(), new Error("there is no " + m.getColor().toString().toLowerCase() + " students on the card"));
                 }
@@ -166,6 +186,12 @@ public class ExpertController extends Controller {
             }
         }
     }
+
+    /*  Method visit is used to apply the Character effect that allows to switch up to 2 students between player's
+    hall and entrance (in case the active Character is the 10th one) or to switch up to 3 students between
+    player's entrance and the card (in case the active Character is the 7th one)
+    @param m - request which contains the two chosen colors
+     */
     @Override
     public void visit(ChooseTwoColors m) {
         if(filter()) {
@@ -177,8 +203,8 @@ public class ExpertController extends Controller {
                     } catch (NoSuchStudentException | PlaceFullException e) {
                         lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_SUCH_STUDENT.toString()));
                     }
-                    numSwitchMoves++;
                     turnController.setCharacterActionCheck(true);
+                    numSwitchMoves++;
                 } else {
                     lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_MOVES_REMAINING.toString()));
                 }
@@ -196,8 +222,8 @@ public class ExpertController extends Controller {
                     } catch (NoSuchStudentException e) {
                         lobby.sendMessage(getMessageSender(), new Error("There is no " + m.getSecondColor().toString().toLowerCase() + " students on the card"));
                     }
-                    numStudMoves++;
                     turnController.setCharacterActionCheck(true);
+                    numStudMoves++;
                 } else {
                     lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_MOVES_REMAINING.toString()));
                 }
@@ -305,6 +331,9 @@ public class ExpertController extends Controller {
         }
     }
 
+    /* Method sendFullView is used to send to all the active clients the three Character cards
+       that can be played during the game.
+     */
     @Override
     public void sendFullView(){
         super.sendFullView();
