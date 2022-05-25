@@ -344,5 +344,6 @@ public class ExpertController extends Controller {
         else
             lobby.sendMessageToAll(new ReplaceCharacter(c, virtualCharacters.indexOf(c)));
     }
+
 }
 
