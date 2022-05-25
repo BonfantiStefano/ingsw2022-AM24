@@ -93,6 +93,7 @@ public class ExpertController extends Controller {
     }
     @Override
     public void visit(SpecialMoveIsland m){
+        activeCharacter = getModel().getActiveCharacter();
         if(filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR1.getDesc())) {
             if (m.getIslandIndex() < 0 || m.getIslandIndex() >= getModel().getSizeWorld()) {
                 lobby.sendMessage(getModel().getActivePlayer().getNickname(), new Error(ERRORS.INVALID_INDEX.toString()));
@@ -109,6 +110,7 @@ public class ExpertController extends Controller {
     }
     @Override
     public void visit(ChooseIsland m) {
+        activeCharacter = getModel().getActiveCharacter();
         if (filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR3.getDesc())) {
             if (m.getIslandIndex() >= 0 && m.getIslandIndex() < getModel().getSizeWorld()) {
                 getModel().checkIsland(getModel().getIslandByIndex(m.getIslandIndex()));
@@ -139,6 +141,7 @@ public class ExpertController extends Controller {
     }
     @Override
     public void visit(ChooseColor m) {
+        activeCharacter = getModel().getActiveCharacter();
         if(filter()) {
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR9.getDesc())){
                 getModel().setBannedColor(m.getColor());
@@ -168,6 +171,7 @@ public class ExpertController extends Controller {
     }
     @Override
     public void visit(ChooseTwoColors m) {
+        activeCharacter = getModel().getActiveCharacter();
         if(filter()) {
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR10.getDesc())) {
                 if (numSwitchMoves < 2) {
@@ -206,7 +210,7 @@ public class ExpertController extends Controller {
     }
 
     /**
-     * Checks if a Character is active
+     * Checks if any Character is active
      * @return true if there's an Active Character
      */
     private boolean filter(){

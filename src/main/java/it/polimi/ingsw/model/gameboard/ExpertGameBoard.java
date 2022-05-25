@@ -238,11 +238,10 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         if(activeCharacter!=null){
             activeCharacter.play();
         }
-
     }
 
     /**
-     * Resets the Model to be ready for the next round
+     * Resets the Model to be ready for the next turn
      */
     @Override
     public void resetTurn() {

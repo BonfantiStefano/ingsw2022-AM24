@@ -162,7 +162,7 @@ public class CLI implements Runnable, UserInterface {
             case SPECIAL_MOVE:
                 ColorS color = colorByString(s.split(" ")[1]);
                 int i = Integer.parseInt(s.split(" ")[3]);
-                return new SpecialMoveIsland(color, i);
+                return new SpecialMoveIsland(color, i-1);
             case CHOOSE_ISLAND:
                 int island = Integer.parseInt(s.split(" ")[1]);
                 return new ChooseIsland(island);
