@@ -13,12 +13,13 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.regex.Pattern;
 
 public class GUI extends Application implements UserInterface {
     private Scene currentScene;
@@ -28,6 +29,7 @@ public class GUI extends Application implements UserInterface {
     private  String nickname;
     private final HashMap<String, Scene> nameMapScene = new HashMap<>();
     private final HashMap<Scene, GUIController> nameMapController = new HashMap<>();
+    boolean started = false;
 
     public static void main(String[] args) {
         launch();
@@ -65,6 +67,7 @@ public class GUI extends Application implements UserInterface {
     private void run() {
         window.setWidth(747);
         window.setHeight(748);
+        window.getIcons().add(new Image(getClass().getResourceAsStream("/graphics/EriantysLogo.jpg")));
         window.setTitle("Eriantys!");
         window.setScene(currentScene);
         window.show();
@@ -87,7 +90,15 @@ public class GUI extends Application implements UserInterface {
             window.setHeight(650);
             LobbyController lobbyController =(LobbyController) nameMapController.get(nameMapScene.get(newSceneName));
             lobbyController.init();
+            window.setResizable(false);
         }
+        else if(newSceneName.equals(CONTROLLERS.MAIN.toString())){
+            window.setX(50);
+            window.setY(10);
+        }
+        CONTROLLERS c = Arrays.stream(CONTROLLERS.values()).filter(co->co.toString().equals(newSceneName)).findFirst().get();
+        window.setWidth(c.getX());
+        window.setHeight(c.getY());
     }
 
     public void sendMessageToServer(Object string) {
@@ -129,36 +140,33 @@ public class GUI extends Application implements UserInterface {
                 break;
             case "INFORMATION":
                 String text = ((Information) evt.getNewValue()).getString();
-                if(text.equals("Game Started!")){
-                    Platform.runLater(()-> {
-                        try {
-                            changeScene(CONTROLLERS.MAIN.toString());
-                            c.init();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                }
-                else if(text.equals("You Lose")){
-                    Platform.runLater(() ->{
+                switch (text) {
+                    case "Game Started!" -> {
+                        started = true;
+                        Platform.runLater(() -> {
+                            try {
+                                changeScene(CONTROLLERS.MAIN.toString());
+                                c.init();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
+                    case "You Lose" -> Platform.runLater(() -> {
                         try {
                             changeScene(CONTROLLERS.YOUWIN.toString());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     });
-                }
-                else if(text.equals("You won")){
-                    Platform.runLater(() ->{
+                    case "You won" -> Platform.runLater(() -> {
                         try {
                             changeScene(CONTROLLERS.YOULOSE.toString());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     });
-                }
-                else if(text.equals("The lobby has been created")||text.equals("You have joined the game")){
-                    Platform.runLater(()->lb.setLastInfo(text));
+                    case "The lobby has been created", "You have joined the game" -> Platform.runLater(() -> lb.setLastInfo(text));
                 }
                 Platform.runLater(()->c.setLastInfo(text));
                 break;
@@ -166,6 +174,7 @@ public class GUI extends Application implements UserInterface {
                 Platform.runLater(()->{
                     c.setVirtualView((VirtualView) evt.getNewValue());
                     c.init();
+                    c.setCoins();
                 });
             break;
             case "REPLACE_CHARACTER":
@@ -177,7 +186,7 @@ public class GUI extends Application implements UserInterface {
                 Platform.runLater(c::drawClouds);
                 break;
             case "BOARD_COINS":
-                //TODO call updateCoins
+                Platform.runLater(c::setBoardCoins);
                 break;
             case "CREATE_WORLD":
             case "REPLACE_ISLAND":
@@ -189,6 +198,7 @@ public class GUI extends Application implements UserInterface {
                 Platform.runLater(()->{
                     c.updateSchoolBoard(index);
                     c.updateAssistants();
+                    c.setCoins();
                 });
                 break;
             case "REPLACE_PROFS":

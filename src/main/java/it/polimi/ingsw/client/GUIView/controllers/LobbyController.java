@@ -14,6 +14,8 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +30,7 @@ public class LobbyController implements GUIController{
     public Button Join;
     public Button Params;
     public ChoiceBox<String> colorField;
-    public ChoiceBox<String> modeField;
+    public CheckBox modeField;
     public ChoiceBox<Integer> numberField;
     public TextField nicknameField;
     public ChoiceBox<String> mageField;
@@ -41,6 +43,9 @@ public class LobbyController implements GUIController{
 
     @FXML
     private Label error, lastInfo;
+    @FXML
+    private AnchorPane anchor;
+
 
     @FXML
     protected void showList(){
@@ -71,16 +76,10 @@ public class LobbyController implements GUIController{
         IDcloumn.setCellValueFactory(new PropertyValueFactory<>("lobbyIndex"));
         ExpColumn.setCellValueFactory(new PropertyValueFactory<>("mode"));
         connected.setCellValueFactory(new PropertyValueFactory<>("nicknames"));
+
         table.getItems().addAll(list);
     }
 
-    public void createModeField(){
-        String expert = "expert", normal = "normal";
-        ArrayList<String> modes = new ArrayList<>();
-        modes.add(expert);
-        modes.add(normal);
-        modeField.setItems(FXCollections.observableList(modes));
-    }
 
     public void createColorField(){
         colorField.setItems(FXCollections.observableList(Arrays.stream(ColorT.values()).map(ColorT::toString).collect(Collectors.toList())));
@@ -102,9 +101,10 @@ public class LobbyController implements GUIController{
         mage = null;
         color = null;
         selected = null;
+        anchor.setBackground(new Background(new BackgroundImage(new Image(getClass().getResourceAsStream("/graphics/WelcomeBackground.png")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                new BackgroundSize(50,50,true,true,true,true))));
         createTable();
         createColorField();
-        createModeField();
         createMageField();
         createNumberField();
     }
@@ -118,10 +118,6 @@ public class LobbyController implements GUIController{
             error.setText("Select a lobby first");
             return;
         }
-        if((selected.getNumPlayers()==2 && color.equals(ColorT.GREY)) || (selected.getTowers().stream().anyMatch(c->c.equals(color))))
-            error.setText(color + "color isn't available");
-        else if((selected.getNicknames().stream().anyMatch(n->n.equals(nickname))))
-            error.setText("Nickname isn't available");
         if(error.getText().isEmpty()&& checkCredentials()) {
             msg = new Join(nickname, mage, color, selected.getLobbyIndex());
             gui.sendMessageToServer(msg);
@@ -134,7 +130,7 @@ public class LobbyController implements GUIController{
         GameParams msg;
         getCredentials();
         int num = numberField.getValue();
-        boolean exp = modeField.getValue().equals("expert");
+        boolean exp = modeField.isSelected();
         if(checkCredentials()) {
             msg = new GameParams(num, exp, nickname, mage, color);
             gui.sendMessageToServer(msg);
@@ -151,6 +147,14 @@ public class LobbyController implements GUIController{
     public void quickCreate(){
         gui.sendMessageToServer(new GameParams(2,true,"marco",Mage.MAGE1,ColorT.BLACK));
         gui.setNickname("marco");
+    }
+    public void quickCreate3(){
+        gui.sendMessageToServer(new GameParams(3,true,"marco",Mage.MAGE1,ColorT.BLACK));
+        gui.setNickname("marco");
+    }
+    public void quickJoin3(){
+        gui.sendMessageToServer(new Join("paolo",Mage.MAGE3,ColorT.GREY,0));
+        gui.setNickname("paolo");
     }
     public void quickJoin(){
         gui.sendMessageToServer(new Join("pippo",Mage.MAGE2,ColorT.WHITE,0));

@@ -102,6 +102,7 @@ public class ExpertController extends Controller {
      */
     @Override
     public void visit(SpecialMoveIsland m){
+        activeCharacter = getModel().getActiveCharacter();
         if(filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR1.getDesc())) {
             if (m.getIslandIndex() < 0 || m.getIslandIndex() >= getModel().getSizeWorld()) {
                 lobby.sendMessage(getModel().getActivePlayer().getNickname(), new Error(ERRORS.INVALID_INDEX.toString()));
@@ -124,6 +125,7 @@ public class ExpertController extends Controller {
      */
     @Override
     public void visit(ChooseIsland m) {
+        activeCharacter = getModel().getActiveCharacter();
         if (filter() && activeCharacter.getDescription().equals(CharacterDescription.CHAR3.getDesc())) {
             if (m.getIslandIndex() >= 0 && m.getIslandIndex() < getModel().getSizeWorld()) {
                 getModel().checkIsland(getModel().getIslandByIndex(m.getIslandIndex()));
@@ -161,6 +163,7 @@ public class ExpertController extends Controller {
      */
     @Override
     public void visit(ChooseColor m) {
+        activeCharacter = getModel().getActiveCharacter();
         if(filter()) {
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR9.getDesc())){
                 getModel().setBannedColor(m.getColor());
@@ -194,6 +197,7 @@ public class ExpertController extends Controller {
      */
     @Override
     public void visit(ChooseTwoColors m) {
+        activeCharacter = getModel().getActiveCharacter();
         if(filter()) {
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR10.getDesc())) {
                 if (numSwitchMoves < 2) {
@@ -232,7 +236,7 @@ public class ExpertController extends Controller {
     }
 
     /**
-     * Checks if a Character is active
+     * Checks if any Character is active
      * @return true if there's an Active Character
      */
     private boolean filter(){
@@ -264,69 +268,58 @@ public class ExpertController extends Controller {
             case REPLACE_CHARACTER -> {
                 int indexChar = (int) evt.getOldValue();
                 Character modelChar = (Character) evt.getNewValue();
-                VirtualCharacter virtualChar = new VirtualCharacter(modelChar);
-                virtualView.setVirtualCharacters(indexChar, virtualChar);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new ReplaceCharacter(virtualChar, indexChar));
+                VirtualCharacter vc;
+                if(modelChar instanceof CharacterWithNoEntry cha){
+                    vc = new VirtualCharacterWithNoEntry(cha);
                 }
+                else if(modelChar instanceof CharacterWithStudent cha)
+                    vc = new VirtualCharacterWithStudents(cha);
+                else
+                    vc = new VirtualCharacter(modelChar);
+                virtualView.setVirtualCharacters(indexChar, vc);
+                sendChar(indexChar);
             }
             case REPLACE_CHARACTER_S -> {
                 int indexCharacter = (int) evt.getOldValue();
                 VirtualCharacterWithStudents character = (VirtualCharacterWithStudents) evt.getNewValue();
                 virtualView.setVirtualCharacters(indexCharacter, character);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new ReplaceCharacterStudents(character, indexCharacter));
-                }
+                lobby.sendMessageToAll(new ReplaceCharacterStudents(character, indexCharacter));
             }
             case REPLACE_CHARACTER_NE -> {
                 int indexC = (int) evt.getOldValue();
                 VirtualCharacterWithNoEntry VirtualC = (VirtualCharacterWithNoEntry) evt.getNewValue();
                 virtualView.setVirtualCharacters(indexC, VirtualC);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(VirtualC, indexC));
-                }
+                lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(VirtualC, indexC));
             }
             case CREATE_CHARACTERS -> {
                 ArrayList<VirtualCharacter> virtualCharacters = (ArrayList<VirtualCharacter>) evt.getNewValue();
                 virtualView.setVirtualCharacters(virtualCharacters);
-                if(gameStarted) {
-                    sendFullView();
-                }
+                sendFullView();
             }
             case BOARD_COINS -> {
                 int coins = (int) evt.getNewValue();
                 virtualView.setVirtualCoins(coins);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateCoins(coins));
-                }
+                lobby.sendMessageToAll(new UpdateCoins(coins));
             }
             case MN_POS -> {
                 int pos = (int) evt.getNewValue();
                 virtualView.setMnPos(pos);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateMN(pos));
-                }
+                lobby.sendMessageToAll(new UpdateMN(pos));
             }
             case CREATE_WORLD -> {
                 ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
                 virtualView.setVirtualWorld(virtualWorld);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
-                }
+                lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
             }
             case ACTIVE_CHARACTER -> {
                 int activeVirtualCharacter = (int) evt.getNewValue();
                 virtualView.getVirtualCharacters().get(activeVirtualCharacter).setActive(true);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualCharacter, true));
-                }
+                lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualCharacter, true));
             }
             case NO_ACTIVE_CHARACTER -> {
                 int activeVirtualChar = (int) evt.getNewValue();
                 virtualView.getVirtualCharacters().get(activeVirtualChar).setActive(false);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualChar, false));
-                }
+                lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualChar, false));
             }
         }
     }
@@ -338,14 +331,18 @@ public class ExpertController extends Controller {
     public void sendFullView(){
         super.sendFullView();
         ArrayList<VirtualCharacter> virtualCharacters = virtualView.getVirtualCharacters();
-        virtualCharacters.forEach(c->{
-            if(c instanceof VirtualCharacterWithStudents cha)
-                lobby.sendMessageToAll(new ReplaceCharacterStudents(cha, virtualCharacters.indexOf(cha)));
-            else if(c instanceof VirtualCharacterWithNoEntry cha)
-                lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(cha, virtualCharacters.indexOf(cha)));
-            else
-                lobby.sendMessageToAll(new ReplaceCharacter(c, virtualCharacters.indexOf(c)));
-        });
+        virtualCharacters.forEach(c-> sendChar(virtualCharacters.indexOf(c)));
+    }
+
+    private void sendChar(int index){
+        ArrayList<VirtualCharacter> virtualCharacters = virtualView.getVirtualCharacters();
+        VirtualCharacter c = virtualCharacters.get(index);
+        if(c instanceof VirtualCharacterWithStudents cha)
+            lobby.sendMessageToAll(new ReplaceCharacterStudents(cha, virtualCharacters.indexOf(cha)));
+        else if(c instanceof VirtualCharacterWithNoEntry cha)
+            lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(cha, virtualCharacters.indexOf(cha)));
+        else
+            lobby.sendMessageToAll(new ReplaceCharacter(c, virtualCharacters.indexOf(c)));
     }
 }
 

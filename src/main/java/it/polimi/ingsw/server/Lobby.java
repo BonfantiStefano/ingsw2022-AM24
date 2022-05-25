@@ -82,7 +82,6 @@ public class Lobby {
         }
     }
 
-    //TODO introdurre la sincronizzazione per gestire i casi in cui più player vogliono aggiungersi contemporaneamente, prima testare
     /**
      * Method AddPlayer verify the correctness of the Join's parameters and adds a player to the lobby.
      * @param join Join - the message where all the parameters are contained.
@@ -192,6 +191,7 @@ public class Lobby {
             //dobbiamo comunicarlo anche al controller che la partita è finita?
         } else {
             controller.handleMessage(new Disconnect(), mapIdNickname.get(clientId));
+            sendMessageToAll(new Information(mapIdNickname.get(clientId) + " disconnected"));
             if(clientsId.size() - disconnectedClientsId.size() == 1 && gameStatus == GameStatus.PLAYING) {
                 gameStatus = GameStatus.PAUSE;
                 startTimer();

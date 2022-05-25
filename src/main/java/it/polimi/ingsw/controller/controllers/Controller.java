@@ -126,9 +126,9 @@ public class Controller implements PropertyChangeListener {
                 //all players have connected
                 turnController.setGameStarted(true);
                 gameStarted = true;
+                sendFullView();
                 lobby.sendMessageToAll(new Information("Game Started!"));
             }
-            sendFullView();
         }
         //if the Player had disconnected update his status as connected
         else if(!availableNickname && !model.getPlayerByNickname(messageSender).isConnected()) {
@@ -408,39 +408,29 @@ public class Controller implements PropertyChangeListener {
                 Player modelPlayer = (Player) evt.getNewValue();
                 VirtualPlayer virtualPlayer = new VirtualPlayer(modelPlayer);
                 virtualView.addVirtualPlayer(virtualPlayer);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new AddPlayer(virtualPlayer));
-                }
+                lobby.sendMessageToAll(new AddPlayer(virtualPlayer));
             }
             case REPLACE_ISLAND -> {
                 int indexIsland = (int) evt.getOldValue();
                 VirtualIsland island = (VirtualIsland) evt.getNewValue();
                 virtualView.setVirtualWorld(indexIsland, island);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateIsland(island, indexIsland));
-                }
+                lobby.sendMessageToAll(new UpdateIsland(island, indexIsland));
             }
             case CREATE_WORLD -> {
                 ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
                 virtualView.setVirtualWorld(virtualWorld);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
-                }
+                lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
             }
             case REPLACE_PLAYER -> {
                 int indexPlayer = (int) evt.getOldValue();
                 VirtualPlayer player = (VirtualPlayer) evt.getNewValue();
                 virtualView.setVirtualPlayers(indexPlayer, player);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdatePlayer(player, indexPlayer));
-                }
+                lobby.sendMessageToAll(new UpdatePlayer(player, indexPlayer));
             }
             case CREATE_CLOUDS -> {
                 ArrayList<VirtualCloud> virtualClouds = (ArrayList<VirtualCloud>) evt.getNewValue();
                 virtualView.setVirtualClouds(virtualClouds);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new CreateClouds(virtualClouds));
-                }
+                lobby.sendMessageToAll(new CreateClouds(virtualClouds));
             }
             case CREATE_PLAYERS -> {
                 ArrayList<VirtualPlayer> virtualPlayers = (ArrayList<VirtualPlayer>) evt.getNewValue();
@@ -450,9 +440,7 @@ public class Controller implements PropertyChangeListener {
                 int indexCloud = (int) evt.getOldValue();
                 VirtualCloud cloud = (VirtualCloud) evt.getNewValue();
                 virtualView.setVirtualClouds(indexCloud, cloud);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new ReplaceCloud(cloud, indexCloud));
-                }
+                lobby.sendMessageToAll(new ReplaceCloud(cloud, indexCloud));
             }
             case REPLACE_PROFS -> {
                 HashMap<ColorS, Player> modelProfs = (HashMap<ColorS, Player>) evt.getNewValue();
@@ -464,20 +452,14 @@ public class Controller implements PropertyChangeListener {
                         virtualProfs.put(c, null);
                 }
                 virtualView.setVirtualProfs(virtualProfs);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateProfs(virtualProfs));
-                }
+                lobby.sendMessageToAll(new UpdateProfs(virtualProfs));
             }
             case MN_POS -> {
                 int mnPos = (int) evt.getNewValue();
                 virtualView.setMnPos(mnPos);
-                if(gameStarted) {
-                    lobby.sendMessageToAll(new UpdateMN(mnPos));
-                }
+                lobby.sendMessageToAll(new UpdateMN(mnPos));
             }
-            default ->
-                    //in case an undefined event is thrown the whole view will be sent
-                    sendFullView();
+            case BOARD_COINS -> lobby.sendMessageToAll(new UpdateCoins((int) evt.getNewValue()));
         }
     }
 
