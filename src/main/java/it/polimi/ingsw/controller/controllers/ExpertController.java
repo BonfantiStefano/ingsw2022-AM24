@@ -238,10 +238,17 @@ public class ExpertController extends Controller {
             case REPLACE_CHARACTER -> {
                 int indexChar = (int) evt.getOldValue();
                 Character modelChar = (Character) evt.getNewValue();
-                VirtualCharacter virtualChar = new VirtualCharacter(modelChar);
-                virtualView.setVirtualCharacters(indexChar, virtualChar);
+                VirtualCharacter vc;
+                if(modelChar instanceof CharacterWithNoEntry cha){
+                    vc = new VirtualCharacterWithNoEntry(cha);
+                }
+                else if(modelChar instanceof CharacterWithStudent cha)
+                    vc = new VirtualCharacterWithStudents(cha);
+                else
+                    vc = new VirtualCharacter(modelChar);
+                virtualView.setVirtualCharacters(indexChar, vc);
                 if(gameStarted) {
-                    lobby.sendMessageToAll(new ReplaceCharacter(virtualChar, indexChar));
+                    sendChar(indexChar);
                 }
             }
             case REPLACE_CHARACTER_S -> {
@@ -309,14 +316,18 @@ public class ExpertController extends Controller {
     public void sendFullView(){
         super.sendFullView();
         ArrayList<VirtualCharacter> virtualCharacters = virtualView.getVirtualCharacters();
-        virtualCharacters.forEach(c->{
-            if(c instanceof VirtualCharacterWithStudents cha)
-                lobby.sendMessageToAll(new ReplaceCharacterStudents(cha, virtualCharacters.indexOf(cha)));
-            else if(c instanceof VirtualCharacterWithNoEntry cha)
-                lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(cha, virtualCharacters.indexOf(cha)));
-            else
-                lobby.sendMessageToAll(new ReplaceCharacter(c, virtualCharacters.indexOf(c)));
-        });
+        virtualCharacters.forEach(c-> sendChar(virtualCharacters.indexOf(c)));
+    }
+
+    private void sendChar(int index){
+        ArrayList<VirtualCharacter> virtualCharacters = virtualView.getVirtualCharacters();
+        VirtualCharacter c = virtualCharacters.get(index);
+        if(c instanceof VirtualCharacterWithStudents cha)
+            lobby.sendMessageToAll(new ReplaceCharacterStudents(cha, virtualCharacters.indexOf(cha)));
+        else if(c instanceof VirtualCharacterWithNoEntry cha)
+            lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(cha, virtualCharacters.indexOf(cha)));
+        else
+            lobby.sendMessageToAll(new ReplaceCharacter(c, virtualCharacters.indexOf(c)));
     }
 }
 
