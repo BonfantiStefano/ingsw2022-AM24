@@ -219,15 +219,6 @@ public class CLI implements Runnable, UserInterface {
                     }
                 }
             }
-            System.out.println(lastInfo);
-            if(lastInfo.equals("The lobby has been created") || lastInfo.equals("You have joined the game")
-                || lastInfo.contains("entered the lobby")) {
-                System.out.println("Waiting other players...");
-            }
-            if(client.getSizeQueue() == 0 && !lastError.isEmpty()){
-                System.out.println(lastError);
-                lastError="";
-            }
         }
     }
 
@@ -648,24 +639,6 @@ public class CLI implements Runnable, UserInterface {
         catch (IOException | InterruptedException e){
             Thread.currentThread().interrupt();
         }
-        //System.out.print("\033[H\033[2J");
-        //System.out.flush();
-        /*
-        public static void clearConsole() {
-        try {
-            final String os = System.getProperty("os.name");
-
-            if (os.contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                Runtime.getRuntime().exec("clear");
-            }
-            System.out.println("\n" + Color.YELLOW_LIGHT_BG + Color.GREY_DARK_FG + "Hint:" + Color.RESET + " type '" + Color.RESOURCE_STD + "help" + Color.RESET + "' for a list of commands you can do ;)" + "\n");
-        } catch (final Exception e) {
-            System.out.println("Warning: failed to clear console");
-        }
-    }
-         */
     }
 
     public void printLobbies(Welcome welcome) {
@@ -743,24 +716,33 @@ public class CLI implements Runnable, UserInterface {
     public void propertyChange(PropertyChangeEvent evt) {
         String eventName = evt.getPropertyName();
         switch (eventName) {
+            /*
+            Nella fase di planning viene rimandato il messaggio di chooseAssistant quindi non si vede mai l' errore, mentre nelle
+            altre fasi non viene rimandato il messaggio di quello da fare quindi funziona bene (quando c'è un errore non ristampo tutto
+            poichè è inutile) manca comunque da gestire il caso delle disconnessioni, forse sarebbe il caso che il controller rimandi a tutti
+            un messaggio per ricordare quello che si stava facendo
+             */
             case "INFORMATION" -> {
                 Information information = (Information) evt.getNewValue();
                 String text = information.getString();
                 lastInfo = text;
                 if(text.equals("Game Started!")) {
                     gameStarted = true;
-                    new Thread(this).start();
                 }
-                else if(text.equals("The lobby has been created")||text.equals("You have joined the game")) {
+                else if(text.equals("The lobby has been created")||text.equals("You have joined the game")
+                    || text.contains("Welcome back")) {
                     new Thread(this).start();
                     inLobby = true;
+                    if(text.contains("Welcome back")) {
+                        gameStarted = true;
+                    }
                 }
-                /*
-                if(client.getSizeQueue() == 0) {
-                    printView();
-                }
-                 */
                 printView();
+                System.out.println(lastInfo);
+                if(lastInfo.equals("The lobby has been created") || lastInfo.equals("You have joined the game")
+                        || lastInfo.contains("entered the lobby")) {
+                    System.out.println("Waiting other players...");
+                }
             }
             case "ERROR" -> {
                 Error err = (Error) evt.getNewValue();
@@ -774,6 +756,10 @@ public class CLI implements Runnable, UserInterface {
                     if(!firstTime && !inLobby) {
                         new Thread(this::getInfo).start();
                     }
+                }
+                if(!lastError.isEmpty()){
+                    System.out.println(lastError);
+                    lastError="";
                 }
             }
             case "WELCOME" -> {
@@ -790,6 +776,7 @@ public class CLI implements Runnable, UserInterface {
             default -> {
                 if (client.getSizeQueue() == 0) {
                     printView();
+                    System.out.println(lastInfo);
                 }
                 //printView();
             }

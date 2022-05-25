@@ -13,6 +13,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.beans.PropertyChangeEvent;
@@ -66,6 +67,7 @@ public class GUI extends Application implements UserInterface {
     private void run() {
         window.setWidth(747);
         window.setHeight(748);
+        window.getIcons().add(new Image(getClass().getResourceAsStream("/graphics/EriantysLogo.jpg")));
         window.setTitle("Eriantys!");
         window.setScene(currentScene);
         window.show();
