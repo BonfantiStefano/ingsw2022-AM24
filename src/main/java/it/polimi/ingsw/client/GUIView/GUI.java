@@ -92,6 +92,10 @@ public class GUI extends Application implements UserInterface {
             lobbyController.init();
             window.setResizable(false);
         }
+        else if(newSceneName.equals(CONTROLLERS.MAIN.toString())){
+            window.setX(50);
+            window.setY(10);
+        }
         CONTROLLERS c = Arrays.stream(CONTROLLERS.values()).filter(co->co.toString().equals(newSceneName)).findFirst().get();
         window.setWidth(c.getX());
         window.setHeight(c.getY());

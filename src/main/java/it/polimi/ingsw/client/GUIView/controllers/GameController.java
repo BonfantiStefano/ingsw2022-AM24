@@ -824,8 +824,9 @@ public class GameController implements GUIController{
             List<Node> coins = p.getChildren().stream().filter(c -> c.getId().equals("coin")).toList();
             p.getChildren().removeAll(coins);
         });
-
-        ArrayList<VirtualPlayer> vps = virtualView.getVirtualPlayers();
+        ArrayList<VirtualPlayer> vps = new ArrayList<>();
+        if(virtualView!=null)
+            vps = virtualView.getVirtualPlayers();
 
         for(VirtualPlayer vp:vps) {
             for (int i = 0; i <vp.getVirtualCoins();i++)
