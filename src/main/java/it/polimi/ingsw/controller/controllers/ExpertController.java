@@ -156,8 +156,8 @@ public class ExpertController extends Controller {
     }
 
     /* Method visit is used to apply the Character effect that allows to choose the color that adds no influence
-    during the influence calculation (in case the active Character is the ninth one) or the color of three students that
-    the must be removed from the player's hall (in case the active character is 12th one) or the color of the
+    during the influence calculation (in case the active Character is the 9th one) or the color of three students that
+    must be removed from the player's hall (in case the active character is 12th one) or the color of the
     student that must be moved from the card to the player's hall (in case the active Character is the 11th one)
     @param m - request which contains the chosen color
      */
