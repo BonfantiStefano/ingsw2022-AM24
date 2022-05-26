@@ -326,8 +326,11 @@ public class Controller implements PropertyChangeListener {
      */
     public void increaseHaveChosenAssistant() {
         haveChosenAssistant++;
-        if (haveChosenAssistant == numPlayers)
+        if (haveChosenAssistant == numPlayers){
             turnController.setChooseAssistantsCheck(true);
+            haveChosenAssistant=0;
+        }
+
     }
     /**
      * Handles all Requests regarding Characters
