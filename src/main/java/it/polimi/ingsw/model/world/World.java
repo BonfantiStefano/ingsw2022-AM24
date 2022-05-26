@@ -23,6 +23,7 @@ public class World implements HasStrategy<InfluenceStrategy> {
     private InfluenceStrategy influenceStrategy;
     private int posMN;
     private Optional<ColorS> bannedColorS;
+    Random random = new Random(System.currentTimeMillis());
     protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**
@@ -55,7 +56,6 @@ public class World implements HasStrategy<InfluenceStrategy> {
      * @param initialStudent ArrayList<Student> - a list of 10 Student, 2 of each color.
      */
     private void init(ArrayList<ColorS> initialStudent){
-        Random random = new Random();
         posMN = random.nextInt(12);
         int oppositePosMN;
         if (posMN >= 6) {

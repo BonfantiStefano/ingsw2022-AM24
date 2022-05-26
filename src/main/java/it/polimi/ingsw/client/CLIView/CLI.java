@@ -630,6 +630,7 @@ public class CLI implements Runnable, UserInterface {
         try{
             if(System.getProperty("os.name").contains("Windows")){
                 new ProcessBuilder("cmd.exe", "/c", "cls").inheritIO().start().waitFor();
+                new ProcessBuilder("cmd.exe", "/c", "chcp 65001").inheritIO().start().waitFor();
             }
             else {
                 Runtime.getRuntime().exec("clear");

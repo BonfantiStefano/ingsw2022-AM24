@@ -143,7 +143,7 @@ public class GUI extends Application implements UserInterface {
             case "INFORMATION":
                 String text = ((Information) evt.getNewValue()).getString();
                 switch (text) {
-                    case "Game Started!" -> {
+                    case "Game Continue", "Game Started!" -> {
                         started = true;
                         Platform.runLater(() -> {
                             try {
