@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.GUIView.controllers.HelpController">
+   <children>
+      <StackPane layoutX="14.0" layoutY="14.0" prefHeight="372.0" prefWidth="574.0">
+         <children>
+            <VBox fx:id="vBox" alignment="TOP_CENTER" prefHeight="183.0" prefWidth="574.0">
+               <children>
+                  <Label fx:id="studentMoveText" text="StudentMoveText" />
+                  <Label fx:id="moveMN" text="MoveMN" />
+                  <Label fx:id="chooseAssistant" text="chooseAssistant" />
+                  <Label fx:id="char1" text="Char1" />
+                  <Label fx:id="char2" text="Char2" />
+                  <Label fx:id="char3" text="Char3" />
+               </children>
+            </VBox>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

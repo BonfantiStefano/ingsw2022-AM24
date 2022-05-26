@@ -200,7 +200,7 @@ class ExpertGameBoardTest {
         gb.getActivePlayer().setCoins(15);
         Character c = gb.getCharacters().get(0);
         gb.playCharacter(c);
-        assertEquals(19+c.getCost(), gb.getAvailableCoins());
+        assertEquals(17+c.getCost(), gb.getAvailableCoins());
     }
 
     /**

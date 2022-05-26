@@ -56,6 +56,16 @@ public class ChooseAssistantController implements GUIController {
         //frame
         rect.setStroke((Color.WHITE));
         rect.setStrokeWidth(2);
+
+        rect.setOnMouseClicked(event->{
+            if(event.getClickCount()==2&&posCard!=-1){
+                int index = posCard + 1;
+                gui.sendMessageToServer(new ChooseAssistant(index));
+                Stage s = (Stage) rect.getScene().getWindow();
+                s.close();
+            }
+        });
+
         root.setCenter(rect);
 
         b1.setOnAction(
@@ -77,27 +87,7 @@ public class ChooseAssistantController implements GUIController {
                     }
                 }
         );
-
-        CheckBox cb = new CheckBox("Done");
-        cb.selectedProperty().addListener( event ->{
-            if(cb.isSelected() && posCard!= -1){
-                //send message to server
-                int index = posCard + 1;
-                gui.sendMessageToServer(new ChooseAssistant(index));
-                Stage s = (Stage) cb.getScene().getWindow();
-                s.close();
-            }
-            else{
-                cb.setSelected(false);
-            }
-        });
-
-        cb.setTranslateX(15);
-        cb.setTranslateY(-15);
-        root.setBottom(cb);
-
-        Scene scene = new Scene(root, 400, 400);
-        return scene;
+        return new Scene(root, 400, 400);
     }
 
 

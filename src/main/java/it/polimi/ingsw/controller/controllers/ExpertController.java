@@ -75,13 +75,15 @@ public class ExpertController extends Controller {
         m.accept(this);
     }
 
-    /* Method visit activates a Character card's ability. The Character can't be played at the beginning of
-    the player's turn before the Planning phase has been completed. it also can't be played if the player doesn't
-    have enough coins to activate the chosen card.
-    @param msg - Character which ability will be activated
+    /**
+     *   Method visit activates a Character card's ability. The Character can't be played at the beginning of
+     *   the player's turn before the Planning phase has been completed. it also can't be played if the player doesn't
+     *   have enough coins to activate the chosen card.
+     *   @param msg - Character which ability will be activated
      */
     @Override
     public void visit(PlayCharacter msg){
+        activeCharacter = getModel().getActiveCharacter();
         if(activeCharacter == null && !phase.equals(PHASE.PLANNING)){
             try {
                 Character c = getModel().getCharacters().stream().
@@ -97,8 +99,9 @@ public class ExpertController extends Controller {
         }
     }
 
-    /* Method visit is used to apply the Character effect that allows to move a student from the card to an island
-     @param m - request which contains the color of the student and the index of the island where he is moved
+    /**
+     * Method visit is used to apply the Character effect that allows to move a student from the card to an island
+     * @param m - request which contains the color of the student and the index of the island where he is moved
      */
     @Override
     public void visit(SpecialMoveIsland m){
@@ -118,10 +121,10 @@ public class ExpertController extends Controller {
         }
     }
 
-    /* Method visit is used to apply the Character effect that allows to calculate the influence on the chosen
-       island (in case the activate Character is the third one) or to place a No Entry tile on the chosen island
-       (in case the activate Character is the 5th one)
-       @param m - request which contains the index of the island
+    /** Method visit is used to apply the Character effect that allows to calculate the influence on the chosen
+     *  island (in case the activate Character is the third one) or to place a No Entry tile on the chosen island
+     *  (in case the activate Character is the 5th one)
+     *  @param m - request which contains the index of the island
      */
     @Override
     public void visit(ChooseIsland m) {
@@ -155,11 +158,11 @@ public class ExpertController extends Controller {
         }
     }
 
-    /* Method visit is used to apply the Character effect that allows to choose the color that adds no influence
-    during the influence calculation (in case the active Character is the 9th one) or the color of three students that
-    must be removed from the player's hall (in case the active character is 12th one) or the color of the
-    student that must be moved from the card to the player's hall (in case the active Character is the 11th one)
-    @param m - request which contains the chosen color
+    /** Method visit is used to apply the Character effect that allows to choose the color that adds no influence
+     * during the influence calculation (in case the active Character is the 9th one) or the color of three students that
+     * must be removed from the player's hall (in case the active character is 12th one) or the color of the
+     * student that must be moved from the card to the player's hall (in case the active Character is the 11th one)
+     * @param m - request which contains the chosen color
      */
     @Override
     public void visit(ChooseColor m) {
@@ -190,10 +193,10 @@ public class ExpertController extends Controller {
         }
     }
 
-    /*  Method visit is used to apply the Character effect that allows to switch up to 2 students between player's
-    hall and entrance (in case the active Character is the 10th one) or to switch up to 3 students between
-    player's entrance and the card (in case the active Character is the 7th one)
-    @param m - request which contains the two chosen colors
+    /**  Method visit is used to apply the Character effect that allows to switch up to 2 students between player's
+     * hall and entrance (in case the active Character is the 10th one) or to switch up to 3 students between
+     * player's entrance and the card (in case the active Character is the 7th one)
+     * @param m - request which contains the two chosen colors
      */
     @Override
     public void visit(ChooseTwoColors m) {
@@ -277,19 +280,22 @@ public class ExpertController extends Controller {
                 else
                     vc = new VirtualCharacter(modelChar);
                 virtualView.setVirtualCharacters(indexChar, vc);
-                sendChar(indexChar);
+                if(gameStarted)
+                    sendChar(indexChar);
             }
             case REPLACE_CHARACTER_S -> {
                 int indexCharacter = (int) evt.getOldValue();
                 VirtualCharacterWithStudents character = (VirtualCharacterWithStudents) evt.getNewValue();
                 virtualView.setVirtualCharacters(indexCharacter, character);
-                lobby.sendMessageToAll(new ReplaceCharacterStudents(character, indexCharacter));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new ReplaceCharacterStudents(character, indexCharacter));
             }
             case REPLACE_CHARACTER_NE -> {
                 int indexC = (int) evt.getOldValue();
                 VirtualCharacterWithNoEntry VirtualC = (VirtualCharacterWithNoEntry) evt.getNewValue();
                 virtualView.setVirtualCharacters(indexC, VirtualC);
-                lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(VirtualC, indexC));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new ReplaceCharacterWithNoEntry(VirtualC, indexC));
             }
             case CREATE_CHARACTERS -> {
                 ArrayList<VirtualCharacter> virtualCharacters = (ArrayList<VirtualCharacter>) evt.getNewValue();
@@ -299,33 +305,38 @@ public class ExpertController extends Controller {
             case BOARD_COINS -> {
                 int coins = (int) evt.getNewValue();
                 virtualView.setVirtualCoins(coins);
-                lobby.sendMessageToAll(new UpdateCoins(coins));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new UpdateCoins(coins));
             }
             case MN_POS -> {
                 int pos = (int) evt.getNewValue();
                 virtualView.setMnPos(pos);
-                lobby.sendMessageToAll(new UpdateMN(pos));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new UpdateMN(pos));
             }
             case CREATE_WORLD -> {
                 ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
                 virtualView.setVirtualWorld(virtualWorld);
-                lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
             }
             case ACTIVE_CHARACTER -> {
                 int activeVirtualCharacter = (int) evt.getNewValue();
                 virtualView.getVirtualCharacters().get(activeVirtualCharacter).setActive(true);
-                lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualCharacter, true));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualCharacter, true));
             }
             case NO_ACTIVE_CHARACTER -> {
                 int activeVirtualChar = (int) evt.getNewValue();
                 virtualView.getVirtualCharacters().get(activeVirtualChar).setActive(false);
-                lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualChar, false));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new UpdateActiveCharacter(activeVirtualChar, false));
             }
         }
     }
 
-    /* Method sendFullView is used to send to all the active clients the three Character cards
-       that can be played during the game.
+    /** Method sendFullView is used to send to all the active clients the three Character cards
+     *  that can be played during the game.
      */
     @Override
     public void sendFullView(){

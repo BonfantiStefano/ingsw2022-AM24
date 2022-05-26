@@ -4,10 +4,7 @@ import it.polimi.ingsw.client.GUIView.GUI;
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
-import it.polimi.ingsw.model.character.Character;
 import it.polimi.ingsw.model.character.CharacterDescription;
-import it.polimi.ingsw.model.character.CharacterWithNoEntry;
-import it.polimi.ingsw.model.character.CharacterWithStudent;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.server.virtualview.*;
 import javafx.application.Platform;
@@ -32,7 +29,6 @@ import javafx.stage.Stage;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 
 /**
  * GameController class handles the main Game scene
@@ -134,6 +130,8 @@ public class GameController implements GUIController{
         from = null;
         vBoxLastInfo.setAlignment(Pos.TOP_LEFT);
         vBoxLastInfo.setSpacing(10);
+        paneLastInfo.setContent(vBoxLastInfo);
+        paneLastInfo.vvalueProperty().bind(vBoxLastInfo.heightProperty());
         setNames();
         setCoins();
         boardCoins.setAlignment(Pos.CENTER);
@@ -240,9 +238,10 @@ public class GameController implements GUIController{
         for(int i=0;i<4;i++)
             for(int j=0;j<2;j++){
                 if(towerIndex<towers.size()) {
-                    Circle c = new Circle(10);
-                    c.setFill(new ImagePattern(towerImages.get(towers.get(0))));
-                    towersGrids.get(calcIndex(index)).add(c, j, i);
+                    ImageView img = new ImageView(towerImages.get(towers.get(0)));
+                    img.setFitHeight(25);
+                    img.setFitWidth(25);
+                    towersGrids.get(calcIndex(index)).add(img, j, i);
                     towerIndex++;
                 }
             }
@@ -440,7 +439,6 @@ public class GameController implements GUIController{
      * Draws all Characters in the Characters Pane
      */
     public void drawCharacters(){
-        //TODO show activeCharacter
         charBox.setSpacing(10);
 
         charBox.getChildren().clear();
@@ -470,8 +468,13 @@ public class GameController implements GUIController{
             p.setBackground(new Background(new BackgroundImage(img,BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                     new BackgroundSize(charBox.getPrefWidth(),(charBox.getPrefHeight()-charBox.getSpacing()*2)/3,false,false,true,false))));
 
-            if(vc.isActive())
-                p.setEffect(new DropShadow(10,Color.YELLOW));
+            if(vc.getCost()==charIndex.get().getCost()+1) {
+                p.setEffect(new DropShadow(100, Color.YELLOW));
+                ImageView coin = new ImageView(coinImage);
+                coin.setFitWidth(50);
+                coin.setFitHeight(50);
+                gp.getChildren().add(coin);
+            }
 
             if(vc instanceof VirtualCharacterWithStudents vcs){
                 int i=0,j=0;
@@ -489,7 +492,6 @@ public class GameController implements GUIController{
                         j++;
                     }
                 }
-                p.getChildren().add(gp);
             }
             else if(vc instanceof VirtualCharacterWithNoEntry vcn){
                 int j=0, w=0;
@@ -510,9 +512,7 @@ public class GameController implements GUIController{
                         w=0;
                     }else
                         w++;
-
                 }
-                p.getChildren().add(gp);
             }
             else if(vc.getDescription().equals(CharacterDescription.CHAR9.getDesc())
             ||vc.getDescription().equals(CharacterDescription.CHAR12.getDesc())){
@@ -520,8 +520,10 @@ public class GameController implements GUIController{
                 b.setText("Choose Color");
                 b.setOnAction(actionEvent -> chooseColor());
                 gp.getChildren().add(b);
-                p.getChildren().add(gp);
             }
+
+            if(!gp.getChildren().isEmpty())
+                p.getChildren().add(gp);
 
             p.setOnMouseClicked(mouseEvent -> {
                 if(mouseEvent.getClickCount()==2)
@@ -706,7 +708,8 @@ public class GameController implements GUIController{
      */
     private void clickOnStudent(MouseEvent e){
         Node student = (Node) e.getSource(), parent = getParent((Node) e.getSource());
-        if(from!=null&&(from.getId().contains("e1")&&parent.getId().contains("h1")||(from.getId().contains("h1")&&parent.getId().contains("e1")))){
+        if(from!=null&&((from.getId().contains("e1")&&parent.getId().contains("h1")||(from.getId().contains("h1")&&parent.getId().contains("e1")))||
+                ((from.getId().contains("e1")&&to.getId().contains("character"))||(from.getId().contains("character")&&to.getId().contains("e1"))))){
             gui.sendMessageToServer(new ChooseTwoColors(selected,ColorS.valueOf(student.getId())));
         }
         selected = ColorS.valueOf(student.getId());
@@ -788,6 +791,7 @@ public class GameController implements GUIController{
             }
             if(fromId.contains("character") && toId.contains("h1"))
                 gui.sendMessageToServer(new ChooseColor(selected));
+
         }
     }
 
@@ -798,8 +802,6 @@ public class GameController implements GUIController{
         l.setMaxWidth(213);
         l.setText("["+new SimpleDateFormat("HH.mm.ss").format(new Date())+"] " + text);
         vBoxLastInfo.getChildren().add(l);
-        paneLastInfo.setContent(vBoxLastInfo);
-        paneLastInfo.vvalueProperty().bind(vBoxLastInfo.heightProperty());
     }
 
     public void setLastError(String text){
@@ -842,6 +844,15 @@ public class GameController implements GUIController{
     public void setBoardCoins(){
         if(virtualView!=null)
             boardCoins.setText("You can still earn: "+virtualView.getVirtualCoins()+" coins");
+    }
+
+    public void showHelp(){
+        Stage window = new Stage();
+        HelpController controller = (HelpController) gui.getNameMapController().get(gui.getNameMapScene().get(CONTROLLERS.HELP_CONTROLLER.toString()));
+
+        controller.setGui(gui);
+        window.setScene(controller.getScene());
+        Platform.runLater(window::showAndWait);
     }
 
     @FXML

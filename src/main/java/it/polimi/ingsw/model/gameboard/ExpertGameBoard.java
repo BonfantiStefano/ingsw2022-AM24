@@ -174,8 +174,8 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         if(activePlayer.getCoins() >= characterToPlay.getCost()) {
             if(findChar(c)!= null) {
                 activePlayer.setCoins(-characterToPlay.getCost());
+                coins += characterToPlay.isAlreadyPlayed()? characterToPlay.getCost():(characterToPlay.getCost()-1);
                 setActiveCharacter(characterToPlay);
-                coins += characterToPlay.isAlreadyPlayed()? characterToPlay.getCost():characterToPlay.getCost()-1;
                 listener.firePropertyChange(String.valueOf(EVENT.BOARD_COINS), null, coins);
                 int indexActiveCharacter = characters.indexOf(activeCharacter);
                 listener.firePropertyChange(String.valueOf(EVENT.ACTIVE_CHARACTER), null, indexActiveCharacter);

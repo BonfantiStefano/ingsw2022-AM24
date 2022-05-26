@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.client.GUIView.controllers.*;
 import it.polimi.ingsw.client.UserInterface;
+import it.polimi.ingsw.client.request.Disconnect;
 import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Information;
 import it.polimi.ingsw.server.answer.Welcome;
@@ -94,11 +95,12 @@ public class GUI extends Application implements UserInterface {
         }
         else if(newSceneName.equals(CONTROLLERS.MAIN.toString())){
             window.setX(50);
-            window.setY(10);
+            window.setY(0);
         }
         CONTROLLERS c = Arrays.stream(CONTROLLERS.values()).filter(co->co.toString().equals(newSceneName)).findFirst().get();
         window.setWidth(c.getX());
         window.setHeight(c.getY());
+        window.setOnCloseRequest(windowEvent -> sendMessageToServer(new Disconnect()));
     }
 
     public void sendMessageToServer(Object string) {
@@ -180,6 +182,7 @@ public class GUI extends Application implements UserInterface {
             case "REPLACE_CHARACTER":
             case "REPLACE_CHARACTER_S":
             case "REPLACE_CHARACTER_NE":
+            case "ACTIVE_CHARACTER":
                 Platform.runLater(c::drawCharacters);
                 break;
             case "REPLACE_CLOUD":

@@ -198,7 +198,7 @@
     <VBox fx:id="charBox" layoutX="940.0" layoutY="39.0" prefHeight="520.0" prefWidth="110.0" stylesheets="@css/application.css" />
     <StackPane fx:id="last1" layoutX="870.0" layoutY="575.0" prefHeight="200.0" prefWidth="110.0" />
     <StackPane fx:id="last2" layoutX="1141.0" layoutY="522.0" prefHeight="200.0" prefWidth="110.0" rotate="-90.0" />
-    <Button layoutX="194.0" layoutY="724.0" mnemonicParsing="false" onAction="#showHand" text="Show Hand" />
+    <Button layoutX="223.0" layoutY="724.0" mnemonicParsing="false" onAction="#showHand" text="Show Hand" />
     <HBox fx:id="pInfo3" layoutX="214.0" layoutY="614.0" minHeight="20.0" minWidth="115.0" prefHeight="20.0" prefWidth="115.0" rotate="90.0">
         <Label fx:id="name3" />
     </HBox>
@@ -209,10 +209,11 @@
         <Label fx:id="name2" />
     </HBox>
     <Label fx:id="boardCoins" layoutX="427.0" layoutY="14.0" prefHeight="17.0" prefWidth="351.0" />
-    <Button layoutX="76.0" layoutY="725.0" mnemonicParsing="false" onAction="#disconnect" text="Disconnect" />
+    <Button layoutX="40.0" layoutY="724.0" mnemonicParsing="false" onAction="#disconnect" text="Disconnect" />
    <ScrollPane fx:id="paneLastInfo" layoutX="1096.0" layoutY="679.0" prefHeight="115.0" prefWidth="200.0">
       <content>
            <VBox fx:id="vBoxLastInfo" maxHeight="1.7976931348623157E308" maxWidth="185.0" prefWidth="195.0" stylesheets="@css/application.css" />
       </content>
    </ScrollPane>
+   <Button layoutX="144.0" layoutY="724.0" mnemonicParsing="false" onAction="#showHelp" text="Help" />
 </AnchorPane>

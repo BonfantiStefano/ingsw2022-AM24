@@ -408,29 +408,34 @@ public class Controller implements PropertyChangeListener {
                 Player modelPlayer = (Player) evt.getNewValue();
                 VirtualPlayer virtualPlayer = new VirtualPlayer(modelPlayer);
                 virtualView.addVirtualPlayer(virtualPlayer);
-                lobby.sendMessageToAll(new AddPlayer(virtualPlayer));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new AddPlayer(virtualPlayer));
             }
             case REPLACE_ISLAND -> {
                 int indexIsland = (int) evt.getOldValue();
                 VirtualIsland island = (VirtualIsland) evt.getNewValue();
                 virtualView.setVirtualWorld(indexIsland, island);
-                lobby.sendMessageToAll(new UpdateIsland(island, indexIsland));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new UpdateIsland(island, indexIsland));
             }
             case CREATE_WORLD -> {
                 ArrayList<VirtualIsland> virtualWorld = (ArrayList<VirtualIsland>) evt.getNewValue();
                 virtualView.setVirtualWorld(virtualWorld);
-                lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new UpdateWorld(virtualWorld));
             }
             case REPLACE_PLAYER -> {
                 int indexPlayer = (int) evt.getOldValue();
                 VirtualPlayer player = (VirtualPlayer) evt.getNewValue();
                 virtualView.setVirtualPlayers(indexPlayer, player);
-                lobby.sendMessageToAll(new UpdatePlayer(player, indexPlayer));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new UpdatePlayer(player, indexPlayer));
             }
             case CREATE_CLOUDS -> {
                 ArrayList<VirtualCloud> virtualClouds = (ArrayList<VirtualCloud>) evt.getNewValue();
                 virtualView.setVirtualClouds(virtualClouds);
-                lobby.sendMessageToAll(new CreateClouds(virtualClouds));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new CreateClouds(virtualClouds));
             }
             case CREATE_PLAYERS -> {
                 ArrayList<VirtualPlayer> virtualPlayers = (ArrayList<VirtualPlayer>) evt.getNewValue();
@@ -440,7 +445,8 @@ public class Controller implements PropertyChangeListener {
                 int indexCloud = (int) evt.getOldValue();
                 VirtualCloud cloud = (VirtualCloud) evt.getNewValue();
                 virtualView.setVirtualClouds(indexCloud, cloud);
-                lobby.sendMessageToAll(new ReplaceCloud(cloud, indexCloud));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new ReplaceCloud(cloud, indexCloud));
             }
             case REPLACE_PROFS -> {
                 HashMap<ColorS, Player> modelProfs = (HashMap<ColorS, Player>) evt.getNewValue();
@@ -452,14 +458,16 @@ public class Controller implements PropertyChangeListener {
                         virtualProfs.put(c, null);
                 }
                 virtualView.setVirtualProfs(virtualProfs);
-                lobby.sendMessageToAll(new UpdateProfs(virtualProfs));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new UpdateProfs(virtualProfs));
             }
             case MN_POS -> {
                 int mnPos = (int) evt.getNewValue();
                 virtualView.setMnPos(mnPos);
-                lobby.sendMessageToAll(new UpdateMN(mnPos));
+                if(gameStarted)
+                    lobby.sendMessageToAll(new UpdateMN(mnPos));
             }
-            case BOARD_COINS -> lobby.sendMessageToAll(new UpdateCoins((int) evt.getNewValue()));
+            case BOARD_COINS -> {if(gameStarted) lobby.sendMessageToAll(new UpdateCoins((int) evt.getNewValue()));}
         }
     }
 
