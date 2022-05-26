@@ -45,6 +45,7 @@ public class Controller implements PropertyChangeListener {
     protected String messageSender;
     protected boolean gameStarted;
     protected VirtualView virtualView;
+    ArrayList<Player> sortedPlayers = new ArrayList<>();
 
     public Controller(Lobby lobby, GameParams m){
         virtualView = new VirtualView();
@@ -205,7 +206,8 @@ public class Controller implements PropertyChangeListener {
 
         switch (phase) {
             case PLANNING -> {
-                ArrayList<Player> sortedPlayers = model.getSortedPlayers();
+                if(haveChosenAssistant==0)
+                    sortedPlayers = model.getSortedPlayers();
                 //in this phase the next Player in order must choose his assistant
                 //if he's connected send him a message
                 String name;
