@@ -543,7 +543,6 @@ public class ExpertControllerTest {
 
         assertEquals(1, view.getVirtualWorld().get(5).getTowers().size());
         assertEquals(view.getVirtualWorld().get(5).getTowerColor().get(), gameBoard.getPlayerByNickname("Leo").getColorTower());
-
     }
 
 
