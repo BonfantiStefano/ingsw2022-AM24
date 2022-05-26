@@ -8,7 +8,6 @@ import it.polimi.ingsw.model.Cloud;
 import it.polimi.ingsw.model.Model;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
-import it.polimi.ingsw.server.Server;
 import it.polimi.ingsw.server.answer.Error;
 import it.polimi.ingsw.server.answer.Information;
 
@@ -20,10 +19,10 @@ import java.util.Optional;
  * @author Bonfanti Stefano
  */
 public class ActionController {
-    private Model model;
-    private TurnController turnController; //maybe is better the interface
+    private final Model model;
+    private final TurnController turnController; //maybe is better the interface
     private int numMoveStudent;
-    private Lobby lobby; //maybe is better the interface
+    private final Lobby lobby; //maybe is better the interface
 
     /**
      * Constructor ActionController creates a new empty ActionController instance.
@@ -48,7 +47,7 @@ public class ActionController {
         try {
             model.entranceToHall(m.getColorS());
             numMoveStudent++;
-            if(numMoveStudent == 3) {
+            if(numMoveStudent == (model.getNumPlayers() + 1)) {
                 turnController.setMoveStudentsCheck(true);
                 numMoveStudent = 0;
             }
@@ -72,7 +71,7 @@ public class ActionController {
             try {
                 model.moveStudent(m.getColorS(), model.getActivePlayer().getMyBoard(), model.getIslandByIndex(m.getIndex()));
                 numMoveStudent++;
-                if(numMoveStudent == model.getNumPlayers()+1) {
+                if(numMoveStudent == (model.getNumPlayers()+1)) {
                     turnController.setMoveStudentsCheck(true);
                     numMoveStudent = 0;
                 }
