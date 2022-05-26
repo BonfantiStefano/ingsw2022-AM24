@@ -550,7 +550,6 @@ public class ExpertControllerTest {
     /**
      * Method test_Game checks the whole match
      */
-    /*
     @Test
     public void test_Game(){
         Lobby lobby = new Lobby();
@@ -603,8 +602,8 @@ public class ExpertControllerTest {
 
         //----------------Leo's turn----------------------------
 
-        //MOVE STUDENTS PHASE =>  move 3 red in hall
-        for (int i = 0; i < 3; i++){
+        //MOVE STUDENTS PHASE =>  move 4 red in hall
+        for (int i = 0; i < 4; i++){
             EntranceToHall messageHall = new EntranceToHall(ColorS.RED);
             expController.handleMessage(messageHall, "Leo");
         }
@@ -647,8 +646,8 @@ public class ExpertControllerTest {
 
 
         //----------------Lisa's turn------------------------------------------------
-        //MOVE STUDENTS PHASE =>  move 3 yellow in hall
-        for (int i = 0; i < 3; i++){
+        //MOVE STUDENTS PHASE =>  move 4 yellow in hall
+        for (int i = 0; i < 4; i++){
             EntranceToHall messageHall = new EntranceToHall(ColorS.YELLOW);
             expController.handleMessage(messageHall, "Lisa");
         }
@@ -690,8 +689,8 @@ public class ExpertControllerTest {
         assertEquals(9, view.getVirtualWorld().size());
 
         //--------Alice's turn---------------------
-        //MOVE STUDENTS PHASE =>  move 3 blue in hall
-        for (int i = 0; i < 3; i++){
+        //MOVE STUDENTS PHASE =>  move 4 blue in hall
+        for (int i = 0; i < 4; i++){
             EntranceToHall messageHall = new EntranceToHall(ColorS.BLUE);
             expController.handleMessage(messageHall, "Alice");
         }
@@ -728,8 +727,6 @@ public class ExpertControllerTest {
 
         assertEquals(PHASE.GAME_WON, expController.getPhase());
     }
-
-     */
 
 
     /** Method createCharacter for creating different Character cards used in the tests */
