@@ -89,7 +89,7 @@ public class Controller implements PropertyChangeListener {
      * @param msg a Client's Request
      */
     public void visit(ChooseAssistant msg){
-        if(phase.equals(PHASE.PLANNING) && model.getSortedPlayers().get(haveChosenAssistant).getNickname().equals(messageSender))
+        if(phase.equals(PHASE.PLANNING) && sortedPlayers.get(haveChosenAssistant).getNickname().equals(messageSender))
             try {
                 if(model.chooseAssistants(model.getPlayerByNickname(messageSender), msg.getIndex()))
                     increaseHaveChosenAssistant();
