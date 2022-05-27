@@ -273,6 +273,13 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
     }
 
     /**
+     * Method setActivePlayerNull sets Active Player null
+     */
+    public void setActivePlayerNull(){
+        this.activePlayer = null;
+    }
+
+    /**
      * Method getSizeList returns the size of lastAssistants' list
      * @return  int - the size of the list which contains the last Assistant cards
      */

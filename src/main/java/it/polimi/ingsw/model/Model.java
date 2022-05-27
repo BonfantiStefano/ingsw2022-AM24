@@ -62,4 +62,6 @@ public interface Model {
     void addListener(PropertyChangeListener controller);
 
     Cloud getCloudByIndex(int index);
+
+    public void setActivePlayerNull();
 }
