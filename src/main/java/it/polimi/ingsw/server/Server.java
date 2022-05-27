@@ -3,7 +3,7 @@ package it.polimi.ingsw.server;
 import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.server.answer.Answer;
 import it.polimi.ingsw.server.answer.Error;
-import it.polimi.ingsw.server.answer.Information;
+import it.polimi.ingsw.server.answer.InformationConnection;
 import it.polimi.ingsw.server.answer.Welcome;
 import it.polimi.ingsw.server.virtualview.VirtualLobby;
 
@@ -142,11 +142,15 @@ public class Server {
             Lobby lobby = new Lobby(gameParams, mapIdSocket.get(clientId), clientId);
             lobbies.add(lobby);
             mapIdLobby.put(clientId, lobby);
-            sendMessage(clientId, new Information("The lobby has been created"));
+            sendMessage(clientId, new InformationConnection("The lobby has been created"));
             sendMessageToAll(getLobbies());
         }
     }
 
+    /**
+     * Method sendMessageToAll sends a message to every client that is not in a lobby.
+     * @param lobbies Answer - the message that has to be sent.
+     */
     private void sendMessageToAll(Answer lobbies) {
         for(Integer clientId : mapIdSocket.keySet()) {
             if(!mapIdLobby.containsKey(clientId)) {

@@ -11,7 +11,6 @@ import it.polimi.ingsw.server.answer.Error;
 import java.io.*;
 import java.net.Socket;
 
-//Not final, work in progress
 /**
  * Class SocketClientHandler manages a single Client connected to the server.
  *
@@ -42,7 +41,6 @@ public class SocketClientHandler implements Runnable{
         this.pingController = new Thread(() -> {
             while (active){
                 try{
-                    //Forse si può sostituire con schedule, provare a cercare se funziona e nel caso aggiornare/chiedere a i prof.
                     Thread.sleep(PING_PERIOD);
                     sendMessage(new Ping());
                 }catch (InterruptedException ignored){

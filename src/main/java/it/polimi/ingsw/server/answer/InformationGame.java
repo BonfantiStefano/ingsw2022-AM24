@@ -2,10 +2,10 @@ package it.polimi.ingsw.server.answer;
 
 import it.polimi.ingsw.client.Client;
 
-public class Information implements AnswerWithString{
+public class InformationGame implements AnswerWithString{
     private String string;
 
-    public Information(String string) {
+    public InformationGame(String string) {
         this.string = string;
     }
 

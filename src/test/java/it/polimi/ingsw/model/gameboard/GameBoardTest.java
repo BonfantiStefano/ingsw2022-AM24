@@ -188,7 +188,7 @@ public class GameBoardTest {
         assertEquals(bob.getNumCards(), bobCards - 1);
         assertEquals(bob.getLastAssistant().getTurn(), 6);
         int lisaCards = lisa.getNumCards();
-        assertTrue(!gb.chooseAssistants(lisa, 6));
+        assertFalse(gb.chooseAssistants(lisa, 6));
         assertEquals(lisa.getNumCards(), lisaCards);
         assertTrue(gb.chooseAssistants(lisa, 1));
         assertEquals(lisa.getNumCards(), lisaCards - 1);

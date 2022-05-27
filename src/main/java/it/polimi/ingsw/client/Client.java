@@ -18,7 +18,6 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-//Not final, work in progress
 /**
  * Class Client manages the connection of a client with the server.
  *  *
@@ -156,8 +155,10 @@ public class Client{
                 return gson.fromJson(jsonString, Welcome.class);
             case "Error" :
                 return gson.fromJson(jsonString, Error.class);
-            case "Information" :
-                return gson.fromJson(jsonString, Information.class);
+            case "InformationGame" :
+                return gson.fromJson(jsonString, InformationGame.class);
+            case "InformationConnection" :
+                return gson.fromJson(jsonString, InformationConnection.class);
             case "Ping" :
                 sendMessage(toJson(new Pong()));
                 return null;
@@ -202,7 +203,6 @@ public class Client{
         }
     }
 
-    //Utile se vogliamo implementare un timer che ci dice che il server non è raggiungibile
     /**
      * Method startTimer starts the timer that checks if the server is still alive.
      */
@@ -251,87 +251,196 @@ public class Client{
         return gson.toJson(jsonElement);
     }
 
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u FullView - the messages containing all the parameters that the Client needs.
+     */
     public void visit(FullView u){
         virtualView = u.getVirtualView();
         userInterface.setVirtualView(u.getVirtualView());
         // Esempio di listener, da modificare sicuramente (ho aggiunto questo evento) chiedere come farlo
         listener.firePropertyChange(String.valueOf(EVENT.UPDATE_ALL), null, u.getVirtualView());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u AddPlayer - the messages containing all the parameters that the Client needs.
+     */
     public void visit(AddPlayer u){
         virtualView.addVirtualPlayer(u.getPlayer());
         listener.firePropertyChange(String.valueOf(EVENT.ADD_PLAYER), null, u.getPlayer());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u CreateCharacters - the messages containing all the parameters that the Client needs.
+     */
     public void visit(CreateCharacters u){
         virtualView.setVirtualCharacters(u.getCharacters());
         listener.firePropertyChange(String.valueOf(EVENT.CREATE_CHARACTERS), null, u.getCharacters());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u CreateClouds - the messages containing all the parameters that the Client needs.
+     */
     public void visit(CreateClouds u){
         virtualView.setVirtualClouds(u.getClouds());
         listener.firePropertyChange(String.valueOf(EVENT.CREATE_CLOUDS), null, u.getClouds());
 
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u ReplaceCharacter - the messages containing all the parameters that the Client needs.
+     */
     public void visit(ReplaceCharacter u){
         virtualView.setVirtualCharacters(u.getIndex(),u.getCharacter());
         listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CHARACTER), null, u.getCharacter());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u ReplaceCharacterStudents - the messages containing all the parameters that the Client needs.
+     */
     public void visit(ReplaceCharacterStudents u){
         virtualView.setVirtualCharacters(u.getIndex(),u.getVirtualCharacterWithStudents());
         listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CHARACTER_S), null, u.getVirtualCharacterWithStudents());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u ReplaceCharacterWithNoEntry - the messages containing all the parameters that the Client needs.
+     */
     public void visit(ReplaceCharacterWithNoEntry u){
         virtualView.setVirtualCharacters(u.getIndex(),u.getCharacterWithNoEntry());
         listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CHARACTER_NE), null, u.getCharacterWithNoEntry());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u ReplaceCloud - the messages containing all the parameters that the Client needs.
+     */
     public void visit(ReplaceCloud u){
         virtualView.setVirtualClouds(u.getIndex(),u.getCloud());
         listener.firePropertyChange(String.valueOf(EVENT.REPLACE_CLOUD), null, u.getCloud());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u UpdateCoins - the messages containing all the parameters that the Client needs.
+     */
     public void visit(UpdateCoins u){
         virtualView.setVirtualCoins(u.getCoins());
         listener.firePropertyChange(String.valueOf(EVENT.BOARD_COINS), null, u.getCoins());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u ReplaceCharacterWithNoEntry - the messages containing all the parameters that the Client needs.
+     */
     public void visit(UpdateIsland u){
         virtualView.setVirtualWorld(u.getIndex(),u.getIsland());
         listener.firePropertyChange(String.valueOf(EVENT.REPLACE_ISLAND), null, u.getIsland());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u UpdateWorld - the messages containing all the parameters that the Client needs.
+     */
     public void visit(UpdateWorld u){
         virtualView.setVirtualWorld(u.getIslands());
         listener.firePropertyChange(String.valueOf(EVENT.CREATE_WORLD), null, u.getIslands());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u UpdateMN - the messages containing all the parameters that the Client needs.
+     */
     public void visit(UpdateMN u){
         virtualView.setMnPos(u.getIndex());
         listener.firePropertyChange(String.valueOf(EVENT.CHANGE_MN_POS), null, u.getIndex());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u UpdatePlayer - the messages containing all the parameters that the Client needs.
+     */
     public void visit(UpdatePlayer u){
         virtualView.setVirtualPlayers(u.getIndex(),u.getPlayer());
         listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PLAYER), null, u.getIndex());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u UpdateProfs - the messages containing all the parameters that the Client needs.
+     */
     public void visit(UpdateProfs u){
         virtualView.setVirtualProfs(u.getProfs());
         listener.firePropertyChange(String.valueOf(EVENT.REPLACE_PROFS), null, u.getProfs());
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param u UpdateActiveCharacter - the messages containing all the parameters that the Client needs.
+     */
     public void visit(UpdateActiveCharacter u) {
         virtualView.getVirtualCharacters().get(u.getIndex()).setActive(u.isActive());
         listener.firePropertyChange(String.valueOf(EVENT.ACTIVE_CHARACTER), null, u);
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param error Error - the messages containing all the parameters that the Client needs.
+     */
     public void visit(Error error){
         listener.firePropertyChange("ERROR", null, error);
     }
-    public void visit(Information information){
-        listener.firePropertyChange("INFORMATION", null, information);
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param informationGame InformationGame - the messages containing all the parameters that the Client needs.
+     */
+    public void visit(InformationGame informationGame){
+        listener.firePropertyChange("INFORMATIONGAME", null, informationGame);
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param informationConnection InformationConnection - the messages containing all the parameters that the Client needs.
+     */
+    public void visit(InformationConnection informationConnection){
+        listener.firePropertyChange("INFORMATIONCONNECTION", null, informationConnection);
+    }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param notifyDisconnection NotifyDisconnection - the messages containing all the parameters that the Client needs.
+     */
     public void visit(NotifyDisconnection notifyDisconnection) {
         //in teoria non raggiungo mai questo ramo
         listener.firePropertyChange("NOTIFYDISCONNECTION", null, notifyDisconnection);
     }
+
+    /**
+     * Method visit contains all the action that the Client has to do when receive a message from the Server.
+     * @param welcome Welcome - the messages containing all the parameters that the Client needs.
+     */
     public void visit(Welcome welcome) {
         listener.firePropertyChange("WELCOME", null, welcome);
     }
 
+    /**
+     * Method getSizeQueue returns the size of the incoming messages' queue.
+     * @return int - the size of the queue.
+     */
     public int getSizeQueue() {
         return messagesQueue.size();
     }
 
+    /**
+     * Method messageParser is used to take the messages from the queue and to handle it.
+     */
     public void messageParser() {
         try {
             while (active) {
@@ -351,6 +460,10 @@ public class Client{
         a.accept(this);
     }
 
+    /**
+     * Method addListener adds a PropertyChangeListener to the Client.
+     * @param userInterface UserInterface - the class that will receive the notification by the Client.
+     */
     public void addListener(PropertyChangeListener userInterface){
         listener.addPropertyChangeListener(userInterface);
     }
