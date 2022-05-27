@@ -120,12 +120,8 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         if(lastAssistants.isEmpty()){
             result = true;
         }
-        else{
-            for (Assistant a : lastAssistants){
-                if ( a.compareTo(assistant) != 0)
-                    result = true;
-            }
-        }
+        if(!assistants.contains(assistant.getTurn()))
+            result = true;
 
         if(result){
             lastAssistants.add(assistant);

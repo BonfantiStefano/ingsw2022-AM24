@@ -73,15 +73,6 @@ public class GameBoardTest {
         assertEquals("Alice", sortedPlayers.get(1).getNickname());
         assertEquals("Lisa", sortedPlayers.get(2).getNickname());
         assertEquals(gb.numPlayers, sortedPlayers.size());
-
-        gb.chooseAssistants(gb.getPlayers().get(0), 1);
-        gb.chooseAssistants(gb.getPlayers().get(1), 2);
-        gb.chooseAssistants(gb.getPlayers().get(2), 1);
-        sortedPlayers = gb.getSortedPlayers();
-        assertEquals("Lisa", sortedPlayers.get(0).getNickname());
-        assertEquals("Bob", sortedPlayers.get(1).getNickname());
-        assertEquals("Alice", sortedPlayers.get(2).getNickname());
-        assertEquals(gb.numPlayers, sortedPlayers.size());
     }
 
     /**
@@ -548,4 +539,5 @@ public class GameBoardTest {
         assertEquals(1, gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE));
         assertEquals(sizeEntranceBefore - 1, gb.getActivePlayer().getMyBoard().getEntrance().size());
     }
+
 }
