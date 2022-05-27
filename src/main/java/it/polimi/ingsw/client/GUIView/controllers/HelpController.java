@@ -27,7 +27,7 @@ public class HelpController implements GUIController{
         for(VirtualCharacter vc:gui.getVirtualView().getVirtualCharacters()){
             charLabels.get(gui.getVirtualView().getVirtualCharacters().indexOf(vc)).setText(vc.getDescription());
         }
-        vBox.setSpacing(50);
+        vBox.setSpacing(20);
         vBox.getChildren().forEach(c->{
             if(c instanceof Label l) {
                 l.setWrapText(true);
