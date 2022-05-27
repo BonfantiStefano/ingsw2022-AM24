@@ -539,5 +539,4 @@ public class GameBoardTest {
         assertEquals(1, gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE));
         assertEquals(sizeEntranceBefore - 1, gb.getActivePlayer().getMyBoard().getEntrance().size());
     }
-
 }

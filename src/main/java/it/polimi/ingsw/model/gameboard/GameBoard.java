@@ -136,7 +136,6 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         for(Player p: players)
             if(p.getNumCards() == 0)
                 gameMustEnd = true;
-
         return result;
     }
 
