@@ -19,6 +19,12 @@ public class HelpController implements GUIController{
 
     public Scene getScene(){
         AnchorPane root = new AnchorPane();
+        vBox.getChildren().forEach(c->{
+            if(c instanceof Label l) {
+                l.setWrapText(true);
+                l.setMaxWidth(vBox.getMaxWidth());
+            }
+        });
         studentMoveText.setText("To move Students click on a Student to select it, then click on the destination (if you want to select two students" +
                 "be sure to click on both of them one after the other!)");
         moveMN.setText("To move MN select the pawn by clicking on it, then click on the Island where you want to move it");
@@ -28,13 +34,7 @@ public class HelpController implements GUIController{
             charLabels.get(gui.getVirtualView().getVirtualCharacters().indexOf(vc)).setText(vc.getDescription());
         }
         vBox.setSpacing(20);
-        vBox.getChildren().forEach(c->{
-            if(c instanceof Label l) {
-                l.setWrapText(true);
-                l.setMaxHeight(50);
-                l.setMaxWidth(vBox.getMaxWidth());
-            }
-        });
+
         root.getChildren().add(vBox);
         return new Scene(root);
     }

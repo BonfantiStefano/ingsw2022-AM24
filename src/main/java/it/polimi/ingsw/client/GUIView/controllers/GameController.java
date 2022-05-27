@@ -107,6 +107,8 @@ public class GameController implements GUIController{
 
         for (Pane p : boards) {
             p.getChildren().forEach(this::addTo);
+            p.setBackground(new Background(new BackgroundImage(new Image(getClass().getResourceAsStream("/graphics/Plancia_DEF.png")),BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                    new BackgroundSize(50,50,true,true,true,true))));
         }
 
         for (GridPane g : entrancesGrids) {
@@ -844,7 +846,7 @@ public class GameController implements GUIController{
             boardCoins.setText("You can still earn: "+virtualView.getVirtualCoins()+" coins");
     }
 
-    public void showHelp(){
+    public void showHelp() {
         Stage window = new Stage();
         HelpController controller = (HelpController) gui.getNameMapController().get(gui.getNameMapScene().get(CONTROLLERS.HELP_CONTROLLER.toString()));
 

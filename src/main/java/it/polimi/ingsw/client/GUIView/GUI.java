@@ -7,6 +7,8 @@ import it.polimi.ingsw.client.GUIView.controllers.*;
 import it.polimi.ingsw.client.UserInterface;
 import it.polimi.ingsw.client.request.Disconnect;
 import it.polimi.ingsw.server.answer.Error;
+import it.polimi.ingsw.server.answer.InformationConnection;
+import it.polimi.ingsw.server.answer.InformationGame;
 import it.polimi.ingsw.server.answer.Welcome;
 import it.polimi.ingsw.server.virtualview.VirtualView;
 import javafx.application.Application;
@@ -140,21 +142,9 @@ public class GUI extends Application implements UserInterface {
 
                 Platform.runLater(lb::init);
                 break;
-            /*
-            case "INFORMATION":
-                text = ((Information) evt.getNewValue()).getString();
+            case "INFORMATIONGAME":
+                text = ((InformationGame) evt.getNewValue()).getString();
                 switch (text) {
-                    case "Game Continue", "Game Started!" -> {
-                        started = true;
-                        Platform.runLater(() -> {
-                            try {
-                                changeScene(CONTROLLERS.MAIN.toString());
-                                c.init();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        });
-                    }
                     case "You Lose" -> Platform.runLater(() -> {
                         try {
                             changeScene(CONTROLLERS.YOULOSE.toString());
@@ -169,19 +159,38 @@ public class GUI extends Application implements UserInterface {
                             e.printStackTrace();
                         }
                     });
-                    case "The lobby has been created", "You have joined the game" -> Platform.runLater(() -> lb.setLastInfo(text));
+                    default -> Platform.runLater(()->c.setLastInfo(text));
                 }
-                Platform.runLater(()->c.setLastInfo(text));
                 break;
-
-             */
+            case "INFORMATIONCONNECTION":
+                text = ((InformationConnection) evt.getNewValue()).getString();
+                switch (text) {
+                    case "Game continue", "Game Started!" -> Platform.runLater(() -> {
+                        try {
+                            changeScene(CONTROLLERS.MAIN.toString());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        c.setLastInfo(text);
+                    });
+                    case "You are the only connected player, you won!" -> Platform.runLater(() -> {
+                        try {
+                            changeScene(CONTROLLERS.YOUWIN.toString());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    case "The lobby has been created", "You have joined the game" -> Platform.runLater(() -> lb.setLastInfo(text));
+                    default -> Platform.runLater(()->c.setLastInfo(text));
+                }
+                break;
             case "UPDATE_ALL":
                 Platform.runLater(()->{
                     c.setVirtualView((VirtualView) evt.getNewValue());
                     c.init();
                     c.setCoins();
                 });
-            break;
+                break;
             case "REPLACE_CHARACTER":
             case "REPLACE_CHARACTER_S":
             case "REPLACE_CHARACTER_NE":
@@ -214,6 +223,7 @@ public class GUI extends Application implements UserInterface {
             case "ERROR":
                 text = ((Error)evt.getNewValue()).getString();
                 Platform.runLater(()->c.setLastError(text));
+                break;
             default:
                 break;
         }

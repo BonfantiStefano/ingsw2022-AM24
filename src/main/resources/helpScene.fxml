@@ -10,18 +10,12 @@
       <StackPane layoutX="14.0" layoutY="14.0" prefHeight="372.0" prefWidth="574.0">
          <children>
             <VBox fx:id="vBox" alignment="TOP_CENTER" prefHeight="183.0" prefWidth="574.0">
-               <Label fx:id="studentMoveText" prefHeight="54.0" prefWidth="400.0" text="StudentMoveText"
-                      textAlignment="CENTER" wrapText="true"/>
-               <Label fx:id="moveMN" prefHeight="17.0" prefWidth="400.0" text="MoveMN" textAlignment="CENTER"
-                      wrapText="true"/>
-               <Label fx:id="chooseAssistant" prefHeight="42.0" prefWidth="400.0" text="chooseAssistant"
-                      textAlignment="CENTER" wrapText="true"/>
-               <Label prefHeight="51.0" prefWidth="400.0" text="Char1" textAlignment="CENTER"
-                      wrapText="true"/>
-               <Label prefHeight="48.0" prefWidth="400.0" text="Char2" textAlignment="CENTER"
-                      wrapText="true"/>
-               <Label prefHeight="49.0" prefWidth="400.0" text="Char3" textAlignment="CENTER"
-                      wrapText="true"/>
+               <Label fx:id="studentMoveText" alignment="CENTER" prefHeight="54.0" prefWidth="400.0" text="StudentMoveText" textAlignment="CENTER" wrapText="true" />
+               <Label fx:id="moveMN" alignment="CENTER" prefHeight="50.0" prefWidth="400.0" text="MoveMN" textAlignment="CENTER" wrapText="true" />
+               <Label fx:id="chooseAssistant" alignment="CENTER" prefHeight="50.0" prefWidth="400.0" text="chooseAssistant" textAlignment="CENTER" wrapText="true" />
+               <Label fx:id="char1" alignment="CENTER" prefHeight="50.0" prefWidth="400.0" text="Char1" textAlignment="CENTER" wrapText="true" />
+               <Label fx:id="char2" alignment="CENTER" prefHeight="50.0" prefWidth="400.0" text="Char2" textAlignment="CENTER" wrapText="true" />
+               <Label fx:id="char3" alignment="CENTER" prefHeight="50.0" prefWidth="400.0" text="Char3" textAlignment="CENTER" wrapText="true" />
             </VBox>
          </children>
       </StackPane>

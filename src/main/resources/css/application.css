@@ -10,7 +10,7 @@
     -fx-border-color: red;
 }
 .pane {
-    -fx-background-image: url('../graphics/Plancia.png');
+    -fx-background-image: url('../graphics/Plancia_DEF.png');
     -fx-background-size: contain;
 }
 .border{
