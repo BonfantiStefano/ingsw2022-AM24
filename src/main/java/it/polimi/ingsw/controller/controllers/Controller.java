@@ -46,6 +46,8 @@ public class Controller implements PropertyChangeListener {
     protected boolean gameStarted;
     protected VirtualView virtualView;
     ArrayList<Player> sortedPlayers = new ArrayList<>();
+    private boolean roundResetted;
+
 
     public Controller(Lobby lobby, GameParams m){
         virtualView = new VirtualView();
@@ -55,6 +57,7 @@ public class Controller implements PropertyChangeListener {
         turnController = new TurnController();
         actionController= new ActionController(model, lobby, turnController);
         gameStarted = false;
+        roundResetted = false;
     }
 
 
@@ -216,12 +219,17 @@ public class Controller implements PropertyChangeListener {
                     lobby.sendMessage(name, new Information("Choose your Assistant!"));
                     lobby.sendMessageToOthers(name, new Information(name+" has to choose an Assistant"));
                 }
-                else
+                else{
                     increaseHaveChosenAssistant();
+                }
             }
             case MOVE_STUDENTS -> {
                 //this phase is the first in a turn so the controller sets the next ActivePlayer
                 //and asks him to move Students
+                if(roundResetted){
+                    model.setActivePlayerNull();
+                    roundResetted = false;
+                }
                 model.nextPlayer();
                 //if he's connected send him a message
                 if (model.getActivePlayer().isConnected()) {
@@ -272,6 +280,8 @@ public class Controller implements PropertyChangeListener {
                     model.resetRound();
                     havePlayed = 0;
                     haveChosenAssistant = 0;
+                    model.nextPlayer();
+                    roundResetted = true;
                 }
                 nextPhase();
             }

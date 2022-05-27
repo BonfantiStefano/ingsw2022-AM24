@@ -25,12 +25,10 @@ public class ChooseAssistantController implements GUIController {
 
         BorderPane root = new BorderPane();
         view = gui.getVirtualView();
-        //TODO activePlayer
         int numCards = view.getVirtualPlayers().get(player).getVirtualHand().numCards();
 
         ArrayList<Image> assistantImages = new ArrayList<>();
         for(int i = 0; i < numCards; i++){
-            //TODO activePlayer
             int temp = view.getVirtualPlayers().get(player).getVirtualHand().getCards().get(i).getTurn();
             Image imageA = new Image(getClass().getResourceAsStream("/graphics/Assistants/Animali_1_"+temp+"@3x.png"));
             assistantImages.add(imageA);
@@ -63,6 +61,7 @@ public class ChooseAssistantController implements GUIController {
                 gui.sendMessageToServer(new ChooseAssistant(index));
                 Stage s = (Stage) rect.getScene().getWindow();
                 s.close();
+                posCard = -1;
             }
         });
 

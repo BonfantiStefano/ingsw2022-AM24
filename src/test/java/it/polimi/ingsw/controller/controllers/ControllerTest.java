@@ -277,7 +277,7 @@ class ControllerTest {
         assertEquals((virtualPos + 1) % view.getVirtualWorld().size(), newPos);
         assertEquals("Leo", gameBoard.getProfs().get(ColorS.RED).getNickname());
         assertEquals("Leo", view.getVirtualProfs().get(ColorS.RED).getNickname());
-        assertEquals(ColorT.BLACK, gameBoard.getWorld().getIslandByIndex(newPos).getTowerColor().get());
+        assertEquals(ColorT.BLACK, gameBoard.getWorld().getIslandByIndex(newPos).getTowerColor(). get());
 
         //--------------CHOOSE_CLOUD PHASE-----------------------
         int sizeEntranceOld = virtualLeo.getVirtualBoard().getEntrance().size();
@@ -323,5 +323,378 @@ class ControllerTest {
         assertEquals(numIslandsBefore - 1, numIslandsAfter);
         assertEquals(2, gameBoard.getWorld().getIslandByIndex(pos_MN).getNumSubIsland());
         assertEquals(2, view.getVirtualWorld().get(pos_MN).getNumSubIsland());
+    }
+
+    /**
+     * Method testGameOver checks if the game ends at the end of the round when the players have no more
+     * Assistant cards
+     */
+    @Test
+    public void testGameOver(){
+        lobby = new Lobby();
+        controller = new Controller(lobby, new GameParams(2, false, "A", Mage.MAGE1, ColorT.BLACK));
+        Join join = new Join("B", Mage.MAGE2, ColorT.WHITE, 1);
+        controller.handleMessage(join, "B");
+
+        GameBoard gameBoard = (GameBoard) controller.getModel();
+
+        controller.handleMessage(new ChooseAssistant(10), "A");
+        controller.handleMessage(new ChooseAssistant(9), "B");
+        assertEquals("B", gameBoard.getActivePlayer().getNickname());
+
+        gameBoard.getPlayerByNickname("A").getMyBoard().getEntrance().removeAll(gameBoard.getPlayerByNickname("A").getMyBoard().getEntrance());
+        gameBoard.getPlayerByNickname("B").getMyBoard().getEntrance().removeAll(gameBoard.getPlayerByNickname("B").getMyBoard().getEntrance());
+
+        for(int i = 0; i < 7; i++){
+            gameBoard.getPlayerByNickname("A").getMyBoard().add(ColorS.YELLOW);
+            gameBoard.getPlayerByNickname("B").getMyBoard().add(ColorS.GREEN);
+        }
+
+        //-------ROUND 1-------------
+        // turn B
+        for(int i = 0; i<3; i++){
+            MoveToIsland mi = new MoveToIsland(ColorS.GREEN, 1);
+            controller.handleMessage(mi, "B");
+        }
+
+        MoveMN mmn = new MoveMN(1);
+        controller.handleMessage(mmn, "B");
+
+        ChooseCloud mc = new ChooseCloud(0);
+        controller.handleMessage(mc, "B");
+
+        //turn A
+        for(int i = 0; i<3; i++){
+            MoveToIsland m1 = new MoveToIsland(ColorS.YELLOW, 2);
+            controller.handleMessage(m1, "A");
+        }
+
+        MoveMN m2 = new MoveMN(1);
+        controller.handleMessage(m2, "A");
+
+        ChooseCloud m3 = new ChooseCloud(1);
+        controller.handleMessage(m3, "A");
+
+
+        //---ROUND 2--------
+        controller.handleMessage(new ChooseAssistant(5), "B");
+        controller.handleMessage(new ChooseAssistant(1), "A");
+        assertEquals("A", gameBoard.getActivePlayer().getNickname());
+
+        for(int i = 0; i < 3; i++){
+            gameBoard.getPlayerByNickname("A").getMyBoard().add(ColorS.YELLOW);
+            gameBoard.getPlayerByNickname("B").getMyBoard().add(ColorS.GREEN);
+        }
+
+        // turn A
+        for(int i = 0; i<3; i++){
+            MoveToIsland misl = new MoveToIsland(ColorS.YELLOW, 3);
+            controller.handleMessage(misl, "A");
+        }
+
+        MoveMN mnat = new MoveMN(1);
+        controller.handleMessage(mnat, "A");
+
+        ChooseCloud mcl = new ChooseCloud(0);
+        controller.handleMessage(mcl, "A");
+
+        //turn B
+        for(int i = 0; i<3; i++){
+            MoveToIsland mis = new MoveToIsland(ColorS.GREEN, 4);
+            controller.handleMessage(mis, "B");
+        }
+
+        MoveMN mnatur = new MoveMN(1);
+        controller.handleMessage(mnatur, "B");
+
+        ChooseCloud mclo = new ChooseCloud(1);
+        controller.handleMessage(mclo, "B");
+
+        //--ROUND 3
+        //A assistant 3, B assistant 6
+        controller.handleMessage(new ChooseAssistant(2), "A");
+        controller.handleMessage(new ChooseAssistant(5), "B");
+        assertEquals("A", gameBoard.getActivePlayer().getNickname());
+
+        for(int i = 0; i < 3; i++){
+            gameBoard.getPlayerByNickname("A").getMyBoard().add(ColorS.YELLOW);
+            gameBoard.getPlayerByNickname("B").getMyBoard().add(ColorS.GREEN);
+        }
+
+        // turn A
+        for(int i = 0; i<3; i++){
+            MoveToIsland smsIsland = new MoveToIsland(ColorS.YELLOW, 5);
+            controller.handleMessage(smsIsland, "A");
+        }
+
+        MoveMN smsMN = new MoveMN(1);
+        controller.handleMessage(smsMN, "A");
+
+        ChooseCloud smsCloud = new ChooseCloud(0);
+        controller.handleMessage(smsCloud, "A");
+
+        //turn B
+        for(int i = 0; i<3; i++){
+            MoveToIsland smsIs = new MoveToIsland(ColorS.GREEN, 6);
+            controller.handleMessage(smsIs, "B");
+        }
+
+        MoveMN mov = new MoveMN(1);
+        controller.handleMessage(mov, "B");
+
+        ChooseCloud clo = new ChooseCloud(1);
+        controller.handleMessage(clo, "B");
+
+        System.out.println(gameBoard.getActivePlayer().getNickname());
+        System.out.println(controller.getPhase());
+
+        //--ROUND 4
+        //A assistant 2, B assistant 4
+        controller.handleMessage(new ChooseAssistant(1), "A");
+        controller.handleMessage(new ChooseAssistant(4), "B");
+        assertEquals("A", gameBoard.getActivePlayer().getNickname());
+
+        for(int i = 0; i < 3; i++){
+            gameBoard.getPlayerByNickname("A").getMyBoard().add(ColorS.YELLOW);
+            gameBoard.getPlayerByNickname("B").getMyBoard().add(ColorS.GREEN);
+        }
+
+        // turn A
+        for(int i = 0; i<3; i++){
+            MoveToIsland mess01 = new MoveToIsland(ColorS.YELLOW, 7);
+            controller.handleMessage(mess01, "A");
+        }
+
+        MoveMN mess02 = new MoveMN(1);
+        controller.handleMessage(mess02, "A");
+
+        ChooseCloud mess03 = new ChooseCloud(0);
+        controller.handleMessage(mess03, "A");
+
+        //turn B
+        for(int i = 0; i<3; i++){
+            MoveToIsland smsIs = new MoveToIsland(ColorS.GREEN, 8);
+            controller.handleMessage(smsIs, "B");
+        }
+
+        MoveMN mess04 = new MoveMN(1);
+        controller.handleMessage(mess04, "B");
+
+        ChooseCloud mess05 = new ChooseCloud(1);
+        controller.handleMessage(mess05, "B");
+
+        System.out.println(gameBoard.getActivePlayer().getNickname());
+        System.out.println(controller.getPhase());
+
+        //--ROUND 5
+        //A assistant 4, B assistant 1
+        controller.handleMessage(new ChooseAssistant(1), "A");
+        controller.handleMessage(new ChooseAssistant(1), "B");
+        assertEquals("B", gameBoard.getActivePlayer().getNickname());
+
+        for(int i = 0; i < 3; i++){
+            gameBoard.getPlayerByNickname("A").getMyBoard().add(ColorS.YELLOW);
+            gameBoard.getPlayerByNickname("B").getMyBoard().add(ColorS.GREEN);
+        }
+        //turn B
+        for(int i = 0; i<3; i++){
+            MoveToIsland m01 = new MoveToIsland(ColorS.GREEN, 9);
+            controller.handleMessage(m01, "B");
+        }
+
+        MoveMN m02 = new MoveMN(1);
+        controller.handleMessage(m02, "B");
+
+        ChooseCloud m03 = new ChooseCloud(1);
+        controller.handleMessage(m03, "B");
+
+        // turn A
+        for(int i = 0; i<3; i++){
+            MoveToIsland m04 = new MoveToIsland(ColorS.YELLOW, 10);
+            controller.handleMessage(m04, "A");
+        }
+
+        MoveMN m05 = new MoveMN(1);
+        controller.handleMessage(m05, "A");
+
+        ChooseCloud m06 = new ChooseCloud(0);
+        controller.handleMessage(m06, "A");
+
+        //---ROUND 6--------
+        //A assistant 9, B assistant 2
+        controller.handleMessage(new ChooseAssistant(1), "B");
+        controller.handleMessage(new ChooseAssistant(5), "A");
+        assertEquals("B", gameBoard.getActivePlayer().getNickname());
+
+        for(int i = 0; i < 3; i++){
+            gameBoard.getPlayerByNickname("A").getMyBoard().add(ColorS.YELLOW);
+            gameBoard.getPlayerByNickname("B").getMyBoard().add(ColorS.GREEN);
+        }
+
+        //turn B
+        for(int i = 0; i<3; i++){
+            MoveToIsland mm01 = new MoveToIsland(ColorS.GREEN, 1);
+            controller.handleMessage(mm01, "B");
+        }
+
+        MoveMN mm02 = new MoveMN(1);
+        controller.handleMessage(mm02, "B");
+
+        ChooseCloud mm03 = new ChooseCloud(1);
+        controller.handleMessage(mm03, "B");
+
+        // turn A
+        for(int i = 0; i<3; i++){
+            MoveToIsland mm04 = new MoveToIsland(ColorS.YELLOW, 2);
+            controller.handleMessage(mm04, "A");
+        }
+
+        MoveMN mm05 = new MoveMN(1);
+        controller.handleMessage(mm05, "A");
+
+        ChooseCloud mm06 = new ChooseCloud(0);
+        controller.handleMessage(mm06, "A");
+
+        System.out.println(gameBoard.getActivePlayer().getNickname());
+        System.out.println(controller.getPhase());
+
+        //---ROUND 7--------
+        //A assistant 8, B assistant 3
+        controller.handleMessage(new ChooseAssistant(1), "B");
+        controller.handleMessage(new ChooseAssistant(4), "A");
+        assertEquals("B", gameBoard.getActivePlayer().getNickname());
+
+        for(int i = 0; i < 3; i++){
+            gameBoard.getPlayerByNickname("A").getMyBoard().add(ColorS.YELLOW);
+            gameBoard.getPlayerByNickname("B").getMyBoard().add(ColorS.GREEN);
+        }
+
+        //turn B
+        for(int i = 0; i<3; i++){
+            MoveToIsland mm1 = new MoveToIsland(ColorS.GREEN, 3);
+            controller.handleMessage(mm1, "B");
+        }
+
+        MoveMN mm2 = new MoveMN(1);
+        controller.handleMessage(mm2, "B");
+
+        ChooseCloud mm3 = new ChooseCloud(1);
+        controller.handleMessage(mm3, "B");
+
+        // turn A
+        for(int i = 0; i<3; i++){
+            MoveToIsland mm4 = new MoveToIsland(ColorS.YELLOW, 4);
+            controller.handleMessage(mm4, "A");
+        }
+
+        MoveMN mm5 = new MoveMN(1);
+        controller.handleMessage(mm5, "A");
+
+        ChooseCloud mm6 = new ChooseCloud(0);
+        controller.handleMessage(mm6, "A");
+
+        //---ROUND 8--------
+        //A assistant 5, B assistant 7
+        controller.handleMessage(new ChooseAssistant(1), "B");
+        controller.handleMessage(new ChooseAssistant(1), "A");
+        assertEquals("A", gameBoard.getActivePlayer().getNickname());
+
+        for(int i = 0; i < 3; i++){
+            gameBoard.getPlayerByNickname("A").getMyBoard().add(ColorS.YELLOW);
+            gameBoard.getPlayerByNickname("B").getMyBoard().add(ColorS.GREEN);
+        }
+
+        // turn A
+        for(int i = 0; i<3; i++){
+            MoveToIsland m_4 = new MoveToIsland(ColorS.YELLOW, 5);
+            controller.handleMessage(m_4, "A");
+        }
+
+        MoveMN m_5 = new MoveMN(1);
+        controller.handleMessage(m_5, "A");
+
+        ChooseCloud m_6 = new ChooseCloud(0);
+        controller.handleMessage(m_6, "A");
+
+        //turn B
+        for(int i = 0; i<3; i++){
+            MoveToIsland m_1 = new MoveToIsland(ColorS.GREEN, 6);
+            controller.handleMessage(m_1, "B");
+        }
+
+        MoveMN m_2 = new MoveMN(1);
+        controller.handleMessage(m_2, "B");
+
+        ChooseCloud m_3 = new ChooseCloud(1);
+        controller.handleMessage(m_3, "B");
+
+        //---ROUND 9--------
+        //A assistant 6, B assistant 8
+        controller.handleMessage(new ChooseAssistant(1), "A");
+        controller.handleMessage(new ChooseAssistant(1), "B");
+        assertEquals("A", gameBoard.getActivePlayer().getNickname());
+
+        for(int i = 0; i < 3; i++){
+            gameBoard.getPlayerByNickname("A").getMyBoard().add(ColorS.YELLOW);
+            gameBoard.getPlayerByNickname("B").getMyBoard().add(ColorS.GREEN);
+        }
+
+        // turn A
+        for(int i = 0; i<3; i++){
+            MoveToIsland message1 = new MoveToIsland(ColorS.YELLOW, 7);
+            controller.handleMessage(message1, "A");
+        }
+
+        MoveMN message2 = new MoveMN(1);
+        controller.handleMessage(message2, "A");
+
+        ChooseCloud message3 = new ChooseCloud(0);
+        controller.handleMessage(message3, "A");
+
+        //turn B
+        for(int i = 0; i<3; i++){
+            MoveToIsland message4 = new MoveToIsland(ColorS.GREEN, 8);
+            controller.handleMessage(message4, "B");
+        }
+
+        MoveMN message5 = new MoveMN(1);
+        controller.handleMessage(message5, "B");
+
+        ChooseCloud message6 = new ChooseCloud(1);
+        controller.handleMessage(message6, "B");
+
+        //---ROUND 10 (the last one)
+        //A assistant 7, B assistant 10
+        controller.handleMessage(new ChooseAssistant(1), "A");
+        controller.handleMessage(new ChooseAssistant(1), "B");
+
+        // turn A
+        for(int i = 0; i<3; i++){
+            MoveToIsland message01 = new MoveToIsland(ColorS.YELLOW, 9);
+            controller.handleMessage(message01, "A");
+        }
+
+        MoveMN message02 = new MoveMN(1);
+        controller.handleMessage(message02, "A");
+
+        ChooseCloud message03 = new ChooseCloud(0);
+        controller.handleMessage(message03, "A");
+
+        //turn B
+        for(int i = 0; i<3; i++){
+            MoveToIsland message04 = new MoveToIsland(ColorS.GREEN, 10);
+            controller.handleMessage(message04, "B");
+        }
+
+        MoveMN message05 = new MoveMN(1);
+        controller.handleMessage(message05, "B");
+
+        ChooseCloud message06 = new ChooseCloud(1);
+        controller.handleMessage(message06, "B");
+
+        assertEquals("GAME_WON", controller.getPhase().toString());
+        assertEquals(0, gameBoard.getPlayerByNickname("A").getNumCards());
+        assertEquals(0, gameBoard.getPlayerByNickname("B").getNumCards());
+
     }
 }
