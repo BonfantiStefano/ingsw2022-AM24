@@ -156,14 +156,14 @@ public class GUI extends Application implements UserInterface {
                     }
                     case "You Lose" -> Platform.runLater(() -> {
                         try {
-                            changeScene(CONTROLLERS.YOUWIN.toString());
+                            changeScene(CONTROLLERS.YOULOSE.toString());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     });
                     case "You won" -> Platform.runLater(() -> {
                         try {
-                            changeScene(CONTROLLERS.YOULOSE.toString());
+                            changeScene(CONTROLLERS.YOUWIN.toString());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -185,6 +185,7 @@ public class GUI extends Application implements UserInterface {
             case "ACTIVE_CHARACTER":
                 Platform.runLater(c::drawCharacters);
                 break;
+            case "CREATE_CLOUDS":
             case "REPLACE_CLOUD":
                 Platform.runLater(c::drawClouds);
                 break;

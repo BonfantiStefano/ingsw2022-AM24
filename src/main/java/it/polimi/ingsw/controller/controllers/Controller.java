@@ -226,7 +226,7 @@ public class Controller implements PropertyChangeListener {
                 //if he's connected send him a message
                 if (model.getActivePlayer().isConnected()) {
                     activePlayer = model.getActivePlayer().getNickname();
-                    lobby.sendMessage(activePlayer, new Information("Select a Student and choose a destination three times!"));
+                    lobby.sendMessage(activePlayer, new Information("Select a Student and choose a destination "+(numPlayers==2?"three":"four") +" times!"));
                     lobby.sendMessageToOthers(activePlayer, new Information(activePlayer+" is moving Students"));
                 }
                 //if the Player isn't connected notify the TurnController and ask the next phase

@@ -37,7 +37,6 @@ public class Cloud implements CanAcceptStudent, CanRemoveStudent{
     @Override
     public void add(ColorS s){
         students.add(s);
-        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_CLOUD), null, this);
     }
 
     /**
@@ -48,7 +47,8 @@ public class Cloud implements CanAcceptStudent, CanRemoveStudent{
     public void remove(ColorS s) throws NoSuchStudentException {
         if(students.contains(s)){
             students.remove(s);
-            listener.firePropertyChange(String.valueOf(EVENT.CHANGE_CLOUD), null, this);
+            if(students.size()==0)
+                listener.firePropertyChange(String.valueOf(EVENT.CHANGE_CLOUD), null, this);
         }
         else
             throw new NoSuchStudentException();

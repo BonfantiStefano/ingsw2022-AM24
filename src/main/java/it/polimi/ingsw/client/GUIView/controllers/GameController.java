@@ -169,7 +169,6 @@ public class GameController implements GUIController{
     public void updateHall(int index){
         HashMap<ColorS, Integer> hall = new HashMap<>();
         hallGrids.get(calcIndex(index)).getChildren().clear();
-        if(virtualView!=null)
             hall = (HashMap<ColorS, Integer>) virtualView.getVirtualPlayers().get(index).getVirtualBoard().getHall();
 
         for(int i=0;i<5;i++) {
@@ -193,10 +192,10 @@ public class GameController implements GUIController{
     public void updateProfs(){
         ArrayList<VirtualPlayer> vps = new ArrayList<>();
         HashMap<ColorS, VirtualPlayer> tempProfs = new HashMap<>();
-        if(virtualView!=null) {
+
             vps = new ArrayList<>(virtualView.getVirtualPlayers());
             tempProfs = virtualView.getVirtualProfs();
-        }
+
         HashMap<ColorS, Integer> profs = new HashMap<>();
 
         for(ColorS color:ColorS.values()){
@@ -230,7 +229,6 @@ public class GameController implements GUIController{
      * @param index the selected Tower GridPane index
      */
     public void updateTowers(int index){
-        //ArrayList<ColorT> towers = new ArrayList<>();
         ArrayList<ColorT> towers = virtualView.getVirtualPlayers().get(index).getVirtualBoard().getTowers();
         towersGrids.get(calcIndex(index)).getChildren().clear();
 
@@ -440,7 +438,6 @@ public class GameController implements GUIController{
      */
     public void drawCharacters(){
         charBox.setSpacing(10);
-
         charBox.getChildren().clear();
 
         ArrayList<VirtualCharacter> virtualCharacters = virtualView.getVirtualCharacters();
@@ -468,13 +465,6 @@ public class GameController implements GUIController{
             p.setBackground(new Background(new BackgroundImage(img,BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                     new BackgroundSize(charBox.getPrefWidth(),(charBox.getPrefHeight()-charBox.getSpacing()*2)/3,false,false,true,false))));
 
-            if(vc.getCost()==charIndex.get().getCost()+1) {
-                p.setEffect(new DropShadow(100, Color.YELLOW));
-                ImageView coin = new ImageView(coinImage);
-                coin.setFitWidth(50);
-                coin.setFitHeight(50);
-                gp.getChildren().add(coin);
-            }
 
             if(vc instanceof VirtualCharacterWithStudents vcs){
                 int i=0,j=0;
@@ -518,9 +508,20 @@ public class GameController implements GUIController{
             ||vc.getDescription().equals(CharacterDescription.CHAR12.getDesc())){
                 Button b = new Button();
                 b.setText("Choose Color");
+                b.setMinWidth(50);
                 b.setOnAction(actionEvent -> chooseColor());
                 gp.getChildren().add(b);
             }
+
+            if(vc.getCost()==charIndex.get().getCost()+1) {
+                ImageView coin = new ImageView(coinImage);
+                coin.setFitWidth(50);
+                coin.setFitHeight(50);
+                gp.getChildren().add(coin);
+            }
+
+            if(vc.isActive())
+                p.setEffect(new DropShadow(100, Color.YELLOW));
 
             if(!gp.getChildren().isEmpty())
                 p.getChildren().add(gp);
@@ -536,7 +537,7 @@ public class GameController implements GUIController{
 
     public void updateAssistants(){
         ArrayList<VirtualPlayer> vps = new ArrayList<>();
-        if(virtualView!=null)
+
             vps = virtualView.getVirtualPlayers();
         for(VirtualPlayer vp : vps){
             Assistant a = vp.getVirtualLastAssistant();
@@ -552,7 +553,7 @@ public class GameController implements GUIController{
         }
     }
     public void updateSchoolBoard(int index){
-        if(virtualView!=null && virtualView.getVirtualPlayers().get(index)!=null) {
+        if(virtualView.getVirtualPlayers().get(index)!=null) {
             updateEntrance(index);
             updateTowers(index);
             updateHall(index);
@@ -561,7 +562,7 @@ public class GameController implements GUIController{
     }
 
     public void drawClouds(){
-        List<Node> cloudsPanes = islandsPane.getChildren().stream().filter(p -> p.getStyleClass().contains("cloud")).toList();
+        List<Node> cloudsPanes = islandsPane.getChildren().stream().filter(p -> p.getId().contains("cloud")).toList();
         islandsPane.getChildren().removeAll(cloudsPanes);
         int size = virtualView.getVirtualClouds().size();
         int cloudSize = 90;
@@ -589,11 +590,10 @@ public class GameController implements GUIController{
         }
     }
 
-    private void createClouds(Pane p, int index){
-        ArrayList<ColorS> students = new ArrayList<>();
-        if(virtualView!=null)
-            students = virtualView.getVirtualClouds().get(index).getStudents();
-        if(students.size()>0) {
+    private void createClouds(StackPane p, int index){
+        ArrayList<ColorS> students;
+        students = virtualView.getVirtualClouds().get(index).getStudents();
+        if(students.size()>=3) {
             int j = 0;
             ColorS currStudent;
             currStudent = students.get(j);
@@ -604,7 +604,6 @@ public class GameController implements GUIController{
             j++;
             currStudent = students.get(j);
             p.getChildren().add(createImage(currStudent, 8, 25));
-
             if (students.size() == 4) {
                 j++;
                 currStudent = students.get(j);
@@ -627,6 +626,7 @@ public class GameController implements GUIController{
         img.setFitWidth(35);
         img.setTranslateX(x);
         img.setTranslateY(y);
+        img.setId("cloud");
         return img;
     }
 
@@ -827,7 +827,6 @@ public class GameController implements GUIController{
             p.getChildren().removeAll(coins);
         });
         ArrayList<VirtualPlayer> vps = new ArrayList<>();
-        if(virtualView!=null)
             vps = virtualView.getVirtualPlayers();
 
         for(VirtualPlayer vp:vps) {
@@ -842,7 +841,6 @@ public class GameController implements GUIController{
         }
     }
     public void setBoardCoins(){
-        if(virtualView!=null)
             boardCoins.setText("You can still earn: "+virtualView.getVirtualCoins()+" coins");
     }
 
