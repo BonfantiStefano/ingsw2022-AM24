@@ -9,7 +9,7 @@ import it.polimi.ingsw.model.Model;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.answer.Error;
-import it.polimi.ingsw.server.answer.Information;
+import it.polimi.ingsw.server.answer.InformationGame;
 
 import java.util.Optional;
 
@@ -94,11 +94,11 @@ public class ActionController {
             try {
                 model.moveMN(m.getIndex());
                 Optional<Player> winner = model.checkWin();
-                winner.ifPresentOrElse(w -> {lobby.sendMessage(w.getNickname(), new Information("You won"));
-                            lobby.sendMessageToOthers(w.getNickname(), new Information("You Lose"));
+                winner.ifPresentOrElse(w -> {lobby.sendMessage(w.getNickname(), new InformationGame("You won"));
+                            lobby.sendMessageToOthers(w.getNickname(), new InformationGame("You Lose"));
                             turnController.setGameEnded(true);},
                         () -> {if(model.getSizeWorld() == 3) {
-                            lobby.sendMessageToAll(new Information("The game ends in a draw"));
+                            lobby.sendMessageToAll(new InformationGame("The game ends in a draw"));
                             turnController.setGameEnded(true);
                         }
                         }

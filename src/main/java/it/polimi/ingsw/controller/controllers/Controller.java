@@ -14,7 +14,8 @@ import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.answer.Error;
-import it.polimi.ingsw.server.answer.Information;
+import it.polimi.ingsw.server.answer.InformationConnection;
+import it.polimi.ingsw.server.answer.InformationGame;
 import it.polimi.ingsw.server.answer.Update.*;
 import it.polimi.ingsw.server.virtualview.VirtualCloud;
 import it.polimi.ingsw.server.virtualview.VirtualIsland;
@@ -131,7 +132,7 @@ public class Controller implements PropertyChangeListener {
                 turnController.setGameStarted(true);
                 gameStarted = true;
                 sendFullView();
-                lobby.sendMessageToAll(new Information("Game Started!"));
+                lobby.sendMessageToAll(new InformationConnection("Game Started!"));
             }
         }
         //if the Player had disconnected update his status as connected
@@ -216,8 +217,8 @@ public class Controller implements PropertyChangeListener {
                 String name;
                 if (sortedPlayers.get(haveChosenAssistant).isConnected()) {
                     name =sortedPlayers.get(haveChosenAssistant).getNickname();
-                    lobby.sendMessage(name, new Information("Choose your Assistant!"));
-                    lobby.sendMessageToOthers(name, new Information(name+" has to choose an Assistant"));
+                    lobby.sendMessage(name, new InformationGame("Choose your Assistant!"));
+                    lobby.sendMessageToOthers(name, new InformationGame(name+" has to choose an Assistant"));
                 }
                 else{
                     increaseHaveChosenAssistant();
@@ -234,8 +235,8 @@ public class Controller implements PropertyChangeListener {
                 //if he's connected send him a message
                 if (model.getActivePlayer().isConnected()) {
                     activePlayer = model.getActivePlayer().getNickname();
-                    lobby.sendMessage(activePlayer, new Information("Select a Student and choose a destination "+(numPlayers==2?"three":"four") +" times!"));
-                    lobby.sendMessageToOthers(activePlayer, new Information(activePlayer+" is moving Students"));
+                    lobby.sendMessage(activePlayer, new InformationGame("Select a Student and choose a destination "+(numPlayers==2?"three":"four") +" times!"));
+                    lobby.sendMessageToOthers(activePlayer, new InformationGame(activePlayer+" is moving Students"));
                 }
                 //if the Player isn't connected notify the TurnController and ask the next phase
                 else {
@@ -245,13 +246,13 @@ public class Controller implements PropertyChangeListener {
             }
             case MOVE_MN -> {
                 //in this phase the Player must move MN
-                lobby.sendMessage(activePlayer, new Information("Choose where you want to move MN!"));
-                lobby.sendMessageToOthers(activePlayer, new Information(activePlayer+ " is moving MN"));
+                lobby.sendMessage(activePlayer, new InformationGame("Choose where you want to move MN!"));
+                lobby.sendMessageToOthers(activePlayer, new InformationGame(activePlayer+ " is moving MN"));
             }
             case CHOOSE_CLOUD -> {
                 //in this phase the Player must choose a Cloud
-                lobby.sendMessage(activePlayer, new Information("Choose a Cloud!"));
-                lobby.sendMessageToOthers(activePlayer, new Information(activePlayer+ " is choosing a Cloud"));
+                lobby.sendMessage(activePlayer, new InformationGame("Choose a Cloud!"));
+                lobby.sendMessageToOthers(activePlayer, new InformationGame(activePlayer+ " is choosing a Cloud"));
             }
             case RESET_TURN -> {
                 //if all Players have played their turn notify the TurnController
@@ -269,10 +270,10 @@ public class Controller implements PropertyChangeListener {
                 if (model.getGameMustEnd()) {
                     Optional<Player> winner = model.checkWin();
                     winner.ifPresentOrElse(w -> {
-                                lobby.sendMessage(w.getNickname(), new Information("You won"));
-                                lobby.sendMessageToOthers(w.getNickname(), new Information("You Lose"));
+                                lobby.sendMessage(w.getNickname(), new InformationGame("You won"));
+                                lobby.sendMessageToOthers(w.getNickname(), new InformationGame("You Lose"));
                             },
-                            () -> lobby.sendMessageToAll(new Information("The game ends in a draw"))
+                            () -> lobby.sendMessageToAll(new InformationGame("The game ends in a draw"))
                     );
                     //notify the TurnController
                     turnController.setGameEnded(true);
@@ -287,7 +288,7 @@ public class Controller implements PropertyChangeListener {
             }
             case CHARACTER_ACTION ->
                     //in this phase the Player can't end his turn unless he performs a Character move
-                    lobby.sendMessage(activePlayer, new Information("You need to perform a Character move!"));
+                    lobby.sendMessage(activePlayer, new InformationGame("You need to perform a Character move!"));
             case GAME_WON ->
                     //notify the lobby that the game has ended
                     lobby.gameEnded();

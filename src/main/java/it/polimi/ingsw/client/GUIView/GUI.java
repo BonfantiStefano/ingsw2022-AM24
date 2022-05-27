@@ -7,7 +7,6 @@ import it.polimi.ingsw.client.GUIView.controllers.*;
 import it.polimi.ingsw.client.UserInterface;
 import it.polimi.ingsw.client.request.Disconnect;
 import it.polimi.ingsw.server.answer.Error;
-import it.polimi.ingsw.server.answer.Information;
 import it.polimi.ingsw.server.answer.Welcome;
 import it.polimi.ingsw.server.virtualview.VirtualView;
 import javafx.application.Application;
@@ -124,6 +123,7 @@ public class GUI extends Application implements UserInterface {
     public void propertyChange(PropertyChangeEvent evt) {
         GameController c = (GameController) nameMapController.get(nameMapScene.get(CONTROLLERS.MAIN.toString()));
         LobbyController lb = (LobbyController) nameMapController.get(nameMapScene.get(CONTROLLERS.WELCOME.toString()));
+        String text;
         switch(evt.getPropertyName()){
             case "WELCOME":
                 if(currentScene.equals(nameMapScene.get(CONTROLLERS.WELCOME.toString())))
@@ -140,8 +140,9 @@ public class GUI extends Application implements UserInterface {
 
                 Platform.runLater(lb::init);
                 break;
+            /*
             case "INFORMATION":
-                String text = ((Information) evt.getNewValue()).getString();
+                text = ((Information) evt.getNewValue()).getString();
                 switch (text) {
                     case "Game Continue", "Game Started!" -> {
                         started = true;
@@ -172,6 +173,8 @@ public class GUI extends Application implements UserInterface {
                 }
                 Platform.runLater(()->c.setLastInfo(text));
                 break;
+
+             */
             case "UPDATE_ALL":
                 Platform.runLater(()->{
                     c.setVirtualView((VirtualView) evt.getNewValue());

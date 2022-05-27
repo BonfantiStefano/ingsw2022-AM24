@@ -15,7 +15,7 @@ import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.answer.Error;
-import it.polimi.ingsw.server.answer.Information;
+import it.polimi.ingsw.server.answer.InformationGame;
 import it.polimi.ingsw.server.answer.Update.*;
 import it.polimi.ingsw.server.virtualview.*;
 
@@ -135,13 +135,13 @@ public class ExpertController extends Controller {
                 turnController.setCharacterActionCheck(true);
                 Optional<Player> winner = getModel().checkWin();
                 winner.ifPresentOrElse(w -> {
-                            lobby.sendMessage(w.getNickname(), new Information("You won"));
-                            lobby.sendMessageToOthers(w.getNickname(), new Information("You Lose"));
+                            lobby.sendMessage(w.getNickname(), new InformationGame("You won"));
+                            lobby.sendMessageToOthers(w.getNickname(), new InformationGame("You Lose"));
                             getTurnController().setGameEnded(true);
                         },
                         () -> {
                             if (getModel().getSizeWorld() == 3) {
-                                lobby.sendMessageToAll(new Information("The game ends in a draw"));
+                                lobby.sendMessageToAll(new InformationGame("The game ends in a draw"));
                                 getTurnController().setGameEnded(true);
                             }
                         }

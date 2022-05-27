@@ -89,7 +89,7 @@ public class Lobby {
      * @param idClients int - the client's id who sent the message.
      * @return a boolean that notify the server if the addition of the player is corrected.
      */
-    public /*synchronized*/ boolean addPlayer(Join join, SocketClientHandler socketClientHandler, int idClients) {
+    public boolean addPlayer(Join join, SocketClientHandler socketClientHandler, int idClients) {
         if(mapIdNickname.size() < numPlayers && gameStatus.equals(GameStatus.SETUP)) {
             boolean ris = true;
             for (int counter = 0; counter < clientsId.size() && ris; counter++) {
@@ -117,8 +117,8 @@ public class Lobby {
                 mages.add(join.getMage());
                 towers.add(join.getColorT());
                 clientsId.add(idClients);
-                socketClientHandler.sendMessage(new Information("You have joined the game"));
-                sendMessageToOthers(join.getNickname(), new Information(join.getNickname() + " entered the lobby"));
+                socketClientHandler.sendMessage(new InformationConnection("You have joined the game"));
+                sendMessageToOthers(join.getNickname(), new InformationConnection(join.getNickname() + " entered the lobby"));
                 controller.handleMessage(join, mapIdNickname.get(idClients));
                 if(clientsId.size() == numPlayers) {
                     gameStatus = GameStatus.PLAYING;
@@ -143,8 +143,8 @@ public class Lobby {
                 && gameStatus != GameStatus.ENDED /*TODO manca il controllo se il mago e il colore delle torri era quello di prima*/) {
             int oldId = mapNicknameId.get(join.getNickname());
             //Notification of the re-connection to the players
-            socketClientHandler.sendMessage(new Information("Welcome back " + join.getNickname()));
-            sendMessageToOthers(join.getNickname(), new Information(join.getNickname() + " re-connected"));
+            socketClientHandler.sendMessage(new InformationConnection("Welcome back " + join.getNickname()));
+            sendMessageToOthers(join.getNickname(), new InformationConnection(join.getNickname() + " re-connected"));
             //Handles of the re-connection
             mapNicknameId.replace(join.getNickname(), clientId);
             mapIdNickname.remove(oldId);
@@ -158,7 +158,7 @@ public class Lobby {
             //If the game was in pause the timer is stopped and the game can continue
             if(gameStatus == GameStatus.PAUSE) {
                 stopTimer();
-                sendMessageToAll(new Information("Game continue"));
+                sendMessageToAll(new InformationConnection("Game continue"));
                 gameStatus = GameStatus.PLAYING;
             }
             return oldId;
@@ -172,9 +172,6 @@ public class Lobby {
         return -1;
     }
 
-    //Forse va sincronizzato questo metodo, o forse è meglio la handleJoin nel server, così non si possono verificare casi in cui uno si
-    //disconnette mentre l' altro si riconnette (magari si hanno rallentamenti quando ho molte lobby, potrei però bloccare solo la lobby che
-    // mi serve così non creo rallentamenti)
     /**
      * Method handleDisconnection is used to disconnect a player from the lobby.
      * @param clientId int - the client's id of the player who has to be disconnected.
@@ -188,15 +185,15 @@ public class Lobby {
             if(timerPause.isAlive()) {
                 stopTimer();
             }
-            //dobbiamo comunicarlo anche al controller che la partita è finita?
+            //TODO capire se dobbiamo comunicarlo anche al controller che la partita è finita?
         } else {
             controller.handleMessage(new Disconnect(), mapIdNickname.get(clientId));
-            sendMessageToAll(new Information(mapIdNickname.get(clientId) + " disconnected"));
+            sendMessageToAll(new InformationConnection(mapIdNickname.get(clientId) + " disconnected"));
             if(clientsId.size() - disconnectedClientsId.size() == 1 && gameStatus == GameStatus.PLAYING) {
                 gameStatus = GameStatus.PAUSE;
                 startTimer();
                 System.out.println("The lobby is in pause, waiting a re-connection");
-                sendMessageToAll(new Information("The lobby is in pause, waiting a re-connection"));
+                sendMessageToAll(new InformationConnection("The lobby is in pause, waiting a re-connection"));
             }
         }
     }
@@ -286,7 +283,7 @@ public class Lobby {
 
     /**
      * Method getMages returns the List of the already chosen mages.
-     * @return ArrayList<Mage></> the mages already chosen.
+     * @return ArrayList<Mage> the mages already chosen.
      */
     public ArrayList<Mage> getMages() {
        return mages;
@@ -294,7 +291,7 @@ public class Lobby {
 
     /**
      * Method getColorTowers returns the List of the already chosen towers' color.
-     * @return ArrayList<ColorT></> the color of the tower already chosen.
+     * @return ArrayList<ColorT> the color of the tower already chosen.
      */
     public ArrayList<ColorT> getColorTowers() {
         return towers;
@@ -302,7 +299,7 @@ public class Lobby {
 
     /**
      * Method getNicknames returns the List of the taken nickname.
-     * @return ArrayList<String></> the nickname already taken.
+     * @return ArrayList<String> the nickname already taken.
      */
     public ArrayList<String> getNicknames() {
         ArrayList<String> nicknames = new ArrayList<>();
@@ -339,7 +336,7 @@ public class Lobby {
                 gameStatus = GameStatus.ENDED;
                 for(Integer clientId : clientsId) {
                     if(!disconnectedClientsId.contains(clientId)) {
-                        sendMessage(mapIdNickname.get(clientId), new Information("You are the only connected player, you won!"));
+                        sendMessage(mapIdNickname.get(clientId), new InformationConnection("You are the only connected player, you won!"));
                     }
                 }
             } catch (InterruptedException ignored){

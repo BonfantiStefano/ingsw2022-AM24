@@ -29,7 +29,8 @@ public class CLI implements Runnable, UserInterface {
     private VirtualView virtualView;
     private Client client;
     private Welcome welcome;
-    private String lastInfo;
+    private String lastInfoGame;
+    private String lastInfoConnection;
     private String lastError;
     private boolean inLobby;
     private Error error;
@@ -75,7 +76,7 @@ public class CLI implements Runnable, UserInterface {
     public CLI() {
         input = new Scanner(System.in);
         welcome = null;
-        lastInfo="";
+        lastInfoGame="";
         lastError="";
         inLobby=false;
     }
@@ -85,11 +86,8 @@ public class CLI implements Runnable, UserInterface {
      */
     public void run() {
         while(client.isActive()) {
-            //try {
-                String s = input.nextLine();
-                parseInput(s);
-            /*} catch (IndexOutOfBoundsException ignored) {
-            }*/
+            String s = input.nextLine();
+            parseInput(s);
         }
     }
 
@@ -218,6 +216,11 @@ public class CLI implements Runnable, UserInterface {
                         System.out.println("Player: " + vp.getNickname() + " has " + vp.getVirtualCoins() + " coins.");
                     }
                 }
+                if(!lastInfoConnection.isEmpty() && client.getSizeQueue() == 0) {
+                    System.out.println(lastInfoConnection);
+                    lastInfoConnection = "";
+                }
+                System.out.println(lastInfoGame);
             }
         }
     }
@@ -634,7 +637,7 @@ public class CLI implements Runnable, UserInterface {
             }
             else {
                 Runtime.getRuntime().exec("clear");
-                System.out.println("\033c");
+                //System.out.println("\033c");
             }
         }
         catch (IOException | InterruptedException e){
@@ -642,6 +645,10 @@ public class CLI implements Runnable, UserInterface {
         }
     }
 
+    /**
+     * Method printLobbies prints all the available lobby.
+     * @param welcome Welcome - the message from where all the lobbies' data are taken.
+     */
     public void printLobbies(Welcome welcome) {
         ArrayList<VirtualLobby> lobbies = welcome.getLobbies();
         if(lobbies.isEmpty()) {
@@ -695,12 +702,21 @@ public class CLI implements Runnable, UserInterface {
         };
     }
 
+    /**
+     * Method showHand prints the available assistants of a player.
+     */
     private void showHand(){
         System.out.println("Here's your hand:");
         Optional<VirtualPlayer> vp = virtualView.getVirtualPlayers().stream().filter(p->p.getNickname().equals(nickname)).findAny();
         vp.ifPresent(virtualPlayer -> printAssistants((ArrayList<Assistant>) virtualPlayer.getVirtualHand().getCards()));
     }
 
+    /**
+     * Method getLobbyByIndex returns the Lobby's object which has the index given by parameter.
+     * @param lobbies ArrayList<VirtualLobby> - the list containing all the available lobbies.
+     * @param index int - the index of the Lobby that has to be searched.
+     * @return an int - that represents the position in the list of the Lobby searched. -1 if there isn't a correspondence.
+     */
     private int getLobbyByIndex(ArrayList<VirtualLobby> lobbies, int index) {
         for(VirtualLobby lobby : lobbies) {
             if(lobby.getLobbyIndex() == index)
@@ -709,41 +725,44 @@ public class CLI implements Runnable, UserInterface {
         return -1;
     }
 
+    /**
+     * Method setVirtualView sets the virtual view.
+     * @param virtualView VirtualView - the virtual view.
+     */
     public void setVirtualView(VirtualView virtualView) {
         this.virtualView = virtualView;
     }
 
+    /**
+     * Method propertyChange handle all the possible events that the client can do.
+     * @param evt PropertyChangeEvent - the event containing all the necessary information.
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String eventName = evt.getPropertyName();
         switch (eventName) {
-            /*
-            Nella fase di planning viene rimandato il messaggio di chooseAssistant quindi non si vede mai l' errore, mentre nelle
-            altre fasi non viene rimandato il messaggio di quello da fare quindi funziona bene (quando c'è un errore non ristampo tutto
-            poichè è inutile) manca comunque da gestire il caso delle disconnessioni, forse sarebbe il caso che il controller rimandi a tutti
-            un messaggio per ricordare quello che si stava facendo
-             */
-            case "INFORMATION" -> {
-                Information information = (Information) evt.getNewValue();
-                String text = information.getString();
-                lastInfo = text;
-                if(text.equals("Game Started!")) {
+            case "INFORMATIONCONNECTION" -> {
+                InformationConnection information = (InformationConnection) evt.getNewValue();
+                lastInfoConnection = information.getString();
+                if(lastInfoConnection.equals("Game Started!") || lastInfoConnection.contains("Welcome back")) {
                     gameStarted = true;
                 }
-                else if(text.equals("The lobby has been created")||text.equals("You have joined the game")
-                    || text.contains("Welcome back")) {
+                if(lastInfoConnection.equals("The lobby has been created")||lastInfoConnection.equals("You have joined the game")
+                    || lastInfoConnection.contains("Welcome back")) {
                     new Thread(this).start();
                     inLobby = true;
-                    if(text.contains("Welcome back")) {
-                        gameStarted = true;
-                    }
                 }
-                printView();
-                System.out.println(lastInfo);
-                if(lastInfo.equals("The lobby has been created") || lastInfo.equals("You have joined the game")
-                        || lastInfo.contains("entered the lobby")) {
+                System.out.println(lastInfoConnection);
+                if(lastInfoConnection.equals("The lobby has been created") || lastInfoConnection.equals("You have joined the game")
+                        || lastInfoConnection.contains("entered the lobby")) {
                     System.out.println("Waiting other players...");
+                    lastInfoConnection = "";
                 }
+            }
+            case "INFORMATIONGAME" -> {
+                InformationGame information = (InformationGame) evt.getNewValue();
+                lastInfoGame = information.getString();
+                printView();
             }
             case "ERROR" -> {
                 Error err = (Error) evt.getNewValue();
@@ -755,7 +774,9 @@ public class CLI implements Runnable, UserInterface {
                         text.equals("Error: invalid lobby index, please retry"))){
                     error = err;
                     if(!firstTime && !inLobby) {
-                        new Thread(this::getInfo).start();
+                        if(client.getSizeQueue() == 0) {
+                            new Thread(this::getInfo).start();
+                        }
                     }
                 }
                 if(!lastError.isEmpty()){
@@ -777,13 +798,15 @@ public class CLI implements Runnable, UserInterface {
             default -> {
                 if (client.getSizeQueue() == 0) {
                     printView();
-                    System.out.println(lastInfo);
                 }
-                //printView();
             }
         }
     }
 
+    /**
+     * Method getInputValue returns the numeric value given via System.in from the user.
+     * @return an int - the value given via System.in.
+     */
     public int getInputValue() {
         int val;
         String string;
@@ -798,6 +821,9 @@ public class CLI implements Runnable, UserInterface {
         return val;
     }
 
+    /**
+     * Method printHelp prints all the information needed to play.
+     */
     private void printHelp(){
         System.out.println("Here's every command:");
         for (REGEX r : REGEX.values()){
@@ -805,6 +831,10 @@ public class CLI implements Runnable, UserInterface {
         }
     }
 
+    /**
+     * Method checkDisconnect looks if the Client wants to disconnect.
+     * @param input String - the String that will be checked.
+     */
     private void checkDisconnect(String input) {
         if(input != null && input.equals("disconnect")) {
             System.exit(0);
