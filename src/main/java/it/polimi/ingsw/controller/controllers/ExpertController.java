@@ -70,7 +70,7 @@ public class ExpertController extends Controller {
      */
     @Override
     public void handleCharacter(Request m, String nickname){
-        setMessageSender(nickname);
+        messageSender = nickname;
         activeCharacter = getModel().getActiveCharacter();
         m.accept(this);
     }
@@ -89,9 +89,9 @@ public class ExpertController extends Controller {
                 Character c = getModel().getCharacters().stream().
                         filter(character -> msg.getC().getDesc().equals(character.getDescription())).findAny().orElse(null);
                 if(c!= null) getModel().playCharacter(c);
-                else lobby.sendMessage(getMessageSender(), new Error(ERRORS.CHARACTER_NOT_AVAILABLE.toString()));
+                else lobby.sendMessage(messageSender, new Error(ERRORS.CHARACTER_NOT_AVAILABLE.toString()));
             } catch (NotEnoughCoinsException e) {
-                lobby.sendMessage(getMessageSender(), new Error(ERRORS.NOT_ENOUGH_COINS.toString()));
+                lobby.sendMessage(messageSender, new Error(ERRORS.NOT_ENOUGH_COINS.toString()));
             }
         }
         else if(phase.equals(PHASE.PLANNING)){
@@ -113,7 +113,7 @@ public class ExpertController extends Controller {
                 try {
                     getModel().moveStudent(m.getStudent(), ((CharacterWithStudent) activeCharacter), getModel().getIslandByIndex(m.getIslandIndex()));
                 } catch (NoSuchStudentException e) {
-                    lobby.sendMessage(getMessageSender(), new Error("there is no " + m.getStudent().toString().toLowerCase() + " student on the card"));
+                    lobby.sendMessage(messageSender, new Error("there is no " + m.getStudent().toString().toLowerCase() + " student on the card"));
                 }
                 getModel().resetCharacterStudent();
                 turnController.setCharacterActionCheck(true);
@@ -180,12 +180,12 @@ public class ExpertController extends Controller {
                 try {
                     ((CharacterWithStudent) activeCharacter).remove(m.getColor());
                 } catch (NoSuchStudentException e) {
-                    lobby.sendMessage(getMessageSender(), new Error("there is no " + m.getColor().toString().toLowerCase() + " students on the card"));
+                    lobby.sendMessage(messageSender, new Error("there is no " + m.getColor().toString().toLowerCase() + " students on the card"));
                 }
                 try {
                     getModel().addToHall(m.getColor());
                 } catch (PlaceFullException e) {
-                    lobby.sendMessage(getMessageSender(), new Error("There is no space for another " + m.getColor().toString().toLowerCase() + " student in the hall"));
+                    lobby.sendMessage(messageSender, new Error("There is no space for another " + m.getColor().toString().toLowerCase() + " student in the hall"));
                 }
                 getModel().resetCharacterStudent();
                 turnController.setCharacterActionCheck(true);
@@ -208,12 +208,12 @@ public class ExpertController extends Controller {
                     try {
                         getModel().switchStudents(m.getFirstColor(), m.getSecondColor());
                     } catch (NoSuchStudentException | PlaceFullException e) {
-                        lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_SUCH_STUDENT.toString()));
+                        lobby.sendMessage(messageSender, new Error(ERRORS.NO_SUCH_STUDENT.toString()));
                     }
                     turnController.setCharacterActionCheck(true);
                     numSwitchMoves++;
                 } else {
-                    lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_MOVES_REMAINING.toString()));
+                    lobby.sendMessage(messageSender, new Error(ERRORS.NO_MOVES_REMAINING.toString()));
                 }
             }
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR7.getDesc())) {
@@ -222,17 +222,17 @@ public class ExpertController extends Controller {
                     try {
                         getModel().moveStudent(m.getFirstColor(), getModel().getActivePlayer().getMyBoard(), ((CharacterWithStudent) activeCharacter));
                     } catch (NoSuchStudentException e) {
-                        lobby.sendMessage(getMessageSender(), new Error("There is no " + m.getFirstColor().toString().toLowerCase() + " students in the entrance"));
+                        lobby.sendMessage(messageSender, new Error("There is no " + m.getFirstColor().toString().toLowerCase() + " students in the entrance"));
                     }
                     try {
                         getModel().moveStudent(m.getSecondColor(), ((CharacterWithStudent) activeCharacter), getModel().getActivePlayer().getMyBoard());
                     } catch (NoSuchStudentException e) {
-                        lobby.sendMessage(getMessageSender(), new Error("There is no " + m.getSecondColor().toString().toLowerCase() + " students on the card"));
+                        lobby.sendMessage(messageSender, new Error("There is no " + m.getSecondColor().toString().toLowerCase() + " students on the card"));
                     }
                     turnController.setCharacterActionCheck(true);
                     numStudMoves++;
                 } else {
-                    lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_MOVES_REMAINING.toString()));
+                    lobby.sendMessage(messageSender, new Error(ERRORS.NO_MOVES_REMAINING.toString()));
                 }
             }
         }
@@ -244,7 +244,7 @@ public class ExpertController extends Controller {
      */
     private boolean filter(){
         if(activeCharacter==null){
-            lobby.sendMessage(getMessageSender(), new Error(ERRORS.NO_ACTIVE_CHARACTER.toString()));
+            lobby.sendMessage(messageSender, new Error(ERRORS.NO_ACTIVE_CHARACTER.toString()));
             return false;
         }
         return true;

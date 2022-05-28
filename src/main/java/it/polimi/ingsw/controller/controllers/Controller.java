@@ -110,11 +110,10 @@ public class Controller implements PropertyChangeListener {
      * @param msg a Client's Request
      */
     public void visit(Disconnect msg){
-        //if a Player disconnects during the setup phase the game is canceled
-        //can be changed later
         model.setConnected(messageSender, false);
         nextPhase();
     }
+
     /**
      * Handles all Join messages received by checking if all conditions to join the Game are met
      * @param msg the Join message
@@ -139,6 +138,23 @@ public class Controller implements PropertyChangeListener {
         else if(!availableNickname && !model.getPlayerByNickname(messageSender).isConnected()) {
             model.setConnected(messageSender, true);
             sendFullView();
+            String reconnectedMessage;
+            if(model.getActivePlayer() == null) {
+                reconnectedMessage = "Planning phase, you will resume game during the action phase";
+            } else {
+                String nicknameActivePlayer = model.getActivePlayer().getNickname();
+                PHASE phase = getPhase();
+                if(phase == PHASE.MOVE_STUDENTS) {
+                    reconnectedMessage = nicknameActivePlayer + " is moving Students";
+                } else if(phase == PHASE.MOVE_MN){
+                    reconnectedMessage = nicknameActivePlayer + " is moving MN";
+                } else if(phase == PHASE.CHOOSE_CLOUD) {
+                    reconnectedMessage = nicknameActivePlayer + " is choosing a Cloud";
+                } else {
+                    reconnectedMessage = "You will resume playing the next round";
+                }
+            }
+            lobby.sendMessage(messageSender, new InformationGame(reconnectedMessage));
         }
         else if(!availableNickname)
             message+=ERRORS.NICKNAME_TAKEN;
@@ -150,6 +166,7 @@ public class Controller implements PropertyChangeListener {
             lobby.sendMessage(messageSender, new Error(message));
         nextPhase();
     }
+
     /**
      * If the game Phase is right perform the correct actions for this kind of Message
      * @param msg a Client's Request
@@ -159,6 +176,7 @@ public class Controller implements PropertyChangeListener {
             actionController.handleAction(msg);
         nextPhase();
     }
+
     /**
      * If the game Phase is right perform the correct actions for this kind of Message
      * @param msg a Client's Request
@@ -168,6 +186,7 @@ public class Controller implements PropertyChangeListener {
             actionController.handleAction(msg);
         nextPhase();
     }
+
     /**
      * If the game Phase is right perform the correct actions for this kind of Message
      * @param msg a Client's Request
@@ -177,6 +196,7 @@ public class Controller implements PropertyChangeListener {
             actionController.handleAction(msg);
         nextPhase();
     }
+
     /**
      * If the game Phase is right perform the correct actions for this kind of Message
      * @param msg a Client's Request
@@ -294,6 +314,7 @@ public class Controller implements PropertyChangeListener {
                     lobby.gameEnded();
         }
     }
+
     /**
      * If the game Phase is right perform the correct actions for this kind of Message
      * @param m a Client's Request regarding a Character
@@ -301,6 +322,7 @@ public class Controller implements PropertyChangeListener {
     public void visit(PlayCharacter m){
         handleCharacter(m, messageSender);
     }
+
     /**
      * If the game Phase is right perform the correct actions for this kind of Message
      * @param m a Client's Request regarding a Character
@@ -308,6 +330,7 @@ public class Controller implements PropertyChangeListener {
     public void visit(ChooseIsland m){
         handleCharacter(m, messageSender);
     }
+
     /**
      * If the game Phase is right perform the correct actions for this kind of Message
      * @param m a Client's Request regarding a Character
@@ -315,6 +338,7 @@ public class Controller implements PropertyChangeListener {
     public void visit(ChooseColor m){
         handleCharacter(m, messageSender);
     }
+
     /**
      * If the game Phase is right perform the correct actions for this kind of Message
      * @param m a Client's Request regarding a Character
@@ -322,6 +346,7 @@ public class Controller implements PropertyChangeListener {
     public void visit(ChooseTwoColors m){
         handleCharacter(m, messageSender);
     }
+
     /**
      * If the game Phase is right perform the correct actions for this kind of Message
      * @param m a Client's Request regarding a Character
@@ -329,7 +354,6 @@ public class Controller implements PropertyChangeListener {
     public void visit(SpecialMoveIsland m){
         handleCharacter(m, messageSender);
     }
-
 
     /**
      * Increase the number of Players that have chosen their Assistant, if everyone has done so notifies the TurnController
@@ -343,6 +367,7 @@ public class Controller implements PropertyChangeListener {
         }
 
     }
+
     /**
      * Handles all Requests regarding Characters
      * @param m Request message sent by a Client
@@ -352,6 +377,11 @@ public class Controller implements PropertyChangeListener {
         lobby.sendMessage(nickname, new Error("You're not playing in expert mode!"));
     }
 
+    /**
+     * Method verifyActive checks if the player is active.
+     * @param nickname String - the player's nickname.
+     * @return a boolean - true if the player is active, false otherwise.
+     */
     private boolean verifyActive(String nickname){
         if(model!=null&&model.getActivePlayer()!=null) {
             activePlayer=model.getActivePlayer().getNickname();
@@ -376,7 +406,6 @@ public class Controller implements PropertyChangeListener {
         return this.lobby;
     }
 
-
     /**
      * Sets the Model
      * @param model the other model
@@ -392,24 +421,13 @@ public class Controller implements PropertyChangeListener {
     public PHASE getPhase(){
         return phase;
     }
+
     /**
      * Gets the TurnController
      * @return the TurnController
      */
     public TurnController getTurnController(){
         return this.turnController;
-    }
-
-    public void setNumPlayers(int numPlayers) {
-        this.numPlayers = numPlayers;
-    }
-
-    public String getMessageSender() {
-        return messageSender;
-    }
-
-    public void setMessageSender(String messageSender) {
-        this.messageSender = messageSender;
     }
 
     /**
@@ -487,10 +505,17 @@ public class Controller implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Method sendFullView sends to all the clients the full view.
+     */
     public void sendFullView(){
         lobby.sendMessageToAll(new FullView(virtualView));
     }
 
+    /**
+     * Method getVirtualView gets the virtual view.
+     * @return the virtual view.
+     */
     public VirtualView getVirtualView() {
         return virtualView;
     }

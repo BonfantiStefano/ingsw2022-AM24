@@ -31,7 +31,6 @@ public class GUI extends Application implements UserInterface {
     private  String nickname;
     private final HashMap<String, Scene> nameMapScene = new HashMap<>();
     private final HashMap<Scene, GUIController> nameMapController = new HashMap<>();
-    boolean started = false;
 
     public static void main(String[] args) {
         launch();
@@ -105,9 +104,8 @@ public class GUI extends Application implements UserInterface {
     }
 
     public void sendMessageToServer(Object string) {
-        //Dopo cambiare questo metodo
         if(client!=null)
-            client.sendMessage(client.toJson(string));
+            client.sendMessage(toJson(string));
         System.out.println(toJson(string));
     }
 
@@ -126,23 +124,21 @@ public class GUI extends Application implements UserInterface {
         GameController c = (GameController) nameMapController.get(nameMapScene.get(CONTROLLERS.MAIN.toString()));
         LobbyController lb = (LobbyController) nameMapController.get(nameMapScene.get(CONTROLLERS.WELCOME.toString()));
         String text;
-        switch(evt.getPropertyName()){
-            case "WELCOME":
-                if(currentScene.equals(nameMapScene.get(CONTROLLERS.WELCOME.toString())))
-                Platform.runLater(()-> {
-                    try {
-                        changeScene(CONTROLLERS.WELCOME.toString());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-
+        switch (evt.getPropertyName()) {
+            case "WELCOME" -> {
+                if (currentScene.equals(nameMapScene.get(CONTROLLERS.WELCOME.toString())))
+                    Platform.runLater(() -> {
+                        try {
+                            changeScene(CONTROLLERS.WELCOME.toString());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
                 Welcome w = (Welcome) evt.getNewValue();
                 lb.setWelcome(w);
-
                 Platform.runLater(lb::init);
-                break;
-            case "INFORMATIONGAME":
+            }
+            case "INFORMATIONGAME" -> {
                 text = ((InformationGame) evt.getNewValue()).getString();
                 switch (text) {
                     case "You Lose" -> Platform.runLater(() -> {
@@ -159,10 +155,10 @@ public class GUI extends Application implements UserInterface {
                             e.printStackTrace();
                         }
                     });
-                    default -> Platform.runLater(()->c.setLastInfo(text));
+                    default -> Platform.runLater(() -> c.setLastInfo(text));
                 }
-                break;
-            case "INFORMATIONCONNECTION":
+            }
+            case "INFORMATIONCONNECTION" -> {
                 text = ((InformationConnection) evt.getNewValue()).getString();
                 switch (text) {
                     case "Game continue", "Game Started!" -> Platform.runLater(() -> {
@@ -181,51 +177,33 @@ public class GUI extends Application implements UserInterface {
                         }
                     });
                     case "The lobby has been created", "You have joined the game" -> Platform.runLater(() -> lb.setLastInfo(text));
-                    default -> Platform.runLater(()->c.setLastInfo(text));
+                    default -> Platform.runLater(() -> c.setLastInfo(text));
                 }
-                break;
-            case "UPDATE_ALL":
-                Platform.runLater(()->{
-                    c.setVirtualView((VirtualView) evt.getNewValue());
-                    c.init();
-                    c.setCoins();
-                });
-                break;
-            case "REPLACE_CHARACTER":
-            case "REPLACE_CHARACTER_S":
-            case "REPLACE_CHARACTER_NE":
-            case "ACTIVE_CHARACTER":
-                Platform.runLater(c::drawCharacters);
-                break;
-            case "CREATE_CLOUDS":
-            case "REPLACE_CLOUD":
-                Platform.runLater(c::drawClouds);
-                break;
-            case "BOARD_COINS":
-                Platform.runLater(c::setBoardCoins);
-                break;
-            case "CREATE_WORLD":
-            case "REPLACE_ISLAND":
-            case "CHANGE_MN_POS":
-                Platform.runLater(c::drawIslands);
-                break;
-            case "REPLACE_PLAYER":
+            }
+            case "UPDATE_ALL" -> Platform.runLater(() -> {
+                c.setVirtualView((VirtualView) evt.getNewValue());
+                c.init();
+                c.setCoins();
+            });
+            case "REPLACE_CHARACTER", "REPLACE_CHARACTER_S", "REPLACE_CHARACTER_NE", "ACTIVE_CHARACTER" -> Platform.runLater(c::drawCharacters);
+            case "CREATE_CLOUDS", "REPLACE_CLOUD" -> Platform.runLater(c::drawClouds);
+            case "BOARD_COINS" -> Platform.runLater(c::setBoardCoins);
+            case "CREATE_WORLD", "REPLACE_ISLAND", "CHANGE_MN_POS" -> Platform.runLater(c::drawIslands);
+            case "REPLACE_PLAYER" -> {
                 int index = (int) evt.getNewValue();
-                Platform.runLater(()->{
+                Platform.runLater(() -> {
                     c.updateSchoolBoard(index);
                     c.updateAssistants();
                     c.setCoins();
                 });
-                break;
-            case "REPLACE_PROFS":
-                Platform.runLater(c::updateProfs);
-                break;
-            case "ERROR":
-                text = ((Error)evt.getNewValue()).getString();
-                Platform.runLater(()->c.setLastError(text));
-                break;
-            default:
-                break;
+            }
+            case "REPLACE_PROFS" -> Platform.runLater(c::updateProfs);
+            case "ERROR" -> {
+                text = ((Error) evt.getNewValue()).getString();
+                Platform.runLater(() -> c.setLastError(text));
+            }
+            default -> {
+            }
         }
     }
 
