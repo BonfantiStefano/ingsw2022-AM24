@@ -205,16 +205,7 @@ public class CLI implements Runnable, UserInterface {
                 }
 
                 for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {
-                    drawSchoolBoard(vp.getVirtualBoard(), vp.getNickname(), virtualView.getVirtualProfs());
-
-                    if (vp.getVirtualLastAssistant() != null) {
-                        System.out.print(vp.getNickname() + "'s last assistant played: ");
-                        System.out.println("Turn: " + vp.getVirtualLastAssistant().getTurn() + " Steps: " + vp.getVirtualLastAssistant().getMNsteps());
-                    }
-
-                    if (virtualView.getVirtualCharacters().size() != 0) {
-                        System.out.println("Player: " + vp.getNickname() + " has " + vp.getVirtualCoins() + " coins.");
-                    }
+                    drawSchoolBoard(vp, virtualView.getVirtualProfs());
                 }
                 if(!lastInfoConnection.isEmpty() && client.getSizeQueue() == 0) {
                     System.out.println(lastInfoConnection);
@@ -320,20 +311,31 @@ public class CLI implements Runnable, UserInterface {
 
     /**
      * Prints a SchoolBoard
-     * @param schoolBoard the SchoolBoard to print
+     * @param vp VirtualPlayer owner of the SchoolBoard being printed
      * @param profs the HashMap containing all Profs
      */
-    public void drawSchoolBoard(VirtualSchoolBoard schoolBoard, String nickname, HashMap<ColorS, VirtualPlayer> profs){
+    public void drawSchoolBoard(VirtualPlayer vp, HashMap<ColorS, VirtualPlayer> profs){
+
         String appendix = "'s SchoolBoard";
-        ArrayList<ColorS> entrance = schoolBoard.getEntrance();
-        HashMap<ColorS, Integer> hall = (HashMap<ColorS, Integer>) schoolBoard.getHall();
-        ArrayList<ColorT> towers = schoolBoard.getTowers();
+        ArrayList<ColorS> entrance = vp.getVirtualBoard().getEntrance();
+        HashMap<ColorS, Integer> hall = (HashMap<ColorS, Integer>) vp.getVirtualBoard().getHall();
+        ArrayList<ColorT> towers = vp.getVirtualBoard().getTowers();
         ArrayList<StringBuilder> lines = new ArrayList<>();
         final int xSize=37;
 
         StringBuilder currLine = new StringBuilder();
         lines.add(currLine);
         firstLine(currLine, nickname+appendix, xSize);
+        if (vp.getVirtualLastAssistant() != null) {
+            currLine.append("Last assistant played: ");
+            currLine.append("Turn: ").append(vp.getVirtualLastAssistant().getTurn()).append(" Steps: ").append(vp.getVirtualLastAssistant().getMNsteps());
+        }
+
+        if (virtualView.getVirtualCharacters().size() != 0) {
+            currLine.append(BOX.HORIZ);
+            currLine.append(" Player: ").append(vp.getNickname()).append(" has ").append(vp.getVirtualCoins()).append(" coins.");
+        }
+
         int entrIndex = 0, towIndex = 0;
 
 
