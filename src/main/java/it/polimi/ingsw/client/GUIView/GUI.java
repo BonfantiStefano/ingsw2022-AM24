@@ -23,6 +23,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 
+/**
+ * Class GUI represents the graphical user interface.
+ *
+ * @author Baratto Marco, Bonfanti Stefano.
+ */
 public class GUI extends Application implements UserInterface {
     private Scene currentScene;
     private Stage window;
@@ -32,10 +37,19 @@ public class GUI extends Application implements UserInterface {
     private final HashMap<String, Scene> nameMapScene = new HashMap<>();
     private final HashMap<Scene, GUIController> nameMapController = new HashMap<>();
 
+    /**
+     * Method main starts the java fx application thread.
+     * @param args of type String[].
+     */
     public static void main(String[] args) {
         launch();
     }
 
+    /**
+     * Method start setups all the scene and then shows the initial scene.
+     * @param stage the Stage class.
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public void start(Stage stage) throws IOException {
         setup();
@@ -46,6 +60,9 @@ public class GUI extends Application implements UserInterface {
         run();
     }
 
+    /**
+     * Method setup creates all the stage phases which will be updated in other methods.
+     */
     private void setup() {
         try {
             for (CONTROLLERS sceneName : CONTROLLERS.values()) {
@@ -65,6 +82,9 @@ public class GUI extends Application implements UserInterface {
         currentScene = nameMapScene.get(CONTROLLERS.SETUP.toString());
     }
 
+    /**
+     * Method run sets the title of the main stage and launches the window.
+     */
     private void run() {
         window.setWidth(747);
         window.setHeight(748);
@@ -74,6 +94,11 @@ public class GUI extends Application implements UserInterface {
         window.show();
     }
 
+    /**
+     * Method setupConnection opens a Socket on the given IP and port.
+     * @param serverAddress String - the Server IP.
+     * @param port int - the port of the Server.
+     */
     @Override
     public void setupConnection(String serverAddress, int port) {
         client = new Client(this);
@@ -81,10 +106,14 @@ public class GUI extends Application implements UserInterface {
         new Thread(()-> client.startClient(serverAddress, port)).start();
     }
 
+    /**
+     * Method changeScene changes the current scene to the scene given by parameter.
+     * @param newSceneName String - the scene that will be shown.
+     * @throws IOException if an I/O error occurs.
+     */
     public void changeScene(String newSceneName) throws IOException {
         currentScene = nameMapScene.get(newSceneName);
         window.setScene(currentScene);
-        //window.sizeToScene();
         window.show();
         if(newSceneName.equals(CONTROLLERS.WELCOME.toString()) ) {
             window.setWidth(608);
@@ -103,22 +132,37 @@ public class GUI extends Application implements UserInterface {
         window.setOnCloseRequest(windowEvent -> sendMessageToServer(new Disconnect()));
     }
 
-    public void sendMessageToServer(Object string) {
+    /**
+     * Method sendMessageToServer sends a message to the server.
+     * @param message Object - the message that will be sent to the server.
+     */
+    public void sendMessageToServer(Object message) {
         if(client!=null)
-            client.sendMessage(toJson(string));
-        System.out.println(toJson(string));
+            client.sendMessage(toJson(message));
+        System.out.println(toJson(message));
     }
 
+    /**
+     * Method setVirtualView sets the virtual view.
+     * @param virtualView VirtualView - the virtual view.
+     */
     @Override
     public void setVirtualView(VirtualView virtualView) {
         this.virtualView = virtualView;
     }
 
+    /**
+     * Method getVirtualView gets the virtual view.
+     * @return the virtual view.
+     */
     public VirtualView getVirtualView() {
         return virtualView;
     }
 
-
+    /**
+     * Method propertyChange handle all the possible events that the client can do.
+     * @param evt PropertyChangeEvent - the event containing all the necessary information.
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         GameController c = (GameController) nameMapController.get(nameMapScene.get(CONTROLLERS.MAIN.toString()));
@@ -207,6 +251,12 @@ public class GUI extends Application implements UserInterface {
         }
     }
 
+    /**
+     * Converts an Object to Json format.
+     * @param r the Client's request.
+     * @return the json of the Message.
+     */
+    @Override
     public String toJson(Object r){
         Gson gson = new Gson();
         JsonElement jsonElement;
@@ -216,18 +266,34 @@ public class GUI extends Application implements UserInterface {
         return gson.toJson(jsonElement);
     }
 
+    /**
+     * Method getNickname returns the client nickname.
+     * @return a String.
+     */
     public String getNickname() {
         return nickname;
     }
 
+    /**
+     * Method setNickname sets the client nickname.
+     * @param nickname String - the client nickname.
+     */
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
+    /**
+     * Method getNameMapScene returns the map containing all the scene with its name.
+     * @return an HashMap.
+     */
     public HashMap<String, Scene> getNameMapScene() {
         return nameMapScene;
     }
 
+    /**
+     * Method getNameMapController returns the map containing all the scene with its controller.
+     * @return an HashMap.
+     */
     public HashMap<Scene, GUIController> getNameMapController() {
         return nameMapController;
     }

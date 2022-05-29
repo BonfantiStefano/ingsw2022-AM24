@@ -63,6 +63,11 @@ public class CLI implements Runnable, UserInterface {
         cli.setupConnection(ip, port);
     }
 
+    /**
+     * Method setupConnection opens a Socket on the given IP and port.
+     * @param ip String - the Server IP.
+     * @param port int - the port of the Server.
+     */
     @Override
     public void setupConnection(String ip, int port) {
         client = new Client(this);
@@ -116,10 +121,11 @@ public class CLI implements Runnable, UserInterface {
     }
 
     /**
-     * Converts an Object to Json format
-     * @param r the Client's request
-     * @return Request Object containing the Message
+     * Converts an Object to Json format.
+     * @param r the Client's request.
+     * @return the json of the Message.
      */
+    @Override
     public String toJson(Object r){
         Gson gson = new Gson();
         JsonElement jsonElement;

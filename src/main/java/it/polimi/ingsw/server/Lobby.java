@@ -99,12 +99,12 @@ public class Lobby {
                     socketClientHandler.sendMessage(new Error(ERRORS.NICKNAME_TAKEN.toString()));
                 }
                 //Check uniqueness of the tower's color
-                if (towers.contains(join.getColorT())) {
+                else if (towers.contains(join.getColorT())) {
                     ris = false;
                     socketClientHandler.sendMessage(new Error(ERRORS.COLOR_TOWER_TAKEN.toString()));
                 }
                 //Check uniqueness of the mage
-                if (mages.contains(join.getMage())) {
+                else if (mages.contains(join.getMage())) {
                     ris = false;
                     socketClientHandler.sendMessage(new Error(ERRORS.MAGE_TAKEN.toString()));
                 }

@@ -9,7 +9,9 @@ import javafx.scene.control.TextField;
 import java.io.IOException;
 
 /**
- * This class is the GUIController which handles choosing which host IP and port to connect to
+ * This class is the GUIController which handles choosing which host IP and port to connect to.
+ *
+ * @author Bonfanti Stefano.
  */
 public class SetUpController implements GUIController{
 
@@ -68,7 +70,6 @@ public class SetUpController implements GUIController{
             try {
                 //Attempts connection to server and creates the Reader
                 int port = Integer.parseInt(getServerPort());
-                //TODO verificare se funziona poiché al momento la gui non parte da questa pagina
                 gui.setupConnection(getServer(), port);
                 gui.changeScene("/Welcome.fxml");
             } catch (IOException e) {
@@ -86,7 +87,6 @@ public class SetUpController implements GUIController{
      */
     public void quitGame() {
         System.exit(0);
-        //gui.stop();
     }
 
     //SETTERS
