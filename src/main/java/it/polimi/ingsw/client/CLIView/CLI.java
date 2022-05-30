@@ -363,7 +363,7 @@ public class CLI implements Runnable, UserInterface {
             currLine.append(BOX.VERT).append(" ");
 
             if(profs!=null&&profs.get(c)!=null) {
-                if (profs.get(c).getNickname().equals(nickname))
+                if (profs.get(c).getNickname().equals(vp.getNickname()))
                     currLine.append(getChar(c)).append(" ");
                 else
                     currLine.append("  ");
@@ -371,7 +371,6 @@ public class CLI implements Runnable, UserInterface {
             else
                 currLine.append("  ");
 
-            //currLine.append(" ").append(BOX.VERT).append(" ");
             currLine.append(BOX.VERT).append(" ");
 
             for(int w = 0; w<2;w++){
