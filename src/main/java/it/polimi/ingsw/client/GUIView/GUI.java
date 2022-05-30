@@ -205,7 +205,7 @@ public class GUI extends Application implements UserInterface {
             case "INFORMATIONCONNECTION" -> {
                 text = ((InformationConnection) evt.getNewValue()).getString();
                 switch (text) {
-                    case "Game continue", "Game Started!" -> Platform.runLater(() -> {
+                    case "Game continue", "Game Started!", "Welcome back!" -> Platform.runLater(() -> {
                         try {
                             changeScene(CONTROLLERS.MAIN.toString());
                         } catch (IOException e) {

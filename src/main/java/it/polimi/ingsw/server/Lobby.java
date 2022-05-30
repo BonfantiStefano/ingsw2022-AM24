@@ -143,7 +143,7 @@ public class Lobby {
                 && gameStatus != GameStatus.ENDED /*TODO manca il controllo se il mago e il colore delle torri era quello di prima*/) {
             int oldId = mapNicknameId.get(join.getNickname());
             //Notification of the re-connection to the players
-            socketClientHandler.sendMessage(new InformationConnection("Welcome back " + join.getNickname()));
+            socketClientHandler.sendMessage(new InformationConnection("Welcome back!"));
             sendMessageToOthers(join.getNickname(), new InformationConnection(join.getNickname() + " re-connected"));
             //Handles of the re-connection
             mapNicknameId.replace(join.getNickname(), clientId);
@@ -187,8 +187,8 @@ public class Lobby {
             }
             //TODO capire se dobbiamo comunicarlo anche al controller che la partita è finita?
         } else {
-            controller.handleMessage(new Disconnect(), mapIdNickname.get(clientId));
             sendMessageToAll(new InformationConnection(mapIdNickname.get(clientId) + " disconnected"));
+            controller.handleMessage(new Disconnect(), mapIdNickname.get(clientId));
             if(clientsId.size() - disconnectedClientsId.size() == 1 && gameStatus == GameStatus.PLAYING) {
                 gameStatus = GameStatus.PAUSE;
                 startTimer();

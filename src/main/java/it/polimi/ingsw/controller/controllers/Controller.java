@@ -111,6 +111,7 @@ public class Controller implements PropertyChangeListener {
      */
     public void visit(Disconnect msg){
         model.setConnected(messageSender, false);
+        turnController.setPlayerConnected(false);
         nextPhase();
     }
 
