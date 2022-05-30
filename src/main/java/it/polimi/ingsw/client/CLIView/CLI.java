@@ -644,7 +644,7 @@ public class CLI implements Runnable, UserInterface {
             }
             else {
                 Runtime.getRuntime().exec("clear");
-                //System.out.println("\033c");
+                System.out.println("\033c");
             }
         }
         catch (IOException | InterruptedException e){

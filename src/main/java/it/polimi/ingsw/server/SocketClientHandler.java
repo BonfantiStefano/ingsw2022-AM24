@@ -17,7 +17,7 @@ import java.net.Socket;
  * @author Stefano Bonfanti
  */
 public class SocketClientHandler implements Runnable{
-    private static final int PING_PERIOD = 10000;
+    private static final int PING_PERIOD = 1000;
     private final Socket socket;
     private final Server server;
     private ObjectInputStream inputStream;
