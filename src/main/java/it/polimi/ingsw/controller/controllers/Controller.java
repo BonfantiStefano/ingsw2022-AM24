@@ -93,7 +93,7 @@ public class Controller implements PropertyChangeListener {
      * @param msg a Client's Request
      */
     public void visit(ChooseAssistant msg){
-        if(phase.equals(PHASE.PLANNING) && sortedPlayers.get(haveChosenAssistant).getNickname().equals(messageSender))
+        if(phaseChecker(PHASE.PLANNING, messageSender) && sortedPlayers.get(haveChosenAssistant).getNickname().equals(messageSender))
             try {
                 if(model.chooseAssistants(model.getPlayerByNickname(messageSender), msg.getIndex()))
                     increaseHaveChosenAssistant();
@@ -127,7 +127,7 @@ public class Controller implements PropertyChangeListener {
         boolean availableMage = model.getPlayers().stream().noneMatch(p->p.getMage().equals(msg.getMage()));
 
         //check if another player can join and his nickname is available
-        if(availableNickname && availableMage && model.getPlayers().size()<numPlayers && phase.equals(PHASE.SETUP)) {
+        if(availableNickname && availableMage && model.getPlayers().size()<numPlayers && phaseChecker(PHASE.SETUP, messageSender)) {
             model.addPlayer(msg.getNickname(), msg.getColorT(), msg.getMage());
             if(model.getPlayers().size() == numPlayers) {
                 //all players have connected
@@ -175,7 +175,7 @@ public class Controller implements PropertyChangeListener {
      * @param msg a Client's Request
      */
     public void visit(MoveToIsland msg){
-        if(phase.equals(PHASE.MOVE_STUDENTS)&&verifyActive(messageSender))
+        if(verifyActive(messageSender) && phaseChecker(PHASE.MOVE_STUDENTS, messageSender))
             actionController.handleAction(msg);
         nextPhase();
     }
@@ -185,7 +185,7 @@ public class Controller implements PropertyChangeListener {
      * @param msg a Client's Request
      */
     public void visit(MoveMN msg){
-        if(phase.equals(PHASE.MOVE_MN)&&verifyActive(messageSender))
+        if(verifyActive(messageSender) && phaseChecker(PHASE.MOVE_MN, messageSender))
             actionController.handleAction(msg);
         nextPhase();
     }
@@ -195,7 +195,7 @@ public class Controller implements PropertyChangeListener {
      * @param msg a Client's Request
      */
     public void visit(ChooseCloud msg){
-        if(phase.equals(PHASE.CHOOSE_CLOUD)&&verifyActive(messageSender))
+        if(verifyActive(messageSender) && phaseChecker(PHASE.CHOOSE_CLOUD, messageSender))
             actionController.handleAction(msg);
         nextPhase();
     }
@@ -205,7 +205,7 @@ public class Controller implements PropertyChangeListener {
      * @param msg a Client's Request
      */
     public void visit(EntranceToHall msg){
-        if(phase.equals(PHASE.MOVE_STUDENTS)&&verifyActive(messageSender))
+        if(verifyActive(messageSender) && phaseChecker(PHASE.MOVE_STUDENTS, messageSender))
             actionController.handleAction(msg);
         nextPhase();
     }
@@ -385,7 +385,26 @@ public class Controller implements PropertyChangeListener {
     private boolean verifyActive(String nickname){
         if(model!=null&&model.getActivePlayer()!=null) {
             activePlayer=model.getActivePlayer().getNickname();
-            return activePlayer.equals(nickname);
+            if(activePlayer.equals(nickname)) {
+                return true;
+            }
+            lobby.sendMessage(nickname, new Error("ERROR: it's not your turn, please wait"));
+        }
+        return false;
+    }
+
+    /**
+     * Method phaseChecker checks if the message match with the phase.
+     * @param correctPhase PHASE - the phase where the message is sent.
+     * @param nickname String - the player's nickname.
+     * @return a boolean - true if the phase is correct, false otherwise.
+     */
+    private boolean phaseChecker(PHASE correctPhase, String nickname){
+        if(correctPhase != null) {
+            if(phase.equals(correctPhase)) {
+                return true;
+            }
+            lobby.sendMessage(nickname, new Error("ERROR: it's not the correct phase"));
         }
         return false;
     }

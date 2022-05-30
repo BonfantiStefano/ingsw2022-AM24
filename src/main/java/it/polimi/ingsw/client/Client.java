@@ -90,10 +90,7 @@ public class Client{
             try {
                 String s = (String) is.readObject();
                 if(s!= null) {
-                    //questo if poi andrà rimosso, utile per debuggare.
-                    if (!s.equals("{\"type\":\"Ping\"}")) {
-                        System.out.println(s);
-                    }
+                    //System.out.println(s);
                     stopTimer();
                     startTimer();
                     Answer a = parseMessage(s);
