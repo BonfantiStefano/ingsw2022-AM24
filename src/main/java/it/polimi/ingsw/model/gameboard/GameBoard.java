@@ -198,7 +198,6 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
     @Override
     public void nextPlayer(boolean newRound){
         Player nextPlayer;
-        Player activePlayer = getActivePlayer();
         if (newRound || activePlayer == null) nextPlayer = players.get(getFirstPlayer());
         else if (players.indexOf(activePlayer) == players.size()-1) nextPlayer = players.get(0);
         else nextPlayer = players.get(players.indexOf(activePlayer) + 1);
