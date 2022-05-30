@@ -337,11 +337,6 @@ public class CLI implements Runnable, UserInterface {
             currLine.append("Turn: ").append(vp.getVirtualLastAssistant().getTurn()).append(" Steps: ").append(vp.getVirtualLastAssistant().getMNsteps());
         }
 
-        if (virtualView.getVirtualCharacters().size() != 0) {
-            currLine.append(BOX.HORIZ);
-            currLine.append(" Player: ").append(vp.getNickname()).append(" has ").append(vp.getVirtualCoins()).append(" coins.");
-        }
-
         int entrIndex = 0, towIndex = 0;
 
 
@@ -390,6 +385,11 @@ public class CLI implements Runnable, UserInterface {
 
             currLine.append(BOX.VERT);
 
+            if(ColorS.values()[0].equals(c))
+                if (virtualView.getVirtualCharacters().size() != 0) {
+                    currLine.append(" ").append(BOX.HORIZ);
+                    currLine.append(" Player: ").append(vp.getNickname()).append(" has ").append(vp.getVirtualCoins()).append(" coins.");
+                }
         }
         lastLine(xSize,1,lines);
 

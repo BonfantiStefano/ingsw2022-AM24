@@ -411,6 +411,9 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         world.resetStrategy();
     }
 
+    /**
+     * Performs all actions needed to reset the turn: sets all players as not playing and resets all strategies
+     */
     public void resetTurn(){
         for(Player p : players) {
             p.setPlaying(false);

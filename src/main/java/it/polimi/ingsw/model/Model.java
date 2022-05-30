@@ -63,5 +63,5 @@ public interface Model {
 
     Cloud getCloudByIndex(int index);
 
-    public void setActivePlayerNull();
+    void setActivePlayerNull();
 }
