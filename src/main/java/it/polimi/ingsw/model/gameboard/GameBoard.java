@@ -377,12 +377,13 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
     public void newClouds() {
         int numStudents = numPlayers%2==0 ? 3 : 4; // 2 or 4 Players -> 3 Students, 3 Players -> 4 Students per Cloud
         for(Cloud c: clouds)
-            for(int i=0;i<numStudents; i++)
-                if(container.canDraw()) {
-                    c.add(container.draw());
-                }
-                else
-                    gameMustEnd = true;
+            if(c.getStudents().isEmpty()) {
+                for (int i = 0; i < numStudents; i++)
+                    if (container.canDraw()) {
+                        c.add(container.draw());
+                    } else
+                        gameMustEnd = true;
+            }
         listener.firePropertyChange(String.valueOf(EVENT.CREATE_CLOUDS), null, createVirtualClouds());
     }
 
