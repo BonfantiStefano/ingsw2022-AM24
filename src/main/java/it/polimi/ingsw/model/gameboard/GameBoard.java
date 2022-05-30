@@ -196,10 +196,10 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
 
     /** Method nextPlayer skips to the next player and sets him as Active player */
     @Override
-    public void nextPlayer(){
+    public void nextPlayer(boolean newRound){
         Player nextPlayer;
         Player activePlayer = getActivePlayer();
-        if (activePlayer == null) nextPlayer = players.get(getFirstPlayer());
+        if (newRound || activePlayer == null) nextPlayer = players.get(getFirstPlayer());
         else if (players.indexOf(activePlayer) == players.size()-1) nextPlayer = players.get(0);
         else nextPlayer = players.get(players.indexOf(activePlayer) + 1);
 
@@ -265,13 +265,6 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         }
         this.activePlayer = nextActivePlayer;
         nextActivePlayer.setPlaying(true);
-    }
-
-    /**
-     * Method setActivePlayerNull sets Active Player null
-     */
-    public void setActivePlayerNull(){
-        this.activePlayer = null;
     }
 
     /**

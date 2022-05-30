@@ -23,7 +23,7 @@ public interface Model {
 
     int getFirstPlayer();
 
-    void nextPlayer();
+    void nextPlayer(boolean resettedRound);
 
     void addPlayer(String nickname, ColorT color, Mage mage);
 
@@ -62,6 +62,4 @@ public interface Model {
     void addListener(PropertyChangeListener controller);
 
     Cloud getCloudByIndex(int index);
-
-    void setActivePlayerNull();
 }

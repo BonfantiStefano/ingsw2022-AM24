@@ -155,11 +155,11 @@ public class GameBoardTest {
     @Test
     public void testFirstPlayer_testNextPlayer() {
         int firstPlayer = gb.getFirstPlayer();
-        gb.nextPlayer();
+        gb.nextPlayer(false);
         assertEquals(gb.getActivePlayer().getNickname(), "Alice");
-        gb.nextPlayer();
+        gb.nextPlayer(false);
         assertEquals(gb.getActivePlayer().getNickname(), "Lisa");
-        gb.nextPlayer();
+        gb.nextPlayer(false);
         assertEquals(gb.getActivePlayer().getNickname(), "Bob");
     }
 

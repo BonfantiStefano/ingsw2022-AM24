@@ -250,11 +250,8 @@ public class Controller implements PropertyChangeListener {
             case MOVE_STUDENTS -> {
                 //this phase is the first in a turn so the controller sets the next ActivePlayer
                 //and asks him to move Students
-                if(roundResetted){
-                    model.setActivePlayerNull();
-                    roundResetted = false;
-                }
-                model.nextPlayer();
+                model.nextPlayer(roundResetted);
+                roundResetted = false;
                 //if he's connected send him a message
                 if (model.getActivePlayer().isConnected()) {
                     activePlayer = model.getActivePlayer().getNickname();
@@ -304,7 +301,7 @@ public class Controller implements PropertyChangeListener {
                     model.resetRound();
                     havePlayed = 0;
                     haveChosenAssistant = 0;
-                    model.nextPlayer();
+                    model.nextPlayer(roundResetted);
                     roundResetted = true;
                 }
                 nextPhase();

@@ -38,7 +38,7 @@ class ExpertGameBoardTest {
     void init() throws NoSuchStudentException {
         gb = new ExpertGameBoard(4);
         gb.addPlayer("1", ColorT.WHITE, Mage.MAGE2);
-        gb.nextPlayer();
+        gb.nextPlayer(false);
         gb.getActivePlayer().getMyBoard().add(ColorS.BLUE);
         gb.getActivePlayer().getMyBoard().add(ColorS.BLUE);
         gb.getActivePlayer().getMyBoard().add(ColorS.BLUE);
