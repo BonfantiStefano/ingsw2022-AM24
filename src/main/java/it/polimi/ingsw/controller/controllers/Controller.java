@@ -226,7 +226,7 @@ public class Controller implements PropertyChangeListener {
     public void doPhase(){
         //get information about Players and the ActivePlayer
 
-        if(!phase.equals(PHASE.PLANNING) && !phase.equals(PHASE.SETUP) && !phase.equals(PHASE.MOVE_STUDENTS))
+        if(!phase.equals(PHASE.PLANNING) && !phase.equals(PHASE.SETUP) && !phase.equals(PHASE.MOVE_STUDENTS)&&!phase.equals(PHASE.RESET_TURN))
             activePlayer = model.getActivePlayer().getNickname();
 
         switch (phase) {
