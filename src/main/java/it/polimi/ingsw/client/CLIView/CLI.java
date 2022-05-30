@@ -331,7 +331,7 @@ public class CLI implements Runnable, UserInterface {
 
         StringBuilder currLine = new StringBuilder();
         lines.add(currLine);
-        firstLine(currLine, nickname+appendix, xSize);
+        firstLine(currLine, vp.getNickname()+appendix, xSize);
         if (vp.getVirtualLastAssistant() != null) {
             currLine.append("Last assistant played: ");
             currLine.append("Turn: ").append(vp.getVirtualLastAssistant().getTurn()).append(" Steps: ").append(vp.getVirtualLastAssistant().getMNsteps());
