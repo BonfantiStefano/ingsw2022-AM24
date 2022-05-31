@@ -6,6 +6,7 @@ import it.polimi.ingsw.controller.controllers.Controller;
 import it.polimi.ingsw.controller.controllers.ExpertController;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.exceptions.InvalidMNStepsException;
+import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
@@ -727,6 +728,109 @@ public class ExpertControllerTest {
         assertEquals(PHASE.GAME_WON, expController.getPhase());
     }
 
+    /**
+     * Method removeHallListenersTest checks if the students are correctly removed from all players' hall
+     */
+    @Test
+    public void removeHallListenersTest() throws PlaceFullException, NoSuchStudentException {
+        Lobby lobby = new Lobby();
+        expController = new ExpertController(lobby, new GameParams(3, true, "A", Mage.MAGE1, ColorT.BLACK));
+        Join join2 = new Join("B", Mage.MAGE2, ColorT.WHITE, 1);
+        expController.handleMessage(join2, "B");
+        Join join3 = new Join("C", Mage.MAGE3, ColorT.GREY, 1);
+        expController.handleMessage(join3, "C");
+
+        ExpertGameBoard gameBoard = (ExpertGameBoard) expController.getModel();
+        VirtualView view = expController.getVirtualView();
+        //A 10 yellow in hall, B 3 yellow, C 1 yellow
+        for(int i = 0; i < 10; i++)
+            gameBoard.getPlayers().get(0).getMyBoard().addToHall(ColorS.YELLOW);
+        for(int i = 0; i < 3; i++)
+            gameBoard.getPlayers().get(1).getMyBoard().addToHall(ColorS.YELLOW);
+        for(int i = 0; i < 1; i++)
+            gameBoard.getPlayers().get(2).getMyBoard().addToHall(ColorS.YELLOW);
+
+        assertEquals(10, view.getVirtualPlayers().get(0).getVirtualBoard().getHall().get(ColorS.YELLOW));
+        assertEquals(3, view.getVirtualPlayers().get(1).getVirtualBoard().getHall().get(ColorS.YELLOW));
+        assertEquals(1, view.getVirtualPlayers().get(2).getVirtualBoard().getHall().get(ColorS.YELLOW));
+
+        gameBoard.removeHall(ColorS.YELLOW);
+
+        assertEquals(7, view.getVirtualPlayers().get(0).getVirtualBoard().getHall().get(ColorS.YELLOW));
+        assertEquals(0, view.getVirtualPlayers().get(1).getVirtualBoard().getHall().get(ColorS.YELLOW));
+        assertEquals(0, view.getVirtualPlayers().get(2).getVirtualBoard().getHall().get(ColorS.YELLOW));
+    }
+
+    /**
+     * Method resetCounter checks if the counter of students' moves is correctly resetted when next player's turn starts
+     */
+    @Test
+    public void resetCounterTest() throws PlaceFullException {
+        Lobby lobby = new Lobby();
+        c = new ExpertController(lobby, new GameParams(2, true, "A", Mage.MAGE1, ColorT.BLACK));
+        Join join = new Join("B", Mage.MAGE2, ColorT.WHITE, 1);
+        c.handleMessage(join, "B");
+
+        ExpertGameBoard gameBoard = (ExpertGameBoard) c.getModel();
+        VirtualView view = c.getVirtualView();
+
+        c.handleMessage(new ChooseAssistant(2), "A");
+        c.handleMessage(new ChooseAssistant(6), "B");
+
+        gameBoard.getPlayerByNickname("A").getMyBoard().getEntrance().removeAll(gameBoard.getPlayerByNickname("A").getMyBoard().getEntrance());
+        assertEquals(0, view.getVirtualPlayers().get(0).getVirtualBoard().getEntrance().size());
+
+        // A hall: 1 green, 1 red; entrance: 1 pink, 1 blue, 1 yellow
+        gameBoard.getPlayerByNickname("A").getMyBoard().add(ColorS.PINK);
+        gameBoard.getPlayerByNickname("A").getMyBoard().add(ColorS.BLUE);
+        gameBoard.getPlayerByNickname("A").getMyBoard().add(ColorS.YELLOW);
+
+        gameBoard.getPlayerByNickname("A").getMyBoard().addToHall(ColorS.GREEN);
+        gameBoard.getPlayerByNickname("A").getMyBoard().addToHall(ColorS.RED);
+
+        Character char10 = createCharacter(10);
+        gameBoard.set(0, char10);
+        view.getVirtualCharacters().set(0, new VirtualCharacter(char10));
+
+        PlayCharacter messChar10 = new PlayCharacter(CharacterDescription.CHAR10);
+        c.handleCharacter(messChar10, "A");
+
+        assertEquals(0, c.numSwitchMoves);
+
+        ChooseTwoColors message1 = new ChooseTwoColors(ColorS.GREEN, ColorS.PINK);
+        c.handleCharacter(message1, "A");
+
+        assertEquals(1, c.numSwitchMoves);
+
+        ChooseTwoColors message2 = new ChooseTwoColors(ColorS.RED, ColorS.BLUE);
+        c.handleCharacter(message2, "A");
+
+        assertEquals(2, c.numSwitchMoves);
+
+        // move students phase
+        EntranceToHall message3 = new EntranceToHall(ColorS.RED);
+        c.handleMessage(message3, "A");
+
+        EntranceToHall message4 = new EntranceToHall(ColorS.GREEN);
+        c.handleMessage(message4, "A");
+
+        MoveToIsland message5 = new MoveToIsland(ColorS.YELLOW, 1);
+        c.handleMessage(message5, "A");
+
+        System.out.println(gameBoard.getActiveCharacter().getDescription());
+
+        //move mn phase
+        MoveMN message6 = new MoveMN(1);
+        c.handleMessage(message6, "A");
+
+        //choose cloud
+        ChooseCloud message7 = new ChooseCloud(1);
+        c.handleMessage(message7, "A");
+
+        //NEXT PLAYER'S TURN
+        assertEquals(0, c.numSwitchMoves);
+    }
+
 
     /** Method createCharacter for creating different Character cards used in the tests */
     public Character createCharacter ( int charNum){
@@ -779,5 +883,7 @@ public class ExpertControllerTest {
             }
             return c;
     }
+
+
 
 }

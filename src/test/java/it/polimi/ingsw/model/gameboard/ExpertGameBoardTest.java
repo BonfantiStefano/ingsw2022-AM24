@@ -120,7 +120,7 @@ class ExpertGameBoardTest {
      * otherwise he will lose all of them
      * */
     @Test
-    void removeHall() {
+    void removeHall() throws NoSuchStudentException {
         gb.getActivePlayer().getMyBoard().getHall().put(ColorS.BLUE, 10);
         gb.removeHall(ColorS.BLUE);
         assertEquals(7,gb.getActivePlayer().getMyBoard().getHall().get(ColorS.BLUE));
@@ -219,7 +219,7 @@ class ExpertGameBoardTest {
      * Method testRemoveHall checks the effect of the Character card that removes students from the hall
      */
     @Test
-    void testRemoveHall() throws PlaceFullException {
+    void testRemoveHall() throws PlaceFullException, NoSuchStudentException {
         gb = new ExpertGameBoard(2);
         gb.addPlayer("Lisa", ColorT.BLACK, Mage.MAGE1);
         gb.addPlayer("Bob", ColorT.WHITE, Mage.MAGE2);

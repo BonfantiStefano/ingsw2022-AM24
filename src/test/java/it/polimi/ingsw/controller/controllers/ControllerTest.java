@@ -4,9 +4,12 @@ import it.polimi.ingsw.client.request.*;
 import it.polimi.ingsw.controller.PHASE;
 import it.polimi.ingsw.controller.controllers.Controller;
 import it.polimi.ingsw.exceptions.InvalidIndexException;
+import it.polimi.ingsw.exceptions.NoSuchStudentException;
+import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.character.CharacterDescription;
+import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
 import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.player.Assistant;
 import it.polimi.ingsw.model.player.Mage;
@@ -697,4 +700,5 @@ class ControllerTest {
         assertEquals(0, gameBoard.getPlayerByNickname("B").getNumCards());
 
     }
+
 }

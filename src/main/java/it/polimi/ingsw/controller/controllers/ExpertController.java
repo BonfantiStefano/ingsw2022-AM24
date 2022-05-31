@@ -29,8 +29,6 @@ import java.util.Optional;
  */
 public class ExpertController extends Controller {
 
-    private int numSwitchMoves;
-    private int numStudMoves;
     private Character activeCharacter;
 
     /**
@@ -83,11 +81,11 @@ public class ExpertController extends Controller {
      */
     @Override
     public void visit(PlayCharacter msg){
-        numSwitchMoves=0;
-        numStudMoves=0;
         activeCharacter = getModel().getActiveCharacter();
         if(activeCharacter == null && !phase.equals(PHASE.PLANNING)){
             try {
+                numSwitchMoves=0;
+                numStudMoves=0;
                 Character c = getModel().getCharacters().stream().
                         filter(character -> msg.getC().getDesc().equals(character.getDescription())).findAny().orElse(null);
                 if(c!= null) getModel().playCharacter(c);
@@ -175,7 +173,11 @@ public class ExpertController extends Controller {
                 turnController.setCharacterActionCheck(true);
             }
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR12.getDesc())) {
-                getModel().removeHall(m.getColor());
+                try {
+                    getModel().removeHall(m.getColor());
+                } catch (NoSuchStudentException e) {
+                    lobby.sendMessage(messageSender, new Error("There are no students in the hall"));
+                }
                 turnController.setCharacterActionCheck(true);
             }
             if (activeCharacter.getDescription().equals(CharacterDescription.CHAR11.getDesc())) {
@@ -347,6 +349,9 @@ public class ExpertController extends Controller {
         virtualCharacters.forEach(c-> sendChar(virtualCharacters.indexOf(c)));
     }
 
+    /** Method sendChar is used to send to all the active clients a Character cards
+     * @param index - the index of the chosen Character card
+     */
     private void sendChar(int index){
         ArrayList<VirtualCharacter> virtualCharacters = virtualView.getVirtualCharacters();
         VirtualCharacter c = virtualCharacters.get(index);

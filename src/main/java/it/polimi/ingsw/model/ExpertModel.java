@@ -22,7 +22,7 @@ public interface ExpertModel extends Model{
 
     void switchStudents(ColorS hallS, ColorS entranceS) throws PlaceFullException, NoSuchStudentException;
 
-    void removeHall(ColorS s);
+    void removeHall(ColorS s) throws NoSuchStudentException;
 
     void playCharacter(Character c) throws NotEnoughCoinsException;
 

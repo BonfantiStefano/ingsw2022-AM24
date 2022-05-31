@@ -47,6 +47,8 @@ public class Controller implements PropertyChangeListener {
     protected boolean gameStarted;
     protected VirtualView virtualView;
     ArrayList<Player> sortedPlayers = new ArrayList<>();
+    protected int numSwitchMoves;
+    protected int numStudMoves;
     private boolean roundResetted;
 
 
@@ -278,6 +280,8 @@ public class Controller implements PropertyChangeListener {
                 //the turn has ended so the next Player by default is regarded as connected
                 turnController.setPlayerConnected(true);
                 model.resetTurn();
+                numSwitchMoves = 0;
+                numStudMoves = 0;
                 nextPhase();
             }
             case RESET_ROUND -> {
@@ -534,4 +538,5 @@ public class Controller implements PropertyChangeListener {
     public VirtualView getVirtualView() {
         return virtualView;
     }
+
 }
