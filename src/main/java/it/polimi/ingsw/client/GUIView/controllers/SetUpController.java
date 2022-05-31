@@ -65,16 +65,17 @@ public class SetUpController implements GUIController{
             statusLabel.setText("Please specify a server port");
             connectButton.setDisable(false);
         } else {
-            statusLabel.setText("SUCCESSFULLY CONNECTED");
+            statusLabel.setText("Checking the connection");
 
             try {
                 //Attempts connection to server and creates the Reader
                 int port = Integer.parseInt(getServerPort());
                 gui.setupConnection(getServer(), port);
-                gui.changeScene("/Welcome.fxml");
+                /*
             } catch (IOException e) {
                 statusLabel.setText("Couldn't connect to the specified server");
                 connectButton.setDisable(false);
+                 */
             } catch (NumberFormatException e1) {
                 statusLabel.setText("The specified port is not a number");
                 connectButton.setDisable(false);

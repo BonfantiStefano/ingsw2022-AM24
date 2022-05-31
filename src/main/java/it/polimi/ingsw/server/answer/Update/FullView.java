@@ -4,7 +4,7 @@ import it.polimi.ingsw.client.Client;
 import it.polimi.ingsw.server.virtualview.VirtualView;
 
 public class FullView implements Update{
-    private VirtualView virtualView;
+    private final VirtualView virtualView;
 
     public FullView(VirtualView virtualView) {
         this.virtualView = virtualView;

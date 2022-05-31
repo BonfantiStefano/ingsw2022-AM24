@@ -170,7 +170,7 @@ public class GUI extends Application implements UserInterface {
         String text;
         switch (evt.getPropertyName()) {
             case "WELCOME" -> {
-                if (currentScene.equals(nameMapScene.get(CONTROLLERS.WELCOME.toString())))
+                if (!currentScene.equals(nameMapScene.get(CONTROLLERS.WELCOME.toString())))
                     Platform.runLater(() -> {
                         try {
                             changeScene(CONTROLLERS.WELCOME.toString());

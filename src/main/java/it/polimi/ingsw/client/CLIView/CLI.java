@@ -44,23 +44,28 @@ public class CLI implements Runnable, UserInterface {
      * @param args of type String[]
      */
     public static void main(String[] args) {
-        Scanner initialScanner = new Scanner(System.in);
-        System.out.println("Enter IP");
-        String ip = initialScanner.nextLine();
-        System.out.println("IP is: " + ip);
-        int port;
-        do {
-            System.out.println("Enter port (between 1024 and 65535):");
-            try {
-                port = Integer.parseInt(initialScanner.nextLine());
-            } catch (NumberFormatException exception) {
-                System.out.println("Numeric format requested");
-                port = -1;
-            }
-        } while (port < 1024 || port > 65535);
-        System.out.println("Port is: "+ port);
-        CLI cli = new CLI();
-        cli.setupConnection(ip, port);
+        if (args.length == 0) {
+            Scanner initialScanner = new Scanner(System.in);
+            System.out.println("Enter IP");
+            String ip = initialScanner.nextLine();
+            System.out.println("IP is: " + ip);
+            int port;
+            do {
+                System.out.println("Enter port (between 1024 and 65535):");
+                try {
+                    port = Integer.parseInt(initialScanner.nextLine());
+                } catch (NumberFormatException exception) {
+                    System.out.println("Numeric format requested");
+                    port = -1;
+                }
+            } while (port < 1024 || port > 65535);
+            System.out.println("Port is: " + port);
+            CLI cli = new CLI();
+            cli.setupConnection(ip, port);
+        } else {
+            CLI cli = new CLI();
+            cli.setupConnection(args[1], Integer.parseInt(args[2]));
+        }
     }
 
     /**

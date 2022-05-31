@@ -17,40 +17,49 @@ public class Eriantys {
      *
      * @param args of type String[]
      */
-    public static void main(String[] args){
-        System.out.println("Hi! Welcome to Eriantys!\nWhat do you want to launch?");
-        System.out.println("0. Server\n1. Client");
-        System.out.println("Type the number of the desired option!");
-        Scanner scanner = new Scanner(System.in);
-        int input = 0;
-        int client = 0;
-        try {
-            input = Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException exception) {
-            System.err.println("Numeric format requested, application will now close...");
-            System.exit(-1);
-        }
-        switch (input) {
-            case 0 -> ServerMain.main(null);
-            case 1 -> {
-                System.out.println("0. CLI\n1. GUI");
-                System.out.println("Type the number of the interface you want to play with!");
-                try {
-                    client = Integer.parseInt(scanner.nextLine());
-                } catch (NumberFormatException exception) {
-                    System.err.println("Numeric format requested, application will now close...");
-                    System.exit(-1);
-                }
-                switch (client) {
-                    case 0 -> CLI.main(null);
-                    case 1 -> {
-                        System.out.println("The Application is starting...");
-                        GUI.main(null);
-                    }
-                    default -> System.err.println("Invalid argument, please run the executable again");
-                }
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Hi! Welcome to Eriantys!\nWhat do you want to launch?");
+            System.out.println("0. Server\n1. Client");
+            System.out.println("Type the number of the desired option!");
+            Scanner scanner = new Scanner(System.in);
+            int input = 0;
+            int client = 0;
+            try {
+                input = Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException exception) {
+                System.err.println("Numeric format requested, application will now close...");
+                System.exit(-1);
             }
-            default -> System.err.println("Invalid argument, please run the executable again with one of these options:\n0.server\n1.client");
+            switch (input) {
+                case 0 -> ServerMain.main(null);
+                case 1 -> {
+                    System.out.println("0. CLI\n1. GUI");
+                    System.out.println("Type the number of the interface you want to play with!");
+                    try {
+                        client = Integer.parseInt(scanner.nextLine());
+                    } catch (NumberFormatException exception) {
+                        System.err.println("Numeric format requested, application will now close...");
+                        System.exit(-1);
+                    }
+                    switch (client) {
+                        case 0 -> CLI.main(null);
+                        case 1 -> {
+                            System.out.println("The Application is starting...");
+                            GUI.main(null);
+                        }
+                        default -> System.err.println("Invalid argument, please run the executable again");
+                    }
+                }
+                default -> System.err.println("Invalid argument, please run the executable again with one of these options:\n0.server\n1.client");
+            }
+        } else {
+            switch (args[0]) {
+                case "-c" -> CLI.main(args);
+                case "-g" -> GUI.main(null);
+                case "-s" -> ServerMain.main(args);
+                default -> System.err.println("Invalid argument, please re-run the executable again.");
+            }
         }
     }
 }

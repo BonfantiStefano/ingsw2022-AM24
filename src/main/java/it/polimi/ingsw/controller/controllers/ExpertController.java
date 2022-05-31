@@ -124,8 +124,8 @@ public class ExpertController extends Controller {
     }
 
     /** Method visit is used to apply the Character effect that allows to calculate the influence on the chosen
-     *  island (in case the activate Character is the third one) or to place a No Entry tile on the chosen island
-     *  (in case the activate Character is the 5th one)
+     *  island (in case the active Character is the third one) or to place a No Entry tile on the chosen island
+     *  (in case the active Character is the 5th one)
      *  @param m - request which contains the index of the island
      */
     @Override
