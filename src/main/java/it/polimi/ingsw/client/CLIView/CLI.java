@@ -169,7 +169,7 @@ public class CLI implements Runnable, UserInterface {
                 return new SpecialMoveIsland(color, i-1);
             case CHOOSE_ISLAND:
                 int island = Integer.parseInt(s.split(" ")[1]);
-                return new ChooseIsland(island);
+                return new ChooseIsland(island-1);
             case SHOW_HAND:
                 showHand();
                 return null;
