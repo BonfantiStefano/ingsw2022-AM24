@@ -83,6 +83,8 @@ public class ExpertController extends Controller {
      */
     @Override
     public void visit(PlayCharacter msg){
+        numSwitchMoves=0;
+        numStudMoves=0;
         activeCharacter = getModel().getActiveCharacter();
         if(activeCharacter == null && !phase.equals(PHASE.PLANNING)){
             try {

@@ -733,6 +733,7 @@ public class GameController implements GUIController{
      * @param e the MouseEvent
      */
     private void studentDestination(MouseEvent e){
+        String destinationId = ((Node) e.getSource()).getId();
         if(from!=null&&selected!=null){
             to = (Node) e.getSource();
             System.out.println("from: " +from.getId()+" to: "+to.getId()+" selected: "+ selected.toString());
@@ -742,7 +743,6 @@ public class GameController implements GUIController{
             selected = null;
         }
         else if(selectedMN){
-            String destinationId = ((Node) e.getSource()).getId();
             int dest = Integer.parseInt(destinationId.replace("island",""));
             int currMnPos = virtualView.getMnPos(), steps = 0;
 
@@ -758,11 +758,16 @@ public class GameController implements GUIController{
             selectedMN = false;
         }
         else if(selectedNoEntry){
-            String destinationId = ((Node) e.getSource()).getId();
+            destinationId = ((Node) e.getSource()).getId();
             int dest = Integer.parseInt(destinationId.replace("island",""));
             gui.sendMessageToServer(new ChooseIsland(dest));
             selectedNoEntry = false;
         }
+        else if(destinationId!=null&&destinationId.contains("island")&&e.getClickCount()==2){
+            int dest = Integer.parseInt(destinationId.replace("island",""));
+            gui.sendMessageToServer(new ChooseIsland(dest));
+        }
+
     }
 
     /**

@@ -86,6 +86,7 @@ public class Controller implements PropertyChangeListener {
         messageSender = nickname;
         r.accept(this);
         messageSender = null;
+        nextPhase();
     }
 
     /**
@@ -99,12 +100,11 @@ public class Controller implements PropertyChangeListener {
                     increaseHaveChosenAssistant();
                 else
                     lobby.sendMessage(messageSender, new Error("Can't choose this Assistant!"));
-
             } catch (InvalidIndexException e) {
                 lobby.sendMessage(messageSender, new Error(ERRORS.INVALID_INDEX.toString()));
             }
-        nextPhase();
     }
+
     /**
      * If the game Phase is right perform the correct actions for this kind of Message
      * @param msg a Client's Request
@@ -113,7 +113,6 @@ public class Controller implements PropertyChangeListener {
         model.setConnected(messageSender, false);
         if(model.getActivePlayer()!=null && messageSender.equals(model.getActivePlayer().getNickname())) {
             turnController.setPlayerConnected(false);
-            nextPhase();
         }
     }
 
@@ -167,7 +166,6 @@ public class Controller implements PropertyChangeListener {
 
         if(!message.isEmpty())
             lobby.sendMessage(messageSender, new Error(message));
-        nextPhase();
     }
 
     /**
@@ -177,7 +175,6 @@ public class Controller implements PropertyChangeListener {
     public void visit(MoveToIsland msg){
         if(verifyActive(messageSender) && phaseChecker(PHASE.MOVE_STUDENTS, messageSender))
             actionController.handleAction(msg);
-        nextPhase();
     }
 
     /**
@@ -187,7 +184,6 @@ public class Controller implements PropertyChangeListener {
     public void visit(MoveMN msg){
         if(verifyActive(messageSender) && phaseChecker(PHASE.MOVE_MN, messageSender))
             actionController.handleAction(msg);
-        nextPhase();
     }
 
     /**
@@ -197,7 +193,6 @@ public class Controller implements PropertyChangeListener {
     public void visit(ChooseCloud msg){
         if(verifyActive(messageSender) && phaseChecker(PHASE.CHOOSE_CLOUD, messageSender))
             actionController.handleAction(msg);
-        nextPhase();
     }
 
     /**
@@ -207,7 +202,6 @@ public class Controller implements PropertyChangeListener {
     public void visit(EntranceToHall msg){
         if(verifyActive(messageSender) && phaseChecker(PHASE.MOVE_STUDENTS, messageSender))
             actionController.handleAction(msg);
-        nextPhase();
     }
 
     /**
@@ -239,12 +233,14 @@ public class Controller implements PropertyChangeListener {
                 //if he's connected send him a message
                 String name;
                 if (sortedPlayers.get(haveChosenAssistant).isConnected()) {
-                    name =sortedPlayers.get(haveChosenAssistant).getNickname();
+                    name = sortedPlayers.get(haveChosenAssistant).getNickname();
                     lobby.sendMessage(name, new InformationGame("Choose your Assistant!"));
                     lobby.sendMessageToOthers(name, new InformationGame(name+" has to choose an Assistant"));
                 }
                 else{
                     increaseHaveChosenAssistant();
+                    System.out.println("The player that has to choose an assistant is disconnected, skipping");
+                    nextPhase();
                 }
             }
             case MOVE_STUDENTS -> {

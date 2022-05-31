@@ -14,6 +14,7 @@ import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.server.virtualview.VirtualCharacter;
 import it.polimi.ingsw.server.virtualview.VirtualCharacterWithNoEntry;
 import it.polimi.ingsw.server.virtualview.VirtualCharacterWithStudents;
+import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -158,6 +159,8 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
                     getContainer().addStudent(s);
                 }
             }
+            //TODO check if it's the correct update
+            listener.firePropertyChange(EVENT.REPLACE_PLAYER.toString(),players.indexOf(p), new VirtualPlayer(p));
         }
         checkProfs();
     }
