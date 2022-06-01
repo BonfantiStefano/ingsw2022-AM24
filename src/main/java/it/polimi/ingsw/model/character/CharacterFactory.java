@@ -85,6 +85,7 @@ public class CharacterFactory {
     }
 
     public void setPlayers(ArrayList<PlayerInterface> players) {
-        this.players = players;
+        this.players.clear();
+        this.players.addAll(players);
     }
 }

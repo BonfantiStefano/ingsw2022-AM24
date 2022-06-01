@@ -267,7 +267,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
      * @return factory a new CharacterFactory
      */
     private CharacterFactory createFactory(){
-        ArrayList<PlayerInterface> players= this.players.stream().map(p -> (PlayerInterface) p).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<PlayerInterface> players = this.players.stream().map(p -> (PlayerInterface) p).collect(Collectors.toCollection(ArrayList::new));
         factory = new CharacterFactory(world, this, container, players);
         return factory;
     }
