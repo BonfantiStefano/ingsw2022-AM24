@@ -101,7 +101,7 @@ public class Client{
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
-                System.out.println("Socket chiuso, al posto di e.printStackTrace");
+                System.out.println("Disconnected");
                 handleClientDisconnection(false);
             }
         }

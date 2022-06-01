@@ -32,7 +32,7 @@ public class Eriantys {
                 System.exit(-1);
             }
             switch (input) {
-                case 0 -> ServerMain.main(null);
+                case 0 -> ServerMain.main(args);
                 case 1 -> {
                     System.out.println("0. CLI\n1. GUI");
                     System.out.println("Type the number of the interface you want to play with!");
@@ -43,7 +43,7 @@ public class Eriantys {
                         System.exit(-1);
                     }
                     switch (client) {
-                        case 0 -> CLI.main(null);
+                        case 0 -> CLI.main(args);
                         case 1 -> {
                             System.out.println("The Application is starting...");
                             GUI.main(null);
