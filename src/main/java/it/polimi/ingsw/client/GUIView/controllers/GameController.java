@@ -519,7 +519,9 @@ public class GameController implements GUIController{
                 ImageView coin = new ImageView(coinImage);
                 coin.setFitWidth(50);
                 coin.setFitHeight(50);
-                gp.getChildren().add(coin);
+                coin.setTranslateX(25);
+                coin.setTranslateY(-50);
+                p.getChildren().add(coin);
             }
 
             if(vc.isActive())
@@ -833,8 +835,7 @@ public class GameController implements GUIController{
             List<Node> coins = p.getChildren().stream().filter(c -> c.getId().equals("coin")).toList();
             p.getChildren().removeAll(coins);
         });
-        ArrayList<VirtualPlayer> vps = new ArrayList<>();
-            vps = virtualView.getVirtualPlayers();
+        ArrayList<VirtualPlayer> vps = virtualView.getVirtualPlayers();
 
         for(VirtualPlayer vp:vps) {
             for (int i = 0; i <vp.getVirtualCoins();i++)
@@ -858,6 +859,12 @@ public class GameController implements GUIController{
         controller.setGui(gui);
         window.setScene(controller.getScene());
         Platform.runLater(window::showAndWait);
+    }
+
+    public void clearMove(){
+        from = null;
+        to = null;
+        selected = null;
     }
 
     @FXML
