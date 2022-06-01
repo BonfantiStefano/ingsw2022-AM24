@@ -39,14 +39,8 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
         this.coins = NUM_COINS;
         factory=createFactory();
         characters=new ArrayList<>();
-        while(true){
-            Character c = factory.createCharacter();
-            if(c.getDescription().equals(CharacterDescription.CHAR2.getDesc())){
-                characters.add(c);
-                break;
-            }
-        }
-        for(int i=0;i<2;i++){
+
+        for(int i=0;i<3;i++){
             characters.add(factory.createCharacter());
         }
     }

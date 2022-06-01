@@ -59,24 +59,14 @@ public class ChooseColorController implements GUIController{
         buttons.getChildren().addAll(tbl1, tbl2, tbl3, tbl4, tbl5);
         root.setTop(buttons);
 
-        CheckBox cb = new CheckBox("Done");
-        cb.selectedProperty().addListener( event ->{
-            if(cb.isSelected() && colorStudent!= null){
-                //send message to server
-                gui.sendMessageToServer(new ChooseColor(colorStudent));
-                Stage s = (Stage) cb.getScene().getWindow();
-                s.close();
-            }
-            else{
-                cb.setSelected(false);
-            }
-        });
-        cb.setTranslateX(15);
-        cb.setTranslateY(-15);
-        root.setBottom(cb);
-
         Rectangle rect = new Rectangle(300, 300);
         rect.setFill(new ImagePattern(new Image(getClass().getResourceAsStream("/graphics/Students/choose.png"))));
+
+        rect.setOnMouseClicked(mouseEvent -> {
+            if(mouseEvent.getClickCount()==2&&colorStudent!=null)
+                gui.sendMessageToServer(new ChooseColor(colorStudent));
+        });
+
         //frame
         rect.setStroke((Color.WHITE));
         rect.setStrokeWidth(2);
