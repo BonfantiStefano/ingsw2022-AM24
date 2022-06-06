@@ -349,7 +349,7 @@ public class ExpertController extends Controller {
         virtualCharacters.forEach(c-> sendChar(virtualCharacters.indexOf(c)));
     }
 
-    /** Method sendChar is used to send to all the active clients a Character cards
+    /** Method sendChar is used to send to all the active clients a Character card
      * @param index - the index of the chosen Character card
      */
     private void sendChar(int index){
