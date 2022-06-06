@@ -35,8 +35,6 @@ public class Lobby {
     private Thread timerPause;
     private static final int WAITING_TIME = 50000;
 
-    //metodo inutile usato solo perché altrimenti per i test dell' expert controller dovrei creare tutti i parametri, poi
-    //lo cambierò.
     /**
      * Constructor Lobby creates a new empty Lobby instance.
      */
@@ -140,7 +138,7 @@ public class Lobby {
      */
     public int checkReconnection(Join join, SocketClientHandler socketClientHandler, int clientId) {
         if(mapNicknameId.containsKey(join.getNickname()) && disconnectedClientsId.contains(mapNicknameId.get(join.getNickname()))
-                && gameStatus != GameStatus.ENDED /*TODO manca il controllo se il mago e il colore delle torri era quello di prima*/) {
+                && gameStatus != GameStatus.ENDED) {
             int oldId = mapNicknameId.get(join.getNickname());
             //Notification of the re-connection to the players
             socketClientHandler.sendMessage(new InformationConnection("Welcome back!"));
@@ -163,8 +161,8 @@ public class Lobby {
             }
             return oldId;
         }
-        //forse si può mettere che se uno prova a riconnettersi dopo che la partita è finita può dirgli che la partita è finita
         if(gameStatus == GameStatus.ENDED) {
+            //If the game is ended the server notifies this to the client.
             socketClientHandler.sendMessage(new Error("Error: game ended"));
         } else {
             socketClientHandler.sendMessage(new Error(ERRORS.NICKNAME_TAKEN.toString()));
@@ -185,7 +183,6 @@ public class Lobby {
             if(timerPause.isAlive()) {
                 stopTimer();
             }
-            //TODO capire se dobbiamo comunicarlo anche al controller che la partita è finita?
         } else {
             sendMessageToAll(new InformationConnection(mapIdNickname.get(clientId) + " disconnected"));
             controller.handleMessage(new Disconnect(), mapIdNickname.get(clientId));
@@ -204,7 +201,6 @@ public class Lobby {
      * @param answer AnswerWithString - the message that will be sent to the client.
      */
     public void sendMessage(String nickname, AnswerWithString answer){
-        //Si può cambiare in !mapIdSocket.isEmpty() && !mapNicknameId
         if(mapIdSocket != null && mapNicknameId != null) {
             mapIdSocket.get(mapNicknameId.get(nickname)).sendMessage(answer);
         }
@@ -218,7 +214,6 @@ public class Lobby {
     public void sendMessageToOthers(String nickname, AnswerWithString answer) {
         if(clientsId != null) {
             for (Integer id : clientsId) {
-                //how to check if a client is active or disconnected
                 if (mapIdSocket != null && mapNicknameId != null && !id.equals(mapNicknameId.get(nickname)) && !disconnectedClientsId.contains(id)) {
                     mapIdSocket.get(id).sendMessage(answer);
                 }

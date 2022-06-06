@@ -484,14 +484,18 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
     //Remember that there are two different case of null return value: if the first condition is verified the game ends in a draw, otherwise
     //there the game must continue.
     public Optional<Player> checkWin() {
+        //checks if the game is in a condition where the game must end
         if(world.getSize() == 3 || gameMustEnd) {
+            //If the game must end looks for the winner
             Player playerWinning = players.get(0);
             Optional<Player> winner = Optional.of(playerWinning);
             for(Player p : players) {
+                //Looks if this player has fewer towers in the schoolboard then the actual winner.
                 if (p.getMyBoard().getTowers().size() < playerWinning.getMyBoard().getTowers().size()) {
                     playerWinning = p;
                     winner = Optional.of(p);
                 } else if(p.getMyBoard().getTowers().size() == playerWinning.getMyBoard().getTowers().size() && !p.equals(playerWinning)) {
+                    //In case the two player has the same number of towers looks for the player who has more profs
                     int countWinnerProfs = 0;
                     int countPlayerProfs = 0;
                     for(ColorS c: ColorS.values()) {
@@ -511,6 +515,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
             }
             return winner;
         } else if(players.stream().map(player -> player.getMyBoard().getTowers().size()).anyMatch(num -> num == 0)) {
+            //If a player has finished his towers the game must end, and he is the winner.
             return players.stream().filter(player -> player.getMyBoard().getTowers().size() == 0).findFirst();
         }
         return Optional.empty();

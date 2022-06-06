@@ -160,9 +160,6 @@ public class Client{
                 sendMessage(toJson(new Pong()));
                 return null;
             case "NotifyDisconnection" :
-                //Se mi arriva questo messaggio non passo mai per la visit poichè facendo la handleClientDisconnection si chiude tutto
-                //e stampo su sout il messaggio, decidere cosa fare
-                System.out.println(gson.fromJson(jsonString, NotifyDisconnection.class).getString());
                 handleClientDisconnection(false);
                 return null;
             case "AddPlayer":
@@ -209,8 +206,7 @@ public class Client{
                 Thread.sleep(TIMEOUT);
                 System.out.println("The server isn't available");
                 handleClientDisconnection(true);
-            } catch (InterruptedException e){
-                //System.out.println("The timeout timer has been stopped");
+            } catch (InterruptedException ignored){
             }
         });
         timer.start();

@@ -10,7 +10,7 @@
 | Basic Rules    |  🟢   |
 | Expert Mode    |  🟢   |
 | Socket         |  🟢   |
-| GUI            |  🟡   |
+| GUI            |  🟢   |
 | CLI            |  🟢   |
 | Multiple games |  🟢   |
 | Persistence    |  🔴   |
