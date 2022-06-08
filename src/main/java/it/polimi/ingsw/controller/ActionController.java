@@ -88,11 +88,11 @@ public class ActionController {
      * @param m MoveMN - the message sent by the client to the server.
      */
     public void handleAction(MoveMN m) {
-        if(m.getIndex() > 7 || m.getIndex() < 1) {
+        if(m.getSteps() > 7 || m.getSteps() < 1) {
             lobby.sendMessage(model.getActivePlayer().getNickname(), new Error("Error: Mother Nature can't do these steps"));
         } else {
             try {
-                model.moveMN(m.getIndex());
+                model.moveMN(m.getSteps());
                 Optional<Player> winner = model.checkWin();
                 winner.ifPresentOrElse(w -> {lobby.sendMessage(w.getNickname(), new InformationGame("You won"));
                             lobby.sendMessageToOthers(w.getNickname(), new InformationGame("You Lose"));

@@ -29,5 +29,6 @@ public enum EVENT {
     BOARD_COINS,
     PLAYER_COINS,
     CHARACTER_COST,
-    UPDATE_ALL
+    UPDATE_ALL,
+    ROUND_RESET
 }

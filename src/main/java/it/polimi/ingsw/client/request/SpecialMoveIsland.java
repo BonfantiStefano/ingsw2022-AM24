@@ -31,7 +31,7 @@ public class SpecialMoveIsland implements Request {
 
     /**
      * Method getIslandIndex returns the island where the student is shifted
-     * @return islandindex - the index of the island
+     * @return islandIndex - the index of the island
      */
     public int getIslandIndex(){
         return islandIndex;

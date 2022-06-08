@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.player;
 
 import it.polimi.ingsw.exceptions.InvalidIndexException;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.gameboard.GameBoard;
 import it.polimi.ingsw.model.mnstrategy.MNStandard;
 import it.polimi.ingsw.model.mnstrategy.MNStrategy;
 
@@ -15,10 +14,10 @@ import java.beans.PropertyChangeSupport;
  * that he will build, his Assistant cards and in particular the last one he played, the amount of coins he owns etc.
  */
 public class Player implements PlayerInterface {
-    private String nickname;
-    private SchoolBoard myboard;
-    private Hand myCards;
-    private ColorT color;
+    private final String nickname;
+    private final SchoolBoard myBoard;
+    private final Hand myCards;
+    private final ColorT color;
     private boolean isPlaying;
     private Assistant lastAssist;
     private MNStrategy strategy;
@@ -37,7 +36,7 @@ public class Player implements PlayerInterface {
     public Player(String nickname, ColorT color, Mage mage, int numTowers){
         this.nickname=nickname;
         this.color=color;
-        this.myboard=new SchoolBoard(color, numTowers);
+        this.myBoard=new SchoolBoard(color, numTowers);
         this.lastAssist=null;
         this.isPlaying=false;
         this.myCards=new Hand(mage);
@@ -165,7 +164,7 @@ public class Player implements PlayerInterface {
      * @return myboard of type SchoolBoard - the school board that the player owns
      */
     public SchoolBoard getMyBoard(){
-        return myboard;
+        return myBoard;
     }
 
     /**
@@ -217,7 +216,7 @@ public class Player implements PlayerInterface {
      * @return the number of Students of that Color in the Player's Hall
      */
     public int getHall(ColorS c){
-        return myboard.getHall().get(c);
+        return myBoard.getHall().get(c);
     }
 
     /**
