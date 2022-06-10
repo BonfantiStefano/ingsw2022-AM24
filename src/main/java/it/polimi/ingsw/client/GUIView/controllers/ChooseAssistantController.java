@@ -159,4 +159,5 @@ public class ChooseAssistantController implements GUIController {
     public void setGui(GUI gui) {
         this.gui = gui;
     }
+
 }

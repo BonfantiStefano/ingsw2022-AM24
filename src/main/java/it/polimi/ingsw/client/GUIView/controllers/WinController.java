@@ -18,5 +18,4 @@ public class WinController implements GUIController{
     public void setGui(GUI gui) {
         this.gui = gui;
     }
-
 }

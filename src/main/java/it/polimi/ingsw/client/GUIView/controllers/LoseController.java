@@ -18,4 +18,5 @@ public class LoseController implements GUIController {
     public void setGui(GUI gui) {
         this.gui = gui;
     }
+
 }

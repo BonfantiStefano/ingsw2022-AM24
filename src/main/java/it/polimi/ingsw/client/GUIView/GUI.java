@@ -302,4 +302,5 @@ public class GUI extends Application implements UserInterface {
     public HashMap<Scene, GUIController> getNameMapController() {
         return nameMapController;
     }
+
 }
