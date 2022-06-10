@@ -34,7 +34,7 @@ public class ChooseAssistantController implements GUIController {
 
     /**
      * Method getScene returns the scene representing the choice of an Assistant card
-     * @param player - the player the cards belongs to
+     * @param player - the player the cards belong to
      * @return scene with the choice of an Assistant card
      */
     public Scene getScene(int player){

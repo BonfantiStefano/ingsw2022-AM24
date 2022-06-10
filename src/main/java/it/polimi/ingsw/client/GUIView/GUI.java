@@ -122,6 +122,11 @@ public class GUI extends Application implements UserInterface {
             lobbyController.init();
             window.setResizable(false);
         }
+        else if(newSceneName.equals(CONTROLLERS.YOUWIN.toString()) || newSceneName.equals((CONTROLLERS.YOULOSE))){
+            window.setX(500);
+            window.setY(100);
+            window.setResizable(false);
+        }
         else if(newSceneName.equals(CONTROLLERS.MAIN.toString())){
             window.setX(50);
             window.setY(0);

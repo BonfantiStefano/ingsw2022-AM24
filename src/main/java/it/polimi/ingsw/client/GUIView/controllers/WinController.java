@@ -10,18 +10,6 @@ public class WinController implements GUIController{
 
     private GUI gui;
 
-    @FXML
-    private ImageView youwin;
-
-    @FXML
-    private ImageView youlose;
-
-    @FXML
-    private ImageView blu;
-
-    @FXML
-    private ImageView red;
-
     public void quitGame() {
         System.exit(0);
     }
