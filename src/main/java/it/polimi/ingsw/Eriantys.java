@@ -7,7 +7,7 @@ import it.polimi.ingsw.server.ServerMain;
 import java.util.Scanner;
 
 /**
- * Class Eriantys is the main class of whole game, where you can choose if you between client and server.
+ * Class Eriantys is the main class of whole game, where you can choose between client and server.
  *
  * @author Baratto Marco, Bonfanti Stefano, Chyzheuskaya Hanna.
  */

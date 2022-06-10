@@ -521,6 +521,7 @@ public class Controller implements PropertyChangeListener {
                     lobby.sendMessageToAll(new UpdateMN(mnPos));
             }
             case BOARD_COINS -> {if(gameStarted) lobby.sendMessageToAll(new UpdateCoins((int) evt.getNewValue()));}
+            //case ROUND_RESET -> lobby.sendMessageToAll(new UpdatePlayer((VirtualPlayer) evt.getNewValue(), (int) evt.getOldValue()));
         }
     }
 

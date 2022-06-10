@@ -6,8 +6,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
-import java.io.IOException;
-
 /**
  * This class is the GUIController which handles choosing which host IP and port to connect to.
  *
