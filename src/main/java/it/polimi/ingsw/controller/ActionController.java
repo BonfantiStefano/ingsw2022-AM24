@@ -20,9 +20,9 @@ import java.util.Optional;
  */
 public class ActionController {
     private final Model model;
-    private final TurnController turnController; //maybe is better the interface
+    private final TurnController turnController;
     private int numMoveStudent;
-    private final Lobby lobby; //maybe is better the interface
+    private final Lobby lobby;
 
     /**
      * Constructor ActionController creates a new empty ActionController instance.

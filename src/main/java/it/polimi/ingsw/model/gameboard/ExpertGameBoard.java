@@ -14,7 +14,6 @@ import it.polimi.ingsw.model.world.Island;
 import it.polimi.ingsw.server.virtualview.VirtualCharacter;
 import it.polimi.ingsw.server.virtualview.VirtualCharacterWithNoEntry;
 import it.polimi.ingsw.server.virtualview.VirtualCharacterWithStudents;
-import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -29,7 +28,7 @@ import java.util.stream.Collectors;
 public class ExpertGameBoard extends GameBoard implements ExpertModel {
     final private static int NUM_COINS = 20;
     private Character activeCharacter;
-    private ArrayList<Character> characters;
+    private final ArrayList<Character> characters;
     private CharacterFactory factory;
     int coins;
 

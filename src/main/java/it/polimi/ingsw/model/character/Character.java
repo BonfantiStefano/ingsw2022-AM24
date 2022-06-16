@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.character;
 
 import it.polimi.ingsw.model.EVENT;
-import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -11,7 +10,7 @@ import java.beans.PropertyChangeSupport;
  */
 public class Character {
     private int cost;
-    private String description;
+    private final String description;
     private boolean alreadyPlayed;
     protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
@@ -61,7 +60,7 @@ public class Character {
 
     /**
      * Getter for the alreadyPlayed attribute.
-     * @return alredyPlayed - attribute which tells if a Character has been already played
+     * @return alreadyPlayed - attribute which tells if a Character has been already played
      */
     public boolean isAlreadyPlayed() {
         return alreadyPlayed;

@@ -8,13 +8,13 @@ import java.util.ArrayList;
 
 /** VirtualLobby class is a simplified representation of a lobby.*/
 public class VirtualLobby {
-    private ArrayList<String> nicknames;
-    private int numPlayers;
-    private ArrayList<Mage> mages;
-    private ArrayList<ColorT> towers;
-    private boolean mode;
-    private GameStatus gameStatus;
-    private int lobbyIndex;
+    private final ArrayList<String> nicknames;
+    private final int numPlayers;
+    private final ArrayList<Mage> mages;
+    private final ArrayList<ColorT> towers;
+    private final boolean mode;
+    private final GameStatus gameStatus;
+    private final int lobbyIndex;
 
     /**Constructor VirtualLobby creates a new VirtualLobby instance.*/
     public VirtualLobby(ArrayList<String> nicknames, ArrayList<Mage> mages, ArrayList<ColorT> towers, int numPlayers, boolean mode, int lobbyIndex, GameStatus gameStatus) {

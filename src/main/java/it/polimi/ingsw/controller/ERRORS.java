@@ -1,5 +1,8 @@
 package it.polimi.ingsw.controller;
 
+/**
+ * Enum ERRORS enumerates all the possible error with the corresponding string that will be sent to the client.
+ */
 public enum ERRORS {
 
     INVALID_MESSAGE ("Invalid Message"),
@@ -17,10 +20,18 @@ public enum ERRORS {
 
     private final String error;
 
+    /**
+     * Constructor ERRORS creates a new enum's value with its string.
+     * @param error String - the error's string.
+     */
     ERRORS(String error){
         this.error = error;
     }
 
+    /**
+     * Method toString returns the error corresponding to the enum's value..
+     * @return String - the error.
+     */
     @Override
     public String toString() {
         return "ERROR: " + error + "!";

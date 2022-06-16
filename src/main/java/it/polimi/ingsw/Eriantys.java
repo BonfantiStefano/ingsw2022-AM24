@@ -4,6 +4,7 @@ import it.polimi.ingsw.client.CLIView.CLI;
 import it.polimi.ingsw.client.GUIView.GUI;
 import it.polimi.ingsw.server.ServerMain;
 
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -30,6 +31,8 @@ public class Eriantys {
             } catch (NumberFormatException exception) {
                 System.err.println("Numeric format requested, application will now close...");
                 System.exit(-1);
+            } catch (NoSuchElementException exception) {
+                System.exit(-1);
             }
             switch (input) {
                 case 0 -> ServerMain.main(args);
@@ -40,6 +43,8 @@ public class Eriantys {
                         client = Integer.parseInt(scanner.nextLine());
                     } catch (NumberFormatException exception) {
                         System.err.println("Numeric format requested, application will now close...");
+                        System.exit(-1);
+                    } catch (NoSuchElementException exception) {
                         System.exit(-1);
                     }
                     switch (client) {

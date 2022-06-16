@@ -8,8 +8,8 @@ import it.polimi.ingsw.model.world.influence.InfluenceStrategy;
  * These characters will change how the influence on an Island is calculated
  */
 public class CharacterInfluence extends Character {
-    private InfluenceStrategy strategy;
-    private HasStrategy<InfluenceStrategy> observer;
+    private final InfluenceStrategy strategy;
+    private final HasStrategy<InfluenceStrategy> observer;
 
     /**
      * Creates a new CharacterInfluence that contains a determined Strategy and the World observer

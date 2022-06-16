@@ -148,21 +148,21 @@ public class GUI extends Application implements UserInterface {
     }
 
     /**
-     * Method setVirtualView sets the virtual view.
-     * @param virtualView VirtualView - the virtual view.
+     * Converts an Object to Json format.
+     * @param r the Client's request.
+     * @return the json of the Message.
      */
     @Override
-    public void setVirtualView(VirtualView virtualView) {
-        this.virtualView = virtualView;
+    public String toJson(Object r){
+        Gson gson = new Gson();
+        JsonElement jsonElement;
+        jsonElement = gson.toJsonTree(r);
+        jsonElement.getAsJsonObject().addProperty("type", r.getClass().getSimpleName());
+
+        return gson.toJson(jsonElement);
     }
 
-    /**
-     * Method getVirtualView gets the virtual view.
-     * @return the virtual view.
-     */
-    public VirtualView getVirtualView() {
-        return virtualView;
-    }
+    //EVENT HANDLER
 
     /**
      * Method propertyChange handle all the possible events that the client can do.
@@ -256,36 +256,7 @@ public class GUI extends Application implements UserInterface {
         }
     }
 
-    /**
-     * Converts an Object to Json format.
-     * @param r the Client's request.
-     * @return the json of the Message.
-     */
-    @Override
-    public String toJson(Object r){
-        Gson gson = new Gson();
-        JsonElement jsonElement;
-        jsonElement = gson.toJsonTree(r);
-        jsonElement.getAsJsonObject().addProperty("type", r.getClass().getSimpleName());
-
-        return gson.toJson(jsonElement);
-    }
-
-    /**
-     * Method getNickname returns the client nickname.
-     * @return a String.
-     */
-    public String getNickname() {
-        return nickname;
-    }
-
-    /**
-     * Method setNickname sets the client nickname.
-     * @param nickname String - the client nickname.
-     */
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
+    // GETTER
 
     /**
      * Method getNameMapScene returns the map containing all the scene with its name.
@@ -303,4 +274,38 @@ public class GUI extends Application implements UserInterface {
         return nameMapController;
     }
 
+    /**
+     * Method getNickname returns the client nickname.
+     * @return a String.
+     */
+    public String getNickname() {
+        return nickname;
+    }
+
+    /**
+     * Method getVirtualView gets the virtual view.
+     * @return the virtual view.
+     */
+    public VirtualView getVirtualView() {
+        return virtualView;
+    }
+
+    // SETTER
+
+    /**
+     * Method setVirtualView sets the virtual view.
+     * @param virtualView VirtualView - the virtual view.
+     */
+    @Override
+    public void setVirtualView(VirtualView virtualView) {
+        this.virtualView = virtualView;
+    }
+
+    /**
+     * Method setNickname sets the client nickname.
+     * @param nickname String - the client nickname.
+     */
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

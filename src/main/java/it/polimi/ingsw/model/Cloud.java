@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
-import it.polimi.ingsw.model.gameboard.GameBoard;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
  * @author Bonfanti Stefano
  */
 public class Cloud implements CanAcceptStudent, CanRemoveStudent{
-    private ArrayList<ColorS> students;
+    private final ArrayList<ColorS> students;
     protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**Constructor Cloud creates a new empty cloud instance.*/

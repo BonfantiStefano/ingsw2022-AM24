@@ -18,11 +18,11 @@ import java.util.List;
  * Factory used to generate random Characters at the start of the game
  */
 public class CharacterFactory {
-    private HasStrategy<InfluenceStrategy> world;
-    private HasStrategy<ProfStrategy> gameBoard;
-    private StudentContainer bag;
-    private List<Integer> random;
-    private ArrayList<PlayerInterface> players;
+    private final HasStrategy<InfluenceStrategy> world;
+    private final HasStrategy<ProfStrategy> gameBoard;
+    private final StudentContainer bag;
+    private final List<Integer> random;
+    private final ArrayList<PlayerInterface> players;
 
     /**
      * Constructor creates a new CharacterFactory with a list of numbers in random order to generate random Characters
@@ -84,6 +84,10 @@ public class CharacterFactory {
         return random.remove(0);
     }
 
+    /**
+     * Method setPlayer sets the Players.
+     * @param players ArrayList of PlayerInterface.
+     */
     public void setPlayers(ArrayList<PlayerInterface> players) {
         this.players.clear();
         this.players.addAll(players);

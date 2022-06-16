@@ -22,5 +22,5 @@ public interface InfluenceStrategy {
      * @param profs Map<ColorS, Player></> - the Map contains the prof (memorized as a ColorS) and the owner.
      * @return the value of the influence.
      */
-    public int getInfluence(Island i, Player p, Optional<ColorS> color, HashMap<ColorS, Player> profs);
+    int getInfluence(Island i, Player p, Optional<ColorS> color, HashMap<ColorS, Player> profs);
 }

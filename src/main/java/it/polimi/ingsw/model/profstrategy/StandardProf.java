@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.player.Player;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Standard behaviour for checkProfs method

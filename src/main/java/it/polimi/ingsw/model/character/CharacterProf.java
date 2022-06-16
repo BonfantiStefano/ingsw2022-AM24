@@ -7,8 +7,8 @@ import it.polimi.ingsw.model.profstrategy.ProfStrategy;
  * These Characters will change how Players gain or lose Profs
  */
 public class CharacterProf extends Character {
-    private ProfStrategy strategy;
-    private HasStrategy<ProfStrategy> observer;
+    private final ProfStrategy strategy;
+    private final HasStrategy<ProfStrategy> observer;
 
     /**
      * Creates a new CharacterProf object

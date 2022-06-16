@@ -1,6 +1,7 @@
 package it.polimi.ingsw.server;
 
 import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
@@ -33,6 +34,9 @@ public class ServerMain {
                 } catch (InputMismatchException e) {
                     System.out.println("Numeric format requested");
                     port = DEFAULT_PORT;
+                } catch (NoSuchElementException exception) {
+                    System.exit(-1);
+                    port = -1;
                 }
                 while (port < MIN_PORT || port > MAX_PORT) {
                     System.out.println("Insert a value between " + MIN_PORT + " e " + MAX_PORT + ":");
@@ -41,6 +45,8 @@ public class ServerMain {
                     } catch (InputMismatchException e) {
                         System.out.println("Numeric format requested, server starts on the default port");
                         port = DEFAULT_PORT;
+                    } catch (NoSuchElementException exception) {
+                        System.exit(-1);
                     }
                 }
             }

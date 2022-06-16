@@ -3,7 +3,6 @@ package it.polimi.ingsw.model.player;
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
 import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.gameboard.GameBoard;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -20,9 +19,9 @@ import java.util.Map;
 public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTower {
     private final static int MAX_STUD = 10;
 
-    private ArrayList<ColorS> entrance;
-    private ArrayList<ColorT> towers;
-    private Map<ColorS,Integer> hall;
+    private final ArrayList<ColorS> entrance;
+    private final ArrayList<ColorT> towers;
+    private final Map<ColorS,Integer> hall;
     protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**
@@ -36,7 +35,7 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
         for(int i = 0; i < numTowers; i ++){
             towers.add(color);
         }
-        hall=new HashMap<ColorS, Integer>();
+        hall=new HashMap<>();
         for(ColorS c:ColorS.values()){
             hall.put(c,0);
         }
@@ -67,8 +66,7 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
         }
         else{
             entrance.remove(s);
-            boolean result = addToHall(s);
-            return result;
+            return addToHall(s);
         }
     }
 

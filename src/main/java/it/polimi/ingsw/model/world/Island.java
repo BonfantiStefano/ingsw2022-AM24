@@ -1,11 +1,9 @@
 package it.polimi.ingsw.model.world;
 
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.model.gameboard.GameBoard;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -17,9 +15,9 @@ import java.util.Optional;
  */
 public class Island implements CanAcceptStudent, AcceptTower{
 
-    private ArrayList<ColorS> students;
-    private ArrayList<ColorT> towers;
-    private int numSubIsland;
+    private final ArrayList<ColorS> students;
+    private final ArrayList<ColorT> towers;
+    private final int numSubIsland;
     private int numNoEntry;
     protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 

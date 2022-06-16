@@ -10,8 +10,8 @@ import java.util.ArrayList;
  * This character changes how many steps MN can move
  */
 public class CharacterMN extends Character {
-    private ArrayList<PlayerInterface> players;
-    private MNStrategy strategy;
+    private final ArrayList<PlayerInterface> players;
+    private final MNStrategy strategy;
 
     /**
      * Creates a new CharacterMN object

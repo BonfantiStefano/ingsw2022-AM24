@@ -1,5 +1,8 @@
 package it.polimi.ingsw.controller;
 
+/**
+ * Enum PHASE enumerates all the possible phases in a match.
+ */
 public enum PHASE {
     SETUP,
     PLANNING,

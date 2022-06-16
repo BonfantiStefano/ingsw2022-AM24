@@ -47,7 +47,13 @@ public class CLI implements Runnable, UserInterface {
         if (args.length == 0) {
             Scanner initialScanner = new Scanner(System.in);
             System.out.println("Enter IP");
-            String ip = initialScanner.nextLine();
+            String ip;
+            try {
+                ip = initialScanner.nextLine();
+            } catch (NoSuchElementException exception) {
+                ip = "127.0.0.1";
+                System.exit(0);
+            }
             System.out.println("IP is: " + ip);
             int port;
             do {
@@ -56,6 +62,8 @@ public class CLI implements Runnable, UserInterface {
                     port = Integer.parseInt(initialScanner.nextLine());
                 } catch (NumberFormatException exception) {
                     System.out.println("Numeric format requested");
+                    port = -1;
+                } catch (NoSuchElementException exception) {
                     port = -1;
                 }
             } while (port < 1024 || port > 65535);
@@ -96,7 +104,12 @@ public class CLI implements Runnable, UserInterface {
      */
     public void run() {
         while(client.isActive()) {
-            String s = input.nextLine();
+            String s = null;
+            try {
+                s = input.nextLine();
+            } catch (NoSuchElementException exception) {
+                System.exit(0);
+            }
             parseInput(s);
         }
     }
@@ -115,7 +128,6 @@ public class CLI implements Runnable, UserInterface {
             if(matcher.find()) {
                 Request msg = createMessage(r, s);
                 if(msg!=null) {
-                    System.out.println(toJson(msg));
                     client.sendMessage(toJson(msg));
                 }
                 return;
@@ -243,7 +255,12 @@ public class CLI implements Runnable, UserInterface {
         if(!lobbies.isEmpty()) {
             do {
                 System.out.println("Do you want to Join a Lobby? (y/n/reload)");
-                answer = input.nextLine();
+                try {
+                    answer = input.nextLine();
+                } catch (NoSuchElementException exception) {
+                    answer = "n";
+                    System.exit(0);
+                }
                 checkDisconnect(answer);
             } while (!answer.equals("y") && !answer.equals("n") && !answer.equals("reload"));
         } else {
@@ -254,7 +271,12 @@ public class CLI implements Runnable, UserInterface {
             int index;
             do {
                 System.out.println("Insert the Lobby's number: ");
-                index = getInputValue();
+                try {
+                    index = getInputValue();
+                } catch (NoSuchElementException exception) {
+                    index = -1;
+                    System.exit(0);
+                }
                 if(getLobbyByIndex(lobbies, index) == -1) {
                     System.out.println("Invalid lobby index!");
                     index = -1;
@@ -263,19 +285,34 @@ public class CLI implements Runnable, UserInterface {
 
             do {
                 System.out.println("Choose your nickname: ");
-                nickname = input.nextLine();
+                try {
+                    nickname = input.nextLine();
+                } catch (NoSuchElementException exception) {
+                    nickname = "";
+                    System.exit(0);
+                }
                 checkDisconnect(nickname);
             } while (nickname == null);
 
             int mageIndex;
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
-                mageIndex = getInputValue();
+                try {
+                    mageIndex = getInputValue();
+                } catch (NoSuchElementException exception) {
+                    mageIndex = -1;
+                    System.exit(0);
+                }
             } while (mageIndex < 0 || mageIndex > 4);
             int towerIndex;
             do {
                 System.out.println("Choose your TowerColor (1-Black, 2-White"+ (lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2 ? ")":", 3-Grey)")+":");
-                towerIndex = getInputValue();
+                try {
+                    towerIndex = getInputValue();
+                } catch (NoSuchElementException exception) {
+                    towerIndex = -1;
+                    System.exit(0);
+                }
             } while ((towerIndex < 0 || towerIndex > 4)||(towerIndex==3&&lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2));
 
             Join msg = new Join(nickname, Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1], index);
@@ -286,31 +323,55 @@ public class CLI implements Runnable, UserInterface {
             int numPlayers;
             do {
                 System.out.println("How many Players will the Game have? (2/3)");
-                numPlayers = getInputValue();
+                try {
+                    numPlayers = getInputValue();
+                } catch (NoSuchElementException exception) {
+                    numPlayers = -1;
+                    System.exit(0);
+                }
             }while(numPlayers<2 || numPlayers>3);
             String expert;
             do{
                 System.out.println("Do you want to create an Expert Game? (y/n)");
-                expert = input.nextLine();
+                try {
+                    expert = input.nextLine();
+                } catch (NoSuchElementException exception) {
+                    expert = "";
+                    System.exit(0);
+                }
                 checkDisconnect(expert);
             }while(!expert.equals("y")&&!expert.equals("n"));
 
             do {
                 System.out.println("Choose your nickname: ");
-                nickname = input.nextLine();
+                try {
+                    nickname = input.nextLine();
+                } catch (NoSuchElementException exception) {
+                    System.exit(0);
+                }
                 checkDisconnect(nickname);
             } while (nickname == null);
 
             int mageIndex;
             do {
                 System.out.println("Choose your Mage (1,2,3,4):");
-                mageIndex = getInputValue();
+                try {
+                    mageIndex = getInputValue();
+                } catch (NoSuchElementException exception) {
+                    mageIndex = -1;
+                    System.exit(0);
+                }
             } while (mageIndex < 0 || mageIndex > 4);
 
             int towerIndex;
             do {
                 System.out.println("Choose your TowerColor (1-Black, 2-White"+ (numPlayers==2 ? ")":", 3-Grey)")+":");
-                towerIndex = getInputValue();
+                try {
+                    towerIndex = getInputValue();
+                } catch (NoSuchElementException exception) {
+                    towerIndex = -1;
+                    System.exit(0);
+                }
             } while (towerIndex < 0 || towerIndex > 4);
 
             GameParams msg = new GameParams(numPlayers, expert.equals("y"), nickname,Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1]);
@@ -828,6 +889,8 @@ public class CLI implements Runnable, UserInterface {
             val = Integer.parseInt(string);
         } catch (NumberFormatException exception) {
             System.out.println("Numeric format requested");
+            val = -1;
+        } catch (NoSuchElementException exception) {
             val = -1;
         }
         return val;

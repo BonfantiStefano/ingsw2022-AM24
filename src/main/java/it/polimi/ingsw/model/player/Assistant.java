@@ -7,9 +7,8 @@ package it.polimi.ingsw.model.player;
  * and presents a back image depicting one of the four mages
  */
 public class Assistant {
-    private int MNsteps;
-    private int turn;
-    private Mage mage;
+    private final int MNsteps;
+    private final int turn;
 
     /**
      * Constructor Assistant creates a new playing card.
@@ -21,7 +20,6 @@ public class Assistant {
     public Assistant(int MNsteps, int turn, Mage mage){
         this.MNsteps=MNsteps;
         this.turn=turn;
-        this.mage=mage;
     }
 
     /**

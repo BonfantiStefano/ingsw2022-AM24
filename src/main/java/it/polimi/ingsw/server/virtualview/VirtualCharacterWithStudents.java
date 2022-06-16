@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /** VirtualCharacterWithStudents class is a simplified representation of a VirtualCharacterWithStudents card containing students.*/
 public class VirtualCharacterWithStudents extends VirtualCharacter {
 
-    private ArrayList<ColorS> students;
+    private final ArrayList<ColorS> students;
 
     /**Constructor VirtualCharacterWithStudents creates a new VirtualCharacterWithStudents instance.*/
     public VirtualCharacterWithStudents(Character character) {

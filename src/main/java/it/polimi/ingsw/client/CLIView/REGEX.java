@@ -19,19 +19,31 @@ public enum REGEX {
     HELP("^help$", "help")
     ;
 
+    private final String s, desc;
+
+    /**
+     * Constructor Color creates a new Color value.
+     * @param s String - the value of the enum.
+     * @param desc String - the description of a value.
+     */
     REGEX(String s, String desc) {
         this.s = s;
         this.desc = desc;
     }
 
-    private final String s, desc;
-
-
+    /**
+     * Method toString returns the string c.
+     * @return a string.
+     */
     @Override
     public String toString() {
         return s;
     }
 
+    /**
+     * Method getDesc returns the description of a value.
+     * @return a string.
+     */
     public String getDesc(){
         return desc;
     }

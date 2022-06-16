@@ -1,16 +1,11 @@
 package it.polimi.ingsw.model.character;
 
 import it.polimi.ingsw.exceptions.NoSuchStudentException;
-import it.polimi.ingsw.exceptions.PlaceFullException;
 import it.polimi.ingsw.model.CanAcceptStudent;
 import it.polimi.ingsw.model.CanRemoveStudent;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.EVENT;
-import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
-import it.polimi.ingsw.model.gameboard.GameBoard;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 
 /**
@@ -20,8 +15,7 @@ import java.util.ArrayList;
  *  NOT FINAL
  */
 public class CharacterWithStudent extends Character implements CanAcceptStudent, CanRemoveStudent {
-    private ArrayList<ColorS> students;
-    private int maxStudents;
+    private final ArrayList<ColorS> students;
 
     /**
      * Creates a new CharacterWithStudent object
@@ -29,13 +23,7 @@ public class CharacterWithStudent extends Character implements CanAcceptStudent,
     public CharacterWithStudent(int cost, String description, int maxStudents) {
         super(cost, description);
         students=new ArrayList<>();
-        this.maxStudents=maxStudents;
     }
-
-    /**
-     * Method addListener is used in order to register an event listener
-     * @param expertBoard - event listener that is used for receiving the events
-     */
 
     /**
      * Adds a Student

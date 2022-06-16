@@ -15,10 +15,18 @@ public enum BOX {
 
     private final String c;
 
+    /**
+     * Constructor BOX creates a new BOX value.
+     * @param c String - the value of the enum.
+     */
     BOX(String c){
         this.c=c;
     }
 
+    /**
+     * Method toString returns the string c.
+     * @return a string.
+     */
     @Override
     public String toString() {
         return c;

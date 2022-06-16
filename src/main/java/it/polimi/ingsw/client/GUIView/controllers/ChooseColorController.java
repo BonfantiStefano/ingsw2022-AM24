@@ -53,12 +53,10 @@ public class ChooseColorController implements GUIController{
         buttons.getChildren().addAll(tbl1, tbl2, tbl3, tbl4, tbl5);
 
         rect = createStudentSpace();
-        rect.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, event -> chooseStudent(event));
+        rect.addEventHandler(javafx.scene.input.MouseEvent.MOUSE_CLICKED, this::chooseStudent);
 
         group.selectedToggleProperty().addListener(
-                event -> {
-                    selectButton();
-                }
+                event -> selectButton()
         );
 
         buttons.setAlignment(Pos.CENTER);

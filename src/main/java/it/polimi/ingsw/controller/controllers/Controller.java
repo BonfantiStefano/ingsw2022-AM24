@@ -51,7 +51,11 @@ public class Controller implements PropertyChangeListener {
     protected int numStudMoves;
     private boolean roundResetted;
 
-
+    /**
+     * Constructor Controller creates a new Controller instance base on the given parameter.
+     * @param lobby Lobby - The lobby that the controller has to manage
+     * @param m GameParams - the parameter of the game.
+     */
     public Controller(Lobby lobby, GameParams m){
         virtualView = new VirtualView();
         this.lobby = lobby;

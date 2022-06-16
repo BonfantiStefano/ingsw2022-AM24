@@ -329,6 +329,7 @@ public class Lobby {
                 Thread.sleep(WAITING_TIME);
                 System.out.println("Timeout expires");
                 gameStatus = GameStatus.ENDED;
+                controller = null;
                 for(Integer clientId : clientsId) {
                     if(!disconnectedClientsId.contains(clientId)) {
                         sendMessage(mapIdNickname.get(clientId), new InformationConnection("You are the only connected player, you won!"));

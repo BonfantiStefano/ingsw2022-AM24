@@ -161,7 +161,7 @@ public class Player implements PlayerInterface {
 
     /**
      * Method getSchoolBoard returns the School Board of the player
-     * @return myboard of type SchoolBoard - the school board that the player owns
+     * @return myBoard of type SchoolBoard - the school board that the player owns
      */
     public SchoolBoard getMyBoard(){
         return myBoard;

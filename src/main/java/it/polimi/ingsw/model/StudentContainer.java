@@ -7,14 +7,14 @@ import java.util.Collections;
  * Class StudentContainer models a container with a set amount of Students
  */
 public class StudentContainer {
-    private ArrayList<ColorS> students;
-    private ArrayList<ColorS> initial;
-    private final int numStudents = 120;
+    private final ArrayList<ColorS> students;
+    private final ArrayList<ColorS> initial;
 
     /**
      * Creates a new StudentContainer object filled with Students
      */
     public StudentContainer() {
+        int numStudents = 120;
         students = new ArrayList<>(numStudents);
         for(ColorS c: ColorS.values())
             for(int i=0;i<24;i++)

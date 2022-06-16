@@ -48,7 +48,7 @@ public class ChooseAssistantController implements GUIController {
         root.setBackground(Background.fill(Color.LIGHTBLUE));
 
         card = createCardSpace();
-        card.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> chooseCard(event));
+        card.addEventHandler(MouseEvent.MOUSE_CLICKED, this::chooseCard);
 
         leftButton = createLeftButton();
         rightButton = createRightButton();

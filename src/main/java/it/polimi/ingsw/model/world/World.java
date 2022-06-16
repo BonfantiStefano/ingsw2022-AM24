@@ -19,7 +19,7 @@ import java.util.*;
  * @author Bonfanti Stefano
  */
 public class World implements HasStrategy<InfluenceStrategy> {
-    private ArrayList<Island> islands;
+    private final ArrayList<Island> islands;
     private InfluenceStrategy influenceStrategy;
     private int posMN;
     private Optional<ColorS> bannedColorS;
@@ -237,8 +237,7 @@ public class World implements HasStrategy<InfluenceStrategy> {
      * @return index of type int - the index of the island.
      */
     public int getIndexByIsland(Island island){
-        int index = islands.indexOf(island);
-        return index;
+        return islands.indexOf(island);
     }
 
     /**

@@ -18,16 +18,19 @@ public enum Color {
 
     private final String escape;
 
+    /**
+     * Constructor Color creates a new Color value.
+     * @param escape String - the value of the enum.
+     */
     Color(String escape)
     {
         this.escape = escape;
     }
 
-    public String getEscape()
-    {
-        return escape;
-    }
-
+    /**
+     * Method toString returns the string c.
+     * @return a string.
+     */
     @Override
     public String toString()
     {

@@ -10,9 +10,9 @@ import it.polimi.ingsw.exceptions.InvalidIndexException;
 public class Hand{
     private final static int [] MNSTEPS ={1, 1, 2, 2, 3, 3, 4, 4, 5, 5};
     private final static int [] TURN = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    private Mage mage;
+    private final Mage mage;
 
-    private List<Assistant> cards;
+    private final List<Assistant> cards;
 
     /**Constructor Hand creates a hand of playing cards instance.
      * Each card is initialized with two values: the first one determines the turn order of the round,
@@ -21,7 +21,7 @@ public class Hand{
      */
     public Hand(Mage mage){
         this.mage = mage;
-        cards = new ArrayList<Assistant>();
+        cards = new ArrayList<>();
         for(int i = 0; i<10; i++){
             cards.add(new Assistant(MNSTEPS[i], TURN[i], mage));
         }
