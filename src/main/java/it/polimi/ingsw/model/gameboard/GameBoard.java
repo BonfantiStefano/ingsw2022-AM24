@@ -156,12 +156,21 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
         return null;
     }
     /**
-     * Method getFirstPlayer is used for sorting players by their card value that determines the turn order
-     * and returns the first player of the next round
+     * Method getFirstPlayer returns the first player of the next round
      * @return first of type int - the first player of the next round
      */
     @Override
     public int getFirstPlayer() {
+        ArrayList<Player> sortedPlayers = getAllSortedPlayers();
+        return !sortedPlayers.isEmpty() ? players.indexOf(sortedPlayers.get(0)) : 0;
+    }
+
+    /**
+     * Method getAllSortedPlayers is used for sorting players by their card value that determines the turn order
+     * (for the action phase)
+     * @return sortedPlayers - players that have been sorted
+     */
+    public ArrayList<Player> getAllSortedPlayers(){
         ArrayList<Player> sortedPlayers = new ArrayList<>();
         for(Player p : players) {
             if (p.getLastAssistant() != null) {
@@ -169,14 +178,12 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
             }
         }
         sortedPlayers.sort((p1, p2) ->
-            p1.getLastAssistant().compareTo(p2.getLastAssistant()));
-        return !sortedPlayers.isEmpty() ? players.indexOf(sortedPlayers.get(0)) : 0;
+                p1.getLastAssistant().compareTo(p2.getLastAssistant()));
+        return sortedPlayers;
     }
 
-
-
     /**
-     * Method getSortedPlayers returns the list containing sorted players
+     * Method getSortedPlayers returns the list containing sorted players (for the planning phase)
      * @return sortedPlayers of type ArrayList<Player> - the sorted players
      */
     @Override
@@ -199,9 +206,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
     public void nextPlayer(boolean newRound){
         Player nextPlayer;
         if (newRound || activePlayer == null) nextPlayer = players.get(getFirstPlayer());
-        else if (players.indexOf(activePlayer) == players.size()-1) nextPlayer = players.get(0);
-        else nextPlayer = players.get(players.indexOf(activePlayer) + 1);
-
+        else nextPlayer = getAllSortedPlayers().get((getAllSortedPlayers().indexOf(activePlayer) + 1)%numPlayers);
         setActivePlayer(nextPlayer);
     }
 

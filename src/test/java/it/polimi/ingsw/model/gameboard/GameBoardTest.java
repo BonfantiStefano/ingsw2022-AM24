@@ -158,9 +158,9 @@ public class GameBoardTest {
         gb.nextPlayer(false);
         assertEquals(gb.getActivePlayer().getNickname(), "Alice");
         gb.nextPlayer(false);
-        assertEquals(gb.getActivePlayer().getNickname(), "Lisa");
-        gb.nextPlayer(false);
         assertEquals(gb.getActivePlayer().getNickname(), "Bob");
+        gb.nextPlayer(false);
+        assertEquals(gb.getActivePlayer().getNickname(), "Lisa");
     }
 
     /**
