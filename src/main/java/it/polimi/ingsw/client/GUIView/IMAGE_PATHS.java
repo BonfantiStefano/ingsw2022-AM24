@@ -13,6 +13,7 @@ public enum IMAGE_PATHS {
     PROF("/graphics/wooden_pieces/teacher_"),
     TOWER("/graphics/wooden_pieces/"),
     CHARACTER("/graphics/Characters/CarteTOT_front"),
+    WELCOME_BACKGROUND("/graphics/WelcomeBackground.png"),
     ;
 
     private final String path;

@@ -20,7 +20,7 @@
             </columns>
         </TableView>
         <Button layoutX="14.0" layoutY="11.0" mnemonicParsing="false" onAction="#showList" text="Reload Lobbies" />
-        <Label fx:id="error" layoutX="389.0" layoutY="67.0" prefHeight="17.0" prefWidth="39.0" />
+        <Label fx:id="error" layoutX="389.0" layoutY="67.0" maxWidth="200.0" minHeight="20.0" minWidth="50.0" prefHeight="20.0" prefWidth="50.0" />
         <Label layoutX="14.0" layoutY="339.0" text="Nickname:" />
         <Label layoutX="14.0" layoutY="381.0" text="Mage:" />
         <Label layoutX="300.0" layoutY="381.0" text="Color:" />

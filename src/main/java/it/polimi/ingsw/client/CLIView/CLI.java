@@ -512,7 +512,7 @@ public class CLI implements Runnable, UserInterface {
                 }
                 else if(c instanceof VirtualCharacterWithNoEntry cn){
                     if(index<cn.getNoEntry()&&i%2==0) {
-                        thirdLine.append(" ").append(BOX.FORBIDDEN);
+                        thirdLine.append(" ").append("?");
                         index++;
                     }
                     else

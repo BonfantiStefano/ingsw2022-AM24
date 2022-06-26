@@ -2,6 +2,7 @@ package it.polimi.ingsw.client.GUIView.controllers;
 
 
 import it.polimi.ingsw.client.GUIView.GUI;
+import it.polimi.ingsw.client.GUIView.IMAGE_PATHS;
 import it.polimi.ingsw.client.request.GameParams;
 import it.polimi.ingsw.client.request.Join;
 import it.polimi.ingsw.model.ColorT;
@@ -52,10 +53,17 @@ public class LobbyController implements GUIController{
         createTable();
     }
 
+    /**
+     * Sets the welcome message containing all Lobbies
+     * @param welcome the welcome message received from the server
+     */
     public void setWelcome(Welcome welcome) {
         this.welcome = welcome;
     }
 
+    /**
+     * Creates the table containing all Lobbies and their information
+     */
     public void createTable(){
         table.getItems().clear();
         table.setPlaceholder(new Label("No lobbies :("));
@@ -80,15 +88,21 @@ public class LobbyController implements GUIController{
         table.getItems().addAll(list);
     }
 
-
+    /**
+     * Sets up the ColorField
+     */
     public void createColorField(){
         colorField.setItems(FXCollections.observableList(Arrays.stream(ColorT.values()).map(ColorT::toString).collect(Collectors.toList())));
     }
-
+    /**
+     * Sets up the MageField
+     */
     public void createMageField(){
         mageField.setItems(FXCollections.observableList(Arrays.stream(Mage.values()).map(Mage::toString).collect(Collectors.toList())));
     }
-
+    /**
+     * Sets up the NumberField
+     */
     public void createNumberField(){
         ArrayList<Integer> nums = new ArrayList<>();
         nums.add(2);
@@ -96,12 +110,16 @@ public class LobbyController implements GUIController{
         numberField.setItems(FXCollections.observableList(nums));
     }
 
+    /**
+     * All operations that need to be performed on window show
+     */
     public void init(){
         nickname = null;
         mage = null;
         color = null;
         selected = null;
-        anchor.setBackground(new Background(new BackgroundImage(new Image(getClass().getResourceAsStream("/graphics/WelcomeBackground.png")), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+        anchor.setBackground(new Background(new BackgroundImage(new Image(getClass().getResourceAsStream(IMAGE_PATHS.WELCOME_BACKGROUND.toString())),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 new BackgroundSize(50,50,true,true,true,true))));
         createTable();
         createColorField();
@@ -109,6 +127,9 @@ public class LobbyController implements GUIController{
         createNumberField();
     }
 
+    /**
+     * Send a Join message to the Server with the Player's input
+     */
     @FXML
     public void sendJoin(){
         error.setText("");
@@ -118,13 +139,16 @@ public class LobbyController implements GUIController{
             error.setText("Select a lobby first");
             return;
         }
-        if(error.getText().isEmpty()&& checkCredentials()) {
+        if(error.getText().isEmpty() && checkCredentials()) {
             msg = new Join(nickname, mage, color, selected.getLobbyIndex());
             gui.sendMessageToServer(msg);
             gui.setNickname(nickname);
         }
     }
 
+    /**
+     * Send a GameParams (to create a Lobby) message to the Server with the Player's input
+     */
     @FXML
     public void sendParams(){
         GameParams msg;
@@ -138,6 +162,9 @@ public class LobbyController implements GUIController{
         }
     }
 
+    /**
+     * Get Player's input from all fields
+     */
     private void getCredentials(){
         nickname = nicknameField.getText();
         mage = Arrays.stream(Mage.values()).filter(m -> m.toString().equals(mageField.getValue())).findFirst().get();
@@ -161,14 +188,26 @@ public class LobbyController implements GUIController{
         gui.setNickname("pippo");
     }
 
+    /**
+     * Show last Info received from Server
+     * @param text latest Info message received from Server
+     */
     public void setLastInfo(String text){
         lastInfo.setText(text);
     }
 
+    /**
+     * Check if the Player filled al fields
+     * @return true if the Player has filled all fields
+     */
     private boolean checkCredentials(){
-        return nickname != null && color != null && mage != null;
+        return nicknameField.getText() != null && colorField.getValue() != null && mageField.getValue() != null;
     }
 
+    /**
+     * Sets the GUI object for the controller
+     * @param gui GUI - the controller's GUI.
+     */
     @Override
     public void setGui(GUI gui) {
         this.gui = gui;
@@ -179,7 +218,6 @@ public class LobbyController implements GUIController{
      */
     public void quitGame() {
         System.exit(0);
-        //gui.stop();
     }
 }
 

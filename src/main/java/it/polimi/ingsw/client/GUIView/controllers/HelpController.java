@@ -19,10 +19,12 @@ public class HelpController implements GUIController{
 
     public Scene getScene(){
         AnchorPane root = new AnchorPane();
+
         vBox.getChildren().forEach(c->{
             if(c instanceof Label l) {
                 l.setWrapText(true);
                 l.setMaxWidth(vBox.getMaxWidth());
+                l.setMinHeight(75);
             }
         });
         studentMoveText.setText("To move Students click on a Student to select it, then click on the destination (if you want to select two students" +
