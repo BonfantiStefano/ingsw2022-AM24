@@ -15,18 +15,18 @@
    <center>
       <VBox alignment="CENTER" prefHeight="359.0" prefWidth="315.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="statusLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="405.0" styleClass="input-label" textFill="WHITE">
+            <Label fx:id="statusLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="42.0" prefWidth="405.0" textFill="WHITE">
                <font>
                   <Font name="Arial Rounded MT Bold" size="16.0" />
                </font>
             </Label>
-            <Label fx:id="serverAddressLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="151.0" styleClass="input-label" text="Server Address" textFill="WHITE">
+            <Label fx:id="serverAddressLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="27.0" prefWidth="151.0" text="Server Address" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
             <TextField fx:id="serverAddressField" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" onAction="#getServer" prefHeight="26.0" prefWidth="457.0" text="localhost" />
-            <Label fx:id="serverPortLabel" alignment="CENTER" prefHeight="40.0" prefWidth="133.0" styleClass="input-label" text="Port" textFill="WHITE">
+            <Label fx:id="serverPortLabel" alignment="CENTER" prefHeight="40.0" prefWidth="133.0" text="Port" textFill="WHITE">
                <font>
                   <Font size="18.0" />
                </font>

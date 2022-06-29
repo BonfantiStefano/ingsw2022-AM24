@@ -23,7 +23,7 @@ public class World implements HasStrategy<InfluenceStrategy> {
     private InfluenceStrategy influenceStrategy;
     private int posMN;
     private Optional<ColorS> bannedColorS;
-    Random random = new Random(System.currentTimeMillis());
+    final Random random = new Random(System.currentTimeMillis());
     protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
     /**
@@ -98,8 +98,8 @@ public class World implements HasStrategy<InfluenceStrategy> {
 
     /**
      * Method checkConquest checks if the island must change the owner.
-     * @param mapInfluence Map<Player, Integer> - The map of the island's influence.
-     * @param players List<Player> - The list of the players.
+     * @param mapInfluence Map Player, Integer - The map of the island's influence.
+     * @param players List Player - The list of the players.
      * @param island Island - The island that has to be checked.
      * @return the new owner, if it is different from the old onw or if there aren't multiple players with the same influence.
      */
@@ -127,8 +127,8 @@ public class World implements HasStrategy<InfluenceStrategy> {
      * Method getInfluenceIsland calculate the influence for every single player using the method getInfluence and put
      * the result in a map.
      * @param i Island - the island on which the influence is calculated.
-     * @param profs Map<ColorS, Player> - Map that contains the association of a prof and the owner.
-     * @param players List<Player> - List where are contained all the players of the game.
+     * @param profs Map ColorS, Player - Map that contains the association of a prof and the owner.
+     * @param players List Player - List where are contained all the players of the game.
      * @return a map with every player and his influence on the Island i.
      */
     public HashMap<Player, Integer> getInfluenceIsland(Island i, HashMap<ColorS, Player> profs, ArrayList<Player> players) {
@@ -250,7 +250,7 @@ public class World implements HasStrategy<InfluenceStrategy> {
 
     /**
      * Method getBannedColorS returns the banned color by the effect of a character.
-     * @return Optional<ColorS></> - The banned color.
+     * @return Optional ColorS - The banned color.
      */
     public Optional<ColorS> getBannedColorS() {
         return bannedColorS;

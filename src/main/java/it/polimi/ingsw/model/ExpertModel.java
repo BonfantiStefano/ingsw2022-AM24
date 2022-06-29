@@ -16,7 +16,7 @@ public interface ExpertModel extends Model{
 
     void entranceToHall(ColorS s) throws PlaceFullException, NoSuchStudentException;
 
-    void hallToEntrance(ColorS s) throws NoSuchStudentException, NoSuchStudentException;
+    void hallToEntrance(ColorS s) throws NoSuchStudentException;
 
     void addToHall(ColorS s) throws PlaceFullException;
 

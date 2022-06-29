@@ -6,7 +6,7 @@ import it.polimi.ingsw.client.Client;
  * Class NotifyDisconnection is used from the server to notify that the client must be disconnected.
  */
 public class NotifyDisconnection implements AnswerWithString{
-    private String string;
+    private final String string;
 
     /**
      * Constructor NotifyDisconnection creates a new message with the given string.

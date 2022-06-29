@@ -9,8 +9,6 @@
   <version>0.1</version>
 
   <name>AM24</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,6 +50,18 @@
       <artifactId>javafx-graphics</artifactId>
       <version>18.0.1</version>
       <classifier>win</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-graphics</artifactId>
+      <version>18.0.1</version>
+      <classifier>mac</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-graphics</artifactId>
+      <version>18.0.1</version>
+      <classifier>linux</classifier>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>

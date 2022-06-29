@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Class Welcome is used from the server to notify the client of the available lobbies.
  */
 public class Welcome implements Answer{
-    private ArrayList<VirtualLobby> lobbies;
+    private final ArrayList<VirtualLobby> lobbies;
 
     /**
      * Constructor Welcome creates a new message with the information of all the available lobbies.

@@ -183,7 +183,7 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
 
     /**
      * Method getTowers returns the list which contains the player's towers
-     * @return towers of type ArrayList<ColorT>
+     * @return towers of type ArrayList ColorT
      */
     public ArrayList<ColorT> getTowers(){
         return towers;

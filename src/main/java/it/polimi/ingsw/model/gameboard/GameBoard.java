@@ -34,13 +34,13 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
     final protected static int NUM_STUDENTS = 7;
     final protected static int NT = 6;
     final protected static int NS = 9;
-    protected int numPlayers;
-    protected ArrayList<Player> players;
-    protected ArrayList<Cloud> clouds;
+    protected final int numPlayers;
+    protected final ArrayList<Player> players;
+    protected final ArrayList<Cloud> clouds;
     protected ArrayList<Assistant> lastAssistants;
-    protected World world;
+    protected final World world;
     protected Player activePlayer;
-    protected StudentContainer container;
+    protected final StudentContainer container;
     protected ProfStrategy strategy;
     protected HashMap<ColorS, Player> profs;
     protected boolean gameMustEnd;
@@ -184,7 +184,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
 
     /**
      * Method getSortedPlayers returns the list containing sorted players (for the planning phase)
-     * @return sortedPlayers of type ArrayList<Player> - the sorted players
+     * @return sortedPlayers of type ArrayList Player - the sorted players
      */
     @Override
     public ArrayList<Player> getSortedPlayers(){
@@ -292,7 +292,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
 
     /**
      * Method getPlayers returns the list of the players taking part in the game.
-     * @return List<Player> - list containing all the players
+     * @return List Player - list containing all the players
      */
     public ArrayList<Player> getPlayers(){
         return players;
@@ -483,7 +483,7 @@ public class GameBoard implements HasStrategy<ProfStrategy>, Model, PropertyChan
     /**
      * Method checkWin checks if any winning condition is verified and in case return the Winner, game can end in a draw when two players
      * has the same towers on the World and the same number of profs.
-     * @return Optional<Player> the winner of the game, if presents.
+     * @return Optional Player the winner of the game, if presents.
      */
     @Override
     //Remember that there are two different case of null return value: if the first condition is verified the game ends in a draw, otherwise

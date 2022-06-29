@@ -48,10 +48,9 @@ public class GUI extends Application implements UserInterface {
     /**
      * Method start setups all the scene and then shows the initial scene.
      * @param stage the Stage class.
-     * @throws IOException if an I/O error occurs.
      */
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage){
         setup();
         this.window = stage;
         window.setMinWidth(600);
@@ -109,9 +108,8 @@ public class GUI extends Application implements UserInterface {
     /**
      * Method changeScene changes the current scene to the scene given by parameter.
      * @param newSceneName String - the scene that will be shown.
-     * @throws IOException if an I/O error occurs.
      */
-    public void changeScene(String newSceneName) throws IOException {
+    public void changeScene(String newSceneName){
         currentScene = nameMapScene.get(newSceneName);
         window.setScene(currentScene);
         window.show();
@@ -122,7 +120,7 @@ public class GUI extends Application implements UserInterface {
             lobbyController.init();
             window.setResizable(false);
         }
-        else if(newSceneName.equals(CONTROLLERS.YOUWIN.toString()) || newSceneName.equals((CONTROLLERS.YOULOSE))){
+        else if(newSceneName.equals(CONTROLLERS.YOUWIN.toString()) || newSceneName.equals((CONTROLLERS.YOULOSE.toString()))){
             window.setX(500);
             window.setY(100);
             window.setResizable(false);
@@ -169,7 +167,7 @@ public class GUI extends Application implements UserInterface {
      * @param evt PropertyChangeEvent - the event containing all the necessary information.
      */
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void propertyChange(PropertyChangeEvent evt){
         GameController c = (GameController) nameMapController.get(nameMapScene.get(CONTROLLERS.MAIN.toString()));
         LobbyController lb = (LobbyController) nameMapController.get(nameMapScene.get(CONTROLLERS.WELCOME.toString()));
         String text;
@@ -177,11 +175,7 @@ public class GUI extends Application implements UserInterface {
             case "WELCOME" -> {
                 if (!currentScene.equals(nameMapScene.get(CONTROLLERS.WELCOME.toString())))
                     Platform.runLater(() -> {
-                        try {
-                            changeScene(CONTROLLERS.WELCOME.toString());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        changeScene(CONTROLLERS.WELCOME.toString());
                     });
                 Welcome w = (Welcome) evt.getNewValue();
                 lb.setWelcome(w);
@@ -190,20 +184,8 @@ public class GUI extends Application implements UserInterface {
             case "INFORMATIONGAME" -> {
                 text = ((InformationGame) evt.getNewValue()).getString();
                 switch (text) {
-                    case "You Lose" -> Platform.runLater(() -> {
-                        try {
-                            changeScene(CONTROLLERS.YOULOSE.toString());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                    case "You won" -> Platform.runLater(() -> {
-                        try {
-                            changeScene(CONTROLLERS.YOUWIN.toString());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+                    case "You Lose" -> Platform.runLater(() -> changeScene(CONTROLLERS.YOULOSE.toString()));
+                    case "You won" -> Platform.runLater(() -> changeScene(CONTROLLERS.YOUWIN.toString()));
                     default -> Platform.runLater(() -> c.setLastInfo(text));
                 }
             }
@@ -211,20 +193,10 @@ public class GUI extends Application implements UserInterface {
                 text = ((InformationConnection) evt.getNewValue()).getString();
                 switch (text) {
                     case "Game continue", "Game Started!", "Welcome back!" -> Platform.runLater(() -> {
-                        try {
-                            changeScene(CONTROLLERS.MAIN.toString());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        changeScene(CONTROLLERS.MAIN.toString());
                         c.setLastInfo(text);
                     });
-                    case "You are the only connected player, you won!" -> Platform.runLater(() -> {
-                        try {
-                            changeScene(CONTROLLERS.YOUWIN.toString());
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
+                    case "You are the only connected player, you won!" -> Platform.runLater(() -> changeScene(CONTROLLERS.YOUWIN.toString()));
                     case "The lobby has been created", "You have joined the game" -> Platform.runLater(() -> lb.setLastInfo(text));
                     default -> Platform.runLater(() -> c.setLastInfo(text));
                 }

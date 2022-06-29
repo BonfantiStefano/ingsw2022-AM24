@@ -19,8 +19,8 @@ public class NoTowerInfluence implements InfluenceStrategy {
      * Method getInfluence calculates the standard influence on the island i, for the player p (given by parameter).
      * @param i Island - the Island on which the influence has to be calculated.
      * @param p Player - the player for whom the influence is calculated.
-     * @param color Optional<ColorS> - the banned color used by the class NoColorInfluence.
-     * @param profs HashMap<ColorS, Player> - the Map contains the prof (memorized as a ColorS) and the owner.
+     * @param color Optional ColorS - the banned color used by the class NoColorInfluence.
+     * @param profs HashMap ColorS, Player - the Map contains the prof (memorized as a ColorS) and the owner.
      * @return the value of the influence.
      */
     @Override

@@ -278,7 +278,7 @@ public class Lobby {
 
     /**
      * Method getMages returns the List of the already chosen mages.
-     * @return ArrayList<Mage> the mages already chosen.
+     * @return ArrayList Mage the mages already chosen.
      */
     public ArrayList<Mage> getMages() {
        return mages;
@@ -286,7 +286,7 @@ public class Lobby {
 
     /**
      * Method getColorTowers returns the List of the already chosen towers' color.
-     * @return ArrayList<ColorT> the color of the tower already chosen.
+     * @return ArrayList ColorT the color of the tower already chosen.
      */
     public ArrayList<ColorT> getColorTowers() {
         return towers;
@@ -294,7 +294,7 @@ public class Lobby {
 
     /**
      * Method getNicknames returns the List of the taken nickname.
-     * @return ArrayList<String> the nickname already taken.
+     * @return ArrayList String the nickname already taken.
      */
     public ArrayList<String> getNicknames() {
         ArrayList<String> nicknames = new ArrayList<>();

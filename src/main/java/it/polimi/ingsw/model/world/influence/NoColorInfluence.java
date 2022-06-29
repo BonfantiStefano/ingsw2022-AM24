@@ -20,8 +20,8 @@ public class NoColorInfluence implements InfluenceStrategy {
      * color given by parameter.
      * @param i Island - the Island on which the influence has to be calculated.
      * @param p Player - the player for whom the influence is calculated.
-     * @param color Optional<ColorS> - the banned color that has to be ignored.
-     * @param profs HashMap<ColorS, Player> - the Map contains the prof (memorized as a ColorS) and the owner.
+     * @param color Optional ColorS - the banned color that has to be ignored.
+     * @param profs HashMap ColorS, Player - the Map contains the prof (memorized as a ColorS) and the owner.
      * @return the value of the influence.
      */
     @Override

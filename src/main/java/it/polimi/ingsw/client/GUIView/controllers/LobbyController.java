@@ -7,10 +7,8 @@ import it.polimi.ingsw.client.request.GameParams;
 import it.polimi.ingsw.client.request.Join;
 import it.polimi.ingsw.model.ColorT;
 import it.polimi.ingsw.model.player.Mage;
-import it.polimi.ingsw.server.GameStatus;
 import it.polimi.ingsw.server.answer.Welcome;
 import it.polimi.ingsw.server.virtualview.VirtualLobby;
-import it.polimi.ingsw.server.virtualview.VirtualPlayer;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -24,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class LobbyController implements GUIController{
     private GUI gui;
-    public TableView<VirtualLobby> table = new TableView<>();
+    public final TableView<VirtualLobby> table = new TableView<>();
     public TableColumn<VirtualLobby,Integer> IDcloumn;
     public TableColumn<VirtualLobby, ArrayList<String>> connected;
     public TableColumn<VirtualLobby, String> ExpColumn;

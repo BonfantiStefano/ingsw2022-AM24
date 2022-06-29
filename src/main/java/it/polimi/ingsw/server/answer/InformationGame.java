@@ -6,7 +6,7 @@ import it.polimi.ingsw.client.Client;
  * Class InformationGame is used from the server to notify the client about a game's information.
  */
 public class InformationGame implements AnswerWithString{
-    private String string;
+    private final String string;
 
     /**
      * Constructor InformationGame creates a new message with the string given by parameter.

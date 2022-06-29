@@ -175,7 +175,7 @@ public class GameController implements GUIController{
      * @param index the selected Hall's index
      */
     public void updateHall(int index){
-        HashMap<ColorS, Integer> hall = new HashMap<>();
+        HashMap<ColorS, Integer> hall;
         hallGrids.get(calcIndex(index)).getChildren().clear();
             hall = (HashMap<ColorS, Integer>) virtualView.getVirtualPlayers().get(index).getVirtualBoard().getHall();
 

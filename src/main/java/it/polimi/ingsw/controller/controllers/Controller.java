@@ -36,8 +36,8 @@ public class Controller implements PropertyChangeListener {
 
     protected Model model;
     protected ActionController actionController;
-    protected TurnController turnController;
-    protected Lobby lobby;
+    protected final TurnController turnController;
+    protected final Lobby lobby;
     protected PHASE phase;
     protected int numPlayers;
     protected int havePlayed;
@@ -45,7 +45,7 @@ public class Controller implements PropertyChangeListener {
     protected String activePlayer;
     protected String messageSender;
     protected boolean gameStarted;
-    protected VirtualView virtualView;
+    protected final VirtualView virtualView;
     ArrayList<Player> sortedPlayers = new ArrayList<>();
     protected int numSwitchMoves;
     protected int numStudMoves;

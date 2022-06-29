@@ -214,7 +214,7 @@ public class ExpertGameBoard extends GameBoard implements ExpertModel {
 
     /**
      * Method getCharacters returns the Character cards.
-     * @return characters of type ArrayList<Character>
+     * @return characters of type ArrayList Character
      */
     @Override
     public ArrayList<Character> getCharacters() {

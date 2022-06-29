@@ -1,6 +1,7 @@
 package it.polimi.ingsw.client.GUIView.controllers;
 
 import it.polimi.ingsw.client.GUIView.GUI;
+import it.polimi.ingsw.client.GUIView.IMAGE_PATHS;
 import it.polimi.ingsw.client.request.ChooseAssistant;
 import it.polimi.ingsw.server.virtualview.VirtualView;
 import javafx.scene.Scene;
@@ -70,7 +71,7 @@ public class ChooseAssistantController implements GUIController {
     public void uploadImages(int player, int numCards){
         for(int i = 0; i < numCards; i++){
             int temp = view.getVirtualPlayers().get(player).getVirtualHand().getCards().get(i).getTurn();
-            Image imageA = new Image(getClass().getResourceAsStream("/graphics/Assistants/Animali_1_"+temp+"@3x.png"));
+            Image imageA = new Image(getClass().getResourceAsStream(IMAGE_PATHS.ASSISTANT.toString() +temp+"@3x.png"));
             assistantImages.add(imageA);
         }
     }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * Class CreateClouds is used from the server to notify about a virtualView's update to the client.
  */
 public class CreateClouds implements Update{
-    ArrayList<VirtualCloud> clouds;
+    final ArrayList<VirtualCloud> clouds;
 
     /**
      * Constructor AddPlayer creates a new update message.

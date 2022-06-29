@@ -1,10 +1,6 @@
 package it.polimi.ingsw.model.character;
 
 import it.polimi.ingsw.model.EVENT;
-import it.polimi.ingsw.model.gameboard.ExpertGameBoard;
-
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 
 /**
  * Class CharacterWithNoEntry models the Character that can limit MN's action on Islands

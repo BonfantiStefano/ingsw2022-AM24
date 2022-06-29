@@ -48,12 +48,7 @@ public class Assistant {
      *                or greater than the referenced card.
      */
     public int compareTo(Assistant a){
-        if(this.turn>a.getTurn())
-            return 1;
-        else if(this.turn==a.getTurn())
-            return 0;
-        else
-            return -1;
+        return Integer.compare(this.turn, a.getTurn());
     }
 
 

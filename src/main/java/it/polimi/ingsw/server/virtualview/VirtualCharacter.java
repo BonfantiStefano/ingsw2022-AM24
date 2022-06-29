@@ -1,9 +1,6 @@
 package it.polimi.ingsw.server.virtualview;
 
-import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.character.Character;
-
-import java.util.ArrayList;
 
 /** VirtualCharacter class is a simplified representation of a Character card.*/
 public class VirtualCharacter {
