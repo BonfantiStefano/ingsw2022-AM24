@@ -1,5 +1,8 @@
 package it.polimi.ingsw.client.GUIView;
 
+/**
+ * Enum to collect all Image Paths
+ */
 public enum IMAGE_PATHS {
     MAIN_BACKGROUND("/graphics/Background.jpg"),
     BOARD("/graphics/Plancia_DEF.png"),
@@ -18,10 +21,18 @@ public enum IMAGE_PATHS {
 
     private final String path;
 
+    /**
+     * Image path information
+     * @param path String with the Image's path
+     */
     IMAGE_PATHS(String path) {
         this.path = path;
     }
 
+    /**
+     * Get the Image's path
+     * @return the Image's path
+     */
     public String toString(){
         return path;
     }

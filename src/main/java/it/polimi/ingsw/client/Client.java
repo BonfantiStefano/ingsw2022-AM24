@@ -411,7 +411,6 @@ public class Client{
      * @param notifyDisconnection NotifyDisconnection - the messages containing all the parameters that the Client needs.
      */
     public void visit(NotifyDisconnection notifyDisconnection) {
-        //in teoria non raggiungo mai questo ramo
         listener.firePropertyChange("NOTIFYDISCONNECTION", null, notifyDisconnection);
     }
 

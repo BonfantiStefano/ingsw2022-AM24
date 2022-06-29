@@ -35,7 +35,6 @@ import java.util.*;
  * GameController class handles the main Game scene
  */
 public class GameController implements GUIController{
-    Random r = new Random(System.currentTimeMillis());
     private HashMap<ColorS, Image> studentImages;
     private HashMap<ColorS, Image> profImages;
     private HashMap<ColorT, Image> towerImages;
@@ -44,8 +43,6 @@ public class GameController implements GUIController{
     private HashMap<Integer, Image> assistantImages;
     private Image coinImage;
 
-    private final int radiusIslands = 200;
-    private final int radiusClouds = 75;
     private final int angle = 360;
     private GUI gui;
     private VirtualView virtualView;
@@ -290,6 +287,7 @@ public class GameController implements GUIController{
         p.setId("island"+ islands.indexOf(i));
 
         islandsPane.getChildren().add(p);
+        int radiusIslands = 200;
         circleLayout(p, thisAngle, radiusIslands);
     }
 
@@ -368,7 +366,6 @@ public class GameController implements GUIController{
             mnView.setFitWidth(25);
             mnView.setOnMouseClicked(mouseEvent -> {
                 selectedMN = true;
-                System.out.println("Selected MN");
                 mouseEvent.consume();
             });
             mnNoEntry.getChildren().add(mnView);
@@ -536,7 +533,6 @@ public class GameController implements GUIController{
 
             noEntry.setOnMouseClicked(mouseEvent -> {
                 selectedNoEntry = true;
-                System.out.println("No Entry selected");
             });
 
             gp.add(noEntry,w,j);
@@ -639,6 +635,7 @@ public class GameController implements GUIController{
         p.getChildren().add(gp);
 
         int thisAngle = i *angle/ size;
+        int radiusClouds = 75;
         circleLayout(p, thisAngle, radiusClouds);
 
         p.setOnMouseClicked(mouseEvent -> gui.sendMessageToServer(new ChooseCloud(i)));
@@ -666,7 +663,6 @@ public class GameController implements GUIController{
         students = virtualView.getVirtualClouds().get(index).getStudents();
         int x=0, y=0;
         for(ColorS c : students){
-            System.out.println("index: "+index + " student: "+ c.toString());
             ImageView img = new ImageView(studentImages.get(c));
             img.setFitWidth(25);
             img.setFitHeight(25);
@@ -769,7 +765,6 @@ public class GameController implements GUIController{
             from = parent;
         else {
             to = parent;
-            System.out.println("from: " +from.getId()+" to: "+to.getId()+" selected: "+ selected.toString());
             createMessage();
             from = null;
             to = null;
@@ -786,7 +781,6 @@ public class GameController implements GUIController{
         String destinationId = ((Node) e.getSource()).getId();
         if(from!=null&&selected!=null){
             to = (Node) e.getSource();
-            System.out.println("from: " +from.getId()+" to: "+to.getId()+" selected: "+ selected.toString());
             createMessage();
             from = null;
             to = null;
@@ -804,7 +798,6 @@ public class GameController implements GUIController{
                 i = (i+1)% virtualView.getVirtualWorld().size();
                 steps++;
             }
-            System.out.println(dest);
             selectedMN = false;
         }
         else if(selectedNoEntry){
