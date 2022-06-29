@@ -222,7 +222,6 @@ public class CLI implements Runnable, UserInterface {
                 drawClouds(virtualView.getVirtualClouds());
                 if (virtualView.getVirtualCharacters().size() > 0) {
                     drawCharacters(virtualView.getVirtualCharacters());
-                    System.out.println("Characters Descriptions:");
                     virtualView.getVirtualCharacters().forEach(c -> System.out.println((virtualView.getVirtualCharacters().indexOf(c) + 1) + ": " + c.getDescription()));
                     System.out.println("You can still earn "+ virtualView.getVirtualCoins()+" coins.");
                 }
@@ -388,7 +387,7 @@ public class CLI implements Runnable, UserInterface {
      */
     public void drawSchoolBoard(VirtualPlayer vp, HashMap<ColorS, VirtualPlayer> profs){
 
-        String appendix = "'s SchoolBoard";
+        String appendix = "'s SchoolBoard - ";
         ArrayList<ColorS> entrance = vp.getVirtualBoard().getEntrance();
         HashMap<ColorS, Integer> hall = (HashMap<ColorS, Integer>) vp.getVirtualBoard().getHall();
         ArrayList<ColorT> towers = vp.getVirtualBoard().getTowers();
@@ -397,7 +396,7 @@ public class CLI implements Runnable, UserInterface {
 
         StringBuilder currLine = new StringBuilder();
         lines.add(currLine);
-        firstLine(currLine, vp.getNickname()+appendix, xSize);
+        firstLine(currLine, vp.getNickname()+appendix+towers.get(0), xSize);
         if (vp.getVirtualLastAssistant() != null) {
             currLine.append("Last assistant played: ");
             currLine.append("Turn: ").append(vp.getVirtualLastAssistant().getTurn()).append(" Steps: ").append(vp.getVirtualLastAssistant().getMNsteps());
@@ -537,14 +536,14 @@ public class CLI implements Runnable, UserInterface {
      */
     public void drawIslands(ArrayList<VirtualIsland> islands){
         ArrayList<VirtualIsland> allIslands = virtualView.getVirtualWorld();
-        int xSize = 17;
+        int xSize = 20;
         int numIslands = islands.size();
         ArrayList<StringBuilder> lines = new ArrayList<>();
 
         StringBuilder currLine = new StringBuilder();
         lines.add(currLine);
         for(VirtualIsland i:islands)
-            firstLine(currLine,"Island no. "+ (allIslands.indexOf(i)+1) + (allIslands.indexOf(i)==virtualView.getMnPos()?BOX.HORIZ+"MN":""), xSize);
+            firstLine(currLine,"Island no. "+ (allIslands.indexOf(i)+1) + (allIslands.indexOf(i)==virtualView.getMnPos()?BOX.HORIZ+"MN":"") + (i.getNoEntry()>0 ? "?":""), xSize);
 
         currLine = new StringBuilder();
         lines.add(currLine);
