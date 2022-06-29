@@ -756,6 +756,7 @@ public class GameController implements GUIController{
         Node student = (Node) e.getSource(), parent = getParent((Node) e.getSource());
         boolean switchStudents = from!=null&&(from.getId().contains("e1")&&parent.getId().contains("h1")||(from.getId().contains("h1")&&parent.getId().contains("e1")));
         boolean characterEntrance = from!=null&&((from.getId().contains("e1")&&to.getId().contains("character"))||(from.getId().contains("character")&&to.getId().contains("e1")));
+
         if(switchStudents|| characterEntrance){
             gui.sendMessageToServer(new ChooseTwoColors(selected,ColorS.valueOf(student.getId())));
             return;
@@ -793,12 +794,13 @@ public class GameController implements GUIController{
             for(int i=currMnPos;i<virtualView.getVirtualWorld().size();){
                 if(i==dest){
                     gui.sendMessageToServer(new MoveMN(steps));
-                    break;
+                    selectedMN = false;
+                    return;
                 }
                 i = (i+1)% virtualView.getVirtualWorld().size();
                 steps++;
             }
-            selectedMN = false;
+
         }
         else if(selectedNoEntry){
             destinationId = ((Node) e.getSource()).getId();
