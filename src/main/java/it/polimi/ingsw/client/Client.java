@@ -90,7 +90,6 @@ public class Client{
             try {
                 String s = (String) is.readObject();
                 if(s!= null) {
-                    //System.out.println(s);
                     stopTimer();
                     startTimer();
                     Answer a = parseMessage(s);
@@ -130,16 +129,13 @@ public class Client{
         if(quit) {
             sendMessage(toJson(new Disconnect()));
         }
-        listener.firePropertyChange("INFORMATIONCONNECTION", null, new InformationConnection("the server isn't available"));
-        /* ciao
         try {
             os.close();
             is.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        */
-        //System.exit(0);
+        System.exit(0);
     }
 
     /**
@@ -207,8 +203,8 @@ public class Client{
         timer = new Thread(() -> {
             try{
                 Thread.sleep(TIMEOUT);
-                //System.out.println("The server isn't available");
-                handleClientDisconnection(true);
+                listener.firePropertyChange("INFORMATIONCONNECTION", null, new InformationConnection("the server isn't available"));
+                //handleClientDisconnection(true);
             } catch (InterruptedException ignored){
             }
         });
