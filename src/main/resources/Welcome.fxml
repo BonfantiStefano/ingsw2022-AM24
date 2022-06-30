@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane fx:id="anchor" maxHeight="624.0" maxWidth="608.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="624.0" prefWidth="608.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.client.GUIView.controllers.LobbyController">
 
@@ -39,5 +40,6 @@
       <Button layoutX="416.0" layoutY="249.0" mnemonicParsing="false" onAction="#quickCreate3" text="Create3" />
       <Button layoutX="423.0" layoutY="300.0" mnemonicParsing="false" onAction="#quickJoin3" text="Join3" />
       <CheckBox fx:id="modeField" layoutX="123.0" layoutY="484.0" mnemonicParsing="false" />
+      <Text layoutX="168.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Double click to select a Lobby" />
     </children>
 </AnchorPane>

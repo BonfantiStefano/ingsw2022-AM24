@@ -365,7 +365,7 @@ public class CLI implements Runnable, UserInterface {
 
         StringBuilder currLine = new StringBuilder();
         lines.add(currLine);
-        firstLine(currLine, vp.getNickname()+appendix+towers.get(0), xSize);
+        firstLine(currLine, vp.getNickname()+appendix+(towers.get(0)!=null? towers.get(0).toString():""), xSize);
         if (vp.getVirtualLastAssistant() != null) {
             currLine.append("Last assistant played: ");
             currLine.append("Turn: ").append(vp.getVirtualLastAssistant().getTurn()).append(" Steps: ").append(vp.getVirtualLastAssistant().getMNsteps());
@@ -674,7 +674,6 @@ public class CLI implements Runnable, UserInterface {
         try{
             if(System.getProperty("os.name").contains("Windows")){
                 new ProcessBuilder("cmd.exe", "/c", "cls").inheritIO().start().waitFor();
-                new ProcessBuilder("cmd.exe", "/c", "chcp 65001").inheritIO().start().waitFor();
             }
             else {
                 Runtime.getRuntime().exec("clear");
