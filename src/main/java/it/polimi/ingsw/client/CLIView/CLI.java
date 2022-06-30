@@ -266,8 +266,10 @@ public class CLI implements Runnable, UserInterface {
             answer = "n";
         }
 
+        int index = -1;
+        int numPlayers = -1;
+        String expert = "";
         if (answer.equals("y")) {
-            int index;
             do {
                 System.out.println("Insert the Lobby's number: ");
                 try {
@@ -276,12 +278,36 @@ public class CLI implements Runnable, UserInterface {
                     index = -1;
                     System.exit(0);
                 }
-                if(getLobbyByIndex(lobbies, index) == -1) {
+                if (getLobbyByIndex(lobbies, index) == -1) {
                     System.out.println("Invalid lobby index!");
                     index = -1;
                 }
-            }while(index<0);
-
+            } while (index < 0);
+        } else if(answer.equals("n")) {
+            System.out.println("Creating a lobby!");
+            do {
+                System.out.println("How many Players will the Game have? (2/3)");
+                try {
+                    numPlayers = getInputValue();
+                } catch (NoSuchElementException exception) {
+                    numPlayers = -1;
+                    System.exit(0);
+                }
+            } while (numPlayers < 2 || numPlayers > 3);
+            do {
+                System.out.println("Do you want to create an Expert Game? (y/n)");
+                try {
+                    expert = input.nextLine();
+                } catch (NoSuchElementException exception) {
+                    expert = "";
+                    System.exit(0);
+                }
+                checkDisconnect(expert);
+            } while (!expert.equals("y") && !expert.equals("n"));
+        } else {
+            new Thread(this::getInfo).start();
+        }
+        if(answer.equals("n") || answer.equals("y")) {
             do {
                 System.out.println("Choose your nickname: ");
                 try {
@@ -302,81 +328,24 @@ public class CLI implements Runnable, UserInterface {
                     mageIndex = -1;
                     System.exit(0);
                 }
-            } while (mageIndex < 0 || mageIndex > 4);
+            } while (mageIndex <= 0 || mageIndex > 4);
             int towerIndex;
-            do {
-                System.out.println("Choose your TowerColor (1-Black, 2-White"+ (lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2 ? ")":", 3-Grey)")+":");
-                try {
-                    towerIndex = getInputValue();
-                } catch (NoSuchElementException exception) {
-                    towerIndex = -1;
-                    System.exit(0);
+            if (answer.equals("y")) {
+                do {
+                    System.out.println("Choose your TowerColor (1-Black, 2-White" + (lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers() == 2 ? ")" : ", 3-Grey)") + ":");
+                    towerIndex = getTowerColor();
                 }
-            } while ((towerIndex < 0 || towerIndex > 4)||(towerIndex==3&&lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers()==2));
-
-            Join msg = new Join(nickname, Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1], index);
-            client.sendMessage(toJson(msg));
-        }
-        else if(answer.equals("n")){
-            System.out.println("Creating a lobby!");
-            int numPlayers;
-            do {
-                System.out.println("How many Players will the Game have? (2/3)");
-                try {
-                    numPlayers = getInputValue();
-                } catch (NoSuchElementException exception) {
-                    numPlayers = -1;
-                    System.exit(0);
-                }
-            }while(numPlayers<2 || numPlayers>3);
-            String expert;
-            do{
-                System.out.println("Do you want to create an Expert Game? (y/n)");
-                try {
-                    expert = input.nextLine();
-                } catch (NoSuchElementException exception) {
-                    expert = "";
-                    System.exit(0);
-                }
-                checkDisconnect(expert);
-            }while(!expert.equals("y")&&!expert.equals("n"));
-
-            do {
-                System.out.println("Choose your nickname: ");
-                try {
-                    nickname = input.nextLine();
-                } catch (NoSuchElementException exception) {
-                    System.exit(0);
-                }
-                checkDisconnect(nickname);
-            } while (nickname == null);
-
-            int mageIndex;
-            do {
-                System.out.println("Choose your Mage (1,2,3,4):");
-                try {
-                    mageIndex = getInputValue();
-                } catch (NoSuchElementException exception) {
-                    mageIndex = -1;
-                    System.exit(0);
-                }
-            } while (mageIndex < 0 || mageIndex > 4);
-
-            int towerIndex;
-            do {
-                System.out.println("Choose your TowerColor (1-Black, 2-White"+ (numPlayers==2 ? ")":", 3-Grey)")+":");
-                try {
-                    towerIndex = getInputValue();
-                } catch (NoSuchElementException exception) {
-                    towerIndex = -1;
-                    System.exit(0);
-                }
-            } while (towerIndex < 0 || towerIndex > 4);
-
-            GameParams msg = new GameParams(numPlayers, expert.equals("y"), nickname,Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1]);
-            client.sendMessage(toJson(msg));
-        } else {
-            new Thread(this::getInfo).start();
+                while ((towerIndex <= 0 || towerIndex > 3) || (towerIndex == 3 && lobbies.get(getLobbyByIndex(lobbies, index)).getNumPlayers() == 2)) ;
+                Join msg = new Join(nickname, Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1], index);
+                client.sendMessage(toJson(msg));
+            } else {
+                do {
+                    System.out.println("Choose your TowerColor (1-Black, 2-White"+ (numPlayers==2 ? ")":", 3-Grey)")+":");
+                    towerIndex = getTowerColor();
+                } while (((towerIndex <= 0 || towerIndex >= 4) && numPlayers == 3) || ((towerIndex <= 0 || towerIndex >= 3) && numPlayers == 2));
+                GameParams msg = new GameParams(numPlayers, expert.equals("y"), nickname,Mage.values()[mageIndex-1], ColorT.values()[towerIndex-1]);
+                client.sendMessage(toJson(msg));
+            }
         }
     }
 
@@ -893,6 +862,21 @@ public class CLI implements Runnable, UserInterface {
             val = -1;
         }
         return val;
+    }
+
+    /**
+     * method geyTowerColor gets the color of the towers from player's input.
+     * @return an int - the index of the color chosen.
+     */
+    private int getTowerColor(){
+        int towerIndex;
+        try {
+            towerIndex = getInputValue();
+        } catch (NoSuchElementException exception) {
+            towerIndex = -1;
+            System.exit(0);
+        }
+        return towerIndex;
     }
 
     /**
