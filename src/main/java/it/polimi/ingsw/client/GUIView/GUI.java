@@ -15,6 +15,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -198,6 +200,7 @@ public class GUI extends Application implements UserInterface {
                     });
                     case "You are the only connected player, you won!" -> Platform.runLater(() -> changeScene(CONTROLLERS.YOUWIN.toString()));
                     case "The lobby has been created", "You have joined the game" -> Platform.runLater(() -> lb.setLastInfo(text));
+                    case "The server isn't available"-> Platform.runLater(this::showServerKO);
                     default -> Platform.runLater(() -> c.setLastInfo(text));
                 }
             }
@@ -279,5 +282,13 @@ public class GUI extends Application implements UserInterface {
      */
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    /**
+     * Shows an alert to notify the user that the Server isn't available
+     */
+    private void showServerKO(){
+        Alert alert = new Alert(Alert.AlertType.ERROR,"Server isn't available, close the application", ButtonType.OK);
+        alert.showAndWait();
     }
 }

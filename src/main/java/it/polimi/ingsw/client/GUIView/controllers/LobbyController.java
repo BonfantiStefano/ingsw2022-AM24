@@ -169,23 +169,6 @@ public class LobbyController implements GUIController{
         color = Arrays.stream(ColorT.values()).filter(c -> c.toString().equals(colorField.getValue())).findFirst().get();
     }
 
-    public void quickCreate(){
-        gui.sendMessageToServer(new GameParams(2,true,"marco",Mage.MAGE1,ColorT.BLACK));
-        gui.setNickname("marco");
-    }
-    public void quickCreate3(){
-        gui.sendMessageToServer(new GameParams(3,true,"marco",Mage.MAGE1,ColorT.BLACK));
-        gui.setNickname("marco");
-    }
-    public void quickJoin3(){
-        gui.sendMessageToServer(new Join("paolo",Mage.MAGE3,ColorT.GREY,0));
-        gui.setNickname("paolo");
-    }
-    public void quickJoin(){
-        gui.sendMessageToServer(new Join("pippo",Mage.MAGE2,ColorT.WHITE,0));
-        gui.setNickname("pippo");
-    }
-
     /**
      * Show last Info received from Server
      * @param text latest Info message received from Server

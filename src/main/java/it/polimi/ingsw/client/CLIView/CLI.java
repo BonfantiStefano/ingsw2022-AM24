@@ -220,11 +220,6 @@ public class CLI implements Runnable, UserInterface {
                 drawIslands(secondHalf);
 
                 drawClouds(virtualView.getVirtualClouds());
-                if (virtualView.getVirtualCharacters().size() > 0) {
-                    drawCharacters(virtualView.getVirtualCharacters());
-                    virtualView.getVirtualCharacters().forEach(c -> System.out.println((virtualView.getVirtualCharacters().indexOf(c) + 1) + ": " + c.getDescription()));
-                    System.out.println("You can still earn "+ virtualView.getVirtualCoins()+" coins.");
-                }
 
                 for (VirtualPlayer vp : virtualView.getVirtualPlayers()) {
                     drawSchoolBoard(vp, virtualView.getVirtualProfs());
@@ -885,6 +880,11 @@ public class CLI implements Runnable, UserInterface {
         System.out.println("Here's every command:");
         for (REGEX r : REGEX.values()){
             System.out.println(r.name()+": " + r.getDesc());
+        }
+        if (virtualView.getVirtualCharacters().size() > 0) {
+            drawCharacters(virtualView.getVirtualCharacters());
+            virtualView.getVirtualCharacters().forEach(c -> System.out.println((virtualView.getVirtualCharacters().indexOf(c) + 1) + ": " + c.getDescription()));
+            System.out.println("You can still earn "+ virtualView.getVirtualCoins()+" coins.");
         }
     }
 
