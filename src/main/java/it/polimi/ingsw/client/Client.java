@@ -31,7 +31,7 @@ public class Client{
     private Thread timer;
     private final Thread messageHandler;
     private VirtualView virtualView;
-    private static final int TIMEOUT = 50000;
+    private static final int TIMEOUT = 15000;
     private final BlockingQueue<Answer> messagesQueue;
     protected final PropertyChangeSupport listener = new PropertyChangeSupport(this);
 
@@ -130,13 +130,16 @@ public class Client{
         if(quit) {
             sendMessage(toJson(new Disconnect()));
         }
+        listener.firePropertyChange("INFORMATIONCONNECTION", null, new InformationConnection("the server isn't available"));
+        /* ciao
         try {
             os.close();
             is.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.exit(0);
+        */
+        //System.exit(0);
     }
 
     /**
@@ -204,7 +207,7 @@ public class Client{
         timer = new Thread(() -> {
             try{
                 Thread.sleep(TIMEOUT);
-                System.out.println("The server isn't available");
+                //System.out.println("The server isn't available");
                 handleClientDisconnection(true);
             } catch (InterruptedException ignored){
             }
