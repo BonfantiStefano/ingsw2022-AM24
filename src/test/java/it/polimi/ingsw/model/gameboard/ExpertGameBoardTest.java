@@ -3,24 +3,22 @@ package it.polimi.ingsw.model.gameboard;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.ColorT;
-import it.polimi.ingsw.model.character.*;
 import it.polimi.ingsw.model.character.Character;
+import it.polimi.ingsw.model.character.CharacterProf;
+import it.polimi.ingsw.model.character.CharacterWithNoEntry;
+import it.polimi.ingsw.model.character.CharacterWithStudent;
 import it.polimi.ingsw.model.mnstrategy.MNTwoSteps;
 import it.polimi.ingsw.model.player.Mage;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.model.profstrategy.EqualProf;
 import it.polimi.ingsw.model.world.Island;
-import org.junit.Assert;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
