@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class LobbyController implements GUIController{
     private GUI gui;
-    public final TableView<VirtualLobby> table = new TableView<>();
+    public TableView<VirtualLobby> table = new TableView<>();
     public TableColumn<VirtualLobby,Integer> IDcloumn;
     public TableColumn<VirtualLobby, ArrayList<String>> connected;
     public TableColumn<VirtualLobby, String> ExpColumn;
