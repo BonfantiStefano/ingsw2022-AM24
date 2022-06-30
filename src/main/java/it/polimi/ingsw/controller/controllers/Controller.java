@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.ColorS;
 import it.polimi.ingsw.model.EVENT;
 import it.polimi.ingsw.model.Model;
 import it.polimi.ingsw.model.gameboard.GameBoard;
+import it.polimi.ingsw.model.player.Hand;
 import it.polimi.ingsw.model.player.Player;
 import it.polimi.ingsw.server.Lobby;
 import it.polimi.ingsw.server.answer.Error;
@@ -244,8 +245,19 @@ public class Controller implements PropertyChangeListener {
                     lobby.sendMessageToOthers(name, new InformationGame(name+" has to choose an Assistant"));
                 }
                 else{
-                    increaseHaveChosenAssistant();
-                    System.out.println("The player that has to choose an assistant is disconnected, skipping");
+                    int cardPlayed = model.getPlayerByNickname(sortedPlayers.get(haveChosenAssistant).getNickname()).getMyCards().numCards();
+                    boolean hasPlayed = false;
+                    while (!hasPlayed) {
+                        try {
+                            if(model.chooseAssistants(model.getPlayerByNickname(sortedPlayers.get(haveChosenAssistant).getNickname()), cardPlayed)) {
+                                increaseHaveChosenAssistant();
+                                hasPlayed = true;
+                            } else
+                                cardPlayed--;
+                        } catch (InvalidIndexException ignored) {
+                        }
+                    }
+                    System.out.println("The player that has to choose an assistant is disconnected, played the highest card");
                     nextPhase();
                 }
             }
