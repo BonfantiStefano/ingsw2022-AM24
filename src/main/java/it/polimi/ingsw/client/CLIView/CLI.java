@@ -72,7 +72,21 @@ public class CLI implements Runnable, UserInterface {
             cli.setupConnection(ip, port);
         } else {
             CLI cli = new CLI();
-            cli.setupConnection(args[1], Integer.parseInt(args[2]));
+            String ip;
+            int port = -1;
+            try {
+                port = Integer.parseInt(args[2]);
+            } catch (NumberFormatException exception) {
+                System.err.println("Numeric format requested, application will now close...");
+                System.exit(-1);
+            } catch (NoSuchElementException exception) {
+                System.exit(-1);
+            }
+            if(port < 1024 || port > 65535) {
+                System.out.println("Use a port between " + 1024 + " and " + 65535);
+                System.exit(-1);
+            }
+            cli.setupConnection(args[1], port);
         }
     }
 
@@ -204,13 +218,6 @@ public class CLI implements Runnable, UserInterface {
     private synchronized void printView() {
         if(client.isActive()) {
             if(gameStarted) {
-                if (System.getProperty("os.name").contains("Windows")) {
-                    try {
-                        new ProcessBuilder("cmd.exe", "/c", "chcp 65001").inheritIO().start().waitFor();
-                    } catch (InterruptedException | IOException e) {
-                        e.printStackTrace();
-                    }
-                }
                 clearScreen();
                 ArrayList<VirtualIsland> virtualWorld = virtualView.getVirtualWorld();
 

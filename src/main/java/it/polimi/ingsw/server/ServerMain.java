@@ -19,7 +19,7 @@ public class ServerMain {
      * @param args of type String[]
      */
     public static void main(String[] args) {
-        int port;
+        int port= -1;
         if(args.length == 0) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Welcome to the Eriantys server");
@@ -28,7 +28,7 @@ public class ServerMain {
             if (config.equalsIgnoreCase("yes")) {
                 port = DEFAULT_PORT;
             } else {
-                System.out.println("Insert a value between " + MIN_PORT + " e " + MAX_PORT + ":");
+                System.out.println("Insert a value between " + MIN_PORT + " and " + MAX_PORT + ":");
                 try {
                     port = scanner.nextInt();
                 } catch (InputMismatchException e) {
@@ -39,7 +39,7 @@ public class ServerMain {
                     port = -1;
                 }
                 while (port < MIN_PORT || port > MAX_PORT) {
-                    System.out.println("Insert a value between " + MIN_PORT + " e " + MAX_PORT + ":");
+                    System.out.println("Insert a value between " + MIN_PORT + " and " + MAX_PORT + ":");
                     try {
                         port = scanner.nextInt();
                     } catch (InputMismatchException e) {
@@ -51,7 +51,18 @@ public class ServerMain {
                 }
             }
         } else {
-            port = Integer.parseInt(args[1]);
+            try {
+                port = Integer.parseInt(args[1]);
+            } catch (NumberFormatException exception) {
+                System.err.println("Numeric format requested, application will now close...");
+                System.exit(-1);
+            } catch (NoSuchElementException exception) {
+                System.exit(-1);
+            }
+            if(port < MIN_PORT || port > MAX_PORT) {
+                System.out.println("Use a port between " + MIN_PORT + " and " + MAX_PORT);
+                System.exit(-1);
+            }
             System.out.println("Welcome to the Eriantys server");
         }
         Server server = new Server();

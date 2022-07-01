@@ -120,12 +120,10 @@ public class GUI extends Application implements UserInterface {
             window.setHeight(650);
             LobbyController lobbyController =(LobbyController) nameMapController.get(nameMapScene.get(newSceneName));
             lobbyController.init();
-            window.setResizable(false);
         }
         else if(newSceneName.equals(CONTROLLERS.YOUWIN.toString()) || newSceneName.equals((CONTROLLERS.YOULOSE.toString()))){
             window.setX(500);
             window.setY(100);
-            window.setResizable(false);
         }
         else if(newSceneName.equals(CONTROLLERS.MAIN.toString())){
             window.setX(50);
@@ -144,7 +142,6 @@ public class GUI extends Application implements UserInterface {
     public void sendMessageToServer(Object message) {
         if(client!=null)
             client.sendMessage(toJson(message));
-        System.out.println(toJson(message));
     }
 
     /**
@@ -176,9 +173,7 @@ public class GUI extends Application implements UserInterface {
         switch (evt.getPropertyName()) {
             case "WELCOME" -> {
                 if (!currentScene.equals(nameMapScene.get(CONTROLLERS.WELCOME.toString())))
-                    Platform.runLater(() -> {
-                        changeScene(CONTROLLERS.WELCOME.toString());
-                    });
+                    Platform.runLater(() -> changeScene(CONTROLLERS.WELCOME.toString()));
                 Welcome w = (Welcome) evt.getNewValue();
                 lb.setWelcome(w);
                 Platform.runLater(lb::init);
