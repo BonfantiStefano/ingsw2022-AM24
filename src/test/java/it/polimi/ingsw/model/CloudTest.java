@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class CloudTest {
 
-    /** Method listStudent tests the Student's getter and setter that are in the ArrayList<Student>.*/
+    /** Method listStudent tests the Student's getter and setter that are in the ArrayList Student.*/
     @Test
     @DisplayName("Add Student test")
     void listStudent() throws NoSuchStudentException {

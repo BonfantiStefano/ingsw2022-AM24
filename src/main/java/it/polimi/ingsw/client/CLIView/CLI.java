@@ -754,7 +754,7 @@ public class CLI implements Runnable, UserInterface {
 
     /**
      * Method getLobbyByIndex returns the Lobby's object which has the index given by parameter.
-     * @param lobbies ArrayList<VirtualLobby> - the list containing all the available lobbies.
+     * @param lobbies ArrayList VirtualLobby - the list containing all the available lobbies.
      * @param index int - the index of the Lobby that has to be searched.
      * @return an int - that represents the position in the list of the Lobby searched. -1 if there isn't a correspondence.
      */

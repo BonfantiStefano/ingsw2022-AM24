@@ -53,7 +53,7 @@ public class World implements HasStrategy<InfluenceStrategy> {
     /**
      * Private method init is used from the World constructor and gives Mother nature a random position and places
      * Student according to the rule.
-     * @param initialStudent ArrayList<Student> - a list of 10 Student, 2 of each color.
+     * @param initialStudent ArrayList Student - a list of 10 Student, 2 of each color.
      */
     private void init(ArrayList<ColorS> initialStudent){
         posMN = random.nextInt(12);
