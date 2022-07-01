@@ -151,9 +151,9 @@ public class LobbyController implements GUIController{
     public void sendParams(){
         GameParams msg;
         getCredentials();
-        int num = numberField.getValue();
         boolean exp = modeField.isSelected();
-        if(checkCredentials()) {
+        if(checkCredentials()&& numberField.getValue()!=null) {
+            int num = numberField.getValue();
             msg = new GameParams(num, exp, nickname, mage, color);
             gui.sendMessageToServer(msg);
             gui.setNickname(nickname);
@@ -165,8 +165,8 @@ public class LobbyController implements GUIController{
      */
     private void getCredentials(){
         nickname = nicknameField.getText();
-        mage = Arrays.stream(Mage.values()).filter(m -> m.toString().equals(mageField.getValue())).findFirst().get();
-        color = Arrays.stream(ColorT.values()).filter(c -> c.toString().equals(colorField.getValue())).findFirst().get();
+        mage = Arrays.stream(Mage.values()).filter(m -> m.toString().equals(mageField.getValue())).findAny().orElse(null);
+        color = Arrays.stream(ColorT.values()).filter(c -> c.toString().equals(colorField.getValue())).findAny().orElse(null);
     }
 
     /**
@@ -182,7 +182,7 @@ public class LobbyController implements GUIController{
      * @return true if the Player has filled all fields
      */
     private boolean checkCredentials(){
-        return nicknameField.getText() != null && colorField.getValue() != null && mageField.getValue() != null;
+        return nickname != null && color != null && mage != null;
     }
 
     /**

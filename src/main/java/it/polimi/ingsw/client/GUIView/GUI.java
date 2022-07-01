@@ -120,12 +120,10 @@ public class GUI extends Application implements UserInterface {
             window.setHeight(650);
             LobbyController lobbyController =(LobbyController) nameMapController.get(nameMapScene.get(newSceneName));
             lobbyController.init();
-            window.setResizable(false);
         }
         else if(newSceneName.equals(CONTROLLERS.YOUWIN.toString()) || newSceneName.equals((CONTROLLERS.YOULOSE.toString()))){
             window.setX(500);
             window.setY(100);
-            window.setResizable(false);
         }
         else if(newSceneName.equals(CONTROLLERS.MAIN.toString())){
             window.setX(50);

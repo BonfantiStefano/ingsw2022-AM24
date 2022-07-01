@@ -21,7 +21,7 @@
             </columns>
         </TableView>
         <Button layoutX="14.0" layoutY="11.0" mnemonicParsing="false" onAction="#showList" text="Reload Lobbies" />
-        <Label fx:id="error" layoutX="389.0" layoutY="67.0" maxWidth="200.0" minHeight="20.0" minWidth="50.0" prefHeight="20.0" prefWidth="50.0" />
+        <Label fx:id="error" layoutX="389.0" layoutY="67.0" maxWidth="200.0" minHeight="20.0" minWidth="50.0" prefHeight="20.0" prefWidth="117.0" />
         <Label layoutX="14.0" layoutY="339.0" text="Nickname:" />
         <Label layoutX="14.0" layoutY="381.0" text="Mage:" />
         <Label layoutX="300.0" layoutY="381.0" text="Color:" />
@@ -34,7 +34,7 @@
         <ChoiceBox fx:id="numberField" layoutX="123.0" layoutY="532.0" prefWidth="150.0" />
         <TextField fx:id="nicknameField" layoutX="123.0" layoutY="335.0" />
       <Button layoutX="247.0" layoutY="584.0" mnemonicParsing="false" onAction="#quitGame" text="Quit" />
-      <Label fx:id="lastInfo" layoutX="428.0" layoutY="84.0" minWidth="150.0" />
+      <Label fx:id="lastInfo" layoutX="371.0" layoutY="112.0" maxWidth="150.0" minWidth="150.0" />
       <CheckBox fx:id="modeField" layoutX="123.0" layoutY="484.0" mnemonicParsing="false" />
       <Text layoutX="168.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Double click to select a Lobby" />
     </children>
