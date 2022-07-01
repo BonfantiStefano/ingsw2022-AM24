@@ -754,8 +754,8 @@ public class GameController implements GUIController{
      */
     private void clickOnStudent(MouseEvent e){
         Node student = (Node) e.getSource(), parent = getParent((Node) e.getSource());
-        boolean switchStudents = from!=null&&(from.getId().contains("e1")&&parent.getId().contains("h1")||(from.getId().contains("h1")&&parent.getId().contains("e1")));
-        boolean characterEntrance = from!=null&&((from.getId().contains("e1")&&to.getId().contains("character"))||(from.getId().contains("character")&&to.getId().contains("e1")));
+        boolean switchStudents = from!=null&&to!=null&&(from.getId().contains("e1")&&parent.getId().contains("h1")||(from.getId().contains("h1")&&parent.getId().contains("e1")));
+        boolean characterEntrance = from!=null&&to!=null&&((from.getId().contains("e1")&&to.getId().contains("character"))||(from.getId().contains("character")&&to.getId().contains("e1")));
 
         if(switchStudents|| characterEntrance){
             gui.sendMessageToServer(new ChooseTwoColors(selected,ColorS.valueOf(student.getId())));
@@ -787,7 +787,7 @@ public class GameController implements GUIController{
             to = null;
             selected = null;
         }
-        else if(selectedMN){
+        else if(selectedMN && destinationId.contains("island")){
             int dest = Integer.parseInt(destinationId.replace("island",""));
             int currMnPos = virtualView.getMnPos(), steps = 0;
 
