@@ -1,4 +1,4 @@
-cd C:\Users\bonfa\IdeaProjects\ingsw2022-AM24\target ---> cambiare il perscorso e mettere quello in cui si ha il jar
-chcp 65001 ---> mettere questo comando solo si ha intenzione di usare la Cli
-java -jar AM24-0.1-jar-with-dependencies.jar ---> si può aggiungere dei comandi (dopo il .jar) come: -s 1234 (numero di porta) o -c 127.0.0.1 1234 (ip e porta) o -g (avvia semplicemente la gui) altrimenti parte il jar come base
----> eliminare tutti i commenti (cioè quelli dopo '--->' compreso) e la seconda riga se non si vuole usare la CLI, salvare il file cambiando poi l'estensione a .bat 
+cd C:\Users\bonfa\IdeaProjects\ingsw2022-AM24\target ---> jar path
+chcp 65001 ---> keep this line if you want to play with CLI
+java -jar AM24-0.1-jar-with-dependencies.jar ---> add command line arguments as: -s 1234 (port number) or -c 127.0.0.1 1234 (ip and port) or -g (launch GUI) 
+---> launch jar without arguments to choose manually ip,port and UI
