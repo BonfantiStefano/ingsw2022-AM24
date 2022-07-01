@@ -97,6 +97,7 @@ public class SchoolBoard implements CanAcceptStudent, CanRemoveStudent, AcceptTo
             hall.put(s, temp);
             entrance.add(s);
         }
+        listener.firePropertyChange(String.valueOf(EVENT.CHANGE_SCHOOLBOARD), null, this);
     }
 
     /**
