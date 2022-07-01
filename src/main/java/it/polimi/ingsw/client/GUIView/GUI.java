@@ -285,5 +285,6 @@ public class GUI extends Application implements UserInterface {
     private void showServerKO(){
         Alert alert = new Alert(Alert.AlertType.ERROR,"Server isn't available, close the application", ButtonType.OK);
         alert.showAndWait();
+        client.handleClientDisconnection(true);
     }
 }
