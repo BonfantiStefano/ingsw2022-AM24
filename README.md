@@ -54,7 +54,7 @@ The CLI and GUI versions of the client can be run by selecting the <code>1</code
 
 **WARNING**: For the best CLI experience, we suggest using a native linux terminal, on Windows to have the best experience is suggested to run the command <code>chcp 65001</code> 
 on the cmd before running the jar, that guarantees the view of the unicode symbol (This step isn't needed if you use the batch file).
-The terminal should run in fullscreen mode or maximized window mode. If these requirements are not met we cannot ensure a high quality CLI experience.
+The terminal should run in full screen mode or maximized window mode. If these requirements are not met we cannot ensure a high quality CLI experience.
 
 ## Command Line Arguments
 
@@ -67,12 +67,12 @@ on which the server will be launched;
 # Windows
 
 For windows are available <code>.bat</code> [files](deliveries/Jar/Bat%20files) in order to boot faster the application:
-- [Server](deliveries/Jar/Bat%20files/Server.bat) that launch the server on the default port (the Server.txt is used to create this bat).
-- [Cli](deliveries/Jar/Bat%20files/Cli.bat) that launch a client with CLI on localhost and default port with the code that guarantees that Unicode symbol will be shown correctly (the Cli.txt is used to create this bat).
-- [Gui](deliveries/Jar/Bat%20files/Gui.bat) that launch a client with GUI (the Gui.txt is used to create this bat).
-- [Eriantys](deliveries/Jar/Bat%20files/Eriantys.txt)
-All this file must be added to the same directory of the jar, or can be added the path in the first line after the keyword <code>cd </code> or following the instructions
-of Eriantys.txt.
+- [Server](deliveries/Jar/Bat%20files/Server.bat) that launch the server on the default port (the [text file](deliveries/Jar/Bat%20files/Server.txt) used to create this bat).
+- [Cli](deliveries/Jar/Bat%20files/Cli.bat) that launch a client with CLI on localhost and default port with the code that guarantees that Unicode symbol will be shown correctly (the [text file](deliveries/Jar/Bat%20files/Cli.txt) used to create this bat).
+- [Gui](deliveries/Jar/Bat%20files/Gui.bat) that launch a client with GUI (the [text file](deliveries/Jar/Bat%20files/Gui.txt) used to create this bat).
+
+All this file must be added to the same directory of the jar, or the path to the jar can be added in the first line after the keyword <code>cd </code> or following the instructions
+of [Eriantys.txt](deliveries/Jar/Bat%20files/Eriantys.txt).
 
 # License
 
