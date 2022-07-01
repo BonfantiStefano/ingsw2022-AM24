@@ -204,7 +204,6 @@ public class Client{
             try{
                 Thread.sleep(TIMEOUT);
                 listener.firePropertyChange("INFORMATIONCONNECTION", null, new InformationConnection("The server isn't available"));
-                //handleClientDisconnection(true);
             } catch (InterruptedException ignored){
             }
         });
