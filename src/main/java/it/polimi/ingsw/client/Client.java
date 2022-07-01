@@ -203,7 +203,7 @@ public class Client{
         timer = new Thread(() -> {
             try{
                 Thread.sleep(TIMEOUT);
-                listener.firePropertyChange("INFORMATIONCONNECTION", null, new InformationConnection("the server isn't available"));
+                listener.firePropertyChange("INFORMATIONCONNECTION", null, new InformationConnection("The server isn't available"));
                 //handleClientDisconnection(true);
             } catch (InterruptedException ignored){
             }

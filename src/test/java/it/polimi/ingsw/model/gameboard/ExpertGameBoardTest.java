@@ -283,7 +283,7 @@ class ExpertGameBoardTest {
         assertTrue(lisa.getMyBoard().getEntrance().isEmpty());
         // Hall: 1 red, 1 yellow, 10 blue
         // Entrance : empty
-        assertThrows(PlaceFullException.class,
+        assertThrows(NoSuchStudentException.class,
                 () -> gb.switchStudents(ColorS.GREEN, ColorS.BLUE));
 
         assertTrue(lisa.getMyBoard().getEntrance().isEmpty());
