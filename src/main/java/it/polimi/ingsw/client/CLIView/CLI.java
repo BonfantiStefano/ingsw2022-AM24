@@ -72,7 +72,6 @@ public class CLI implements Runnable, UserInterface {
             cli.setupConnection(ip, port);
         } else {
             CLI cli = new CLI();
-            String ip;
             int port = -1;
             try {
                 port = Integer.parseInt(args[2]);
