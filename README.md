@@ -66,17 +66,13 @@ on which the server will be launched;
 
 # Windows
 
-For windows are available <code>.bat</code> file in order to boot faster the application:
-- Server.bat that launch the server on the default port (the Server.txt used to create this bat).
-- Cli.bat that launch a client with CLI on localhost and default port with the code that guarantees the view of the Unicode symbol (the Cli.txt used to create this bat).
-- Gui.bat that launch a client with GUI (the Gui.txt used to create this bat).
-
+For windows are available <code>.bat</code> [files](deliveries/Jar/Bat%20files) in order to boot faster the application:
+- [Server](deliveries/Jar/Bat%20files/Server.bat) that launch the server on the default port (the Server.txt is used to create this bat).
+- [Cli](deliveries/Jar/Bat%20files/Cli.bat) that launch a client with CLI on localhost and default port with the code that guarantees that Unicode symbol will be shown correctly (the Cli.txt is used to create this bat).
+- [Gui](deliveries/Jar/Bat%20files/Gui.bat) that launch a client with GUI (the Gui.txt is used to create this bat).
+- [Eriantys](deliveries/Jar/Bat%20files/Eriantys.txt)
 All this file must be added to the same directory of the jar, or can be added the path in the first line after the keyword <code>cd </code> or following the instructions
-of Eriantys.txt:
-- [Cli](deliveries/Jar/Bat%20files/Cli.bat)
-- [Gui](deliveries/Jar/Bat%20files/Gui.bat)
-- [Server](deliveries/Jar/Bat%20files/Server.bat)
-- [Eriantys.txt](deliveries/Jar/Bat%20files/Eriantys.txt)
+of Eriantys.txt.
 
 # License
 
