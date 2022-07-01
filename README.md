@@ -72,7 +72,7 @@ For windows are available <code>.bat</code> file in order to boot faster the app
 - Gui.bat that launch a client with GUI (the Gui.txt used to create this bat).
 
 All this file must be added to the same directory of the jar, or can be added the path in the first line after the keyword <code>cd </code> or following the instructions
-of Eriantys.txt. \
+of Eriantys.txt:
 - [Cli](deliveries/Jar/Bat%20files/Cli.bat)
 - [Gui](deliveries/Jar/Bat%20files/Gui.bat)
 - [Server](deliveries/Jar/Bat%20files/Server.bat)
