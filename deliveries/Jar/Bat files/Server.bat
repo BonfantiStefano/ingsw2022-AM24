@@ -1,0 +1,1 @@
+java -jar AM24-0.1-jar-with-dependencies.jar -s 1234
