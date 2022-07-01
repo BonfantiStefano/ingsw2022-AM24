@@ -256,13 +256,9 @@ public class GameController implements GUIController{
         List<Node> islandsPanes = islandsPane.getChildren().stream().filter(p -> p.getStyleClass().contains("islandPane")).toList();
         islandsPane.getChildren().removeAll(islandsPanes);
 
-        ArrayList<ImageView> islands = new ArrayList<>();
         Image image = new Image(getClass().getResourceAsStream(IMAGE_PATHS.ISLAND.toString()));
 
-        for(int i =0;i<virtualView.getVirtualWorld().size();i++) {
-            islands.add(new ImageView(image));
-        }
-
+        ArrayList<VirtualIsland> islands = virtualView.getVirtualWorld();
         islands.forEach(i->{
             createIsland(islands, i);
         });
@@ -274,14 +270,14 @@ public class GameController implements GUIController{
      * @param islands ArrayList containing all islands
      * @param i ImageView to be used as BackGround
      */
-    private void createIsland(ArrayList<ImageView> islands, ImageView i) {
+    private void createIsland(ArrayList<VirtualIsland> islands, VirtualIsland i) {
         int thisAngle = -(islands.indexOf(i)+1)*(angle/ islands.size());
         int index = islands.indexOf(i);
-        VirtualIsland vi = virtualView.getVirtualWorld().get(index);
-        ArrayList<ColorS> colors = vi.getStudents();
-        ArrayList<ColorT> towers = vi.getTowers();
 
-        StackPane p = createPane(colors, towers,virtualView.getMnPos()==index , vi.getNoEntry());
+        ArrayList<ColorS> colors = i.getStudents();
+        ArrayList<ColorT> towers = i.getTowers();
+
+        StackPane p = createPane(colors, towers,virtualView.getMnPos()==index , i.getNoEntry());
         p.setOnMouseClicked(destinationHandler);
 
         p.setId("island"+ islands.indexOf(i));
@@ -754,7 +750,7 @@ public class GameController implements GUIController{
      */
     private void clickOnStudent(MouseEvent e){
         Node student = (Node) e.getSource(), parent = getParent((Node) e.getSource());
-        boolean switchStudents = from!=null&&to!=null&&(from.getId().contains("e1")&&parent.getId().contains("h1")||(from.getId().contains("h1")&&parent.getId().contains("e1")));
+        boolean switchStudents = from!=null&&(from.getId().contains("e1")&&parent.getId().contains("h1")||(from.getId().contains("h1")&&parent.getId().contains("e1")));
         boolean characterEntrance = from!=null&&to!=null&&((from.getId().contains("e1")&&to.getId().contains("character"))||(from.getId().contains("character")&&to.getId().contains("e1")));
 
         if(switchStudents|| characterEntrance){
